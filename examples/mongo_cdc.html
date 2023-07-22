@@ -164,11 +164,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/features.html">Supported Features</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../background/index.html">Background of SuperDuperDB</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Background of SuperDuperDB</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../background/common_issues.html">Common issues in AI-data development</a></li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../usage/index.html">SuperDuperDB Usage</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of SuperDuperDB Usage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../usage/index.html">SuperDuperDB Usage</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of SuperDuperDB Usage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../usage/datalayer.html">Datalayer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../usage/queries.html">Queries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../usage/encoders.html">Encoders</a></li>
@@ -176,11 +172,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../usage/vector_search.html">Vector Search</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../infrastructure/index.html">Infrastructural support</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Infrastructural support</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../infrastructure/index.html">Infrastructural support</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Infrastructural support</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../infrastructure/single_host_cluster.html">SuperDuperDB single host cluster deployment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../infrastructure/architecture.html">SuperDuperDB architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../infrastructure/change_data_capture.html">Change data capture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../infrastructure/client_server.html">Client-server implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../background/index.html">Background of SuperDuperDB</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Background of SuperDuperDB</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../background/common_issues.html">Common issues in AI-data development</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Example notebooks</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Example notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -267,9 +267,9 @@
         </div>
         <article role="main">
           <section id="Change-data-capture-with-MongoDB">
-<h1>Change data capture with MongoDB<a class="headerlink" href="#Change-data-capture-with-MongoDB" title="Permalink to this heading"></a></h1>
+<h1>Change data capture with MongoDB<a class="headerlink" href="#Change-data-capture-with-MongoDB" title="Permalink to this heading">#</a></h1>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pymongo</span>
@@ -278,11 +278,10 @@
 
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../&#39;</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">superduperdb.types.numpy.array</span> <span class="kn">import</span> <span class="n">array</span>
-<span class="kn">from</span> <span class="nn">superduperdb.apis.openai</span> <span class="kn">import</span> <span class="n">Embedding</span>
-<span class="kn">from</span> <span class="nn">superduperdb.models.sentence_transformers</span> <span class="kn">import</span> <span class="n">SentenceTransformer</span>
-<span class="kn">from</span> <span class="nn">superduperdb.queries.mongodb.queries</span> <span class="kn">import</span> <span class="n">Collection</span>
-<span class="kn">from</span> <span class="nn">superduperdb.auto.superduper</span> <span class="kn">import</span> <span class="n">superduper</span>
+<span class="kn">from</span> <span class="nn">superduperdb.encoders.numpy.array</span> <span class="kn">import</span> <span class="n">array</span>
+<span class="kn">from</span> <span class="nn">superduperdb.models.sentence_transformers.wrapper</span> <span class="kn">import</span> <span class="n">SentenceTransformer</span>
+<span class="kn">from</span> <span class="nn">superduperdb.datalayer.mongodb.query</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="kn">from</span> <span class="nn">superduperdb.misc.superduper</span> <span class="kn">import</span> <span class="n">superduper</span>
 <span class="kn">from</span> <span class="nn">superduperdb.core.watcher</span> <span class="kn">import</span> <span class="n">Watcher</span>
 <span class="kn">from</span> <span class="nn">superduperdb.core.vector_index</span> <span class="kn">import</span> <span class="n">VectorIndex</span>
 <span class="kn">from</span> <span class="nn">superduperdb.datalayer.base.cdc</span> <span class="kn">import</span> <span class="n">DatabaseWatcher</span>
@@ -294,42 +293,23 @@
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/Users/kartiksharma/Work/superduperdb/superduperdb-stealth-2/superduperdb-stealth/notebooks/../superduperdb/misc/dataclasses.py:35: RuntimeWarning: fields may not start with an underscore, ignoring &#34;_class_to_name&#34;
-  return add_methods(pdc.dataclass(cls, **kwargs))
-/Users/kartiksharma/Work/superduperdb/superduperdb-stealth-2/superduperdb-stealth/notebooks/../superduperdb/misc/dataclasses.py:35: RuntimeWarning: fields may not start with an underscore, ignoring &#34;_lock&#34;
-  return add_methods(pdc.dataclass(cls, **kwargs))
-/Users/kartiksharma/Work/superduperdb/superduperdb-stealth-2/superduperdb-stealth/notebooks/../superduperdb/misc/dataclasses.py:35: RuntimeWarning: fields may not start with an underscore, ignoring &#34;_name_to_cache&#34;
-  return add_methods(pdc.dataclass(cls, **kwargs))
-INFO:faiss.loader:Loading faiss.
-INFO:faiss.loader:Successfully loaded faiss.
 INFO:numexpr.utils:NumExpr defaulting to 8 threads.
 </pre></div></div>
 </div>
 <p>Connect to mongodb Make it a superduper instance</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db_mongo</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span><span class="s1">&#39;mongodb://test_user:test_pass@localhost:27018/admin&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">test_db</span>
-
-<span class="n">db_mongo</span><span class="o">.</span><span class="n">drop_collection</span><span class="p">(</span><span class="s1">&#39;documents&#39;</span><span class="p">)</span>
-
-<span class="n">db</span> <span class="o">=</span> <span class="n">superduper</span><span class="p">(</span><span class="n">db_mongo</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db_mongo</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span><span class="s1">&#39;mongodb://testmongodbuser:testmongodbpassword@localhost:27018/admin&#39;</span><span class="p">)</span>
+<span class="n">db_mongo</span><span class="o">.</span><span class="n">drop_database</span><span class="p">(</span><span class="s1">&#39;test_db&#39;</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">superduper</span><span class="p">(</span><span class="n">db_mongo</span><span class="o">.</span><span class="n">test_db</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-WARNING:root:Document change not handled due to no document key
-WARNING:root:Document change not handled due to no document key
-</pre></div></div>
 </div>
 <p>Populate data Insert the data into <code class="docutils literal notranslate"><span class="pre">documents</span></code> collection</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
@@ -351,11 +331,12 @@ WARNING:root:Document change not handled due to no document key
   <span class="p">}</span>
 <span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">superduperdb.types.pillow.image</span> <span class="kn">import</span> <span class="n">pil_image</span> <span class="k">as</span> <span class="n">i</span>
+<span class="kn">from</span> <span class="nn">superduperdb.encoders.pillow.image</span> <span class="kn">import</span> <span class="n">pil_image</span> <span class="k">as</span> <span class="n">i</span>
 <span class="kn">from</span> <span class="nn">superduperdb.core.documents</span> <span class="kn">import</span> <span class="n">Document</span> <span class="k">as</span> <span class="n">D</span>
+<span class="kn">from</span> <span class="nn">sentence_transformers</span> <span class="kn">import</span> <span class="n">SentenceTransformer</span> <span class="k">as</span> <span class="n">_SentenceTransformer</span>
 <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">D</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 
-<span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Collection</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;documents&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">insert_many</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Collection</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;documents&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">insert_many</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">]))</span>
 </pre></div>
 </div>
 </div>
@@ -364,42 +345,22 @@ WARNING:root:Document change not handled due to no document key
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:root:Created type/pil_image/21
 INFO:root:found 0 uris
 </pre></div></div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Stripping sub-components to references
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-WARNING:root:model/my-transformer/0 already exists - doing nothing
-Batches: 100%|████████████████████████████████████████████| 1/1 [00:00&lt;00:00,  9.60it/s]
-WARNING:root:model/my-transformer/0 already exists - doing nothing
-Batches: 100%|████████████████████████████████████████████| 1/1 [00:00&lt;00:00, 66.23it/s]
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-(&lt;pymongo.results.InsertManyResult at 0x28b704d90&gt;,
- TaskWorkflow(database=&lt;superduperdb.datalayer.base.database.BaseDatabase object at 0x28936d150&gt;, G=&lt;networkx.classes.digraph.DiGraph object at 0x28b756390&gt;))
+(&lt;pymongo.results.InsertManyResult at 0x7ff01f4d8d60&gt;,
+ TaskWorkflow(database=&lt;superduperdb.datalayer.base.database.BaseDatabase object at 0x7ff029927070&gt;, G=&lt;networkx.classes.digraph.DiGraph object at 0x7ff01f4d8be0&gt;))
 </pre></div></div>
 </div>
-<p>create a vector index watcher. This consist a indexing watcher (SentenceTransformer) model to vectorize a key.</p>
+<p>Create a vector index watcher. This consist a indexing watcher (SentenceTransformer) model to vectorize a key.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">configure_text_search</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
@@ -410,20 +371,20 @@ Batches: 100%|██████████████████████
             <span class="n">key</span><span class="o">=</span><span class="s1">&#39;abstract&#39;</span><span class="p">,</span>
             <span class="n">select</span><span class="o">=</span><span class="n">Collection</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;documents&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
         <span class="p">),</span>
-        <span class="n">compatible_watchers</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">compatible_watcher</span><span class="o">=</span>
             <span class="n">Watcher</span><span class="p">(</span>
                 <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
                 <span class="n">key</span><span class="o">=</span><span class="s1">&#39;title&#39;</span><span class="p">,</span>
                 <span class="n">select</span><span class="o">=</span><span class="n">Collection</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;documents&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">find</span><span class="p">(),</span>
                 <span class="n">active</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="p">]</span>
+
     <span class="p">)</span>
 
 
 
 
-<span class="n">job</span>  <span class="o">=</span> <span class="n">configure_text_search</span><span class="p">(</span><span class="n">SentenceTransformer</span><span class="p">(</span><span class="s1">&#39;all-MiniLM-L6-v2&#39;</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="s1">&#39;my-transformer&#39;</span><span class="p">,</span> <span class="n">encoder</span><span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">384</span><span class="p">,))</span>
+<span class="n">job</span>  <span class="o">=</span> <span class="n">configure_text_search</span><span class="p">(</span><span class="n">SentenceTransformer</span><span class="p">(</span><span class="n">identifier</span><span class="o">=</span><span class="s2">&quot;test-st&quot;</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="n">_SentenceTransformer</span><span class="p">(</span><span class="s1">&#39;all-MiniLM-L6-v2&#39;</span><span class="p">),</span> <span class="n">encoder</span><span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">384</span><span class="p">,))</span>
 <span class="p">))</span>
 <br/></pre></div>
 </div>
@@ -439,7 +400,7 @@ INFO:sentence_transformers.SentenceTransformer:Use pytorch device: cpu
 </div>
 <p>Add the vector index job to superduperdb.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
@@ -451,105 +412,28 @@ INFO:sentence_transformers.SentenceTransformer:Use pytorch device: cpu
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:root:Checking upstream-component watcher/my-transformer/abstract
-INFO:root:Checking upstream-component model/my-transformer
-INFO:root:Checking upstream-component type/numpy.float32[384]
-INFO:root:Created type/numpy.float32[384]/1
-WARNING:root:Setting &lt;superduperdb.core.base.Placeholder object at 0x296e2ddd0&gt; component at encoder
+WARNING:root:model/test-st/0 already exists - doing nothing
+WARNING:root:model/test-st/0 already exists - doing nothing
+WARNING:root:model/test-st/0 already exists - doing nothing
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-Stripping sub-components to references
-Stripping sub-components to references
-</pre></div></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "d44e4e3b653a493896fe80581caa7a33", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:root:Created model/my-transformer/1
-WARNING:root:Setting &lt;superduperdb.core.base.Placeholder object at 0x289327f10&gt; component at model
-INFO:root:Created watcher/my-transformer/abstract/1
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Stripping sub-components to references
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-WARNING:root:model/my-transformer/1 already exists - doing nothing
-WARNING:root:model/my-transformer/1 already exists - doing nothing
-WARNING:root:model/my-transformer/1 already exists - doing nothing
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "7d47541a4281463aae3ed17585aa8e2d", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO:root:Checking upstream-component watcher/my-transformer/title
-INFO:root:Checking upstream-component model/my-transformer
-WARNING:root:model/my-transformer/1 already exists - doing nothing
-WARNING:root:Setting &lt;superduperdb.core.base.Placeholder object at 0x297a0be90&gt; component at model
-INFO:root:Created watcher/my-transformer/title/1
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Stripping sub-components to references
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-WARNING:root:Setting &lt;superduperdb.core.base.Placeholder object at 0x2979e9150&gt; component at indexing_watcher
-WARNING:root:Setting &lt;superduperdb.core.base.Placeholder object at 0x297a65790&gt; component at model
-WARNING:root:Setting &lt;superduperdb.core.base.PlaceholderList object at 0x28b748c10&gt; component at compatible_watchers
-INFO:root:Created vector_index/my-index/1
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Stripping sub-components to references
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
+WARNING:root:model/test-st/0 already exists - doing nothing
 INFO:root:loading hashes: &#39;my-index&#39;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -559,12 +443,12 @@ INFO:root:loading hashes: &#39;my-index&#39;
 </div>
 <p>Create instance of <code class="docutils literal notranslate"><span class="pre">DatabaseWatcher</span></code> Start watching <code class="docutils literal notranslate"><span class="pre">documents</span></code> collection.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="n">database_watcher</span> <span class="o">=</span> <span class="n">DatabaseWatcher</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="s1">&#39;basic-cdc-watcher&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">Collection</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;documents&#39;</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">database_watcher</span> <span class="o">=</span> <span class="n">DatabaseWatcher</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="s1">&#39;basic-cdc-watcher&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">Collection</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;documents&#39;</span><span class="p">))</span>
 <span class="n">database_watcher</span><span class="o">.</span><span class="n">watch</span><span class="p">()</span>
-<br/></pre></div>
+</pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -572,16 +456,34 @@ INFO:root:loading hashes: &#39;my-index&#39;
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:root:Database watch service started at 2023-07-05 14:44:03.519158
+INFO:root:Database watch service started at 2023-07-21 19:21:35.649003
 INFO:root:Started listening database with identity basic-cdc-watcher/documents...
 </pre></div></div>
 </div>
+<p>Check the watcher status</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">You</span> <span class="n">can</span> <span class="n">check</span> <span class="n">info</span> <span class="n">of</span> <span class="n">the</span> <span class="n">watcher</span><span class="o">.</span>
-<span class="n">database_watcher</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">database_watcher</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+<p>You can check info of the watcher.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">database_watcher</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -597,7 +499,7 @@ INFO:root:Started listening database with identity basic-cdc-watcher/documents..
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -605,54 +507,9 @@ INFO:root:Started listening database with identity basic-cdc-watcher/documents..
 {&#39;inserts&#39;: 0, &#39;updates&#39;: 0}
 </pre></div></div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="kn">import</span> <span class="nn">time</span>
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
-    <span class="n">database_watcher</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{
-  &#34;inserts&#34;: 0,
-  &#34;updates&#34;: 0
-}
-{
-  &#34;inserts&#34;: 0,
-  &#34;updates&#34;: 0
-}
-{
-  &#34;inserts&#34;: 0,
-  &#34;updates&#34;: 0
-}
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">KeyboardInterrupt</span>                         Traceback (most recent call last)
-Cell <span class="ansi-green-fg">In[9], line 4</span>
-<span class="ansi-green-intense-fg ansi-bold">      2</span> <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> _ <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> <span style="color: rgb(0,135,0)">range</span>(<span style="color: rgb(98,98,98)">1000</span>):
-<span class="ansi-green-intense-fg ansi-bold">      3</span>     database_watcher<span style="color: rgb(98,98,98)">.</span>info()
-<span class="ansi-green-fg">----&gt; 4</span>     <span class="ansi-yellow-bg">time</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">sleep</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">3</span><span class="ansi-yellow-bg">)</span>
-
-<span class="ansi-red-fg">KeyboardInterrupt</span>:
-</pre></div></div>
-</div>
 <p>Add 2 documents and check the info again</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[{</span>
@@ -666,8 +523,38 @@ Cell <span class="ansi-green-fg">In[9], line 4</span>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:root:found 0 uris
+WARNING:root:model/test-st/0 already exists - doing nothing
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "c578498e5bca4b0688a556caded50a63", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING:root:model/test-st/0 already exists - doing nothing
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ac1939bf00bb4005b06f395e23c4c1ed", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<p>Check the inserts info again</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">database_watcher</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
@@ -680,27 +567,391 @@ Cell <span class="ansi-green-fg">In[9], line 4</span>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-  &#34;inserts&#34;: 2,
+  &#34;inserts&#34;: 1,
   &#34;updates&#34;: 0
 }
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;inserts&#39;: 2, &#39;updates&#39;: 0}
+{&#39;inserts&#39;: 1, &#39;updates&#39;: 0}
 </pre></div></div>
 </div>
+<p>Check vectors if they are synced with the vector database.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">superduperdb.vector_search.lancedb_client</span> <span class="kn">import</span> <span class="n">LanceDBClient</span>
+<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lance_client</span> <span class="o">=</span> <span class="n">LanceDBClient</span><span class="p">(</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Use the identifier which is <code class="docutils literal notranslate"><span class="pre">model/key</span></code></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="n">lance_client</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span><span class="s1">&#39;test-st/abstract&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>vector</th>
+      <th>id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...</td>
+      <td>__SEEDKEY__</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
+      <td>64b9970f87282bb1ebd74a82</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
+      <td>64b9970f87282bb1ebd74a83</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
+      <td>64b9989b6f03202cfcf0f784</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
+      <td>64b9989b6f03202cfcf0f785</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
+      <td>64b998fc9740cbc5d6c06555</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
+      <td>64b998fc9740cbc5d6c06556</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
+      <td>64b99d8b10919213a90f7b50</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
+      <td>64b99d8b10919213a90f7b51</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
+      <td>64b99d8c10919213a90f7b52</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
+      <td>64b99d8c10919213a90f7b53</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>[-0.0642707, 0.062035114, -0.04294876, 0.01063...</td>
+      <td>64b99d8c10919213a90f7b54</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
+      <td>64ba60c1cf65c6b21a45b602</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
+      <td>64ba60c1cf65c6b21a45b603</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
+      <td>64ba60c2cf65c6b21a45b604</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
+      <td>64ba60c2cf65c6b21a45b605</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>[-0.0642707, 0.062035114, -0.04294876, 0.01063...</td>
+      <td>64ba60c2cf65c6b21a45b606</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
+      <td>64ba61053f925c0fbcae49ac</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
+      <td>64ba61063f925c0fbcae49ad</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
+      <td>64ba61063f925c0fbcae49ae</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>[-0.0642707, 0.062035114, -0.04294876, 0.01063...</td>
+      <td>64ba61063f925c0fbcae49af</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
+      <td>64ba7a0966d21ce093715571</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
+      <td>64ba7a0966d21ce093715572</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>[-0.0642707, 0.062035114, -0.04294876, 0.01063...</td>
+      <td>64ba7a0966d21ce093715573</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Advance Section</p>
+<p>Resume Tokens</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">superduperdb.datalayer.mongodb.cdc</span> <span class="kn">import</span> <span class="n">ResumeToken</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[{</span>
+  <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Politics of India&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;abstract&quot;</span><span class="p">:</span> <span class="s2">&quot;Some despriction 1&quot;</span><span class="p">,</span>
+<span class="p">},</span> <span class="p">{</span>
+  <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Politics of Asia&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;abstract&quot;</span><span class="p">:</span> <span class="s2">&quot;some description 2&quot;</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="p">{</span>
+  <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Politics of Abc&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;abstract&quot;</span><span class="p">:</span> <span class="s2">&quot;some description 3&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="p">]</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">db_mongo</span><span class="o">.</span><span class="n">test_db</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">insert_many</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">resume_tokens</span> <span class="o">=</span> <span class="n">database_watcher</span><span class="o">.</span><span class="n">resume_tokens</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>You can use the resume token to resume watching.</p>
+<p>Lets restart the change stream from the begining.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">first_change_stream_token</span> <span class="o">=</span> <span class="n">resume_tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">database_watcher</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">database_watcher</span><span class="o">.</span><span class="n">resume</span><span class="p">(</span><span class="n">first_change_stream_token</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:root:Database watch service started at 2023-07-21 19:22:23.076590
+INFO:root:Started listening database with identity basic-cdc-watcher/documents...
+INFO:root:found 0 uris
+WARNING:root:model/test-st/0 already exists - doing nothing
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "b3c8f0831afc418da0fde34bfe865590", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING:root:model/test-st/0 already exists - doing nothing
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "dff62b257c26407a8da8eabd291e48ea", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<p>As you can see above the change stream has started again from the initial point of time using the first resume token.</p>
+<p>Change pipeline</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">database_watcher</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 </pre></div>
 </div>
+</div>
+<p>Your program has been listening to all operations. In a real application this would be overwhelming and often unnecessary as each part of your application will generally want to listen only to specific operations. To limit the amount of operations, you can use certain aggregation stages when setting up the stream</p>
+<p>Lets create a specific change pipeline which only listens to insert operations.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">superduperdb.datalayer.mongodb.cdc</span> <span class="kn">import</span> <span class="n">MongoChangePipeline</span>
+<span class="n">mongo_change_pipeline</span> <span class="o">=</span> <span class="n">MongoChangePipeline</span><span class="p">([</span><span class="s1">&#39;insert&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">change_pipeline</span> <span class="o">=</span> <span class="n">mongo_change_pipeline</span><span class="o">.</span><span class="n">build_matching</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">database_watcher</span> <span class="o">=</span> <span class="n">DatabaseWatcher</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="s1">&#39;basic-cdc-watcher&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">Collection</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;documents&#39;</span><span class="p">))</span>
+<span class="n">database_watcher</span><span class="o">.</span><span class="n">watch</span><span class="p">(</span><span class="n">change_pipeline</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:root:Database watch service started at 2023-07-21 19:24:53.890748
+INFO:root:Started listening database with identity basic-cdc-watcher/documents...
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[{</span>
+  <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Politics of India&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;abstract&quot;</span><span class="p">:</span> <span class="s2">&quot;Some despriction 1&quot;</span><span class="p">,</span>
+<span class="p">},</span> <span class="p">{</span>
+  <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Politics of Asia&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;abstract&quot;</span><span class="p">:</span> <span class="s2">&quot;some description 2&quot;</span><span class="p">,</span>
+<span class="p">},</span>
+<span class="p">{</span>
+  <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Politics of Abc&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;abstract&quot;</span><span class="p">:</span> <span class="s2">&quot;some description 3&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="p">]</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">db_mongo</span><span class="o">.</span><span class="n">test_db</span><span class="o">.</span><span class="n">documents</span><span class="o">.</span><span class="n">insert_many</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:root:found 0 uris
+INFO:root:found 0 uris
+WARNING:root:model/test-st/0 already exists - doing nothing
+WARNING:root:model/test-st/0 already exists - doing nothing
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "235d0854143b485da7aad681bdacc2f8", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ec78102be7234fe69cdfca082ecc5543", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 </section>
 
@@ -753,9 +1004,7 @@ Cell <span class="ansi-green-fg">In[9], line 4</span>
       
     </aside>
   </div>
-</div><script src="../_static/jquery.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/scripts/furo.js"></script>

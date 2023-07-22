@@ -162,11 +162,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../getting_started/features.html">Supported Features</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../background/index.html">Background of SuperDuperDB</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Background of SuperDuperDB</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../background/common_issues.html">Common issues in AI-data development</a></li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../usage/index.html">SuperDuperDB Usage</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of SuperDuperDB Usage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../usage/index.html">SuperDuperDB Usage</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of SuperDuperDB Usage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/datalayer.html">Datalayer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/queries.html">Queries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/encoders.html">Encoders</a></li>
@@ -174,11 +170,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../usage/vector_search.html">Vector Search</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../infrastructure/index.html">Infrastructural support</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Infrastructural support</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../infrastructure/index.html">Infrastructural support</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Infrastructural support</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../../infrastructure/single_host_cluster.html">SuperDuperDB single host cluster deployment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../infrastructure/architecture.html">SuperDuperDB architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../infrastructure/change_data_capture.html">Change data capture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../infrastructure/client_server.html">Client-server implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../background/index.html">Background of SuperDuperDB</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Background of SuperDuperDB</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../background/common_issues.html">Common issues in AI-data development</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../examples/index.html">Example notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Example notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -265,34 +265,15 @@
         <article role="main">
           <h1>Source code for superduperdb.datalayer.base.cdc</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb.datalayer.mongodb.query</span> <span class="kn">import</span> <span class="n">Collection</span>
-<span class="kn">from</span> <span class="nn">superduperdb.misc.logger</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.datalayer.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
 <span class="kn">from</span> <span class="nn">superduperdb.datalayer.mongodb</span> <span class="kn">import</span> <span class="n">cdc</span>
 <span class="kn">from</span> <span class="nn">superduperdb.datalayer.base</span> <span class="kn">import</span> <span class="n">backends</span>
 
 
 <span class="n">DBWatcherType</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;DBWatcherType&#39;</span><span class="p">)</span>
-
-
-<span class="k">class</span> <span class="nc">_DatabaseWatcherThreadScheduler</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">watcher</span><span class="p">:</span> <span class="n">cdc</span><span class="o">.</span><span class="n">BaseDatabaseWatcher</span><span class="p">,</span> <span class="n">stop_event</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stop_event</span> <span class="o">=</span> <span class="n">stop_event</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span> <span class="o">=</span> <span class="n">watcher</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Database watch service started at </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">cdc_stream</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">setup_cdc</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span><span class="o">.</span><span class="n">next_cdc</span><span class="p">(</span><span class="n">cdc_stream</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="DatabaseWatcherFactory"><a class="viewcode-back" href="../../../../source/superduperdb.datalayer.base.html#superduperdb.datalayer.base.cdc.DatabaseWatcherFactory">[docs]</a><span class="k">class</span> <span class="nc">DatabaseWatcherFactory</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">Generic</span><span class="p">[</span><span class="n">DBWatcherType</span><span class="p">]):</span>
@@ -313,8 +294,6 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">watcher</span> <span class="o">==</span> <span class="s1">&#39;mongodb&#39;</span><span class="p">:</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;stop_event&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stop_event</span>
             <span class="n">watcher</span> <span class="o">=</span> <span class="n">cdc</span><span class="o">.</span><span class="n">MongoDatabaseWatcher</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="n">scheduler</span> <span class="o">=</span> <span class="n">_DatabaseWatcherThreadScheduler</span><span class="p">(</span><span class="n">watcher</span><span class="p">,</span> <span class="n">stop_event</span><span class="o">=</span><span class="n">stop_event</span><span class="p">)</span>
-            <span class="n">watcher</span><span class="o">.</span><span class="n">attach_scheduler</span><span class="p">(</span><span class="n">scheduler</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">DBWatcherType</span><span class="p">,</span> <span class="n">watcher</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 
@@ -416,9 +395,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/jquery.js"></script>
-    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+</div><script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
     <script src="../../../../_static/doctools.js"></script>
     <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/scripts/furo.js"></script>
