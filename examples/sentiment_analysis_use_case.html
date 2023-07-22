@@ -268,286 +268,117 @@
         <article role="main">
           <section id="Sentiment-analysis-with-transformers">
 <h1>Sentiment analysis with transformers<a class="headerlink" href="#Sentiment-analysis-with-transformers" title="Permalink to this heading">#</a></h1>
-<ol class="arabic simple">
-<li><p>Activate GPU and Install Dependencies</p></li>
-</ol>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-False
-</pre></div></div>
-</div>
-<p>Load imdb dataset for training</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
-<span class="n">imdb</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;imdb&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-Found cached dataset imdb (/Users/kartiksharma/.cache/huggingface/datasets/imdb/plain_text/1.0.0/d613c88cf8fa3bab83b4ded3713f1f74830d1100e171db75bbddb80b3345c9c0)
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "b495626a020f4282ae43c0679c3fd918", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<p>Check one sample</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train</span> <span class="o">=</span> <span class="n">imdb</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span>
-<span class="n">test</span> <span class="o">=</span> <span class="n">imdb</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">train</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{&#39;text&#39;: &#39;I rented I AM CURIOUS-YELLOW from my video store because of all the controversy that surrounded it when it was first released in 1967. I also heard that at first it was seized by U.S. customs if it ever tried to enter this country, therefore being a fan of films considered &#34;controversial&#34; I really had to see this for myself.&lt;br /&gt;&lt;br /&gt;The plot is centered around a young Swedish drama student named Lena who wants to learn everything she can about life. In particular she wants to focus her attentions to making some sort of documentary on what the average Swede thought about certain political issues such as the Vietnam War and race issues in the United States. In between asking politicians and ordinary denizens of Stockholm about their opinions on politics, she has sex with her drama teacher, classmates, and married men.&lt;br /&gt;&lt;br /&gt;What kills me about I AM CURIOUS-YELLOW is that 40 years ago, this was considered pornographic. Really, the sex and nudity scenes are few and far between, even then it\&#39;s not shot like some cheaply made porno. While my countrymen mind find it shocking, in reality sex and nudity are a major staple in Swedish cinema. Even Ingmar Bergman, arguably their answer to good old boy John Ford, had sex scenes in his films.&lt;br /&gt;&lt;br /&gt;I do commend the filmmakers for the fact that any sex shown in the film is shown for artistic purposes rather than just to shock people and make money to be shown in pornographic theaters in America. I AM CURIOUS-YELLOW is a good film for anyone wanting to study the meat and potatoes (no pun intended) of Swedish cinema. But really, this film doesn\&#39;t have much of a plot.&#39;, &#39;label&#39;: 0}
-</pre></div></div>
-</div>
-<p>Insert some data in the database.</p>
+<p>In this notebook we implement a classic NLP use-case using Hugging Face’s <code class="docutils literal notranslate"><span class="pre">transformers</span></code> library. We show that this use-case may be implementing directly in the SuperDuperDB <code class="docutils literal notranslate"><span class="pre">Datalayer</span></code> using MongoDB as the data-backend.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pymongo</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span><span class="s2">&quot;mongodb://testmongodbuser:testmongodbpassword@localhost:27018/admin&quot;</span><span class="p">,)</span>
-<span class="n">db</span><span class="o">.</span><span class="n">drop_database</span><span class="p">(</span><span class="s1">&#39;test_db&#39;</span><span class="p">)</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">&#39;test_db&#39;</span><span class="p">]</span>
-<br/></pre></div>
-</div>
-</div>
-<p>Make it a superduperdb!</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>datasets
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">superduperdb</span>
-<span class="kn">from</span> <span class="nn">superduperdb.misc.superduper</span> <span class="kn">import</span> <span class="n">superduper</span>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span><span class="p">,</span> <span class="n">load_metric</span>
+<span class="kn">import</span> <span class="nn">pymongo</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span><span class="p">,</span> <span class="n">DataCollatorWithPadding</span><span class="p">,</span> <span class="n">AutoModelForSequenceClassification</span>
 
-<span class="n">db</span> <span class="o">=</span> <span class="n">superduper</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO:faiss.loader:Loading faiss.
-INFO:faiss.loader:Successfully loaded faiss.
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;superduperdb.datalayer.base.database.BaseDatabase at 0x7f8b83d1da60&gt;
-</pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">superduperdb.core.documents</span> <span class="kn">import</span> <span class="n">Document</span> <span class="k">as</span> <span class="n">D</span>
+<span class="kn">import</span> <span class="nn">superduperdb</span>
+<span class="kn">from</span> <span class="nn">superduperdb.misc.superduper</span> <span class="kn">import</span> <span class="n">superduper</span>
+<span class="kn">from</span> <span class="nn">superduperdb.core.document</span> <span class="kn">import</span> <span class="n">Document</span> <span class="k">as</span> <span class="n">D</span>
 <span class="kn">from</span> <span class="nn">superduperdb.datalayer.mongodb.query</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="kn">from</span> <span class="nn">superduperdb.models.transformers.wrapper</span> <span class="kn">import</span> <span class="n">TransformersTrainerConfiguration</span><span class="p">,</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">superduperdb.core.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train_df</span> <span class="o">=</span> <span class="n">train</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-<span class="n">train_df</span> <span class="o">=</span> <span class="n">train_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">()</span><span class="o">.</span><span class="n">drop_database</span><span class="p">(</span><span class="s1">&#39;documents&#39;</span><span class="p">)</span>
+<span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">()</span><span class="o">.</span><span class="n">drop_database</span><span class="p">(</span><span class="s1">&#39;_filesystem:documents&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<p>SuperDuperDB supports MongoDB as a databackend. Correspondingly, we’ll import the python MongoDB client pymongo and “wrap” our database to convert it to a SuperDuper Datalayer:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">D</span><span class="p">({</span><span class="s2">&quot;text&quot;</span><span class="p">:</span><span class="n">sample</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;label&quot;</span><span class="p">:</span><span class="n">sample</span><span class="p">[</span><span class="mi">1</span><span class="p">]})</span> <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">train_df</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()]</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">()</span><span class="o">.</span><span class="n">documents</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">superduper</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+<span class="n">collection</span> <span class="o">=</span> <span class="n">Collection</span><span class="p">(</span><span class="s1">&#39;imdb&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-20
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Collection</span><span class="p">(</span><span class="s1">&#39;documents&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">insert_many</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO:root:found 0 uris
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(&lt;pymongo.results.InsertManyResult at 0x7f8b83d34580&gt;,
- TaskWorkflow(database=&lt;superduperdb.datalayer.base.database.BaseDatabase object at 0x7f8b83d1da60&gt;, G=&lt;networkx.classes.digraph.DiGraph object at 0x7f8b83d34b80&gt;))
-</pre></div></div>
-</div>
-<p>Create a tokenizer</p>
+<p>We use the IMDB dataset for training the model:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span>
-<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;distilbert-base-uncased&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;imdb&quot;</span><span class="p">)</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">insert_many</span><span class="p">([</span>
+    <span class="n">D</span><span class="p">({</span><span class="s1">&#39;_fold&#39;</span><span class="p">:</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">r</span><span class="p">})</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span>
+<span class="p">]))</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">insert_many</span><span class="p">([</span>
+    <span class="n">D</span><span class="p">({</span><span class="s1">&#39;_fold&#39;</span><span class="p">:</span> <span class="s1">&#39;valid&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">r</span><span class="p">})</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span>
+<span class="p">]))</span>
 </pre></div>
 </div>
 </div>
-<p>Create a preproces function with the tokenizer.</p>
+<p>Check a sample from the database:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<p>Create a tokenizer and use it to provide a data-collator for batching inputs:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;distilbert-base-uncased&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">sample</span><span class="p">):</span>
     <span class="n">tokenizer_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">tokenized_data</span> <span class="o">=</span> <span class="n">tokenizer_fn</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">])</span>
     <span class="n">sample</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">tokenized_data</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sample</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">DataCollatorWithPadding</span>
+
 <span class="n">data_collator</span> <span class="o">=</span> <span class="n">DataCollatorWithPadding</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<p>Create Model (DistilBert)</p>
-<p>It is a smaller version of BERT</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModelForSequenceClassification</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForSequenceClassification</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;distilbert-base-uncased&quot;</span><span class="p">,</span> <span class="n">num_labels</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-Some weights of the model checkpoint at distilbert-base-uncased were not used when initializing DistilBertForSequenceClassification: [&#39;vocab_projector.bias&#39;, &#39;vocab_transform.bias&#39;, &#39;vocab_layer_norm.weight&#39;, &#39;vocab_layer_norm.bias&#39;, &#39;vocab_transform.weight&#39;]
-- This IS expected if you are initializing DistilBertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
-- This IS NOT expected if you are initializing DistilBertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
-Some weights of DistilBertForSequenceClassification were not initialized from the model checkpoint at distilbert-base-uncased and are newly initialized: [&#39;classifier.bias&#39;, &#39;classifier.weight&#39;, &#39;pre_classifier.bias&#39;, &#39;pre_classifier.weight&#39;]
-You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
-</pre></div></div>
-</div>
-<p>Define evaluation metrics</p>
+<p>We’ll evaluate the model using a simple accuracy metric. This metric gets logged in the model’s metadata during training:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Define</span> <span class="n">the</span> <span class="n">evaluation</span> <span class="n">metrics</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="c1"># from datasets import load_metric</span>
-
-<span class="k">def</span> <span class="nf">compute_metrics</span><span class="p">(</span><span class="n">eval_pred</span><span class="p">):</span>
-    <span class="n">load_accuracy</span> <span class="o">=</span> <span class="n">load_metric</span><span class="p">(</span><span class="s2">&quot;accuracy&quot;</span><span class="p">)</span>
-<span class="c1">#     load_f1 = load_metric(&quot;f1&quot;)</span>
-
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute_metrics</span><span class="p">(</span><span class="n">eval_pred</span><span class="p">):</span>
     <span class="n">logits</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">eval_pred</span>
     <span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-
     <span class="n">accuracy</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">sum</span><span class="p">([</span><span class="n">xx</span> <span class="o">==</span> <span class="n">yy</span> <span class="k">for</span> <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
     <span class="n">accuracy</span> <span class="o">=</span> <span class="n">load_accuracy</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">predictions</span><span class="o">=</span><span class="n">predictions</span><span class="p">,</span> <span class="n">references</span><span class="o">=</span><span class="n">labels</span><span class="p">)[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">]</span>
-    <span class="n">f1</span> <span class="o">=</span> <span class="n">load_f1</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">predictions</span><span class="o">=</span><span class="n">predictions</span><span class="p">,</span> <span class="n">references</span><span class="o">=</span><span class="n">labels</span><span class="p">)[</span><span class="s2">&quot;f1&quot;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">:</span> <span class="n">f1</span><span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy</span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">superduperdb.models.transformers.wrapper</span> <span class="kn">import</span> <span class="n">TransformersTrainerConfiguration</span><span class="p">,</span> <span class="n">Pipeline</span>
-</pre></div>
-</div>
-</div>
-<p>Create training arguments</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">TrainingArguments</span><span class="p">,</span> <span class="n">Trainer</span>
-<span class="n">repo_name</span> <span class="o">=</span> <span class="s2">&quot;superduperdb-sentiment-analysis&quot;</span>
-<span class="n">training_args</span> <span class="o">=</span> <span class="n">TransformersTrainerConfiguration</span><span class="p">(</span>
-    <span class="n">identifier</span><span class="o">=</span><span class="n">repo_name</span><span class="p">,</span>
-    <span class="n">output_dir</span><span class="o">=</span><span class="n">repo_name</span><span class="p">,</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">training_args</span> <span class="o">=</span> <span class="n">TransformersTrainerConfiguration</span><span class="p">(</span>
+    <span class="n">identifier</span><span class="o">=</span><span class="s1">&#39;sentiment-analysis&#39;</span><span class="p">,</span>
+    <span class="n">output_dir</span><span class="o">=</span><span class="s1">&#39;sentiment-analysis&#39;</span><span class="p">,</span>
     <span class="n">learning_rate</span><span class="o">=</span><span class="mf">2e-5</span><span class="p">,</span>
     <span class="n">per_device_train_batch_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="n">per_device_eval_batch_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -559,63 +390,12 @@ You should probably TRAIN this model on a down-stream task to be able to use it 
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;mps&#39;</span><span class="p">)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-DistilBertForSequenceClassification(
-  (distilbert): DistilBertModel(
-    (embeddings): Embeddings(
-      (word_embeddings): Embedding(30522, 768, padding_idx=0)
-      (position_embeddings): Embedding(512, 768)
-      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
-      (dropout): Dropout(p=0.1, inplace=False)
-    )
-    (transformer): Transformer(
-      (layer): ModuleList(
-        (0-5): 6 x TransformerBlock(
-          (attention): MultiHeadSelfAttention(
-            (dropout): Dropout(p=0.1, inplace=False)
-            (q_lin): Linear(in_features=768, out_features=768, bias=True)
-            (k_lin): Linear(in_features=768, out_features=768, bias=True)
-            (v_lin): Linear(in_features=768, out_features=768, bias=True)
-            (out_lin): Linear(in_features=768, out_features=768, bias=True)
-          )
-          (sa_layer_norm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
-          (ffn): FFN(
-            (dropout): Dropout(p=0.1, inplace=False)
-            (lin1): Linear(in_features=768, out_features=3072, bias=True)
-            (lin2): Linear(in_features=3072, out_features=768, bias=True)
-            (activation): GELUActivation()
-          )
-          (output_layer_norm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
-        )
-      )
-    )
-  )
-  (pre_classifier): Linear(in_features=768, out_features=768, bias=True)
-  (classifier): Linear(in_features=768, out_features=2, bias=True)
-  (dropout): Dropout(p=0.2, inplace=False)
-)
-</pre></div></div>
-</div>
-<p>Create Pipeline with the model and tokenizer.</p>
+<p>Convert the model to a SuperDuperDB model:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span>
     <span class="n">identifier</span><span class="o">=</span><span class="s1">&#39;my-sentiment-analysis&#39;</span><span class="p">,</span>
     <span class="n">tokenizer</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
     <span class="nb">object</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
@@ -626,23 +406,21 @@ DistilBertForSequenceClassification(
 </pre></div>
 </div>
 </div>
-<p>Training the model.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<p>Now we’re ready to train the model:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">superduperdb.core.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
-<span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">X</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span>
     <span class="n">y</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">,</span>
     <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
-    <span class="n">select</span><span class="o">=</span><span class="n">Collection</span><span class="p">(</span><span class="s1">&#39;documents&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">find</span><span class="p">(),</span>
+    <span class="n">select</span><span class="o">=</span><span class="n">collection</span><span class="o">.</span><span class="n">find</span><span class="p">(),</span>
     <span class="n">configuration</span><span class="o">=</span><span class="n">training_args</span><span class="p">,</span>
     <span class="n">validation_sets</span><span class="o">=</span><span class="p">[</span>
         <span class="n">Dataset</span><span class="p">(</span>
             <span class="n">identifier</span><span class="o">=</span><span class="s1">&#39;my-eval&#39;</span><span class="p">,</span>
-            <span class="n">select</span><span class="o">=</span><span class="n">Collection</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;documents&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;_fold&#39;</span><span class="p">:</span> <span class="s1">&#39;valid&#39;</span><span class="p">}),</span>
-            <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+            <span class="n">select</span><span class="o">=</span><span class="n">collection</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;_fold&#39;</span><span class="p">:</span> <span class="s1">&#39;valid&#39;</span><span class="p">}),</span>
         <span class="p">)</span>
     <span class="p">],</span>
     <span class="n">data_collator</span><span class="o">=</span><span class="n">data_collator</span><span class="p">,</span>
@@ -653,83 +431,13 @@ DistilBertForSequenceClassification(
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-INFO:root:Created dataset/my-eval/0
-INFO:root:Created model/my-sentiment-analysis/0
-/Users/kartiksharma/Work/superduperdb/superduperdb-stealth/superduperdb-stealth/.venv/lib/python3.8/site-packages/transformers/training_args.py:1573: FutureWarning: `--push_to_hub_token` is deprecated and will be removed in version 5 of 🤗 Transformers. Use `--hub_token` instead.
-  warnings.warn(
-/Users/kartiksharma/Work/superduperdb/superduperdb-stealth/superduperdb-stealth/.venv/lib/python3.8/site-packages/transformers/optimization.py:411: FutureWarning: This implementation of AdamW is deprecated and will be removed in a future version. Use the PyTorch implementation torch.optim.AdamW instead, or set `no_deprecation_warning=True` to disable this warning
-  warnings.warn(
-You&#39;re using a DistilBertTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area rendered_html docutils container">
-    <div>
-
-      <progress value='10' max='10' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      [10/10 00:12, Epoch 1/1]
-    </div>
-    <table border="1" class="dataframe">
-  <thead>
- <tr style="text-align: left;">
-      <th>Step</th>
-      <th>Training Loss</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table><p></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area rendered_html docutils container">
-<div>
-
-  <progress value='1' max='1' style='width:300px; height:20px; vertical-align: middle;'></progress>
-  [1/1 : < :]
-</div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/var/folders/jt/hrc4w0jj3fdcz0hfhg15fq0m0000gn/T/ipykernel_18319/1892422598.py:6: FutureWarning: load_metric is deprecated and will be removed in the next major version of datasets. Use &#39;evaluate.load&#39; instead, from the new library 🤗 Evaluate: https://huggingface.co/docs/evaluate
-  load_accuracy = load_metric(&#34;accuracy&#34;)
-/Users/kartiksharma/Work/superduperdb/superduperdb-stealth/superduperdb-stealth/.venv/lib/python3.8/site-packages/sklearn/metrics/_classification.py:1757: UndefinedMetricWarning: F-score is ill-defined and being set to 0.0 due to no true nor predicted samples. Use `zero_division` parameter to control this behavior.
-  _warn_prf(average, &#34;true nor predicted&#34;, &#34;F-score is&#34;, len(true_sum))
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{&#39;eval_loss&#39;: 0.4243570864200592,
- &#39;eval_accuracy&#39;: 1.0,
- &#39;eval_f1&#39;: 0.0,
- &#39;eval_runtime&#39;: 2.8956,
- &#39;eval_samples_per_second&#39;: 0.345,
- &#39;eval_steps_per_second&#39;: 0.345,
- &#39;epoch&#39;: 1.0}
-</pre></div></div>
-</div>
-<p>Do a single prediction on the model.</p>
+<p>We can verify that the model gives us reasonable predictions:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">output</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s2">&quot;This movie sucks!&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+<span class="n">output</span>
 </pre></div>
 </div>
 </div>
