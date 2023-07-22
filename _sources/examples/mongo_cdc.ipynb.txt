@@ -5,7 +5,18 @@
    "id": "1b057225",
    "metadata": {},
    "source": [
-    "# Change data capture with MongoDB"
+    "# Change data capture with MongoDB\n",
+    "\n",
+    "In a standalone MongoDB deployment, users are required to insert data directly through the \n",
+    "SuperDuperDB `Datalayer` or client (which triggers the `Datalayer`). For use-cases \n",
+    "with multiple users, stakeholders, and potentially automated data-updates on the database,\n",
+    "this is not sufficient. For that reason SuperDuperDB supports a paradigm known as \n",
+    "change-data-capture (CDC). \n",
+    "\n",
+    "In change-data-capture, a service is deployed which watchers the data deployment for changes, and \n",
+    "reacts to these changes, activating models which are configured to compute outputs over new data.\n",
+    "\n",
+    "In this notebook, we demonstrate how to use CDC with SuperDuperDB."
    ]
   },
   {
@@ -35,16 +46,9 @@
     "from superduperdb.misc.superduper import superduper\n",
     "from superduperdb.core.watcher import Watcher\n",
     "from superduperdb.core.vector_index import VectorIndex\n",
-    "from superduperdb.datalayer.base.cdc import DatabaseWatcher"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "500ed635",
-   "metadata": {},
-   "source": [
-    "Connect to mongodb\n",
-    "Make it a superduper instance"
+    "from superduperdb.datalayer.base.cdc import DatabaseWatcher\n",
+    "from superduperdb.core.documents import Document as D\n",
+    "from sentence_transformers import SentenceTransformer as _SentenceTransformer"
    ]
   },
   {
@@ -54,9 +58,21 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "db_mongo = pymongo.MongoClient('mongodb://testmongodbuser:testmongodbpassword@localhost:27018/admin')\n",
-    "db_mongo.drop_database('test_db')\n",
-    "db = superduper(db_mongo.test_db)"
+    "pymongo.MongoClient().drop_database('documents')\n",
+    "pymongo.MongoClient().drop_database('_filesystem:documents')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "54727bef",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "db = pymongo.MongoClient().documents\n",
+    "db = superduper(db)\n",
+    "\n",
+    "collectino = Collection('cdc_example')"
    ]
   },
   {
@@ -64,7 +80,6 @@
    "id": "6bde593d",
    "metadata": {},
    "source": [
-    "Populate data\n",
     "Insert the data into `documents` collection"
    ]
   },
@@ -113,12 +128,9 @@
     "  }\n",
     "]\n",
     "\n",
-    "from superduperdb.encoders.pillow.image import pil_image as i\n",
-    "from superduperdb.core.documents import Document as D\n",
-    "from sentence_transformers import SentenceTransformer as _SentenceTransformer\n",
     "data = [D(d) for d in data]\n",
     "\n",
-    "db.execute(Collection(name='documents').insert_many(data, encoders= [i]))"
+    "db.execute(collection.insert_many(data, encoders= [i]))"
    ]
   },
   {
@@ -147,88 +159,22 @@
    ],
    "source": [
     "def configure_text_search(model):\n",
-    "    return VectorIndex(\n",
+    "    return db.add(VectorIndex(\n",
     "        identifier='my-index',\n",
     "        indexing_watcher=Watcher(\n",
     "            model=model,\n",
     "            key='abstract',\n",
     "            select=Collection(name='documents').find()\n",
     "        ),\n",
-    "        compatible_watcher=\n",
-    "            Watcher(\n",
-    "                model=model,\n",
-    "                key='title',\n",
-    "                select=Collection(name='documents').find(),\n",
-    "                active=False,\n",
-    "            )\n",
-    "        \n",
+    "    ))\n",
+    "\n",
+    "configure_text_search(\n",
+    "    SentenceTransformer(\n",
+    "        identifier=\"test-st\",\n",
+    "        object=_SentenceTransformer('all-MiniLM-L6-v2'),\n",
+    "        encoder= array('float32', shape=(384,))\n",
     "    )\n",
-    "\n",
-    "\n",
-    "\n",
-    "\n",
-    "job  = configure_text_search(SentenceTransformer(identifier=\"test-st\", object=_SentenceTransformer('all-MiniLM-L6-v2'), encoder= array('float32', shape=(384,))\n",
-    "))\n"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "be747ba4",
-   "metadata": {},
-   "source": [
-    "Add the vector index job to superduperdb."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 5,
-   "id": "1b07cfca",
-   "metadata": {},
-   "outputs": [
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "WARNING:root:model/test-st/0 already exists - doing nothing\n",
-      "WARNING:root:model/test-st/0 already exists - doing nothing\n",
-      "WARNING:root:model/test-st/0 already exists - doing nothing\n"
-     ]
-    },
-    {
-     "data": {
-      "application/vnd.jupyter.widget-view+json": {
-       "model_id": "d44e4e3b653a493896fe80581caa7a33",
-       "version_major": 2,
-       "version_minor": 0
-      },
-      "text/plain": [
-       "Batches:   0%|          | 0/1 [00:00<?, ?it/s]"
-      ]
-     },
-     "metadata": {},
-     "output_type": "display_data"
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "WARNING:root:model/test-st/0 already exists - doing nothing\n",
-      "INFO:root:loading hashes: 'my-index'\n"
-     ]
-    },
-    {
-     "data": {
-      "text/plain": [
-       "[]"
-      ]
-     },
-     "execution_count": 5,
-     "metadata": {},
-     "output_type": "execute_result"
-    }
-   ],
-   "source": [
-    "db.add(job)"
+    ")"
    ]
   },
   {
@@ -256,7 +202,11 @@
     }
    ],
    "source": [
-    "database_watcher = DatabaseWatcher(db=db, identifier='basic-cdc-watcher', on=Collection(name='documents'))\n",
+    "database_watcher = DatabaseWatcher(\n",
+    "    db=db,\n",
+    "    identifier='basic-cdc-watcher',\n",
+    "    on=Collection(name='documents')\n",
+    ")\n",
     "database_watcher.watch()"
    ]
   },
@@ -387,13 +337,16 @@
     }
    ],
    "source": [
-    "data = [{\n",
-    "  \"title\": \"Politics of India\",\n",
-    "  \"abstract\": \"Some despriction 1\",\n",
-    "}, {\n",
-    "  \"title\": \"Politics of Asia\",\n",
-    "  \"abstract\": \"some description 2\",\n",
-    "}]\n",
+    "data = [\n",
+    "    {\n",
+    "        \"title\": \"Politics of India\",\n",
+    "        \"abstract\": \"Some despriction 1\",\n",
+    "    }, \n",
+    "    {\n",
+    "        \"title\": \"Politics of Asia\",\n",
+    "        \"abstract\": \"some description 2\",\n",
+    "    }\n",
+    "]\n",
     "doc = db_mongo.test_db.documents.insert_many(data)"
    ]
   },
@@ -441,7 +394,7 @@
    "id": "13cf1fad",
    "metadata": {},
    "source": [
-    "Check vectors if they are synced with the vector database."
+    "Check that the vectors synced between LanceDB and MongoDB"
    ]
   },
   {
@@ -462,7 +415,7 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "lance_client = LanceDBClient(CFG.vector_search.type)"
+    "client = db.vector_database.client"
    ]
   },
   {
@@ -475,12 +428,12 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 13,
+   "execution_count": null,
    "id": "184dc249",
    "metadata": {},
    "outputs": [],
    "source": [
-    "table = lance_client.get_table('test-st/abstract')"
+    "table = client.get_table('test-st/abstract')"
    ]
   },
   {
@@ -700,300 +653,6 @@
    ],
    "source": [
     "table.table.to_pandas()"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "44f7db51",
-   "metadata": {},
-   "source": [
-    "Advance Section"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "438a9b5f",
-   "metadata": {},
-   "source": [
-    "Resume Tokens"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 30,
-   "id": "e8a33079",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "from superduperdb.datalayer.mongodb.cdc import ResumeToken"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 16,
-   "id": "b844455c",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "data = [{\n",
-    "  \"title\": \"Politics of India\",\n",
-    "  \"abstract\": \"Some despriction 1\",\n",
-    "}, {\n",
-    "  \"title\": \"Politics of Asia\",\n",
-    "  \"abstract\": \"some description 2\",\n",
-    "},\n",
-    "{\n",
-    "  \"title\": \"Politics of Abc\",\n",
-    "  \"abstract\": \"some description 3\",\n",
-    "}\n",
-    "]\n",
-    "doc = db_mongo.test_db.documents.insert_many(data)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 31,
-   "id": "969597a6",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "resume_tokens = database_watcher.resume_tokens()"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "c0812636",
-   "metadata": {},
-   "source": [
-    "You can use the resume token to resume watching."
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "70e74861",
-   "metadata": {},
-   "source": [
-    "Lets restart the change stream from the begining."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 32,
-   "id": "0df8b555",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "first_change_stream_token = resume_tokens[0]"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 33,
-   "id": "621dba9b",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "database_watcher.stop()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 34,
-   "id": "3f0c4575",
-   "metadata": {},
-   "outputs": [
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "INFO:root:Database watch service started at 2023-07-21 19:22:23.076590\n",
-      "INFO:root:Started listening database with identity basic-cdc-watcher/documents...\n",
-      "INFO:root:found 0 uris\n",
-      "WARNING:root:model/test-st/0 already exists - doing nothing\n"
-     ]
-    },
-    {
-     "data": {
-      "application/vnd.jupyter.widget-view+json": {
-       "model_id": "b3c8f0831afc418da0fde34bfe865590",
-       "version_major": 2,
-       "version_minor": 0
-      },
-      "text/plain": [
-       "Batches:   0%|          | 0/1 [00:00<?, ?it/s]"
-      ]
-     },
-     "metadata": {},
-     "output_type": "display_data"
-    },
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "WARNING:root:model/test-st/0 already exists - doing nothing\n"
-     ]
-    },
-    {
-     "data": {
-      "application/vnd.jupyter.widget-view+json": {
-       "model_id": "dff62b257c26407a8da8eabd291e48ea",
-       "version_major": 2,
-       "version_minor": 0
-      },
-      "text/plain": [
-       "Batches:   0%|          | 0/1 [00:00<?, ?it/s]"
-      ]
-     },
-     "metadata": {},
-     "output_type": "display_data"
-    }
-   ],
-   "source": [
-    "database_watcher.resume(first_change_stream_token)"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "e2a81534",
-   "metadata": {},
-   "source": [
-    "As you can see above the change stream has started again from the initial point of time using the first resume token."
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "7c3ede63",
-   "metadata": {},
-   "source": [
-    "Change pipeline"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "1acaf1f9",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "database_watcher.stop()"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "5524b040",
-   "metadata": {},
-   "source": [
-    "Your program has been listening to all operations. In a real application this would be overwhelming and often unnecessary as each part of your application will generally want to listen only to specific operations. To limit the amount of operations, you can use certain aggregation stages when setting up the stream"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "id": "389e4dd6",
-   "metadata": {},
-   "source": [
-    "Lets create a specific change pipeline which only listens to insert operations."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 35,
-   "id": "6cf92c0f",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "from superduperdb.datalayer.mongodb.cdc import MongoChangePipeline\n",
-    "mongo_change_pipeline = MongoChangePipeline(['insert'])"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 36,
-   "id": "8821b202",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "change_pipeline = mongo_change_pipeline.build_matching()"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 37,
-   "id": "4b3d9bcc",
-   "metadata": {},
-   "outputs": [
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "INFO:root:Database watch service started at 2023-07-21 19:24:53.890748\n",
-      "INFO:root:Started listening database with identity basic-cdc-watcher/documents...\n"
-     ]
-    }
-   ],
-   "source": [
-    "database_watcher = DatabaseWatcher(db=db, identifier='basic-cdc-watcher', on=Collection(name='documents'))\n",
-    "database_watcher.watch(change_pipeline)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": 38,
-   "id": "fa3db0e5",
-   "metadata": {},
-   "outputs": [
-    {
-     "name": "stderr",
-     "output_type": "stream",
-     "text": [
-      "INFO:root:found 0 uris\n",
-      "INFO:root:found 0 uris\n",
-      "WARNING:root:model/test-st/0 already exists - doing nothing\n",
-      "WARNING:root:model/test-st/0 already exists - doing nothing\n"
-     ]
-    },
-    {
-     "data": {
-      "application/vnd.jupyter.widget-view+json": {
-       "model_id": "235d0854143b485da7aad681bdacc2f8",
-       "version_major": 2,
-       "version_minor": 0
-      },
-      "text/plain": [
-       "Batches:   0%|          | 0/1 [00:00<?, ?it/s]"
-      ]
-     },
-     "metadata": {},
-     "output_type": "display_data"
-    },
-    {
-     "data": {
-      "application/vnd.jupyter.widget-view+json": {
-       "model_id": "ec78102be7234fe69cdfca082ecc5543",
-       "version_major": 2,
-       "version_minor": 0
-      },
-      "text/plain": [
-       "Batches:   0%|          | 0/1 [00:00<?, ?it/s]"
-      ]
-     },
-     "metadata": {},
-     "output_type": "display_data"
-    }
-   ],
-   "source": [
-    "data = [{\n",
-    "  \"title\": \"Politics of India\",\n",
-    "  \"abstract\": \"Some despriction 1\",\n",
-    "}, {\n",
-    "  \"title\": \"Politics of Asia\",\n",
-    "  \"abstract\": \"some description 2\",\n",
-    "},\n",
-    "{\n",
-    "  \"title\": \"Politics of Abc\",\n",
-    "  \"abstract\": \"some description 3\",\n",
-    "}\n",
-    "]\n",
-    "doc = db_mongo.test_db.documents.insert_many(data)"
    ]
   }
  ],
