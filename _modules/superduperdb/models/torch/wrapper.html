@@ -474,12 +474,10 @@
 
 <div class="viewcode-block" id="Base.compute_metrics"><a class="viewcode-back" href="../../../../source/superduperdb.models.torch.html#superduperdb.models.torch.wrapper.Base.compute_metrics">[docs]</a>    <span class="k">def</span> <span class="nf">compute_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validation_set</span><span class="p">,</span> <span class="n">database</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">validation_set</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validation_set_cache</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_validation_set_cache</span><span class="p">[</span><span class="n">validation_set</span><span class="p">]</span> <span class="o">=</span> \
-                <span class="n">database</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;dataset&#39;</span><span class="p">,</span> <span class="n">validation_set</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> 
-            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validation_set_cache</span><span class="p">[</span><span class="n">validation_set</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
-        <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validation_set_cache</span><span class="p">[</span><span class="n">validation_set</span><span class="p">]</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+                <span class="s1">&#39;dataset&#39;</span><span class="p">,</span> <span class="n">validation_set</span>
+            <span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validation_set_cache</span><span class="p">[</span><span class="n">validation_set</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_configuration</span><span class="o">.</span><span class="n">compute_metrics</span><span class="o">.</span><span class="n">artifact</span><span class="p">(</span>
             <span class="n">data</span><span class="p">,</span>
             <span class="n">metrics</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">,</span>
