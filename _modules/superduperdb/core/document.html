@@ -186,7 +186,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../examples/openai.html">OpenAI vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../examples/compare_vector_search_solutions.html">Compare vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../examples/sentiment_analysis_use_case.html">Sentiment analysis with transformers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../examples/voice_memos.html">Create a personal assistant for understanding your meetings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../examples/mongo_cdc.html">Change data capture with MongoDB</a></li>
 </ul>
 </li>
@@ -216,12 +215,9 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.models.html">superduperdb.models package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of superduperdb.models package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.langchain.html">superduperdb.models.langchain package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.openai.html">superduperdb.models.openai package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.pytorch_lightning.html">superduperdb.models.pytorch_lightning package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.sentence_transformers.html">superduperdb.models.sentence_transformers package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.sklearn.html">superduperdb.models.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.torch.html">superduperdb.models.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.transformers.html">superduperdb.models.transformers package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.vanilla.html">superduperdb.models.vanilla package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.serve.html">superduperdb.serve package</a></li>
@@ -266,6 +262,7 @@
           <h1>Source code for superduperdb.core.document</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">superduperdb.core.encoder</span> <span class="kn">import</span> <span class="n">Encodable</span>
 <span class="kn">import</span> <span class="nn">bson</span>
+<span class="kn">import</span> <span class="nn">superduperdb</span> <span class="k">as</span> <span class="nn">s</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="n">ContentType</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">]</span>
@@ -279,65 +276,27 @@
 
     <span class="n">_DEFAULT_ID_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;_id&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="n">ContentType</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">content</span>
 
-<div class="viewcode-block" id="Document.dump_bson"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.Document.dump_bson">[docs]</a>    <span class="k">def</span> <span class="nf">dump_bson</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Document.dump_bson"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.Document.dump_bson">[docs]</a>    <span class="k">def</span> <span class="nf">dump_bson</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump this document into BSON and encode as bytes&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">bson</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span></div>
 
-    <span class="c1"># ruff: noqa: E501</span>
-<div class="viewcode-block" id="Document.load_bson"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.Document.load_bson">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">load_bson</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">encoders</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">bson</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">content</span><span class="p">),</span> <span class="n">encoders</span><span class="o">=</span><span class="n">encoders</span><span class="p">))</span>  <span class="c1"># type: ignore[arg-type]</span></div>
+<div class="viewcode-block" id="Document.encode"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.Document.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make a copy of the content with all the Encodables encoded&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Document.dump_bsons"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.Document.dump_bsons">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">dump_bsons</span><span class="p">(</span><span class="n">documents</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">bson</span><span class="o">.</span><span class="n">encode</span><span class="p">({</span><span class="s1">&#39;docs&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">]}))</span></div>
-
-<div class="viewcode-block" id="Document.load_bsons"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.Document.load_bsons">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">load_bsons</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">bytearray</span><span class="p">,</span> <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
-        <span class="n">documents</span> <span class="o">=</span> <span class="n">bson</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">content</span><span class="p">)[</span><span class="s1">&#39;docs&#39;</span><span class="p">]</span>  <span class="c1">#  type: ignore[arg-type]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="n">encoders</span><span class="p">))</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">]</span></div>
-
-    <span class="k">def</span> <span class="nf">_encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encode</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">r</span>
-
-<div class="viewcode-block" id="Document.encode"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.Document.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_DEFAULT_ID_KEY</span><span class="p">]</span>
-
-<div class="viewcode-block" id="Document.decode"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.Document.decode">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
+<div class="viewcode-block" id="Document.decode"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.Document.decode">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_decode</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">encoders</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">_decode</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">encoders</span><span class="p">))</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_decode</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">encoders</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_decode</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">encoders</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">}</span><span class="s1"> is not supported&#39;</span><span class="p">)</span></div>
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;_content&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
-            <span class="nb">type</span> <span class="o">=</span> <span class="n">encoders</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;encoder&#39;</span><span class="p">]]</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;bytes&#39;</span><span class="p">])</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">r</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">_decode</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">encoders</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
-                <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_decode</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">encoders</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">r</span>
-
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Document(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="si">}</span><span class="s1">)&#39;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Document(</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
@@ -345,19 +304,74 @@
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_unpack_datavars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">x</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_unpack_datavars</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">_unpack_datavars</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">item</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">item</span>
+<div class="viewcode-block" id="Document.unpack"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.Document.unpack">[docs]</a>    <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the content, but with any encodables replacecs by their contents&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_unpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="Document.unpack"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.Document.unpack">[docs]</a>    <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_datavars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="dump_bsons"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.dump_bsons">[docs]</a><span class="k">def</span> <span class="nf">dump_bsons</span><span class="p">(</span><span class="n">documents</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dump a sequence of documents into BSON and encode as bytes</span>
+
+<span class="sd">    :param documents: the sequence of documents to dump</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">bson</span><span class="o">.</span><span class="n">encode</span><span class="p">({</span><span class="s1">&#39;docs&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">]}))</span></div>
+
+
+<div class="viewcode-block" id="load_bson"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.load_bson">[docs]</a><span class="k">def</span> <span class="nf">load_bson</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ByteString</span><span class="p">,</span> <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Document</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load a Document from bson-encoded content</span>
+
+<span class="sd">    :param content: the content to decode</span>
+<span class="sd">    :param encoders: a dict of encoders</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="n">bson</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type, var-annotated]</span>
+    <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="n">encoders</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="load_bsons"><a class="viewcode-back" href="../../../source/superduperdb.core.html#superduperdb.core.document.load_bsons">[docs]</a><span class="k">def</span> <span class="nf">load_bsons</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ByteString</span><span class="p">,</span> <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load a list of Documents from bson-encoded content</span>
+
+<span class="sd">    :param content: the content to decode</span>
+<span class="sd">    :param encoders: a dict of encoders</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">documents</span> <span class="o">=</span> <span class="n">bson</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">content</span><span class="p">)[</span><span class="s1">&#39;docs&#39;</span><span class="p">]</span>  <span class="c1">#  type: ignore[arg-type]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="n">encoders</span><span class="p">))</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">]</span></div>
+
+
+<span class="k">def</span> <span class="nf">_decode</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;_content&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="n">encoders</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;encoder&#39;</span><span class="p">]]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;bytes&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">r</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_decode</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">encoders</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+            <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_decode</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">encoders</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span>
+
+
+<span class="k">def</span> <span class="nf">_encode</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_encode</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bson</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">r</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">}</span><span class="s1"> in Document.encode&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span>
+
+
+<span class="k">def</span> <span class="nf">_unpack</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">x</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_unpack</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_unpack</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">item</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">item</span>
 </pre></div>
         </article>
       </div>

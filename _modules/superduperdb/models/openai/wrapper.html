@@ -186,7 +186,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/openai.html">OpenAI vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/compare_vector_search_solutions.html">Compare vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/sentiment_analysis_use_case.html">Sentiment analysis with transformers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../examples/voice_memos.html">Create a personal assistant for understanding your meetings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/mongo_cdc.html">Change data capture with MongoDB</a></li>
 </ul>
 </li>
@@ -216,12 +215,9 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.models.html">superduperdb.models package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of superduperdb.models package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.langchain.html">superduperdb.models.langchain package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.openai.html">superduperdb.models.openai package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.pytorch_lightning.html">superduperdb.models.pytorch_lightning package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.sentence_transformers.html">superduperdb.models.sentence_transformers package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.sklearn.html">superduperdb.models.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.torch.html">superduperdb.models.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.transformers.html">superduperdb.models.transformers package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.vanilla.html">superduperdb.models.vanilla package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.serve.html">superduperdb.serve package</a></li>
@@ -344,16 +340,24 @@
         <span class="k">return</span> <span class="n">out</span></div>
 
 
-<div class="viewcode-block" id="OpenAIChatCompletion"><a class="viewcode-back" href="../../../../source/superduperdb.models.openai.html#superduperdb.models.openai.wrapper.OpenAIChatCompletion">[docs]</a><span class="k">class</span> <span class="nc">OpenAIChatCompletion</span><span class="p">(</span><span class="n">OpenAI</span><span class="p">):</span>
-<div class="viewcode-block" id="OpenAIChatCompletion.predict_one"><a class="viewcode-back" href="../../../../source/superduperdb.models.openai.html#superduperdb.models.openai.wrapper.OpenAIChatCompletion.predict_one">[docs]</a>    <span class="nd">@retry</span>
-    <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="OpenAIChatCompletion"><a class="viewcode-back" href="../../../../source/superduperdb.models.openai.html#superduperdb.models.openai.wrapper.OpenAIChatCompletion">[docs]</a><span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">OpenAIChatCompletion</span><span class="p">(</span><span class="n">OpenAI</span><span class="p">):</span>
+    <span class="n">takes_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">prompt</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@retry</span>
+    <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ChatCompletion</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
             <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;role&#39;</span><span class="p">:</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">message</span><span class="p">}],</span>
             <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-        <span class="p">)[</span><span class="s1">&#39;choices&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;message&#39;</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">]</span></div>
+        <span class="p">)[</span><span class="s1">&#39;choices&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;message&#39;</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="OpenAIChatCompletion.predict"><a class="viewcode-back" href="../../../../source/superduperdb.models.openai.html#superduperdb.models.openai.wrapper.OpenAIChatCompletion.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="OpenAIChatCompletion.predict"><a class="viewcode-back" href="../../../../source/superduperdb.models.openai.html#superduperdb.models.openai.wrapper.OpenAIChatCompletion.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
+            <span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
+
+
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_one</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">]</span>  <span class="c1"># use asyncio</span></div></div>
 </pre></div>
         </article>

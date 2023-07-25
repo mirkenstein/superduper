@@ -186,7 +186,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../examples/openai.html">OpenAI vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../examples/compare_vector_search_solutions.html">Compare vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../examples/sentiment_analysis_use_case.html">Sentiment analysis with transformers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../examples/voice_memos.html">Create a personal assistant for understanding your meetings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../examples/mongo_cdc.html">Change data capture with MongoDB</a></li>
 </ul>
 </li>
@@ -216,12 +215,9 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.models.html">superduperdb.models package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of superduperdb.models package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.langchain.html">superduperdb.models.langchain package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.openai.html">superduperdb.models.openai package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.pytorch_lightning.html">superduperdb.models.pytorch_lightning package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.sentence_transformers.html">superduperdb.models.sentence_transformers package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.sklearn.html">superduperdb.models.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.torch.html">superduperdb.models.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.transformers.html">superduperdb.models.transformers package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.models.vanilla.html">superduperdb.models.vanilla package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.serve.html">superduperdb.serve package</a></li>
@@ -277,7 +273,7 @@
     <span class="n">load_artifacts</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">superduperdb.core.component</span> <span class="kn">import</span> <span class="n">Component</span>
-<span class="kn">from</span> <span class="nn">superduperdb.core.document</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">superduperdb.core.document</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">dump_bsons</span><span class="p">,</span> <span class="n">load_bson</span><span class="p">,</span> <span class="n">load_bsons</span>
 <span class="kn">from</span> <span class="nn">superduperdb.core.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
 <span class="kn">from</span> <span class="nn">superduperdb.datalayer.base.datalayer</span> <span class="kn">import</span> <span class="n">ExecuteQuery</span>
 <span class="kn">from</span> <span class="nn">superduperdb.datalayer.base.query</span> <span class="kn">import</span> <span class="p">(</span>
@@ -343,11 +339,11 @@
             <span class="p">},</span>
         <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">request_id</span><span class="o">=</span><span class="n">request_id</span><span class="p">,</span> <span class="n">file_id</span><span class="o">=</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;file_id&#39;</span><span class="p">])</span>
-        <span class="n">documents</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">load_bsons</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">)</span>
+        <span class="n">documents</span> <span class="o">=</span> <span class="n">load_bsons</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">documents</span></div>
 
 <div class="viewcode-block" id="Client.insert"><a class="viewcode-back" href="../../../source/superduperdb.serve.html#superduperdb.serve.client.Client.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">Insert</span><span class="p">):</span>
-        <span class="n">documents</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">dump_bsons</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">documents</span><span class="p">)</span>
+        <span class="n">documents</span> <span class="o">=</span> <span class="n">dump_bsons</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">documents</span><span class="p">)</span>
         <span class="n">query</span><span class="o">.</span><span class="n">documents</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">serialized</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
         <span class="n">file_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
@@ -461,11 +457,11 @@
             <span class="p">},</span>
         <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">load_artifacts</span><span class="p">(</span>
-            <span class="n">d</span><span class="p">,</span> <span class="n">getter</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">request_id</span><span class="o">=</span><span class="n">request_id</span><span class="p">,</span> <span class="n">file_id</span><span class="o">=</span><span class="n">x</span><span class="p">),</span> <span class="n">cache</span><span class="o">=</span><span class="p">{}</span>
+            <span class="n">d</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="p">{},</span> <span class="n">getter</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">request_id</span><span class="o">=</span><span class="n">request_id</span><span class="p">,</span> <span class="n">file_id</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">Serializable</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Client.select_one"><a class="viewcode-back" href="../../../source/superduperdb.serve.html#superduperdb.serve.client.Client.select_one">[docs]</a>    <span class="k">def</span> <span class="nf">select_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">SelectOne</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
+<div class="viewcode-block" id="Client.select_one"><a class="viewcode-back" href="../../../source/superduperdb.serve.html#superduperdb.serve.client.Client.select_one">[docs]</a>    <span class="k">def</span> <span class="nf">select_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">SelectOne</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Document</span><span class="p">:</span>
         <span class="n">request_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_get_request</span><span class="p">(</span>
             <span class="s1">&#39;select_one&#39;</span><span class="p">,</span>
@@ -475,10 +471,10 @@
             <span class="p">},</span>
         <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">request_id</span><span class="o">=</span><span class="n">request_id</span><span class="p">,</span> <span class="n">file_id</span><span class="o">=</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;file_id&#39;</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">Document</span><span class="o">.</span><span class="n">load_bson</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">load_bson</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.like"><a class="viewcode-back" href="../../../source/superduperdb.serve.html#superduperdb.serve.client.Client.like">[docs]</a>    <span class="k">def</span> <span class="nf">like</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">Like</span><span class="p">):</span>
-        <span class="n">like</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">dump_bson</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">like</span><span class="p">)</span>
+        <span class="n">like</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">like</span><span class="o">.</span><span class="n">dump_bson</span><span class="p">()</span>
         <span class="n">query</span><span class="o">.</span><span class="n">like</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">serialized</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
         <span class="n">file_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
@@ -493,10 +489,10 @@
             <span class="p">},</span>
         <span class="p">)</span><span class="o">.</span><span class="n">json</span>
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">request_id</span><span class="o">=</span><span class="n">request_id</span><span class="p">,</span> <span class="n">file_id</span><span class="o">=</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;file_id&#39;</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">Document</span><span class="o">.</span><span class="n">load_bsons</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">load_bsons</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Client.update"><a class="viewcode-back" href="../../../source/superduperdb.serve.html#superduperdb.serve.client.Client.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">Update</span><span class="p">):</span>
-        <span class="n">update</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">dump_bson</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+        <span class="n">update</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">update</span><span class="o">.</span><span class="n">dump_bson</span><span class="p">()</span>
         <span class="n">file_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
         <span class="n">request_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_put</span><span class="p">(</span><span class="n">request_id</span><span class="o">=</span><span class="n">request_id</span><span class="p">,</span> <span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">update</span><span class="p">)</span>

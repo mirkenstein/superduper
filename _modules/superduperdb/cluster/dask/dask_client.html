@@ -186,7 +186,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/openai.html">OpenAI vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/compare_vector_search_solutions.html">Compare vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/sentiment_analysis_use_case.html">Sentiment analysis with transformers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../examples/voice_memos.html">Create a personal assistant for understanding your meetings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/mongo_cdc.html">Change data capture with MongoDB</a></li>
 </ul>
 </li>
@@ -216,12 +215,9 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.models.html">superduperdb.models package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of superduperdb.models package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.langchain.html">superduperdb.models.langchain package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.openai.html">superduperdb.models.openai package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.pytorch_lightning.html">superduperdb.models.pytorch_lightning package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.sentence_transformers.html">superduperdb.models.sentence_transformers package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.sklearn.html">superduperdb.models.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.torch.html">superduperdb.models.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.transformers.html">superduperdb.models.transformers package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.vanilla.html">superduperdb.models.vanilla package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.serve.html">superduperdb.serve package</a></li>
@@ -284,6 +280,7 @@
         <span class="n">deserializers</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">local</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">envs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize the DaskClient.</span>
@@ -296,13 +293,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">futures_collection</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">distributed</span><span class="o">.</span><span class="n">Future</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">local</span><span class="p">:</span>
             <span class="n">cluster</span> <span class="o">=</span> <span class="n">distributed</span><span class="o">.</span><span class="n">LocalCluster</span><span class="p">(</span><span class="n">env</span><span class="o">=</span><span class="n">envs</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">distributed</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">distributed</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">cluster</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">distributed</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span>
                 <span class="n">address</span><span class="o">=</span><span class="n">address</span><span class="p">,</span>
                 <span class="n">serializers</span><span class="o">=</span><span class="n">serializers</span><span class="p">,</span>
                 <span class="n">deserializers</span><span class="o">=</span><span class="n">deserializers</span><span class="p">,</span>
                 <span class="n">env</span><span class="o">=</span><span class="n">envs</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="DaskClient.submit"><a class="viewcode-back" href="../../../../source/superduperdb.cluster.dask.html#superduperdb.cluster.dask.dask_client.DaskClient.submit">[docs]</a>    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">distributed</span><span class="o">.</span><span class="n">Future</span><span class="p">:</span>
@@ -358,7 +356,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">future</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="dask_client"><a class="viewcode-back" href="../../../../source/superduperdb.cluster.dask.html#superduperdb.cluster.dask.dask_client.dask_client">[docs]</a><span class="k">def</span> <span class="nf">dask_client</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">local</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">envs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">-&gt;</span> <span class="n">DaskClient</span><span class="p">:</span>
+<div class="viewcode-block" id="dask_client"><a class="viewcode-back" href="../../../../source/superduperdb.cluster.dask.html#superduperdb.cluster.dask.dask_client.dask_client">[docs]</a><span class="k">def</span> <span class="nf">dask_client</span><span class="p">(</span>
+    <span class="n">cfg</span><span class="p">,</span> <span class="n">local</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">envs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DaskClient</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a DaskClient instance.</span>
 
@@ -372,6 +372,7 @@
         <span class="n">deserializers</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">deserializers</span><span class="p">,</span>
         <span class="n">local</span><span class="o">=</span><span class="n">local</span><span class="p">,</span>
         <span class="n">envs</span><span class="o">=</span><span class="n">envs</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span></div>
 </pre></div>
         </article>

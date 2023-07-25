@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="superduperdb" href="../source/modules.html" /><link rel="prev" title="Create a personal assistant for understanding your meetings" href="voice_memos.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="superduperdb" href="../source/modules.html" /><link rel="prev" title="Sentiment analysis with transformers" href="sentiment_analysis_use_case.html" />
 
     <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
         <title>Change data capture with MongoDB - SuperDuperDB documentation</title>
@@ -188,7 +188,6 @@
 <li class="toctree-l2"><a class="reference internal" href="openai.html">OpenAI vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compare_vector_search_solutions.html">Compare vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sentiment_analysis_use_case.html">Sentiment analysis with transformers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="voice_memos.html">Create a personal assistant for understanding your meetings</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Change data capture with MongoDB</a></li>
 </ul>
 </li>
@@ -218,12 +217,9 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../source/superduperdb.models.html">superduperdb.models package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of superduperdb.models package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.langchain.html">superduperdb.models.langchain package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.openai.html">superduperdb.models.openai package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.pytorch_lightning.html">superduperdb.models.pytorch_lightning package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.sentence_transformers.html">superduperdb.models.sentence_transformers package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.sklearn.html">superduperdb.models.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.torch.html">superduperdb.models.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.transformers.html">superduperdb.models.transformers package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.vanilla.html">superduperdb.models.vanilla package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.serve.html">superduperdb.serve package</a></li>
@@ -577,165 +573,13 @@ WARNING:root:model/test-st/0 already exists - doing nothing
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">table</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
-</pre></div>
-</div>
-<div class="output_area rendered_html docutils container">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>vector</th>
-      <th>id</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...</td>
-      <td>__SEEDKEY__</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
-      <td>64b9970f87282bb1ebd74a82</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
-      <td>64b9970f87282bb1ebd74a83</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
-      <td>64b9989b6f03202cfcf0f784</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
-      <td>64b9989b6f03202cfcf0f785</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
-      <td>64b998fc9740cbc5d6c06555</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
-      <td>64b998fc9740cbc5d6c06556</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
-      <td>64b99d8b10919213a90f7b50</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
-      <td>64b99d8b10919213a90f7b51</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
-      <td>64b99d8c10919213a90f7b52</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
-      <td>64b99d8c10919213a90f7b53</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>[-0.0642707, 0.062035114, -0.04294876, 0.01063...</td>
-      <td>64b99d8c10919213a90f7b54</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
-      <td>64ba60c1cf65c6b21a45b602</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
-      <td>64ba60c1cf65c6b21a45b603</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
-      <td>64ba60c2cf65c6b21a45b604</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
-      <td>64ba60c2cf65c6b21a45b605</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>[-0.0642707, 0.062035114, -0.04294876, 0.01063...</td>
-      <td>64ba60c2cf65c6b21a45b606</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
-      <td>64ba61053f925c0fbcae49ac</td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
-      <td>64ba61063f925c0fbcae49ad</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
-      <td>64ba61063f925c0fbcae49ae</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td>[-0.0642707, 0.062035114, -0.04294876, 0.01063...</td>
-      <td>64ba61063f925c0fbcae49af</td>
-    </tr>
-    <tr>
-      <th>21</th>
-      <td>[-0.10046107, -0.004194115, 0.050496113, -0.01...</td>
-      <td>64ba7a0966d21ce093715571</td>
-    </tr>
-    <tr>
-      <th>22</th>
-      <td>[-0.057723213, 0.09273246, -0.028482832, 0.014...</td>
-      <td>64ba7a0966d21ce093715572</td>
-    </tr>
-    <tr>
-      <th>23</th>
-      <td>[-0.0642707, 0.062035114, -0.04294876, 0.01063...</td>
-      <td>64ba7a0966d21ce093715573</td>
-    </tr>
-  </tbody>
-</table>
-</div></div>
 </div>
 </section>
 
@@ -753,14 +597,14 @@ WARNING:root:model/test-st/0 already exists - doing nothing
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="voice_memos.html">
+          <a class="prev-page" href="sentiment_analysis_use_case.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Create a personal assistant for understanding your meetings</div>
+                <div class="title">Sentiment analysis with transformers</div>
                 
               </div>
             </a>

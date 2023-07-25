@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="superduperdb.models.pytorch_lightning package" href="superduperdb.models.pytorch_lightning.html" /><link rel="prev" title="superduperdb.models.langchain package" href="superduperdb.models.langchain.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="superduperdb.models.sklearn package" href="superduperdb.models.sklearn.html" /><link rel="prev" title="superduperdb.models.langchain package" href="superduperdb.models.langchain.html" />
 
     <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
         <title>superduperdb.models.openai package - SuperDuperDB documentation</title>
@@ -187,7 +187,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../examples/openai.html">OpenAI vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples/compare_vector_search_solutions.html">Compare vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples/sentiment_analysis_use_case.html">Sentiment analysis with transformers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../examples/voice_memos.html">Create a personal assistant for understanding your meetings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples/mongo_cdc.html">Change data capture with MongoDB</a></li>
 </ul>
 </li>
@@ -217,12 +216,9 @@
 <li class="toctree-l3 current has-children"><a class="reference internal" href="superduperdb.models.html">superduperdb.models package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of superduperdb.models package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.models.langchain.html">superduperdb.models.langchain package</a></li>
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">superduperdb.models.openai package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="superduperdb.models.pytorch_lightning.html">superduperdb.models.pytorch_lightning package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="superduperdb.models.sentence_transformers.html">superduperdb.models.sentence_transformers package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.models.sklearn.html">superduperdb.models.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.models.torch.html">superduperdb.models.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.models.transformers.html">superduperdb.models.transformers package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="superduperdb.models.vanilla.html">superduperdb.models.vanilla package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="superduperdb.serve.html">superduperdb.serve package</a></li>
@@ -361,16 +357,21 @@ type Field.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="superduperdb.models.openai.wrapper.OpenAIChatCompletion">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.models.openai.wrapper.</span></span><span class="sig-name descname"><span class="pre">OpenAIChatCompletion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/models/openai/wrapper.html#OpenAIChatCompletion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.models.openai.wrapper.OpenAIChatCompletion" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.models.openai.wrapper.</span></span><span class="sig-name descname"><span class="pre">OpenAIChatCompletion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/models/openai/wrapper.html#OpenAIChatCompletion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.models.openai.wrapper.OpenAIChatCompletion" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#superduperdb.models.openai.wrapper.OpenAI" title="superduperdb.models.openai.wrapper.OpenAI"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpenAI</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.models.openai.wrapper.OpenAIChatCompletion.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/models/openai/wrapper.html#OpenAIChatCompletion.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.models.openai.wrapper.OpenAIChatCompletion.predict" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/models/openai/wrapper.html#OpenAIChatCompletion.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.models.openai.wrapper.OpenAIChatCompletion.predict" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.models.openai.wrapper.OpenAIChatCompletion.predict_one">
-<span class="sig-name descname"><span class="pre">predict_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/models/openai/wrapper.html#OpenAIChatCompletion.predict_one"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.models.openai.wrapper.OpenAIChatCompletion.predict_one" title="Permalink to this definition">#</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.models.openai.wrapper.OpenAIChatCompletion.prompt">
+<span class="sig-name descname"><span class="pre">prompt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.models.openai.wrapper.OpenAIChatCompletion.prompt" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.models.openai.wrapper.OpenAIChatCompletion.takes_context">
+<span class="sig-name descname"><span class="pre">takes_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#superduperdb.models.openai.wrapper.OpenAIChatCompletion.takes_context" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -407,12 +408,12 @@ type Field.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="superduperdb.models.pytorch_lightning.html">
+          <a class="next-page" href="superduperdb.models.sklearn.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">superduperdb.models.pytorch_lightning package</div>
+                <div class="title">superduperdb.models.sklearn package</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -472,7 +473,8 @@ type Field.</p>
 </li>
 <li><a class="reference internal" href="#superduperdb.models.openai.wrapper.OpenAIChatCompletion"><code class="docutils literal notranslate"><span class="pre">OpenAIChatCompletion</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.models.openai.wrapper.OpenAIChatCompletion.predict"><code class="docutils literal notranslate"><span class="pre">OpenAIChatCompletion.predict()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.models.openai.wrapper.OpenAIChatCompletion.predict_one"><code class="docutils literal notranslate"><span class="pre">OpenAIChatCompletion.predict_one()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.models.openai.wrapper.OpenAIChatCompletion.prompt"><code class="docutils literal notranslate"><span class="pre">OpenAIChatCompletion.prompt</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.models.openai.wrapper.OpenAIChatCompletion.takes_context"><code class="docutils literal notranslate"><span class="pre">OpenAIChatCompletion.takes_context</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#superduperdb.models.openai.wrapper.OpenAIEmbedding"><code class="docutils literal notranslate"><span class="pre">OpenAIEmbedding</span></code></a><ul>

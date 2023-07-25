@@ -186,7 +186,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/openai.html">OpenAI vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/compare_vector_search_solutions.html">Compare vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/sentiment_analysis_use_case.html">Sentiment analysis with transformers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../examples/voice_memos.html">Create a personal assistant for understanding your meetings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../examples/mongo_cdc.html">Change data capture with MongoDB</a></li>
 </ul>
 </li>
@@ -216,12 +215,9 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.models.html">superduperdb.models package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of superduperdb.models package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.langchain.html">superduperdb.models.langchain package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.openai.html">superduperdb.models.openai package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.pytorch_lightning.html">superduperdb.models.pytorch_lightning package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.sentence_transformers.html">superduperdb.models.sentence_transformers package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.sklearn.html">superduperdb.models.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.torch.html">superduperdb.models.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.transformers.html">superduperdb.models.transformers package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.models.vanilla.html">superduperdb.models.vanilla package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.serve.html">superduperdb.serve package</a></li>
@@ -264,8 +260,7 @@
         </div>
         <article role="main">
           <h1>Source code for superduperdb.cluster.ray.predict</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">bson</span> <span class="kn">import</span> <span class="n">BSON</span>
-<span class="kn">import</span> <span class="nn">click</span>
+<span></span><span class="kn">import</span> <span class="nn">bson</span>
 <span class="kn">from</span> <span class="nn">ray</span> <span class="kn">import</span> <span class="n">serve</span> <span class="k">as</span> <span class="n">_serve</span>
 <span class="kn">from</span> <span class="nn">starlette.requests</span> <span class="kn">import</span> <span class="n">Request</span>
 
@@ -283,10 +278,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">build_datalayer</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model</span><span class="p">]</span>
 
-        <span class="k">async</span> <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">http_request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">http_request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">http_request</span><span class="o">.</span><span class="n">body</span><span class="p">()</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">BSON</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">bson</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">encoders</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
             <span class="n">X</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">],</span> <span class="n">encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">encoders</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
@@ -294,21 +288,9 @@
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">]</span>
             <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">BSON</span><span class="o">.</span><span class="n">encode</span><span class="p">({</span><span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">encode</span><span class="p">()})</span>  <span class="c1"># type: ignore</span>
+            <span class="k">return</span> <span class="n">bson</span><span class="o">.</span><span class="n">encode</span><span class="p">({</span><span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">encode</span><span class="p">()})</span>
 
     <span class="k">return</span> <span class="n">Server</span></div>
-
-
-<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>  <span class="c1"># type: ignore[arg-type]</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;--num_replicas&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">num_replicas</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-    <span class="n">Server</span> <span class="o">=</span> <span class="n">create_server</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">num_replicas</span><span class="o">=</span><span class="n">num_replicas</span><span class="p">)</span>
-    <span class="n">Server</span><span class="o">.</span><span class="n">bind</span><span class="p">()</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">serve</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>
