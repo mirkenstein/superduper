@@ -1,0 +1,564 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" />
+
+    <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
+        <title>Transfer learning using Sentence Transformers and Scikit-Learn - SuperDuperDB documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">SuperDuperDB  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">SuperDuperDB  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">Getting started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Getting started</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/minimum_working_example.html">Minimum working example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/features.html">Supported Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/faq.html">Frequently asked questions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../usage/index.html">SuperDuperDB Usage</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of SuperDuperDB Usage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../usage/datalayer.html">Datalayer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/queries.html">Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/encoders.html">Encoders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/datasets.html">Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../how_to/index.html">How to …</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../how_to/playground.html">Download, install and setup SuperDuperDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how_to/mongo_cdc.html">Perform change data capture (CDC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how_to/parallelization_on_dask.html">Run computations on Dask</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="index.html">Example notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of Example notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="mnist_torch.html">Training and maintaining MNIST predictions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mnist_sklearn.html">MNIST using scikit-learn and SuperDuperDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="openai.html">OpenAI vector search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compare_vector_search_solutions.html">Compare vector search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sentiment_analysis_use_case.html">Sentiment analysis with transformers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="voice_memos.html">Cataloguing voice-memos for a self managed personal assistant</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../background/index.html">Background of SuperDuperDB</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Background of SuperDuperDB</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../background/common_issues.html">Common issues in AI-data development</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../source/modules.html">superduperdb</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../source/superduperdb.html">superduperdb package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of superduperdb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.cli.html">superduperdb.cli package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.cluster.html">superduperdb.cluster package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.core.html">superduperdb.core package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../source/superduperdb.datalayer.html">superduperdb.datalayer package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of superduperdb.datalayer package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.datalayer.base.html">superduperdb.datalayer.base package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.datalayer.mongodb.html">superduperdb.datalayer.mongodb package</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../source/superduperdb.encoders.html">superduperdb.encoders package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of superduperdb.encoders package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.encoders.numpy.html">superduperdb.encoders.numpy package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.encoders.pillow.html">superduperdb.encoders.pillow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.encoders.torch.html">superduperdb.encoders.torch package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.encoders.vectors.html">superduperdb.encoders.vectors package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.metrics.html">superduperdb.metrics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.misc.html">superduperdb.misc package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../source/superduperdb.models.html">superduperdb.models package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of superduperdb.models package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.openai.html">superduperdb.models.openai package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.sklearn.html">superduperdb.models.sklearn package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.torch.html">superduperdb.models.torch package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.transformers.html">superduperdb.models.transformers package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.vector_search.html">superduperdb.vector_search package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="Transfer-learning-using-Sentence-Transformers-and-Scikit-Learn">
+<h1>Transfer learning using Sentence Transformers and Scikit-Learn<a class="headerlink" href="#Transfer-learning-using-Sentence-Transformers-and-Scikit-Learn" title="Permalink to this heading">#</a></h1>
+<p>In this example, we’ll be demonstrating how to simply implement transfer learning using SuperDuperDB. You’ll find related examples on vector-search and simple training examples using scikit-learn in the the notebooks directory of the project. Transfer learning leverages similar components, and may be used synergistically with vector-search. Vectors are, after all, simultaneously featurizations of data and may be used in downstream learning tasks.</p>
+<p>Let’s first connect to MongoDB via SuperDuperDB, you read explanations of how to do this in the docs, and in the <code class="docutils literal notranslate"><span class="pre">notebooks/</span></code> directory.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">superduper</span>
+<span class="kn">from</span> <span class="nn">superduperdb.datalayer.mongodb.query</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="kn">import</span> <span class="nn">pymongo</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">superduper</span><span class="p">(</span>
+    <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">()</span><span class="o">.</span><span class="n">documents</span>
+<span class="p">)</span>
+
+<span class="n">collection</span> <span class="o">=</span> <span class="n">Collection</span><span class="p">(</span><span class="s1">&#39;transfer&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+INFO:numexpr.utils:NumExpr defaulting to 8 threads.
+</pre></div></div>
+</div>
+<p>We’ll use textual data labelled with sentiment, to test the functionality. Transfer learning can be used on any data which can be processed with SuperDuperDB models.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+
+<span class="kn">from</span> <span class="nn">superduperdb.core.document</span> <span class="kn">import</span> <span class="n">Document</span> <span class="k">as</span> <span class="n">D</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;imdb&quot;</span><span class="p">)</span>
+
+<span class="n">train_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">D</span><span class="p">({</span><span class="s1">&#39;_fold&#39;</span><span class="p">:</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)]})</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]))</span>
+<span class="p">][:</span><span class="mi">10000</span><span class="p">]</span>
+
+<span class="n">valid_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">D</span><span class="p">({</span><span class="s1">&#39;_fold&#39;</span><span class="p">:</span> <span class="s1">&#39;valid&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)]})</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]))</span>
+<span class="p">][:</span><span class="mi">1000</span><span class="p">]</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">insert_many</span><span class="p">(</span><span class="n">train_data</span><span class="p">))</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">())</span>
+<span class="n">r</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">())</span>
+<span class="n">r</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Document({&#39;_id&#39;: ObjectId(&#39;64c126b43a073f413a20791a&#39;), &#39;_fold&#39;: &#39;train&#39;, &#39;text&#39;: &#39;Where to even start? The horrendous acting? The nonsensical plot? The bargain basement effects? The completely loathsome characters? The choppy editing? The headache-inducing Casio keyboard score??? The embarrassingly racist remarks (&#34;Watch it, Charlie!&#34;, &#34;Back off, Jackie Chan!!&#34;??? The constant misogyny??? I am a lifelong horror fan, and I have no problem at all with the current &#34;torture-thon&#34; trend of movies. However, this is a poorly-made piece of garbage. I think I suffered more pain watching this than the characters did dying in it! If you like girls being forced to eat stir-fried penis, really poor soft core porn and think lines like &#34;I\&#39;m gonna find that b**** and staple her c*** shut!!&#34; are clever, LIVE FEED is for you.&lt;br /&gt;&lt;br /&gt;As for me, I feel the need to go wash my eyes out with oven cleaner to prevent from ever seeing this movie again!&#39;, &#39;label&#39;: 0, &#39;_outputs&#39;: {&#39;text&#39;: {&#39;all-MiniLM-L6-v2&#39;: Encodable(x=array([-2.07328554e-02, -9.17982012e-02, -3.80742084e-03,  1.86541993e-02,
+        1.67578198e-02,  6.67949319e-02, -5.89504801e-02,  1.71450656e-02,
+        3.86020504e-02, -8.84487107e-02, -3.72260809e-02, -1.70342401e-02,
+        5.44667765e-02, -4.38181264e-03, -9.96383578e-02, -1.51040237e-02,
+        9.13817212e-02, -5.65287955e-02, -1.97568871e-02,  5.45672737e-02,
+        1.39517402e-02, -2.38399561e-02,  3.25608887e-02, -2.24047564e-02,
+       -4.16006371e-02, -2.06874907e-02,  2.98668426e-02, -5.88861760e-03,
+       -1.36747494e-01,  2.24945452e-02, -3.27499360e-02,  3.49376760e-02,
+       -7.96262696e-02, -6.25734180e-02,  4.31549028e-02,  1.68868117e-02,
+        3.16744819e-02, -3.44892554e-02,  2.72231530e-02,  1.58456119e-03,
+        7.00657954e-03,  2.59370115e-02,  5.01935147e-02,  4.26269136e-02,
+        2.30677389e-02, -4.54944186e-02, -3.36482041e-02, -1.12008965e-02,
+       -2.20427457e-02, -1.30980015e-01, -4.56236042e-02,  3.63980420e-02,
+        5.88862114e-02,  4.81721163e-02, -5.45274615e-02, -5.60721047e-02,
+        9.58744437e-03,  2.23086053e-03,  2.42779963e-02, -1.69002786e-02,
+       -2.24549696e-03, -4.04373917e-04,  3.02033778e-02,  3.73994596e-02,
+        2.79490557e-03, -2.91140452e-02,  4.98731993e-02,  2.21099481e-02,
+        3.36964726e-02,  9.82423425e-02, -1.24594346e-01, -1.77965302e-03,
+       -4.85601602e-04,  7.14156451e-03, -3.20159607e-02,  2.86207609e-02,
+        2.71907505e-02, -1.09660655e-01,  2.27086041e-02, -4.82399762e-02,
+        8.01307708e-02, -4.96930033e-02,  4.40718792e-02,  6.01002499e-02,
+        2.93323230e-02, -9.15307924e-03,  1.42892413e-02, -1.79655105e-02,
+        4.79647517e-02,  1.18125223e-01, -5.09315841e-02, -2.71216910e-02,
+        3.80797237e-02,  7.69781787e-03,  9.22760740e-02,  8.91444739e-03,
+       -9.08412039e-02,  4.00028452e-02, -6.54351562e-02,  2.82887695e-03,
+       -6.81337416e-02, -5.14823124e-02, -3.08710840e-02, -5.52445240e-02,
+        3.05344835e-02, -1.98351275e-02,  7.91860446e-02,  1.84271522e-02,
+       -3.74582894e-02, -4.39897627e-02, -6.54998049e-02,  3.89400162e-02,
+        3.23224999e-03, -4.71248366e-02,  5.68596050e-02, -2.37308741e-02,
+        1.38773441e-01, -5.78529015e-03,  2.66658906e-02,  7.75236338e-02,
+        8.10353830e-02, -1.44731477e-02, -7.33379722e-02,  1.38265286e-02,
+        8.55481923e-02, -2.12595854e-02, -8.50504041e-02,  1.93853565e-33,
+       -2.12777555e-02,  7.95791969e-02, -4.29483205e-02, -1.99536141e-02,
+       -8.64892527e-02,  4.75895703e-02, -5.02215214e-02,  2.54629720e-02,
+        3.27930041e-02,  5.18045947e-02,  3.91374566e-02, -1.42164649e-02,
+       -9.69886482e-02,  3.10548246e-02, -3.91131006e-02, -4.58081178e-02,
+       -3.43594477e-02, -1.17772296e-02, -8.72440264e-03, -4.12924662e-02,
+       -7.95950145e-02,  6.54044598e-02, -5.26239090e-02,  2.62677250e-03,
+       -1.20916702e-01,  4.83756606e-03, -3.13374512e-02,  5.28320577e-03,
+       -1.26663158e-02,  1.62547603e-02, -4.01259102e-02, -2.36038342e-02,
+        7.49674393e-03, -3.93968038e-02,  3.68214678e-03, -5.50567359e-02,
+        2.13448959e-03,  5.28414585e-02,  6.21271655e-02,  1.82141289e-02,
+       -3.76051664e-02,  7.14729801e-02, -1.17843002e-01,  3.05144233e-03,
+       -3.42151672e-02,  1.15903713e-01,  1.05647437e-01, -4.65909205e-02,
+        4.85745072e-03,  6.10056296e-02, -2.97663622e-02,  1.85660999e-02,
+        8.71325657e-02,  6.16602935e-02, -4.02713977e-02,  5.45212477e-02,
+        3.42043450e-06, -1.46789595e-01,  7.02617168e-02, -7.31139407e-02,
+        4.27195169e-02,  4.91112359e-02,  1.39392400e-02, -2.44797617e-02,
+       -4.31777397e-03,  1.98491644e-02,  5.16847521e-02,  6.41355477e-03,
+       -5.80251850e-02, -5.45222014e-02, -9.95987505e-02, -1.35581633e-02,
+        6.00808999e-03,  1.19403536e-02, -2.17955559e-02,  1.09703522e-02,
+        4.32062615e-03, -2.84019560e-02,  7.08632730e-03, -3.77899818e-02,
+        4.11694087e-02, -2.96606068e-02,  7.98919871e-02, -6.31531179e-02,
+        3.06094717e-02, -3.04980949e-02, -3.34955193e-02, -3.78524177e-02,
+        1.05155498e-01,  1.34026743e-02,  5.19842431e-02, -9.34377015e-02,
+        6.04891777e-02, -3.51742096e-02,  2.53388472e-02, -1.81931940e-33,
+        2.35676654e-02, -1.34475023e-01, -1.02421142e-01, -4.57070097e-02,
+       -8.22049752e-02, -6.05076104e-02, -9.02880579e-02,  4.47744387e-04,
+        1.02057733e-01, -1.45794973e-02, -5.44127449e-02, -1.60336047e-02,
+       -3.22384797e-02,  6.37182686e-03,  6.39348254e-02, -4.32836004e-02,
+       -3.86098251e-02,  2.46039256e-02, -4.14872920e-04,  6.20209016e-02,
+        8.47999379e-02,  4.32635807e-02, -9.14121494e-02, -4.46934588e-02,
+        3.75258997e-02,  6.07965775e-02,  4.23685610e-02,  9.53901485e-02,
+        2.65959091e-02, -7.41423981e-04, -2.52526198e-02, -6.50428655e-03,
+        6.09309860e-02, -1.56006394e-02, -2.79372297e-02,  5.04145771e-02,
+        2.58600172e-02, -4.86189872e-03,  2.29139645e-02, -3.03345006e-02,
+        1.32048074e-02,  3.26044224e-02, -6.65299147e-02,  4.79361555e-03,
+        1.38628157e-02,  1.17236348e-02, -5.90772461e-03, -3.94677855e-02,
+       -2.83361655e-02,  1.97919291e-02, -1.18944310e-01,  1.01726428e-02,
+       -3.57959419e-02, -7.87863880e-02, -3.11334394e-02, -5.38038053e-02,
+       -4.38830331e-02, -2.64849961e-02, -5.98157989e-04,  5.83522283e-02,
+       -4.27922644e-02, -2.07843110e-02, -3.00474893e-02, -4.96862829e-02,
+        1.53936045e-02, -1.05748009e-02,  2.82610022e-02, -5.06275073e-02,
+       -1.64039377e-02, -1.08220533e-03, -7.73733109e-02, -1.91794317e-02,
+       -7.36648813e-02, -9.12936591e-03,  2.13990416e-02, -1.98818594e-02,
+       -6.89242268e-03,  3.16285118e-02,  2.27511190e-02,  1.17454976e-02,
+       -1.13243354e-03,  1.20914178e-02,  5.74253611e-02,  3.87866795e-02,
+        2.70693637e-02,  1.45002231e-01, -4.15412299e-02,  8.28136951e-02,
+       -5.03127873e-02,  6.03437312e-02, -1.64084043e-02, -5.83873019e-02,
+        1.75101236e-02,  2.87153050e-02, -1.03648119e-02, -5.52260104e-08,
+       -4.12342697e-02, -1.05352283e-01,  1.82738882e-02,  1.03470143e-02,
+        2.20885612e-02, -2.22201161e-02, -7.35225305e-02,  1.20404288e-01,
+        6.80513978e-02,  1.71763916e-02, -2.05042530e-02,  4.86006588e-02,
+        1.49428556e-02,  1.29717831e-02, -4.11548242e-02,  6.29464537e-02,
+        1.84274111e-02,  4.65762336e-03, -2.81466637e-02,  2.33317334e-02,
+        3.86290029e-02,  9.32998676e-03,  8.78260732e-02, -5.05799204e-02,
+        4.97450754e-02,  4.25427407e-02, -3.01770177e-02, -6.94976076e-02,
+       -8.09541252e-03,  1.15485610e-02, -8.78354721e-03, -8.19168577e-04,
+       -1.68648921e-02,  4.76438552e-02, -1.13511957e-01,  3.05478889e-02,
+        4.54503000e-02,  5.91892796e-03,  1.59773547e-02,  5.34420907e-02,
+        7.27191046e-02, -2.21609045e-02,  3.60732414e-02,  7.07523758e-03,
+        2.46374104e-02,  2.88099777e-02, -8.55595339e-03, -1.73165575e-02,
+        7.36650974e-02,  4.94874455e-03,  1.74996760e-02,  2.31635310e-02,
+       -9.78247914e-03,  7.16391429e-02,  1.13172986e-01, -5.79513460e-02,
+        2.38675699e-02,  1.15360066e-01, -3.10072787e-02,  7.72865340e-02,
+        1.14124797e-01, -1.02488522e-03, -3.06680705e-02, -4.37642308e-03],
+      dtype=float32), encoder=Encoder(identifier=&#39;numpy.float32[384]&#39;, decoder=&lt;Artifact artifact=&lt;superduperdb.encoders.numpy.array.DecodeArray object at 0x17d236a10&gt; serializer=dill&gt;, encoder=&lt;Artifact artifact=&lt;superduperdb.encoders.numpy.array.EncodeArray object at 0x10ec06010&gt; serializer=dill&gt;, shape=[384], version=0))}}})
+</pre></div></div>
+</div>
+<p>Let’s create a SuperDuperDB model based on a <code class="docutils literal notranslate"><span class="pre">sentence_transformers</span></code> model. You’ll notice that we don’t necessarily need a native SuperDuperDB integration to a model library in order to leverage its power with SuperDuperDB. For example, in this case, we just need to configure the <code class="docutils literal notranslate"><span class="pre">Model</span></code> wrapper to interoperate correctly with the <code class="docutils literal notranslate"><span class="pre">SentenceTransformer</span></code> class. After doing this, we can link the model to a collection, and daemonize the model using the <code class="docutils literal notranslate"><span class="pre">watch=True</span></code> keyword:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">superduperdb.core.model</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">import</span> <span class="nn">sentence_transformers</span>
+
+<span class="kn">from</span> <span class="nn">superduperdb.encoders.numpy.array</span> <span class="kn">import</span> <span class="n">array</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span>
+    <span class="n">identifier</span><span class="o">=</span><span class="s1">&#39;all-MiniLM-L6-v2&#39;</span><span class="p">,</span>
+    <span class="nb">object</span><span class="o">=</span><span class="n">sentence_transformers</span><span class="o">.</span><span class="n">SentenceTransformer</span><span class="p">(</span><span class="s1">&#39;all-MiniLM-L6-v2&#39;</span><span class="p">),</span>
+    <span class="n">encoder</span><span class="o">=</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">384</span><span class="p">,)),</span>
+    <span class="n">predict_method</span><span class="o">=</span><span class="s1">&#39;encode&#39;</span><span class="p">,</span>
+    <span class="n">batch_predict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span>
+    <span class="n">X</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="n">collection</span><span class="o">.</span><span class="n">find</span><span class="p">(),</span>
+    <span class="n">watch</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now that we’ve created and added the model which computes features for the <code class="docutils literal notranslate"><span class="pre">&quot;text&quot;</span></code>, we can train a downstream model using Scikit-Learn:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">SVC</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">superduper</span><span class="p">(</span>
+    <span class="n">SVC</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span> <span class="n">class_weight</span><span class="o">=</span><span class="s1">&#39;balanced&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">postprocess</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">X</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s1">&#39;label&#39;</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="n">collection</span><span class="o">.</span><span class="n">find</span><span class="p">()</span><span class="o">.</span><span class="n">featurize</span><span class="p">({</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;all-MiniLM-L6-v2&#39;</span><span class="p">}),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now that the model has been trained, we can apply the model to the database, also daemonizing the model with <code class="docutils literal notranslate"><span class="pre">watch=True</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span>
+    <span class="n">X</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="n">collection</span><span class="o">.</span><span class="n">find</span><span class="p">()</span><span class="o">.</span><span class="n">featurize</span><span class="p">({</span><span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;all-MiniLM-L6-v2&#39;</span><span class="p">}),</span>
+    <span class="n">watch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING:root:model/svc/0 already exists - doing nothing
+WARNING:root:model/svc/0 already exists - doing nothing
+</pre></div></div>
+</div>
+<p>To verify that this process has worked, we can sample a few records, to inspect the sanity of the predictions</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">aggregate</span><span class="p">([{</span><span class="s1">&#39;$sample&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}])))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">][:</span><span class="mi">100</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_outputs&#39;</span><span class="p">][</span><span class="s1">&#39;text&#39;</span><span class="p">][</span><span class="s1">&#39;svc&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+-The movie tells the tale of a prince whose life is wonderful, but after an evil wizard tells him to
+1
+</pre></div></div>
+</div>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; SuperDuperDB Inc., opensource@superduperdb.com
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>
