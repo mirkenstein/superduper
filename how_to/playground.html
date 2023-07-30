@@ -3,13 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="SuperDuperDB architecture" href="architecture.html" /><link rel="prev" title="Infrastructural support" href="index.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Perform change data capture (CDC)" href="mongo_cdc.html" /><link rel="prev" title="How to …" href="index.html" />
 
     <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
-        <title>SuperDuperDB single host cluster deployment - SuperDuperDB documentation</title>
+        <title>Download, install and setup SuperDuperDB - SuperDuperDB documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
     
@@ -158,7 +159,6 @@
   <ul class="current">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../getting_started/index.html">Getting started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Getting started</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/minimum_working_example.html">Minimum working example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/features.html">Supported Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/faq.html">Frequently asked questions</a></li>
@@ -169,20 +169,20 @@
 <li class="toctree-l2"><a class="reference internal" href="../usage/queries.html">Queries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../usage/encoders.html">Encoders</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../usage/models.html">Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../usage/vector_search.html">Vector Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/datasets.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/vector_index.html">Vector Indexes</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Infrastructural support</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Infrastructural support</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">SuperDuperDB single host cluster deployment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html">SuperDuperDB architecture</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jobs.html">Jobs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="change_data_capture.html">Change data capture</a></li>
-<li class="toctree-l2"><a class="reference internal" href="client_server.html">Client-server implementation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/model_design.html">Model mechanics in SuperDuperDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/serialization.html">Serialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/versioning.html">Component versioning</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../how_to/index.html">How to …</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../how_to/mongo_cdc.html">Perform change data capture (CDC)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../how_to/parallelization_on_dask.html">Run computations on Dask</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">How to …</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Download, install and setup SuperDuperDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mongo_cdc.html">Perform change data capture (CDC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallelization_on_dask.html">Run computations on Dask</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../examples/index.html">Example notebooks</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Example notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -191,6 +191,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../examples/openai.html">OpenAI vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples/compare_vector_search_solutions.html">Compare vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples/sentiment_analysis_use_case.html">Sentiment analysis with transformers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/voice_memos.html">Cataloguing voice-memos for a self managed personal assistant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/resnet_features.html">Creating a DB of image features in <code class="docutils literal notranslate"><span class="pre">torchvision</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../background/index.html">Background of SuperDuperDB</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Background of SuperDuperDB</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -262,21 +264,219 @@
           </label>
         </div>
         <article role="main">
-          <section id="superduperdb-single-host-cluster-deployment">
-<span id="singlehost"></span><h1>SuperDuperDB single host cluster deployment<a class="headerlink" href="#superduperdb-single-host-cluster-deployment" title="Permalink to this heading">#</a></h1>
-<p>The simplest way to create a SuperDuperDB deployment, is to use the CLI
-to start all of the services involved in one command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>superduperdb<span class="w"> </span>local_cluster<span class="w"> </span><span class="o">[</span>collection_names<span class="o">]</span><span class="w"> </span>
+          <section id="Download,-install-and-setup-SuperDuperDB">
+<h1>Download, install and setup SuperDuperDB<a class="headerlink" href="#Download,-install-and-setup-SuperDuperDB" title="Permalink to this heading">#</a></h1>
+<p><strong>Welcome to the SuperDuperDB Playground!</strong></p>
+<p>For demo purposes, the community edition of MongoDB is used. This should take less than a minute</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<p>This command starts the following components:</p>
-<ul class="simple">
-<li><p>Server (accessible via the SuperDuperDB client)</p></li>
-<li><p>Local Dask Cluster (configurable via configuration system) for deploying jobs</p></li>
-<li><p>Change data capture implementing <a class="reference internal" href="../usage/models.html#watchers"><span class="std std-ref">watchers</span></a> on MongoDB collections mentioned in space separated list <code class="docutils literal notranslate"><span class="pre">collection_names</span></code></p></li>
-</ul>
-<p>See our architecture diagram <a class="reference internal" href="architecture.html#architecture"><span class="std std-ref">here</span></a> for a more detailed explanation of how
-these components interact.</p>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>!apt install wget curl gnupg2 software-properties-common apt-transport-https ca-certificates lsb-release
+!curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc| gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-6.gpg
+!echo &quot;deb http://security.ubuntu.com/ubuntu focal-security main&quot; | sudo tee /etc/apt/sources.list.d/focal-security.list
+!sudo apt-get update
+!sudo apt-get install libssl1.1
+!echo &quot;deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/6.0 multiverse&quot; | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+!apt update
+!apt install mongodb-org
+!mkdir -p ./data/db
+!nohup mongod --dbpath ./data/db &gt; mongo.txt 2&gt;&amp;1 &amp;
+!sleep 10
+!ps -ef | grep mongo
+!git clone https://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@github.com/thejumpman2323/superduperdb-stealth.git
+!pip install -U pip
+!pip install --ignore-installed -r /content/superduperdb-stealth/requirements/requirements.txt
+!wget https://superduperdb-public.s3.eu-west-1.amazonaws.com/collab_data.zip
+!unzip collab_data.zip
+!mongorestore dump
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+lsb-release is already the newest version (11.1.0ubuntu4).
+lsb-release set to manually installed.
+wget is already the newest version (1.21.2-2ubuntu1).
+ca-certificates is already the newest version (20230311ubuntu0.22.04.1).
+curl is already the newest version (7.81.0-1ubuntu1.13).
+software-properties-common is already the newest version (0.99.22.7).
+gnupg2 is already the newest version (2.2.27-3ubuntu2.1).
+The following NEW packages will be installed:
+  apt-transport-https
+0 upgraded, 1 newly installed, 0 to remove and 9 not upgraded.
+Need to get 1,510 B of archives.
+After this operation, 169 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 apt-transport-https all 2.4.9 [1,510 B]
+Fetched 1,510 B in 0s (4,447 B/s)
+Selecting previously unselected package apt-transport-https.
+(Reading database ... 120493 files and directories currently installed.)
+Preparing to unpack .../apt-transport-https_2.4.9_all.deb ...
+Unpacking apt-transport-https (2.4.9) ...
+Setting up apt-transport-https (2.4.9) ...
+deb http://security.ubuntu.com/ubuntu focal-security main
+Get:1 https://cloud.r-project.org/bin/linux/ubuntu jammy-cran40/ InRelease [3,626 B]
+Hit:2 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64  InRelease
+Get:3 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]
+Hit:4 http://archive.ubuntu.com/ubuntu jammy InRelease
+Get:5 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [119 kB]
+Hit:6 https://ppa.launchpadcontent.net/c2d4u.team/c2d4u4.0+/ubuntu jammy InRelease
+Get:7 http://security.ubuntu.com/ubuntu focal-security InRelease [114 kB]
+Get:8 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [108 kB]
+Hit:9 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy InRelease
+Get:10 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1,230 kB]
+Hit:11 https://ppa.launchpadcontent.net/graphics-drivers/ppa/ubuntu jammy InRelease
+Get:12 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [1,087 kB]
+Get:13 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [2,909 kB]
+Hit:14 https://ppa.launchpadcontent.net/ubuntugis/ppa/ubuntu jammy InRelease
+Get:15 http://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [25.6 kB]
+Fetched 5,706 kB in 4s (1,417 kB/s)
+Reading package lists... Done
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following NEW packages will be installed:
+  libssl1.1
+0 upgraded, 1 newly installed, 0 to remove and 12 not upgraded.
+Need to get 1,321 kB of archives.
+After this operation, 4,126 kB of additional disk space will be used.
+Get:1 http://security.ubuntu.com/ubuntu focal-security/main amd64 libssl1.1 amd64 1.1.1f-1ubuntu2.19 [1,321 kB]
+Fetched 1,321 kB in 1s (915 kB/s)
+debconf: unable to initialize frontend: Dialog
+debconf: (No usable dialog-like program is installed, so the dialog based frontend cannot be used. at /usr/share/perl5/Debconf/FrontEnd/Dialog.pm line 78, &lt;&gt; line 1.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (This frontend requires a controlling tty.)
+debconf: falling back to frontend: Teletype
+dpkg-preconfigure: unable to re-open stdin:
+Selecting previously unselected package libssl1.1:amd64.
+(Reading database ... 120497 files and directories currently installed.)
+Preparing to unpack .../libssl1.1_1.1.1f-1ubuntu2.19_amd64.deb ...
+Unpacking libssl1.1:amd64 (1.1.1f-1ubuntu2.19) ...
+Setting up libssl1.1:amd64 (1.1.1f-1ubuntu2.19) ...
+debconf: unable to initialize frontend: Dialog
+debconf: (No usable dialog-like program is installed, so the dialog based frontend cannot be used. at /usr/share/perl5/Debconf/FrontEnd/Dialog.pm line 78.)
+debconf: falling back to frontend: Readline
+Processing triggers for libc-bin (2.35-0ubuntu3.1) ...
+deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse
+Hit:1 https://cloud.r-project.org/bin/linux/ubuntu jammy-cran40/ InRelease
+Hit:2 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64  InRelease
+Ign:3 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu jammy InRelease
+Hit:5 http://security.ubuntu.com/ubuntu jammy-security InRelease
+Hit:6 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+Hit:7 http://security.ubuntu.com/ubuntu focal-security InRelease
+Hit:8 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+Hit:9 https://ppa.launchpadcontent.net/c2d4u.team/c2d4u4.0+/ubuntu jammy InRelease
+Get:10 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 Release [3,094 B]
+Get:11 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 Release.gpg [866 B]
+Hit:12 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy InRelease
+Get:13 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 Packages [28.1 kB]
+Get:14 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse arm64 Packages [25.2 kB]
+Hit:15 https://ppa.launchpadcontent.net/graphics-drivers/ppa/ubuntu jammy InRelease
+Hit:16 https://ppa.launchpadcontent.net/ubuntugis/ppa/ubuntu jammy InRelease
+Fetched 57.3 kB in 3s (20.6 kB/s)
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+12 packages can be upgraded. Run &#39;apt list --upgradable&#39; to see them.
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  mongodb-database-tools mongodb-mongosh mongodb-org-database
+  mongodb-org-database-tools-extra mongodb-org-mongos mongodb-org-server
+  mongodb-org-shell mongodb-org-tools
+The following NEW packages will be installed:
+  mongodb-database-tools mongodb-mongosh mongodb-org mongodb-org-database
+  mongodb-org-database-tools-extra mongodb-org-mongos mongodb-org-server
+  mongodb-org-shell mongodb-org-tools
+0 upgraded, 9 newly installed, 0 to remove and 12 not upgraded.
+Need to get 147 MB of archives.
+After this operation, 429 MB of additional disk space will be used.
+Get:1 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-database-tools amd64 100.7.4 [50.7 MB]
+Get:2 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-mongosh amd64 1.10.2 [42.1 MB]
+Get:3 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org-shell amd64 6.0.8 [2,990 B]
+Get:4 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org-server amd64 6.0.8 [31.4 MB]
+Get:5 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org-mongos amd64 6.0.8 [22.4 MB]
+Get:6 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org-database-tools-extra amd64 6.0.8 [7,790 B]
+Get:7 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org-database amd64 6.0.8 [3,424 B]
+Get:8 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org-tools amd64 6.0.8 [2,772 B]
+Get:9 https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0/multiverse amd64 mongodb-org amd64 6.0.8 [2,806 B]
+Fetched 147 MB in 6s (26.6 MB/s)
+Selecting previously unselected package mongodb-database-tools.
+(Reading database ... 120507 files and directories currently installed.)
+Preparing to unpack .../0-mongodb-database-tools_100.7.4_amd64.deb ...
+Unpacking mongodb-database-tools (100.7.4) ...
+Selecting previously unselected package mongodb-mongosh.
+Preparing to unpack .../1-mongodb-mongosh_1.10.2_amd64.deb ...
+Unpacking mongodb-mongosh (1.10.2) ...
+Selecting previously unselected package mongodb-org-shell.
+Preparing to unpack .../2-mongodb-org-shell_6.0.8_amd64.deb ...
+Unpacking mongodb-org-shell (6.0.8) ...
+Selecting previously unselected package mongodb-org-server.
+Preparing to unpack .../3-mongodb-org-server_6.0.8_amd64.deb ...
+Unpacking mongodb-org-server (6.0.8) ...
+Selecting previously unselected package mongodb-org-mongos.
+Preparing to unpack .../4-mongodb-org-mongos_6.0.8_amd64.deb ...
+Unpacking mongodb-org-mongos (6.0.8) ...
+Selecting previously unselected package mongodb-org-database-tools-extra.
+Preparing to unpack .../5-mongodb-org-database-tools-extra_6.0.8_amd64.deb ...
+Unpacking mongodb-org-database-tools-extra (6.0.8) ...
+Selecting previously unselected package mongodb-org-database.
+Preparing to unpack .../6-mongodb-org-database_6.0.8_amd64.deb ...
+Unpacking mongodb-org-database (6.0.8) ...
+Selecting previously unselected package mongodb-org-tools.
+Preparing to unpack .../7-mongodb-org-tools_6.0.8_amd64.deb ...
+Unpacking mongodb-org-tools (6.0.8) ...
+Selecting previously unselected package mongodb-org.
+Preparing to unpack .../8-mongodb-org_6.0.8_amd64.deb ...
+Unpacking mongodb-org (6.0.8) ...
+Setting up mongodb-mongosh (1.10.2) ...
+Setting up mongodb-org-server (6.0.8) ...
+Adding system user `mongodb&#39; (UID 104) ...
+Adding new user `mongodb&#39; (UID 104) with group `nogroup&#39; ...
+Not creating home directory `/home/mongodb&#39;.
+Adding group `mongodb&#39; (GID 107) ...
+Done.
+Adding user `mongodb&#39; to group `mongodb&#39; ...
+Adding user mongodb to group mongodb
+Done.
+System has not been booted with systemd as init system (PID 1). Can&#39;t operate.
+Failed to connect to bus: Host is down
+Setting up mongodb-org-shell (6.0.8) ...
+Setting up mongodb-database-tools (100.7.4) ...
+Setting up mongodb-org-mongos (6.0.8) ...
+Setting up mongodb-org-database-tools-extra (6.0.8) ...
+Setting up mongodb-org-database (6.0.8) ...
+Setting up mongodb-org-tools (6.0.8) ...
+Setting up mongodb-org (6.0.8) ...
+Processing triggers for man-db (2.10.2-1) ...
+</pre></div></div>
+</div>
+<p>Now lets quickly connect to MongoDB and make it <strong>super-duper</strong>!!!</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>import pymongo
+import sys
+
+sys.path.append(&#39;/content/superduperdb-stealth&#39;)
+
+from superduperdb import superduper
+
+db = pymongo.MongoClient().sandbox
+db = superduper(db)
+</pre></div>
+</div>
+</div>
 </section>
 
         </article>
@@ -284,12 +484,12 @@ these components interact.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="architecture.html">
+          <a class="next-page" href="mongo_cdc.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">SuperDuperDB architecture</div>
+                <div class="title">Perform change data capture (CDC)</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -300,7 +500,7 @@ these components interact.</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Infrastructural support</div>
+                <div class="title">How to …</div>
                 
               </div>
             </a>
@@ -335,5 +535,7 @@ these components interact.</p>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </body>
 </html>
