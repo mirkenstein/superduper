@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Cataloguing voice-memos for a self managed personal assistant" href="voice_memos.html" /><link rel="prev" title="Compare vector search" href="compare_vector_search_solutions.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Cataloguing voice-memos for a self managed personal assistant" href="voice_memos.html" /><link rel="prev" title="Multimodal search with CLIP" href="multimodal_image_search_clip.html" />
 
     <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
         <title>Sentiment analysis with transformers - SuperDuperDB documentation</title>
@@ -165,7 +165,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../usage/index.html">SuperDuperDB Usage</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of SuperDuperDB Usage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../usage/datalayer.html">Datalayer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../usage/db.html">DB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../usage/queries.html">Queries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../usage/encoders.html">Encoders</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../usage/models.html">Models</a></li>
@@ -174,57 +174,75 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../explanations/index.html">Explanations</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Explanations</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../explanations/model_design.html">Model mechanics in SuperDuperDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/cluster_vs_standalone_mode.html">When to use standalone or cluster mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../explanations/external_data.html">How SuperDuperDB handles external data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../explanations/serialization.html">Serialization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../explanations/versioning.html">Component versioning</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../how_to/index.html">How to …</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../cluster/index.html">SuperDuperDB Cluster</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of SuperDuperDB Cluster</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cluster/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cluster/single_host_cluster.html">SuperDuperDB single host cluster deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cluster/architecture.html">SuperDuperDB architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cluster/jobs.html">Jobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cluster/change_data_capture.html">Change data capture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cluster/client_server.html">Client-server implementation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../how_to/index.html">How to …</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../how_to/playground.html">Download, install and setup SuperDuperDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how_to/add_images_or_audio.html">Add images, audio or video from URIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how_to/create_replicaset.html">How to create a replica set in MongoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how_to/mongo_cdc.html">Perform change data capture (CDC)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how_to/parallelization_on_dask.html">Run computations on Dask</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Example notebooks</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of Example notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Example notebooks</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Example notebooks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="mnist_torch.html">Training and maintaining MNIST predictions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mnist_sklearn.html">MNIST using scikit-learn and SuperDuperDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="openai.html">OpenAI vector search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compare_vector_search_solutions.html">Compare vector search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multimodal_image_search_clip.html">Multimodal search with CLIP</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Sentiment analysis with transformers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="voice_memos.html">Cataloguing voice-memos for a self managed personal assistant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="resnet_features.html">Creating a DB of image features in <code class="docutils literal notranslate"><span class="pre">torchvision</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../background/index.html">Background of SuperDuperDB</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of Background of SuperDuperDB</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../background/index.html">Background of SuperDuperDB</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of Background of SuperDuperDB</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../background/our_journey.html">How did we get here?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../background/common_issues.html">Common issues in AI-data development</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../source/modules.html">superduperdb</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of superduperdb</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../source/superduperdb.html">superduperdb package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of superduperdb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../source/modules.html">superduperdb</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of superduperdb</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../source/superduperdb.html">superduperdb package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of superduperdb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.base.html">superduperdb.base package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.cli.html">superduperdb.cli package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.cluster.html">superduperdb.cluster package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.core.html">superduperdb.core package</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../source/superduperdb.datalayer.html">superduperdb.datalayer package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of superduperdb.datalayer package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.datalayer.base.html">superduperdb.datalayer.base package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.datalayer.mongodb.html">superduperdb.datalayer.mongodb package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.container.html">superduperdb.container package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../source/superduperdb.data.html">superduperdb.data package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of superduperdb.data package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.data.cache.html">superduperdb.data.cache package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.data.tree.html">superduperdb.data.tree package</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../source/superduperdb.encoders.html">superduperdb.encoders package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of superduperdb.encoders package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.encoders.numpy.html">superduperdb.encoders.numpy package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.encoders.pillow.html">superduperdb.encoders.pillow package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.encoders.torch.html">superduperdb.encoders.torch package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.encoders.vectors.html">superduperdb.encoders.vectors package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../source/superduperdb.db.html">superduperdb.db package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of superduperdb.db package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.db.base.html">superduperdb.db.base package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.db.mongodb.html">superduperdb.db.mongodb package</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.metrics.html">superduperdb.metrics package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of superduperdb.ext.vector package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="../source/superduperdb.ext.vector.vectors.html">superduperdb.ext.vector.vectors package</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.misc.html">superduperdb.misc package</a></li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../source/superduperdb.models.html">superduperdb.models package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of superduperdb.models package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.openai.html">superduperdb.models.openai package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.sklearn.html">superduperdb.models.sklearn package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.torch.html">superduperdb.models.torch package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.models.transformers.html">superduperdb.models.transformers package</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.server.html">superduperdb.server package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.vector_search.html">superduperdb.vector_search package</a></li>
 </ul>
 </li>
@@ -286,10 +304,10 @@
 
 <span class="kn">import</span> <span class="nn">superduperdb</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.superduper</span> <span class="kn">import</span> <span class="n">superduper</span>
-<span class="kn">from</span> <span class="nn">superduperdb.core.document</span> <span class="kn">import</span> <span class="n">Document</span> <span class="k">as</span> <span class="n">D</span>
-<span class="kn">from</span> <span class="nn">superduperdb.datalayer.mongodb.query</span> <span class="kn">import</span> <span class="n">Collection</span>
-<span class="kn">from</span> <span class="nn">superduperdb.models.transformers.wrapper</span> <span class="kn">import</span> <span class="n">TransformersTrainerConfiguration</span><span class="p">,</span> <span class="n">Pipeline</span>
-<span class="kn">from</span> <span class="nn">superduperdb.core.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">superduperdb.container.document</span> <span class="kn">import</span> <span class="n">Document</span> <span class="k">as</span> <span class="n">D</span>
+<span class="kn">from</span> <span class="nn">superduperdb.db.mongodb.query</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="kn">from</span> <span class="nn">superduperdb.ext.transformers.model</span> <span class="kn">import</span> <span class="n">TransformersTrainerConfiguration</span><span class="p">,</span> <span class="n">Pipeline</span>
+<span class="kn">from</span> <span class="nn">superduperdb.container.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
 </pre></div>
 </div>
 </div>
@@ -298,18 +316,11 @@
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-INFO:torch.distributed.nn.jit.instantiator:Created a temporary directory at /var/folders/y9/b74b9yj906s_wtj0rrh2lf7c0000gn/T/tmpyfbyxnon
-INFO:torch.distributed.nn.jit.instantiator:Writing /var/folders/y9/b74b9yj906s_wtj0rrh2lf7c0000gn/T/tmpyfbyxnon/_remote_module_non_scriptable.py
+INFO:torch.distributed.nn.jit.instantiator:Created a temporary directory at /var/folders/y9/b74b9yj906s_wtj0rrh2lf7c0000gn/T/tmp47hxtjzn
+INFO:torch.distributed.nn.jit.instantiator:Writing /var/folders/y9/b74b9yj906s_wtj0rrh2lf7c0000gn/T/tmp47hxtjzn/_remote_module_non_scriptable.py
+INFO:faiss.loader:Loading faiss.
+INFO:faiss.loader:Successfully loaded faiss.
 </pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">()</span><span class="o">.</span><span class="n">drop_database</span><span class="p">(</span><span class="s1">&#39;documents&#39;</span><span class="p">)</span>
-<span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">()</span><span class="o">.</span><span class="n">drop_database</span><span class="p">(</span><span class="s1">&#39;_filesystem:documents&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
 </div>
 <p>SuperDuperDB supports MongoDB as a databackend. Correspondingly, we’ll import the python MongoDB client pymongo and “wrap” our database to convert it to a SuperDuper Datalayer:</p>
 <div class="nbinput nblast docutils container">
@@ -351,7 +362,7 @@ WARNING:datasets.builder:Found cached dataset imdb (/Users/dodo/.cache/huggingfa
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ecf9583dfef349749eebbebadd29d28b", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "46174157d2454978ba932b01a72127c9", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
@@ -368,8 +379,8 @@ INFO:root:found 0 uris
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-(&lt;pymongo.results.InsertManyResult at 0x199e1f4f0&gt;,
- TaskWorkflow(database=&lt;superduperdb.datalayer.base.datalayer.Datalayer object at 0x1924e61d0&gt;, G=&lt;networkx.classes.digraph.DiGraph object at 0x199e4ae10&gt;))
+(&lt;pymongo.results.InsertManyResult at 0x19eca70a0&gt;,
+ TaskWorkflow(database=&lt;superduperdb.db.base.datalayer.Datalayer object at 0x197363b10&gt;, G=&lt;networkx.classes.digraph.DiGraph object at 0x19ecdf990&gt;))
 </pre></div></div>
 </div>
 <p>Check a sample from the database:</p>
@@ -388,7 +399,7 @@ INFO:root:found 0 uris
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Document({&#39;_id&#39;: ObjectId(&#39;64be898b579e06012525858b&#39;), &#39;_fold&#39;: &#39;train&#39;, &#39;text&#39;: &#34;Comes this heartwarming tale of hope. Hope that you&#39;ll never have to endure anything this awful again. *cough* Razzie award *cough*&lt;br /&gt;&lt;br /&gt;I disliked this movie because it was unfunny, predictable and inane. While watching I felt like I was in a psychology experiment to determine how low movie standards could get before people complained. When I requested my money back at the end of the movie I was informed that because I watched the whole thing &#39;I wasn&#39;t entitled to reimbursement&#39;. I was told by the assistant manager that several people had complained and gotten refunds already though.&lt;br /&gt;&lt;br /&gt;The movie summary is pretty basic. The midget thief steals a diamond and the poses as a baby to elude police. Underneath this clever outline however, lies a repertoire of original, fresh and hilarious skits. Or not.&lt;br /&gt;&lt;br /&gt;Ask yourself the following: Do you like to see people getting hit by pans? Do you like fart jokes? Do you like to see midgets posing as babies threatened with a thermometer in the anus? Do you like tired racial jokes? Do you think babies say &#39;goo goo goo goo goo gaa gaa&#39;? Do you drool?&lt;br /&gt;&lt;br /&gt;If you answered &#39;yes&#39; to any of the above then this movie is definitely for you. Although it has been billed in some places as &#39;The Worst Movie of the Decade&#39;, there is probably a movie or 2 that are worse...somewhere. I can&#39;t say for sure. I gave this movie 2 stars because we all know a review with only one star would indicate bias on the part of the reviewer and then the review wouldn&#39;t be taken seriously. &lt;br /&gt;&lt;br /&gt;This lowbrow comedy is intended for a less intelligent audience and I cannot in good conscience recommend it to anyone. Save your money for something funny.&lt;br /&gt;&lt;br /&gt;Respect&#34;, &#39;label&#39;: 0})
+Document({&#39;_id&#39;: ObjectId(&#39;64c8f2969a5a99bcba483995&#39;), &#39;_fold&#39;: &#39;train&#39;, &#39;text&#39;: &#39;&#34;My Left Foot&#34; is a pretty impressive film that tells the story of Christy Brown, an artist who was crippled with cerebral palsy and learned to paint with his left foot, the only limb in his body he had control over. Daniel Day-Lewis won his first Oscar as Best Actor for this film, which I\&#39;m not absolutely certain was deserved, but is still noteworthy. Day-Lewis give Brown a realistic and occasionally almost humorous touch. Brenda Fricker, as Brown\&#39;s devoted mother, also won an Oscar for a believable and touching role. My problem with this film is that it is a bit too real at times. When Brown is in desperation and must help someone and do it all with his left foot, the film can be difficult to listen. This gives it an often depressing feel that may turn off some viewers for a time. However, if you look beyond that, you will see a sense of hope and inspiration for those who have handicaps and other difficulties to overcome. Those of us who are not crippled and still consider ourselves to have problems are inspired by this film, because if somewhat with a much worse condition than us can overcome their difficulties, we can certainly do the same thing. Well made, occasionally enjoyable, but difficult to listen. May not be for everyone, but not bad at all.&lt;br /&gt;&lt;br /&gt;*** out of ****&#39;, &#39;label&#39;: 1})
 </pre></div></div>
 </div>
 <p>Create a tokenizer and use it to provide a data-collator for batching inputs:</p>
@@ -413,10 +424,10 @@ Document({&#39;_id&#39;: ObjectId(&#39;64be898b579e06012525858b&#39;), &#39;_fol
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Some weights of the model checkpoint at distilbert-base-uncased were not used when initializing DistilBertForSequenceClassification: [&#39;vocab_projector.bias&#39;, &#39;vocab_transform.bias&#39;, &#39;vocab_transform.weight&#39;, &#39;vocab_layer_norm.weight&#39;, &#39;vocab_layer_norm.bias&#39;]
+Some weights of the model checkpoint at distilbert-base-uncased were not used when initializing DistilBertForSequenceClassification: [&#39;vocab_layer_norm.bias&#39;, &#39;vocab_transform.weight&#39;, &#39;vocab_transform.bias&#39;, &#39;vocab_layer_norm.weight&#39;, &#39;vocab_projector.bias&#39;]
 - This IS expected if you are initializing DistilBertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
 - This IS NOT expected if you are initializing DistilBertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
-Some weights of DistilBertForSequenceClassification were not initialized from the model checkpoint at distilbert-base-uncased and are newly initialized: [&#39;classifier.weight&#39;, &#39;classifier.bias&#39;, &#39;pre_classifier.bias&#39;, &#39;pre_classifier.weight&#39;]
+Some weights of DistilBertForSequenceClassification were not initialized from the model checkpoint at distilbert-base-uncased and are newly initialized: [&#39;pre_classifier.bias&#39;, &#39;pre_classifier.weight&#39;, &#39;classifier.bias&#39;, &#39;classifier.weight&#39;]
 You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
 </pre></div></div>
 </div>
@@ -446,7 +457,7 @@ You should probably TRAIN this model on a down-stream task to be able to use it 
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">superduperdb.core.metric</span> <span class="kn">import</span> <span class="n">Metric</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">superduperdb.container.metric</span> <span class="kn">import</span> <span class="n">Metric</span>
 
 <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
     <span class="n">X</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">,</span>
@@ -488,7 +499,7 @@ You&#39;re using a DistilBertTokenizerFast tokenizer. Please note that with a fa
     <div>
 
       <progress value='4' max='4' style='width:300px; height:20px; vertical-align: middle;'></progress>
-      [4/4 00:39, Epoch 2/2]
+      [4/4 00:40, Epoch 2/2]
     </div>
     <table border="1" class="dataframe">
   <thead>
@@ -503,13 +514,13 @@ You&#39;re using a DistilBertTokenizerFast tokenizer. Please note that with a fa
     <tr>
       <td>1</td>
       <td>No log</td>
-      <td>0.704457</td>
+      <td>0.692925</td>
       <td>0.500000</td>
     </tr>
     <tr>
       <td>2</td>
       <td>No log</td>
-      <td>0.706399</td>
+      <td>0.694557</td>
       <td>0.500000</td>
     </tr>
   </tbody>
@@ -528,7 +539,7 @@ INFO:root:Saving model...
 </div>
 <p>We can verify that the model gives us reasonable predictions:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s2">&quot;This movie sucks!&quot;</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -536,7 +547,7 @@ INFO:root:Saving model...
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -562,14 +573,14 @@ INFO:root:Saving model...
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="compare_vector_search_solutions.html">
+          <a class="prev-page" href="multimodal_image_search_clip.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Compare vector search</div>
+                <div class="title">Multimodal search with CLIP</div>
                 
               </div>
             </a>
@@ -604,6 +615,7 @@ INFO:root:Saving model...
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </body>
