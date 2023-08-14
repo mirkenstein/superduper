@@ -2,15 +2,15 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Explanations" href="../explanations/index.html" /><link rel="prev" title="Datasets" href="datasets.html" />
 
-    <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
-        <title>Vector Indexes - SuperDuperDB documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
+        <title>Vector Indexes - Python documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -124,7 +124,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">SuperDuperDB  documentation</div></a>
+      <a href="../index.html"><div class="brand">Python  documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,8 +146,11 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/SuperDuperDB_logo.png" alt="Logo"/>
+  </div>
   
-  <span class="sidebar-brand-text">SuperDuperDB  documentation</span>
+  <span class="sidebar-brand-text">Python  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -189,7 +192,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../how_to/index.html">How to …</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../how_to/playground.html">Download, install and setup SuperDuperDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how_to/playground.html">Welcome to the SuperDuperDB Playground!</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how_to/add_images_or_audio.html">Add images, audio or video from URIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how_to/create_replicaset.html">How to create a replica set in MongoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how_to/mongo_cdc.html">Perform change data capture (CDC)</a></li>
@@ -200,7 +203,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../examples/mnist_torch.html">Training and maintaining MNIST predictions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples/mnist_sklearn.html">MNIST using scikit-learn and SuperDuperDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples/openai.html">OpenAI vector search</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../examples/compare_vector_search_solutions.html">Compare vector search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/compare_vector_search_solutions.html">Turn your classical-database into a vector-database with SuperDuperDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples/multimodal_image_search_clip.html">Multimodal search with CLIP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples/sentiment_analysis_use_case.html">Sentiment analysis with transformers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples/voice_memos.html">Cataloguing voice-memos for a self managed personal assistant</a></li>
@@ -306,7 +309,7 @@ In the simples variant one does simply:</p>
 <p>The model <code class="docutils literal notranslate"><span class="pre">my-model</span></code> should have already been registered with SuperDuperDB (see <a class="reference internal" href="models.html#models"><span class="std std-ref">models</span></a> for help). <code class="docutils literal notranslate"><span class="pre">my-key</span></code> is the field to be searched. Together <code class="docutils literal notranslate"><span class="pre">my-model/my-key</span></code> refer to the <a class="reference internal" href="#listeners"><span class="xref myst">listener</span></a> component (previously created) which is responsible for computing vectors from the data.
 See <a class="reference internal" href="../source/superduperdb.container.html#module-superduperdb.container.listener" title="superduperdb.container.listener"><span class="xref myst py py-mod">here</span></a> for how to create such a component.</p>
 <p>Alternatively the model and listener may be created inline.
-Here is how to define a simple libear bag-of-words model:</p>
+Here is how to define a simple linear bag-of-words model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">superduperdb.container.vector_index</span> <span class="kn">import</span> <span class="n">VectorIndex</span>
 <span class="kn">from</span> <span class="nn">superduperdb.container.listener</span> <span class="kn">import</span> <span class="n">Listener</span>
 <span class="kn">from</span> <span class="nn">superduperdb.model.sentence_transformers.wrapper</span> <span class="kn">import</span> <span class="n">Pipeline</span>
@@ -319,7 +322,7 @@ Here is how to define a simple libear bag-of-words model:</p>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">()])</span>
 
-
+ <span class="k">for</span>
 <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
     <span class="n">VectorIndex</span><span class="p">(</span>
         <span class="n">identifier</span><span class="o">=</span><span class="s1">&#39;my-index&#39;</span><span class="p">,</span>
@@ -328,24 +331,25 @@ Here is how to define a simple libear bag-of-words model:</p>
                 <span class="n">preprocess</span><span class="o">=</span><span class="n">TextEmbedding</span><span class="p">(</span><span class="n">d</span><span class="p">),</span>  <span class="c1"># &quot;d&quot; should be loaded from disk</span>
                 <span class="nb">object</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">512</span><span class="p">),</span>
             <span class="p">)</span>
-<span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;&lt;key-to-search&gt;&#39;</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;&lt;key-to-search&gt;&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="using-vector-indexes-with-mongodb">
-<h2>Using vector indexes with MongoDB<a class="headerlink" href="#using-vector-indexes-with-mongodb" title="Permalink to this heading">#</a></h2>
+<section id="using-vector-indexes">
+<h2>Using vector indexes<a class="headerlink" href="#using-vector-indexes" title="Permalink to this heading">#</a></h2>
+<section id="mongodb">
+<h3>MongoDB<a class="headerlink" href="#mongodb" title="Permalink to this heading">#</a></h3>
 <p>To use your vector index to search MongoDB, there are two possibilities:</p>
 <p>Firstly, find similar matches and then filter the results:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="o">&gt;</span> <span class="kn">from</span> <span class="nn">superduperdb.container.document</span> <span class="kn">import</span> <span class="n">Document</span> <span class="k">as</span> <span class="n">D</span>
-<span class="o">&gt;&gt;</span> <span class="o">&gt;</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-    <span class="o">...</span>
-<span class="n">Collection</span><span class="p">(</span><span class="s1">&#39;my-coll&#39;</span><span class="p">)</span>
-<span class="o">....</span><span class="n">like</span><span class="p">(</span><span class="n">D</span><span class="p">({</span><span class="s1">&#39;&lt;key-to-search&gt;&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;content&#39;</span> <span class="o">&gt;</span><span class="p">}),</span> <span class="n">vector_index</span><span class="o">=</span><span class="s1">&#39;my-index&#39;</span><span class="p">)</span>
-<span class="o">....</span><span class="n">find</span><span class="p">(</span> <span class="o">&lt;</span> <span class="nb">filter</span> <span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span> <span class="n">projection</span> <span class="o">&gt;</span><span class="p">)</span>
-<span class="o">...</span> <span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">superduperdb.container.document</span> <span class="kn">import</span> <span class="n">Document</span> <span class="k">as</span> <span class="n">D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">Collection</span><span class="p">(</span><span class="s1">&#39;my-coll&#39;</span><span class="p">)</span>
+<span class="gp">... </span>      <span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="n">D</span><span class="p">({</span><span class="s1">&#39;&lt;key-to-search&gt;&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;content&#39;</span> <span class="o">&gt;</span><span class="p">},</span> <span class="n">vector_index</span><span class="o">=</span><span class="s1">&#39;my-index&#39;</span><span class="p">)</span>
+<span class="gp">... </span>      <span class="o">.</span><span class="n">find</span><span class="p">(</span> <span class="o">&lt;</span> <span class="nb">filter</span> <span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span> <span class="n">projection</span> <span class="o">&gt;</span><span class="p">)</span>
+<span class="gp">... </span>   <span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Secondly, filter the data and find similar matches within the results:</p>
@@ -356,6 +360,7 @@ Here is how to define a simple libear bag-of-words model:</p>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
 </section>
 </section>
 
@@ -416,7 +421,10 @@ Here is how to define a simple libear bag-of-words model:</p>
             <ul>
 <li><a class="reference internal" href="#">Vector Indexes</a><ul>
 <li><a class="reference internal" href="#creating-vector-indexes">Creating vector indexes</a></li>
-<li><a class="reference internal" href="#using-vector-indexes-with-mongodb">Using vector indexes with MongoDB</a></li>
+<li><a class="reference internal" href="#using-vector-indexes">Using vector indexes</a><ul>
+<li><a class="reference internal" href="#mongodb">MongoDB</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -428,13 +436,12 @@ Here is how to define a simple libear bag-of-words model:</p>
       
     </aside>
   </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/scripts/furo.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     </body>
 </html>
