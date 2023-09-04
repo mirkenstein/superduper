@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
-        <title>superduperdb.base.config - SuperDuperDB documentation</title>
+        <title>superduperdb.base.config - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">SuperDuperDB  documentation</div></a>
+      <a href="../../../index.html"><div class="brand">Python  documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,8 +145,11 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/SuperDuperDB_logo.png" alt="Logo"/>
+  </div>
   
-  <span class="sidebar-brand-text">SuperDuperDB  documentation</span>
+  <span class="sidebar-brand-text">Python  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -188,7 +191,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../how_to/index.html">How to …</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../how_to/playground.html"><strong>Welcome to the SuperDuperDB Playground!</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how_to/playground.html">Welcome to the SuperDuperDB Playground!</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how_to/add_images_or_audio.html">Add images, audio or video from URIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how_to/create_replicaset.html">How to create a replica set in MongoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how_to/mongo_cdc.html">Perform change data capture (CDC)</a></li>
@@ -233,10 +236,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of superduperdb.ext.vector package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l5"><a class="reference internal" href="../../../source/superduperdb.ext.vector.vectors.html">superduperdb.ext.vector.vectors package</a></li>
-</ul>
-</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.misc.html">superduperdb.misc package</a></li>
@@ -289,7 +289,7 @@
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">root_validator</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
 
 <span class="kn">from</span> <span class="nn">.jsonable</span> <span class="kn">import</span> <span class="n">Factory</span><span class="p">,</span> <span class="n">JSONable</span>
 
@@ -298,7 +298,13 @@
 
 
 <div class="viewcode-block" id="HasPort"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.HasPort">[docs]</a><span class="k">class</span> <span class="nc">HasPort</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base class for server connections&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A base class for server connections</span>
+
+<span class="sd">    :param password: The password for the connection</span>
+<span class="sd">    :param port: The port for the connection</span>
+<span class="sd">    :param username: The username for the connection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
@@ -306,19 +312,34 @@
 
 
 <div class="viewcode-block" id="HostPort"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.HostPort">[docs]</a><span class="k">class</span> <span class="nc">HostPort</span><span class="p">(</span><span class="n">HasPort</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure server connections with a `host` property&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure server connections with a `host` property</span>
+
+<span class="sd">    :param host: The host for the connection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;localhost&#39;</span></div>
 
 
 <div class="viewcode-block" id="IpPort"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.IpPort">[docs]</a><span class="k">class</span> <span class="nc">IpPort</span><span class="p">(</span><span class="n">HasPort</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure server connections with an `ip` property&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure server connections with an `ip` property</span>
+
+<span class="sd">    :param ip: The ip for the connection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ip</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;localhost&#39;</span></div>
 
 
 <div class="viewcode-block" id="Retry"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Retry">[docs]</a><span class="k">class</span> <span class="nc">Retry</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes how to retry using the `tenacity` library&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Describes how to retry using the `tenacity` library</span>
+
+<span class="sd">    :param stop_after_attempt: The number of attempts to make</span>
+<span class="sd">    :param wait_max: The maximum time to wait between attempts</span>
+<span class="sd">    :param wait_min: The minimum time to wait between attempts</span>
+<span class="sd">    :param wait_multiplier: The multiplier for the wait time between attempts</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">stop_after_attempt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">wait_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.0</span>
@@ -327,32 +348,41 @@
 
 
 <div class="viewcode-block" id="Api"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Api">[docs]</a><span class="k">class</span> <span class="nc">Api</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base class for API connections&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A base class for API connections</span>
+
+<span class="sd">    :param api_key: The API key for the connection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">_BAD_KEY</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Apis"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Apis">[docs]</a><span class="k">class</span> <span class="nc">Apis</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A container for API connections&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A container for API connections</span>
+
+<span class="sd">    :param providers: A dictionary of API connections</span>
+<span class="sd">    :param retry: A ``Retry`` object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">providers</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Api</span><span class="p">]</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">retry</span><span class="p">:</span> <span class="n">Retry</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Retry</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Dask"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Dask">[docs]</a><span class="k">class</span> <span class="nc">Dask</span><span class="p">(</span><span class="n">IpPort</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes a connection to Dask&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Describes a connection to Dask</span>
+
+<span class="sd">    :param deserializers: A list of deserializers</span>
+<span class="sd">    :param port: The port for the connection</span>
+<span class="sd">    :param serializers: A list of serializers</span>
+<span class="sd">    :param local: Whether the connection is local</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">deserializers</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8786</span>
     <span class="n">serializers</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">local</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></div>
-
-
-<div class="viewcode-block" id="Deployment"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Deployment">[docs]</a><span class="k">class</span> <span class="nc">Deployment</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;(unused)&quot;&quot;&quot;</span>
-
-    <span class="n">database</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span></div>
 
 
 <div class="viewcode-block" id="LogLevel"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.LogLevel">[docs]</a><span class="k">class</span> <span class="nc">LogLevel</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
@@ -371,29 +401,42 @@
 
 
 <div class="viewcode-block" id="Logging"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Logging">[docs]</a><span class="k">class</span> <span class="nc">Logging</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describe how we are going to log. This isn&#39;t yet used.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Describe how we are going to log. This isn&#39;t yet used.</span>
+
+<span class="sd">    :param level: The log level</span>
+<span class="sd">    :param type: The log type</span>
+<span class="sd">    :param kwargs: Any additional keyword arguments</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">level</span><span class="p">:</span> <span class="n">LogLevel</span> <span class="o">=</span> <span class="n">LogLevel</span><span class="o">.</span><span class="n">INFO</span>
     <span class="nb">type</span><span class="p">:</span> <span class="n">LogType</span> <span class="o">=</span> <span class="n">LogType</span><span class="o">.</span><span class="n">STDERR</span>
     <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ModelServer"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.ModelServer">[docs]</a><span class="k">class</span> <span class="nc">ModelServer</span><span class="p">(</span><span class="n">HostPort</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure the model server&#39;s port&quot;&quot;&quot;</span>
-
-    <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span>
-    <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5001</span></div>
-
-
 <div class="viewcode-block" id="MongoDB"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.MongoDB">[docs]</a><span class="k">class</span> <span class="nc">MongoDB</span><span class="p">(</span><span class="n">HostPort</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure MongoDB&#39;s port and credentials&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure MongoDB&#39;s port and credentials</span>
+
+<span class="sd">    :param host: The host for the connection</span>
+<span class="sd">    :param port: The port for the connection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># TODO - configure all databases via uri</span>
 
     <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;localhost&#39;</span>
     <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">27017</span></div>
 
 
-<div class="viewcode-block" id="DataLayer"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.DataLayer">[docs]</a><span class="k">class</span> <span class="nc">DataLayer</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure which db or database is being used&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DbComponent"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.DbComponent">[docs]</a><span class="k">class</span> <span class="nc">DbComponent</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure which db or database is being used</span>
+
+<span class="sd">    :param cls: The class of the data layer</span>
+<span class="sd">    :param connection: The connection for the data layer</span>
+<span class="sd">    :param kwargs: Any additional keyword arguments</span>
+<span class="sd">    :param name: The name of the data layer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="bp">cls</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mongodb&#39;</span>
     <span class="n">connection</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;pymongo&#39;</span>
@@ -401,31 +444,28 @@
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;test_db&#39;</span></div>
 
 
-<div class="viewcode-block" id="DataLayers"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.DataLayers">[docs]</a><span class="k">class</span> <span class="nc">DataLayers</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;TBD&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DbComponents"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.DbComponents">[docs]</a><span class="k">class</span> <span class="nc">DbComponents</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A container for the components of ``DB``.</span>
 
-    <span class="n">artifact</span><span class="p">:</span> <span class="n">DataLayer</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">DataLayer</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;_filesystem:test_db&#39;</span><span class="p">))</span>
-    <span class="n">data_backend</span><span class="p">:</span> <span class="n">DataLayer</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">DataLayer</span><span class="p">)</span>
-    <span class="n">metadata</span><span class="p">:</span> <span class="n">DataLayer</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">DataLayer</span><span class="p">)</span></div>
+<span class="sd">    :param artifact: The artifact data layer</span>
+<span class="sd">    :param data_backend: The data backend data layer</span>
+<span class="sd">    :param metadata: The metadata data layer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-
-<div class="viewcode-block" id="Notebook"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Notebook">[docs]</a><span class="k">class</span> <span class="nc">Notebook</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure the notebook server connection information&quot;&quot;&quot;</span>
-
-    <span class="n">ip</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;0.0.0.0&#39;</span>
-    <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8888</span>
-    <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-
-<div class="viewcode-block" id="Notebook.check_one_or_none"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Notebook.check_one_or_none">[docs]</a>    <span class="nd">@root_validator</span><span class="p">(</span><span class="n">skip_on_failure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># type: ignore[call-overload]</span>
-    <span class="k">def</span> <span class="nf">check_one_or_none</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">v</span><span class="p">[</span><span class="s1">&#39;token&#39;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;At most one of password and token may be set&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">v</span></div></div>
+    <span class="n">artifact</span><span class="p">:</span> <span class="n">DbComponent</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">DbComponent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;_filesystem:test_db&#39;</span><span class="p">))</span>
+    <span class="n">data_backend</span><span class="p">:</span> <span class="n">DbComponent</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">DbComponent</span><span class="p">)</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="n">DbComponent</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">DbComponent</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Server"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Server">[docs]</a><span class="k">class</span> <span class="nc">Server</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure the SuperDuperDB server connection information&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure the SuperDuperDB server connection information</span>
+
+<span class="sd">    :param host: The host for the connection</span>
+<span class="sd">    :param port: The port for the connection</span>
+<span class="sd">    :param protocol: The protocol for the connection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span>
     <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3223</span>
@@ -437,7 +477,13 @@
 
 
 <div class="viewcode-block" id="LanceDB"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.LanceDB">[docs]</a><span class="k">class</span> <span class="nc">LanceDB</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure the Lance DB vector search connection information&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure the Lance DB vector search connection information</span>
+
+<span class="sd">    :param backfill_batch_size: The batch size for backfilling</span>
+<span class="sd">    :param lancedb: Whether LanceDB is being used</span>
+<span class="sd">    :param uri: The URI for the connection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">backfill_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">lancedb</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
@@ -445,42 +491,85 @@
 
 
 <div class="viewcode-block" id="InMemory"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.InMemory">[docs]</a><span class="k">class</span> <span class="nc">InMemory</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure the in-memory vector search connection information&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure the in-memory vector search connection information</span>
+
+<span class="sd">    :param backfill_batch_size: The batch size for backfilling</span>
+<span class="sd">    :param inmemory: Whether in-memory is being used</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">backfill_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">inmemory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
+<div class="viewcode-block" id="SelfHosted"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.SelfHosted">[docs]</a><span class="k">class</span> <span class="nc">SelfHosted</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A placeholder for the case in which search is self-hosted by data-backend</span>
+
+<span class="sd">    For example: MongoDB atlas vector-search, Elastic search etc..</span>
+
+<span class="sd">    :param selfhosted: Whether self-hosted is being used</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">selfhosted</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
 <div class="viewcode-block" id="VectorSearch"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.VectorSearch">[docs]</a><span class="k">class</span> <span class="nc">VectorSearch</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configure the full vector search connection information&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure the full vector search connection information</span>
+
+<span class="sd">    :param host: The host for the connection</span>
+<span class="sd">    :param password: The password for the connection</span>
+<span class="sd">    :param port: The port for the connection</span>
+<span class="sd">    :param type: The type of vector search</span>
+<span class="sd">    :param backfill_batch_size: The batch size for backfilling</span>
+<span class="sd">    :param username: The username for the connection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;localhost&#39;</span>
     <span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">19530</span>
-    <span class="nb">type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">LanceDB</span><span class="p">,</span> <span class="n">InMemory</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">InMemory</span><span class="p">)</span>
-    <span class="n">backfill_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">LanceDB</span><span class="p">,</span> <span class="n">InMemory</span><span class="p">,</span> <span class="n">SelfHosted</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">InMemory</span><span class="p">)</span>
+    <span class="n">backfill_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># TODO don&#39;t need this as well</span>
     <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Downloads"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Downloads">[docs]</a><span class="k">class</span> <span class="nc">Downloads</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configure how downloads are saved in the database</span>
+<span class="sd">    or to hybrid filestorage (references to filesystem from datastore)</span>
+
+<span class="sd">    :param hybrid: Whether hybrid is being used</span>
+<span class="sd">    :param root: The root for the connection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">hybrid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">root</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;data/downloads&#39;</span></div>
 
 
 <div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config">[docs]</a><span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The data class containing all configurable superduperdb values&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The data class containing all configurable superduperdb values</span>
+
+<span class="sd">    :param apis: The ``Apis`` object</span>
+<span class="sd">    :param cdc: Whether CDC is being used</span>
+<span class="sd">    :param dask: The ``Dask`` object</span>
+<span class="sd">    :param data_layers: The ``DBComponents`` object</span>
+<span class="sd">    :param distributed: Whether distributed is being used</span>
+<span class="sd">    :param logging: The ``Logging`` object</span>
+<span class="sd">    :param server: The ``Server`` object</span>
+<span class="sd">    :param vector_search: The ``VectorSearch`` object</span>
+<span class="sd">    :param downloads: The ``Downloads`` object</span>
+<span class="sd">    :param verbose: Whether verbose is being used</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">apis</span><span class="p">:</span> <span class="n">Apis</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Apis</span><span class="p">)</span>
     <span class="n">cdc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">dask</span><span class="p">:</span> <span class="n">Dask</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Dask</span><span class="p">)</span>
-    <span class="n">data_layers</span><span class="p">:</span> <span class="n">DataLayers</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">DataLayers</span><span class="p">)</span>
-    <span class="n">distributed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">db_components</span><span class="p">:</span> <span class="n">DbComponents</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">DbComponents</span><span class="p">)</span>
+    <span class="n">distributed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># TODO include this in the dask component</span>
     <span class="n">logging</span><span class="p">:</span> <span class="n">Logging</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Logging</span><span class="p">)</span>
-    <span class="n">model_server</span><span class="p">:</span> <span class="n">ModelServer</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">ModelServer</span><span class="p">)</span>
-    <span class="n">notebook</span><span class="p">:</span> <span class="n">Notebook</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Notebook</span><span class="p">)</span>
     <span class="n">server</span><span class="p">:</span> <span class="n">Server</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Server</span><span class="p">)</span>
     <span class="n">vector_search</span><span class="p">:</span> <span class="n">VectorSearch</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">VectorSearch</span><span class="p">)</span>
-    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">downloads</span><span class="p">:</span> <span class="n">Downloads</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Downloads</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Config.Config"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config.Config">[docs]</a>    <span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">JSONable</span><span class="o">.</span><span class="n">Config</span><span class="p">):</span>
@@ -524,7 +613,6 @@
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
     </body>

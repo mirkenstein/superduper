@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
-        <title>superduperdb.db.base.query - SuperDuperDB documentation</title>
+        <title>superduperdb.db.base.query - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">SuperDuperDB  documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">Python  documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,8 +145,11 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../../_static/SuperDuperDB_logo.png" alt="Logo"/>
+  </div>
   
-  <span class="sidebar-brand-text">SuperDuperDB  documentation</span>
+  <span class="sidebar-brand-text">Python  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -188,7 +191,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../how_to/index.html">How to …</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../how_to/playground.html"><strong>Welcome to the SuperDuperDB Playground!</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../how_to/playground.html">Welcome to the SuperDuperDB Playground!</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../how_to/add_images_or_audio.html">Add images, audio or video from URIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../how_to/create_replicaset.html">How to create a replica set in MongoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../how_to/mongo_cdc.html">Perform change data capture (CDC)</a></li>
@@ -233,10 +236,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of superduperdb.ext.vector package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l5"><a class="reference internal" href="../../../../source/superduperdb.ext.vector.vectors.html">superduperdb.ext.vector.vectors package</a></li>
-</ul>
-</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.misc.html">superduperdb.misc package</a></li>
@@ -286,23 +286,23 @@
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb.container.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
+<span class="kn">from</span> <span class="nn">superduperdb.db.base.cursor</span> <span class="kn">import</span> <span class="n">SuperDuperCursor</span>
 
 <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">superduperdb.container.model</span> <span class="kn">import</span> <span class="n">Model</span>
     <span class="kn">from</span> <span class="nn">superduperdb.db.base.db</span> <span class="kn">import</span> <span class="n">DB</span>
 
 
-<div class="viewcode-block" id="SelectOne"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.SelectOne">[docs]</a><span class="k">class</span> <span class="nc">SelectOne</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
+<div class="viewcode-block" id="SelectOne"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.SelectOne">[docs]</a><span class="k">class</span> <span class="nc">SelectOne</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for queries which return a single line/ record of data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SuperDuperCursor</span><span class="p">:</span>
         <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="Like"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Like">[docs]</a><span class="k">class</span> <span class="nc">Like</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
+<div class="viewcode-block" id="Like"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Like">[docs]</a><span class="k">class</span> <span class="nc">Like</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for queries which invoke vector-search</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -312,7 +312,7 @@
         <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="Select"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Select">[docs]</a><span class="k">class</span> <span class="nc">Select</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
+<div class="viewcode-block" id="Select"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Select">[docs]</a><span class="k">class</span> <span class="nc">Select</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract base class, encapsulating Select database queries/ db reads.</span>
 <span class="sd">    This allows the concrete implementation of each db to differ substantially on</span>
@@ -324,7 +324,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a query that selects this table&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-<div class="viewcode-block" id="Select.is_trivial"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Select.is_trivial">[docs]</a>    <span class="k">def</span> <span class="nf">is_trivial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="Select.is_trivial"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Select.is_trivial">[docs]</a>    <span class="k">def</span> <span class="nf">is_trivial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determines when a select statement is &quot;just&quot; select everything.</span>
 
 <span class="sd">        For example, in SQL: &quot;FROM my_table SELECT *&quot;</span>
@@ -332,20 +332,31 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="Select.select_ids"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Select.select_ids">[docs]</a>    <span class="k">def</span> <span class="nf">select_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Select&#39;</span><span class="p">:</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">select_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Select&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts the Serializable into a Serializable which only returns the id</span>
 <span class="sd">        of each column/ document.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-<div class="viewcode-block" id="Select.select_using_ids"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Select.select_using_ids">[docs]</a>    <span class="k">def</span> <span class="nf">select_using_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="Select.select_using_ids"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Select.select_using_ids">[docs]</a>    <span class="k">def</span> <span class="nf">select_using_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a select using the same Serializable, subset to the specified ids</span>
 
 <span class="sd">        :param ids: string ids to which subsetting should occur</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="Select.add_fold"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Select.add_fold">[docs]</a>    <span class="k">def</span> <span class="nf">add_fold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fold</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Select&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="Select.select_ids_of_missing_outputs"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Select.select_ids_of_missing_outputs">[docs]</a>    <span class="k">def</span> <span class="nf">select_ids_of_missing_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Select&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a select which selects the ids of documents whose</span>
+<span class="sd">        `_outputs.key.model` entries are missing</span>
+
+<span class="sd">        :param key: key on which model was applied</span>
+<span class="sd">        :param model: model identifier</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="Select.add_fold"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Select.add_fold">[docs]</a>    <span class="k">def</span> <span class="nf">add_fold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fold</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Select&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a select which selects the same data, but additionally restricts to</span>
 <span class="sd">        the fold specified</span>
 
@@ -353,12 +364,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="Select.model_update"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Select.model_update">[docs]</a>    <span class="k">def</span> <span class="nf">model_update</span><span class="p">(</span>
+<div class="viewcode-block" id="Select.model_update"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Select.model_update">[docs]</a>    <span class="k">def</span> <span class="nf">model_update</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">,</span>
         <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
         <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">outputs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -372,8 +383,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="Select.__call__"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Select.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">):</span>
+<div class="viewcode-block" id="Select.__call__"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Select.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SuperDuperCursor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply Serializable to db</span>
 
@@ -382,7 +393,7 @@
         <span class="k">pass</span></div></div>
 
 
-<div class="viewcode-block" id="Insert"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Insert">[docs]</a><span class="k">class</span> <span class="nc">Insert</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
+<div class="viewcode-block" id="Insert"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Insert">[docs]</a><span class="k">class</span> <span class="nc">Insert</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for database inserts.</span>
 
@@ -407,7 +418,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a Select object which selects the table into which the insert</span>
 <span class="sd">        was inserted&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Insert.__call__"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Insert.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="Insert.__call__"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Insert.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply Serializable to db</span>
@@ -417,12 +428,12 @@
         <span class="k">pass</span></div></div>
 
 
-<div class="viewcode-block" id="Delete"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Delete">[docs]</a><span class="k">class</span> <span class="nc">Delete</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
+<div class="viewcode-block" id="Delete"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Delete">[docs]</a><span class="k">class</span> <span class="nc">Delete</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for deleting documents from db</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Delete.__call__"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Delete.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="Delete.__call__"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Delete.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply Serializable to db</span>
@@ -432,7 +443,7 @@
         <span class="k">pass</span></div></div>
 
 
-<div class="viewcode-block" id="Update"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Update">[docs]</a><span class="k">class</span> <span class="nc">Update</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
+<div class="viewcode-block" id="Update"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Update">[docs]</a><span class="k">class</span> <span class="nc">Update</span><span class="p">(</span><span class="n">ABC</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for database updates.</span>
 
@@ -464,7 +475,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-<div class="viewcode-block" id="Update.__call__"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.data_backend.Update.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="Update.__call__"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.query.Update.__call__">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply Serializable to db.</span>
@@ -511,7 +522,6 @@
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
     </body>

@@ -237,10 +237,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of superduperdb.ext.vector package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l5"><a class="reference internal" href="../source/superduperdb.ext.vector.vectors.html">superduperdb.ext.vector.vectors package</a></li>
-</ul>
-</li>
+<li class="toctree-l4"><a class="reference internal" href="../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../source/superduperdb.misc.html">superduperdb.misc package</a></li>
@@ -575,9 +572,9 @@ into the database.</p>
 </pre></div>
 </div>
 <p>An equivalent syntax is the following:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">superduperdb.container.listener</span> <span class="kn">import</span> <span class="n">listener</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">superduperdb.container.listener</span> <span class="kn">import</span> <span class="n">Listener</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-<span class="gp">... </span>   <span class="n">listener</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">Listener</span><span class="p">(</span>
 <span class="gp">... </span>       <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
 <span class="gp">... </span>       <span class="n">select</span><span class="o">=</span><span class="n">coll</span><span class="o">.</span><span class="n">find</span><span class="p">(),</span>
 <span class="gp">... </span>       <span class="n">key</span><span class="o">=</span><span class="s1">&#39;input_col&#39;</span><span class="p">,</span>
@@ -585,9 +582,9 @@ into the database.</p>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
-<p>After setting up a <code class="docutils literal notranslate"><span class="pre">listener</span></code>, whenever data is inserted or updated, jobs are created
+<p>After setting up a <code class="docutils literal notranslate"><span class="pre">Listener</span></code>, whenever data is inserted or updated, jobs are created
 which save the outputs of the model in the <code class="docutils literal notranslate"><span class="pre">&quot;_outputs&quot;</span></code> field.</p>
-<p>A <code class="docutils literal notranslate"><span class="pre">listener</span></code> may also be configured in <a class="reference internal" href="#clustersection"><span class="xref myst">cluster mode</span></a>, to listen for changes coming in
+<p>A <code class="docutils literal notranslate"><span class="pre">Listener</span></code> may also be configured in <a class="reference internal" href="#clustersection"><span class="xref myst">cluster mode</span></a>, to listen for changes coming in
 from any sources - i.e. changes are not just detected through the SuperDuperDB system.
 Read more about that <a class="reference internal" href="../cluster/change_data_capture.html#cdc"><span class="std std-ref">here</span></a>.</p>
 </section>

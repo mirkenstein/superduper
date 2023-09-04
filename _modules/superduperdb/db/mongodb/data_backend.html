@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
-        <title>superduperdb.db.mongodb.data_backend - SuperDuperDB documentation</title>
+        <title>superduperdb.db.mongodb.data_backend - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">SuperDuperDB  documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">Python  documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,8 +145,11 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../../_static/SuperDuperDB_logo.png" alt="Logo"/>
+  </div>
   
-  <span class="sidebar-brand-text">SuperDuperDB  documentation</span>
+  <span class="sidebar-brand-text">Python  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -188,7 +191,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../how_to/index.html">How to …</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../how_to/playground.html"><strong>Welcome to the SuperDuperDB Playground!</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../how_to/playground.html">Welcome to the SuperDuperDB Playground!</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../how_to/add_images_or_audio.html">Add images, audio or video from URIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../how_to/create_replicaset.html">How to create a replica set in MongoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../how_to/mongo_cdc.html">Perform change data capture (CDC)</a></li>
@@ -233,10 +236,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of superduperdb.ext.vector package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l5"><a class="reference internal" href="../../../../source/superduperdb.ext.vector.vectors.html">superduperdb.ext.vector.vectors package</a></li>
-</ul>
-</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.misc.html">superduperdb.misc package</a></li>
@@ -283,20 +283,27 @@
 <span></span><span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="kn">import</span> <span class="nn">click</span>
-<span class="kn">from</span> <span class="nn">pymongo</span> <span class="kn">import</span> <span class="n">MongoClient</span>
+<span class="kn">import</span> <span class="nn">pymongo</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
-<span class="kn">from</span> <span class="nn">superduperdb.container.document</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">superduperdb.container.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
+<span class="kn">from</span> <span class="nn">superduperdb.container.vector_index</span> <span class="kn">import</span> <span class="n">VectorIndex</span>
 <span class="kn">from</span> <span class="nn">superduperdb.db.base.data_backend</span> <span class="kn">import</span> <span class="n">BaseDataBackend</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.colors</span> <span class="kn">import</span> <span class="n">Colors</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.special_dicts</span> <span class="kn">import</span> <span class="n">MongoStyleDict</span>
 
 
 <div class="viewcode-block" id="MongoDataBackend"><a class="viewcode-back" href="../../../../source/superduperdb.db.mongodb.html#superduperdb.db.mongodb.data_backend.MongoDataBackend">[docs]</a><span class="k">class</span> <span class="nc">MongoDataBackend</span><span class="p">(</span><span class="n">BaseDataBackend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data backend for MongoDB.</span>
+
+<span class="sd">    :param conn: MongoDB client connection</span>
+<span class="sd">    :param name: Name of database to host filesystem</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">id_field</span> <span class="o">=</span> <span class="s1">&#39;_id&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">:</span> <span class="n">MongoClient</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">:</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">conn</span><span class="o">=</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
@@ -315,14 +322,6 @@
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Aborting...&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">drop_database</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MongoDataBackend.get_output_from_document"><a class="viewcode-back" href="../../../../source/superduperdb.db.mongodb.html#superduperdb.db.mongodb.data_backend.MongoDataBackend.get_output_from_document">[docs]</a>    <span class="k">def</span> <span class="nf">get_output_from_document</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MongoStyleDict</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)[</span><span class="sa">f</span><span class="s1">&#39;_outputs.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">],</span>  <span class="c1"># type: ignore</span>
-            <span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">],</span>  <span class="c1"># type: ignore</span>
-        <span class="p">)</span></div>
-
 <div class="viewcode-block" id="MongoDataBackend.set_content_bytes"><a class="viewcode-back" href="../../../../source/superduperdb.db.mongodb.html#superduperdb.db.mongodb.data_backend.MongoDataBackend.set_content_bytes">[docs]</a>    <span class="k">def</span> <span class="nf">set_content_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">bytes_</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">MongoStyleDict</span><span class="p">):</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
@@ -333,9 +332,85 @@
         <span class="n">select</span> <span class="o">=</span> <span class="n">Serializable</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">])</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unsetting output field _outputs.</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$unset&#39;</span><span class="p">:</span> <span class="p">{</span><span class="sa">f</span><span class="s1">&#39;_outputs.</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}</span>
-
         <span class="n">update</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">[</span><span class="n">select</span><span class="o">.</span><span class="n">collection</span><span class="p">]</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">filter</span><span class="p">,</span> <span class="n">update</span><span class="o">.</span><span class="n">update</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">[</span><span class="n">select</span><span class="o">.</span><span class="n">collection</span><span class="p">]</span><span class="o">.</span><span class="n">update_many</span><span class="p">(</span><span class="n">update</span><span class="o">.</span><span class="n">filter</span><span class="p">,</span> <span class="n">update</span><span class="o">.</span><span class="n">update</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MongoDataBackend.list_vector_indexes"><a class="viewcode-back" href="../../../../source/superduperdb.db.mongodb.html#superduperdb.db.mongodb.data_backend.MongoDataBackend.list_vector_indexes">[docs]</a>    <span class="k">def</span> <span class="nf">list_vector_indexes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">coll</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">list_collection_names</span><span class="p">():</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">command</span><span class="p">({</span><span class="s1">&#39;listSearchIndexes&#39;</span><span class="p">:</span> <span class="n">coll</span><span class="p">})</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">batch</span> <span class="o">=</span> <span class="n">i</span><span class="p">[</span><span class="s1">&#39;cursor&#39;</span><span class="p">][</span><span class="s1">&#39;firstBatch&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="s1">&#39;_outputs&#39;</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">[</span><span class="s1">&#39;latestDefinition&#39;</span><span class="p">][</span><span class="s1">&#39;mappings&#39;</span><span class="p">][</span><span class="s1">&#39;fields&#39;</span><span class="p">]:</span>
+                <span class="n">indexes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">indexes</span></div>
+
+<div class="viewcode-block" id="MongoDataBackend.delete_vector_index"><a class="viewcode-back" href="../../../../source/superduperdb.db.mongodb.html#superduperdb.db.mongodb.data_backend.MongoDataBackend.delete_vector_index">[docs]</a>    <span class="k">def</span> <span class="nf">delete_vector_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector_index</span><span class="p">:</span> <span class="n">VectorIndex</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete a vector index in the data backend if an Atlas deployment.</span>
+
+<span class="sd">        :param vector_index: vector index to delete</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># see `VectorIndex` class for details</span>
+        <span class="c1"># indexing_listener contains a `Select` object</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vector_index</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="n">select</span> <span class="o">=</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span>
+
+        <span class="c1"># TODO: probably MongoDB queries should all have a common base class</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">collection</span>  <span class="c1"># type: ignore[attr-defined]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">command</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;dropSearchIndex&quot;</span><span class="p">:</span> <span class="n">collection</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="MongoDataBackend.create_vector_index"><a class="viewcode-back" href="../../../../source/superduperdb.db.mongodb.html#superduperdb.db.mongodb.data_backend.MongoDataBackend.create_vector_index">[docs]</a>    <span class="k">def</span> <span class="nf">create_vector_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a vector index in the data backend if an Atlas deployment.</span>
+
+<span class="sd">        :param vector_index: vector index to create</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">key</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">model</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;dimensions&quot;</span><span class="p">:</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
+                    <span class="s2">&quot;similarity&quot;</span><span class="p">:</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">measure</span><span class="p">,</span>
+                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;knnVector&quot;</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">command</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;createSearchIndexes&quot;</span><span class="p">:</span> <span class="n">collection</span><span class="p">,</span>
+                <span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                        <span class="s2">&quot;definition&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;mappings&quot;</span><span class="p">:</span> <span class="p">{</span>
+                                <span class="s2">&quot;dynamic&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">{</span>
+                                    <span class="s2">&quot;_outputs&quot;</span><span class="p">:</span> <span class="p">{</span>
+                                        <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">{</span>
+                                            <span class="n">key</span><span class="p">:</span> <span class="p">{</span>
+                                                <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">fields</span><span class="p">,</span>
+                                                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;document&quot;</span><span class="p">,</span>
+                                            <span class="p">}</span>
+                                        <span class="p">},</span>
+                                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;document&quot;</span><span class="p">,</span>
+                                    <span class="p">}</span>
+                                <span class="p">},</span>
+                            <span class="p">}</span>
+                        <span class="p">},</span>
+                    <span class="p">}</span>
+                <span class="p">],</span>
+            <span class="p">}</span>
+        <span class="p">)</span></div></div>
 </pre></div>
         </article>
       </div>
@@ -375,7 +450,6 @@
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
     </body>

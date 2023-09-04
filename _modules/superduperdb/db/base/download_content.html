@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
-        <title>superduperdb.db.base.download_content - SuperDuperDB documentation</title>
+        <title>superduperdb.db.base.download_content - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">SuperDuperDB  documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">Python  documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,8 +145,11 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../../_static/SuperDuperDB_logo.png" alt="Logo"/>
+  </div>
   
-  <span class="sidebar-brand-text">SuperDuperDB  documentation</span>
+  <span class="sidebar-brand-text">Python  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -188,7 +191,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../how_to/index.html">How to …</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../how_to/playground.html"><strong>Welcome to the SuperDuperDB Playground!</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../how_to/playground.html">Welcome to the SuperDuperDB Playground!</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../how_to/add_images_or_audio.html">Add images, audio or video from URIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../how_to/create_replicaset.html">How to create a replica set in MongoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../how_to/mongo_cdc.html">Perform change data capture (CDC)</a></li>
@@ -233,10 +236,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of superduperdb.ext.vector package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l5"><a class="reference internal" href="../../../../source/superduperdb.ext.vector.vectors.html">superduperdb.ext.vector.vectors package</a></li>
-</ul>
-</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.misc.html">superduperdb.misc package</a></li>
@@ -293,7 +293,7 @@
     <span class="n">db</span><span class="p">,</span>
     <span class="n">query</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Select</span><span class="p">,</span> <span class="n">Insert</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">],</span>
     <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">documents</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">documents</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">timeout</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">raises</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">n_download_workers</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -305,6 +305,17 @@
 <span class="sd">    Download content contained in uploaded data. Items to be downloaded are identifier</span>
 <span class="sd">    via the subdocuments in the form exemplified below. By default items are downloaded</span>
 <span class="sd">    to the database, unless a ``download_update`` function is provided.</span>
+
+<span class="sd">    :param db: database instance</span>
+<span class="sd">    :param query: query to be executed</span>
+<span class="sd">    :param ids: ids to be downloaded</span>
+<span class="sd">    :param documents: documents to be downloaded</span>
+<span class="sd">    :param timeout: timeout for download</span>
+<span class="sd">    :param raises: whether to raise errors</span>
+<span class="sd">    :param n_download_workers: number of download workers</span>
+<span class="sd">    :param headers: headers to be used for download</span>
+<span class="sd">    :param download_update: function to be used for updating the database</span>
+<span class="sd">    :param **kwargs: additional keyword arguments</span>
 
 <span class="sd">    &gt;&gt;&gt; d = {&quot;_content&quot;: {&quot;uri&quot;: &quot;&lt;uri&gt;&quot;, &quot;encoder&quot;: &quot;&lt;encoder-identifier&gt;&quot;}}</span>
 <span class="sd">    &gt;&gt;&gt; def update(key, id, bytes):</span>
@@ -329,7 +340,8 @@
             <span class="n">select</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">select_using_ids</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
             <span class="n">documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">select</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">documents</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">documents</span>  <span class="c1"># type: ignore[union-attr]</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">Insert</span><span class="p">)</span>
+        <span class="n">documents</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">documents</span>
 
     <span class="n">uris</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">place_ids</span> <span class="o">=</span> <span class="n">gather_uris</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">])</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">uris</span><span class="p">)</span><span class="si">}</span><span class="s1"> uris&#39;</span><span class="p">)</span>
@@ -361,6 +373,7 @@
         <span class="k">def</span> <span class="nf">_download_update</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">bytes_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># type: ignore[misc]</span>
             <span class="k">return</span> <span class="n">query</span><span class="o">.</span><span class="n">download_update</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span> <span class="nb">bytes</span><span class="o">=</span><span class="n">bytes_</span><span class="p">)</span>
 
+    <span class="k">assert</span> <span class="n">place_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     <span class="n">downloader</span> <span class="o">=</span> <span class="n">Downloader</span><span class="p">(</span>
         <span class="n">uris</span><span class="o">=</span><span class="n">uris</span><span class="p">,</span>
         <span class="n">ids</span><span class="o">=</span><span class="n">place_ids</span><span class="p">,</span>
@@ -374,9 +387,11 @@
     <span class="n">downloader</span><span class="o">.</span><span class="n">go</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">update_db</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># ruff: noqa: E501</span>
     <span class="k">for</span> <span class="n">id_</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">place_ids</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
-        <span class="n">documents</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">set_content_bytes</span><span class="p">(</span>  <span class="c1"># type: ignore[index]</span>
-            <span class="n">documents</span><span class="p">[</span><span class="n">id_</span><span class="p">],</span> <span class="n">key</span><span class="p">,</span> <span class="n">downloader</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span>
+        <span class="n">documents</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">set_content_bytes</span><span class="p">(</span>  <span class="c1"># type: ignore[call-overload]</span>
+            <span class="n">documents</span><span class="p">[</span><span class="n">id_</span><span class="p">],</span> <span class="n">key</span><span class="p">,</span> <span class="n">downloader</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span>  <span class="c1"># type: ignore[call-overload,index]</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">documents</span></div>
 </pre></div>
@@ -418,7 +433,6 @@
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
     </body>

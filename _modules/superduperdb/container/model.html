@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
-        <title>superduperdb.container.model - SuperDuperDB documentation</title>
+        <title>superduperdb.container.model - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">SuperDuperDB  documentation</div></a>
+      <a href="../../../index.html"><div class="brand">Python  documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,8 +145,11 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/SuperDuperDB_logo.png" alt="Logo"/>
+  </div>
   
-  <span class="sidebar-brand-text">SuperDuperDB  documentation</span>
+  <span class="sidebar-brand-text">Python  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -188,7 +191,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../how_to/index.html">How to …</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../how_to/playground.html"><strong>Welcome to the SuperDuperDB Playground!</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how_to/playground.html">Welcome to the SuperDuperDB Playground!</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how_to/add_images_or_audio.html">Add images, audio or video from URIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how_to/create_replicaset.html">How to create a replica set in MongoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how_to/mongo_cdc.html">Perform change data capture (CDC)</a></li>
@@ -233,10 +236,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of superduperdb.ext.vector package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l5"><a class="reference internal" href="../../../source/superduperdb.ext.vector.vectors.html">superduperdb.ext.vector.vectors package</a></li>
-</ul>
-</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.misc.html">superduperdb.misc package</a></li>
@@ -283,10 +283,12 @@
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 
+<span class="kn">import</span> <span class="nn">tqdm</span>
 <span class="kn">from</span> <span class="nn">dask.distributed</span> <span class="kn">import</span> <span class="n">Future</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ndarray</span>
 <span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="kn">import</span> <span class="n">Pipeline</span>
@@ -311,10 +313,6 @@
 <span class="n">DataArg</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span>
 
 
-<div class="viewcode-block" id="TrainingConfiguration"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.TrainingConfiguration">[docs]</a><span class="k">def</span> <span class="nf">TrainingConfiguration</span><span class="p">(</span><span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">_TrainingConfiguration</span><span class="p">(</span><span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="_TrainingConfiguration"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model._TrainingConfiguration">[docs]</a><span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">_TrainingConfiguration</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -323,7 +321,8 @@
 <span class="sd">    and returns a class which may be invoked to apply training.</span>
 
 <span class="sd">    :param identifier: Unique identifier of configuration</span>
-<span class="sd">    :param **parameters: Key-values pairs, the variables which configure training.</span>
+<span class="sd">    :param **kwargs: Key-values pairs, the variables which configure training.</span>
+<span class="sd">    :param version: Version number of the configuration</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">#: A unique name for the class</span>
@@ -341,6 +340,18 @@
 
 
 <div class="viewcode-block" id="PredictMixin"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.PredictMixin">[docs]</a><span class="k">class</span> <span class="nc">PredictMixin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mixin class for components which can predict.</span>
+
+<span class="sd">    :param identifier: Unique identifier of model</span>
+<span class="sd">    :param encoder: Encoder instance (optional)</span>
+<span class="sd">    :param preprocess: Preprocess function (optional)</span>
+<span class="sd">    :param postprocess: Postprocess function (optional)</span>
+<span class="sd">    :param collate_fn: Collate function (optional)</span>
+<span class="sd">    :param batch_predict: Whether to batch predict (optional)</span>
+<span class="sd">    :param takes_context: Whether the model takes context into account (optional)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">encoder</span><span class="p">:</span> <span class="n">EncoderArg</span>
     <span class="n">preprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -348,7 +359,6 @@
     <span class="n">collate_fn</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">batch_predict</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">takes_context</span><span class="p">:</span> <span class="nb">bool</span>
-
     <span class="n">to_call</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span>
 
 <div class="viewcode-block" id="PredictMixin.create_predict_job"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.PredictMixin.create_predict_job">[docs]</a>    <span class="k">def</span> <span class="nf">create_predict_job</span><span class="p">(</span>
@@ -373,7 +383,13 @@
             <span class="p">},</span>
         <span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">):</span>
             <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="o">.</span><span class="n">artifact</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -429,142 +445,203 @@
 
         <span class="k">return</span> <span class="n">outputs</span>
 
+<div class="viewcode-block" id="PredictMixin.apredict"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.PredictMixin.apredict">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">apredict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">X</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">takes_context</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;context&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="n">one</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_predict_and_listen</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">X</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
+        <span class="n">select</span><span class="p">:</span> <span class="n">Select</span><span class="p">,</span>
+        <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">,</span>
+        <span class="n">in_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">max_chunk_size</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">superduperdb.container.listener</span> <span class="kn">import</span> <span class="n">Listener</span>
+
+        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">Listener</span><span class="p">(</span>
+                <span class="n">key</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">Model</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span>
+                <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                <span class="n">predict_kwargs</span><span class="o">=</span><span class="p">{</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                    <span class="s1">&#39;in_memory&#39;</span><span class="p">:</span> <span class="n">in_memory</span><span class="p">,</span>
+                    <span class="s1">&#39;max_chunk_size&#39;</span><span class="p">:</span> <span class="n">max_chunk_size</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">),</span>
+            <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_predict_with_select</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">X</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
+        <span class="n">select</span><span class="p">:</span> <span class="n">Select</span><span class="p">,</span>
+        <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">,</span>
+        <span class="n">max_chunk_size</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">in_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">select_ids</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">select_ids_of_missing_outputs</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)):</span>
+            <span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">id_field</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_with_select_and_ids</span><span class="p">(</span>
+            <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
+            <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+            <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
+            <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+            <span class="n">max_chunk_size</span><span class="o">=</span><span class="n">max_chunk_size</span><span class="p">,</span>
+            <span class="n">in_memory</span><span class="o">=</span><span class="n">in_memory</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_predict_with_select_and_ids</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">X</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
+        <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">,</span>
+        <span class="n">select</span><span class="p">:</span> <span class="n">Select</span><span class="p">,</span>
+        <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">in_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">max_chunk_size</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">max_chunk_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">it</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">),</span> <span class="n">max_chunk_size</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Computing chunk </span><span class="si">{</span><span class="n">it</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">max_chunk_size</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_predict_with_select_and_ids</span><span class="p">(</span>
+                    <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
+                    <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+                    <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">max_chunk_size</span><span class="p">],</span>
+                    <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                    <span class="n">max_chunk_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">in_memory</span><span class="o">=</span><span class="n">in_memory</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">it</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span>
+
+        <span class="n">X_data</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span>
+        <span class="k">if</span> <span class="n">in_memory</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;db cannot be None&#39;</span><span class="p">)</span>
+            <span class="n">docs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">select</span><span class="o">.</span><span class="n">select_using_ids</span><span class="p">(</span><span class="n">ids</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="n">X</span> <span class="o">!=</span> <span class="s1">&#39;_base&#39;</span><span class="p">:</span>
+                <span class="n">X_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">())[</span><span class="n">X</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">X_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">X_data</span> <span class="o">=</span> <span class="n">QueryDataset</span><span class="p">(</span>
+                <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
+                <span class="n">fold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+                <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="n">X</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X_data</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">distributed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">]</span>
+
+        <span class="n">select</span><span class="o">.</span><span class="n">model_update</span><span class="p">(</span>
+            <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
+            <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span>
+
 <div class="viewcode-block" id="PredictMixin.predict"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.PredictMixin.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">X</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
         <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">DB</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Select</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">distributed</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">max_chunk_size</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
         <span class="n">listen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">in_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-        <span class="c1"># TODO this should be separated into sub-procedures</span>
+        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;db must be None when ``one=True`` (direct call)&#39;</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">select</span> <span class="o">=</span> <span class="n">Serializable</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">listen</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">superduperdb.container.listener</span> <span class="kn">import</span> <span class="n">Listener</span>
-
-            <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;db cannot be None&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-                <span class="n">Listener</span><span class="p">(</span>
-                    <span class="n">key</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
-                    <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
-                    <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
-                    <span class="n">predict_kwargs</span><span class="o">=</span><span class="p">{</span>
-                        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-                        <span class="s1">&#39;in_memory&#39;</span><span class="p">:</span> <span class="n">in_memory</span><span class="p">,</span>
-                        <span class="s1">&#39;max_chunk_size&#39;</span><span class="p">:</span> <span class="n">max_chunk_size</span><span class="p">,</span>
-                    <span class="p">},</span>
-                <span class="p">),</span>
-                <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">,</span>
-            <span class="p">)</span>
-
         <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Adding model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1"> to db&#39;</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Component</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Done.&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">distributed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">distributed</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">distributed</span>
 
+        <span class="k">if</span> <span class="n">listen</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_and_listen</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">distributed</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;one cannot be set&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_predict_job</span><span class="p">(</span>
-                <span class="n">X</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="n">max_chunk_size</span><span class="o">=</span><span class="n">max_chunk_size</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                <span class="n">X</span><span class="p">,</span>
+                <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
+                <span class="n">max_chunk_size</span><span class="o">=</span><span class="n">max_chunk_size</span><span class="p">,</span>
+                <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)(</span><span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">distributed</span><span class="o">=</span><span class="n">distributed</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;db cannot be None&#39;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;one cannot be set&#39;</span><span class="p">)</span>
-                <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">id_field</span><span class="p">])</span>
-                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">select</span><span class="o">.</span><span class="n">select_ids</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
-                <span class="p">]</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span>
+                <span class="k">assert</span> <span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_with_select</span><span class="p">(</span>
                     <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
-                    <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
-                    <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
-                    <span class="n">distributed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                    <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+                    <span class="n">in_memory</span><span class="o">=</span><span class="n">in_memory</span><span class="p">,</span>
                     <span class="n">max_chunk_size</span><span class="o">=</span><span class="n">max_chunk_size</span><span class="p">,</span>
-                    <span class="n">one</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_with_select_and_ids</span><span class="p">(</span>
+                    <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
+                    <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                    <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
+                    <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+                    <span class="n">max_chunk_size</span><span class="o">=</span><span class="n">max_chunk_size</span><span class="p">,</span>
                     <span class="n">in_memory</span><span class="o">=</span><span class="n">in_memory</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
-
-            <span class="k">elif</span> <span class="n">select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_chunk_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;one cannot be set&#39;</span><span class="p">)</span>
-
-                <span class="k">if</span> <span class="n">in_memory</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;db cannot be None&#39;</span><span class="p">)</span>
-                    <span class="n">docs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">select</span><span class="o">.</span><span class="n">select_using_ids</span><span class="p">(</span><span class="n">ids</span><span class="p">)))</span>
-                    <span class="k">if</span> <span class="n">X</span> <span class="o">!=</span> <span class="s1">&#39;_base&#39;</span><span class="p">:</span>
-                        <span class="n">X_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">())[</span><span class="n">X</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">]</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">X_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">X_data</span> <span class="o">=</span> <span class="n">QueryDataset</span><span class="p">(</span>  <span class="c1"># type: ignore[assignment]</span>
-                        <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
-                        <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
-                        <span class="n">fold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                        <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
-                        <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                        <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="n">X</span><span class="p">],</span>
-                    <span class="p">)</span>
-
-                <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">X_data</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">distributed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="c1"># ruff: noqa: E501</span>
-                    <span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">]</span>  <span class="c1"># type: ignore[operator]</span>
-
-                <span class="c1"># TODO: self.identifier is definitely not a model!</span>
-                <span class="n">select</span><span class="o">.</span><span class="n">model_update</span><span class="p">(</span>
-                    <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
-                    <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
-                    <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
-                    <span class="n">key</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
-                    <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="k">return</span>
-
-            <span class="k">elif</span> <span class="n">select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_chunk_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;one cannot be set&#39;</span><span class="p">)</span>
-                <span class="n">it</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">),</span> <span class="n">max_chunk_size</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Computing chunk </span><span class="si">{</span><span class="n">it</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">max_chunk_size</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span>
-                        <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
-                        <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
-                        <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">max_chunk_size</span><span class="p">],</span>
-                        <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
-                        <span class="n">max_chunk_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                        <span class="n">one</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                        <span class="n">in_memory</span><span class="o">=</span><span class="n">in_memory</span><span class="p">,</span>
-                        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-                    <span class="p">)</span>
-                    <span class="n">it</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">return</span>
-
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">takes_context</span><span class="p">:</span>
                     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;context&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span>
-                <span class="k">if</span> <span class="s1">&#39;one&#39;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_predict</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="n">one</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="n">one</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.Model">[docs]</a><span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
@@ -572,9 +649,16 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Model component which wraps a model to become serializable</span>
 
+<span class="sd">    :param identifier: Unique identifier of model</span>
 <span class="sd">    :param object: Model object, e.g. sklearn model, etc..</span>
 <span class="sd">    :param encoder: Encoder instance (optional)</span>
-<span class="sd">    :param type_id: ...</span>
+<span class="sd">    :param preprocess: Preprocess function (optional)</span>
+<span class="sd">    :param postprocess: Postprocess function (optional)</span>
+<span class="sd">    :param collate_fn: Collate function (optional)</span>
+<span class="sd">    :param metrics: Metrics to use (optional)</span>
+<span class="sd">    :param predict_method: The method to use for prediction (optional)</span>
+<span class="sd">    :param batch_predict: Whether to batch predict (optional)</span>
+<span class="sd">    :param takes_context: Whether the model takes context into account (optional)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
@@ -584,25 +668,22 @@
     <span class="n">postprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">collate_fn</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">metrics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Metric</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">()</span>
-    <span class="c1"># Need also historical metric values</span>
     <span class="n">predict_method</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">batch_predict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">takes_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="n">train_X</span><span class="p">:</span> <span class="n">DataArg</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># TODO add to FitMixin</span>
+    <span class="n">train_X</span><span class="p">:</span> <span class="n">DataArg</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">train_y</span><span class="p">:</span> <span class="n">DataArg</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">training_select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Select</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">metric_values</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="c1"># TODO should be training_metric_values</span>
     <span class="n">training_configuration</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_TrainingConfiguration</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">future</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Future</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># TODO what&#39;s this?</span>
+    <span class="n">future</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Future</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span>
 
     <span class="n">artifacts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;object&#39;</span><span class="p">]</span>
 
-    <span class="c1">#: A unique name for the class</span>
     <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;model&#39;</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -627,18 +708,24 @@
         <span class="k">return</span> <span class="n">out</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">training_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">training_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_X</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">out</span>  <span class="c1"># type: ignore[return-value]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
 
 <div class="viewcode-block" id="Model.append_metrics"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.Model.append_metrics">[docs]</a>    <span class="k">def</span> <span class="nf">append_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">metric_values</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Model.validate"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.Model.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">validation_set</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">Metric</span><span class="p">):</span>
+<div class="viewcode-block" id="Model.validate"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.Model.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">validation_set</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]):</span>
         <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">validation_set</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -652,26 +739,25 @@
             <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_values</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">validation_set</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">Metric</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">,</span> <span class="n">validation_set</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">metrics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">validation_set</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">validation_set</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;dataset&#39;</span><span class="p">,</span> <span class="n">validation_set</span><span class="p">)</span>
-        <span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict</span><span class="p">(</span>
-            <span class="p">[</span>
-                <span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">())[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">]</span>  <span class="c1"># type: ignore[index]</span>
-                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">validation_set</span><span class="o">.</span><span class="n">data</span>
-            <span class="p">]</span>
+            <span class="n">validation_set</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;dataset&#39;</span><span class="p">,</span> <span class="n">validation_set</span><span class="p">))</span>
+
+        <span class="n">mdicts</span> <span class="o">=</span> <span class="p">[</span><span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">())</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">validation_set</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
+        <span class="c1"># TOOD: self.train_X, self.train_y are sequences of strings: this can&#39;t work</span>
+        <span class="n">prediction_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">mdicts</span><span class="p">]</span>  <span class="c1"># type: ignore[index]</span>
         <span class="p">)</span>
+        <span class="n">prediction_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">mdicts</span><span class="p">]</span>  <span class="c1"># type: ignore[index]</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prediction_X</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prediction_y</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">prediction_X</span> <span class="o">+</span> <span class="n">prediction_y</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># TODO: metrics is definitely not iterable</span>
-        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>  <span class="c1"># type: ignore[attr-defined]</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span>
-                <span class="n">prediction</span><span class="p">,</span>
-                <span class="p">[</span>
-                    <span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">())[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">]</span>  <span class="c1"># type: ignore[index]</span>
-                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">validation_set</span><span class="o">.</span><span class="n">data</span>
-                <span class="p">],</span>
-            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">m</span><span class="p">(</span><span class="n">prediction_X</span><span class="p">,</span> <span class="n">prediction_y</span><span class="p">)</span>  <span class="c1"># type: ignore[index]</span>
             <span class="n">results</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">validation_set</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span>
         <span class="k">return</span> <span class="n">results</span>
 
@@ -699,29 +785,28 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">X</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
         <span class="n">y</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">DB</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Select</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
         <span class="n">configuration</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">_TrainingConfiguration</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">validation_sets</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">metrics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">data_prefetch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">DB</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+        <span class="n">metrics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Select</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">validation_sets</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-    <span class="c1"># ruff: noqa: F821</span>
 <div class="viewcode-block" id="Model.fit"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.Model.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">X</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
         <span class="n">y</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">DB</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Select</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">distributed</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
         <span class="n">configuration</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">_TrainingConfiguration</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">validation_sets</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">metrics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">data_prefetch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">DB</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+        <span class="n">distributed</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">metrics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Select</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">validation_sets</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Pipeline</span><span class="p">]:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -731,7 +816,8 @@
             <span class="n">validation_sets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">validation_sets</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">vs</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">validation_sets</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">):</span>
-                    <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vs</span><span class="p">)</span>  <span class="c1"># type: ignore[union-attr]</span>
+                    <span class="k">assert</span> <span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vs</span><span class="p">)</span>
                     <span class="n">validation_sets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">identifier</span>
 
         <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -751,14 +837,19 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span>
                 <span class="n">X</span><span class="p">,</span>
                 <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
-                <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
-                <span class="n">validation_sets</span><span class="o">=</span><span class="n">validation_sets</span><span class="p">,</span>
-                <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">,</span>
                 <span class="n">configuration</span><span class="o">=</span><span class="n">configuration</span><span class="p">,</span>
-                <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
                 <span class="n">data_prefetch</span><span class="o">=</span><span class="n">data_prefetch</span><span class="p">,</span>
+                <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+                <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">,</span>
+                <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                <span class="n">validation_sets</span><span class="o">=</span><span class="n">validation_sets</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span></div></div>
+
+
+<span class="nd">@wraps</span><span class="p">(</span><span class="n">_TrainingConfiguration</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">TrainingConfiguration</span><span class="p">(</span><span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_TrainingConfiguration</span><span class="p">(</span><span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
         </article>
       </div>
@@ -798,7 +889,6 @@
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
     </body>

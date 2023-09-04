@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
-        <title>superduperdb.server.server - SuperDuperDB documentation</title>
+        <title>superduperdb.server.server - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">SuperDuperDB  documentation</div></a>
+      <a href="../../../index.html"><div class="brand">Python  documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,8 +145,11 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/SuperDuperDB_logo.png" alt="Logo"/>
+  </div>
   
-  <span class="sidebar-brand-text">SuperDuperDB  documentation</span>
+  <span class="sidebar-brand-text">Python  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -188,7 +191,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../how_to/index.html">How to …</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../how_to/playground.html"><strong>Welcome to the SuperDuperDB Playground!</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how_to/playground.html">Welcome to the SuperDuperDB Playground!</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how_to/add_images_or_audio.html">Add images, audio or video from URIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how_to/create_replicaset.html">How to create a replica set in MongoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how_to/mongo_cdc.html">Perform change data capture (CDC)</a></li>
@@ -233,10 +236,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of superduperdb.ext.vector package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l5"><a class="reference internal" href="../../../source/superduperdb.ext.vector.vectors.html">superduperdb.ext.vector.vectors package</a></li>
-</ul>
-</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.misc.html">superduperdb.misc package</a></li>
@@ -303,6 +303,17 @@
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/select&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">select</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute a Select query in the database for multiple components and return</span>
+<span class="sd">        the ID for the container of the components in the server cache.</span>
+
+<span class="sd">        This endpoint deserializes the query, executes the query, generates a unique</span>
+<span class="sd">        ID for the result, stores the result in the server cache, and returns the ID</span>
+<span class="sd">        to the client.</span>
+
+<span class="sd">        :param request_id: unique identifier for the request, generated by client</span>
+<span class="sd">        :param query: serialized query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
         <span class="n">query</span> <span class="o">=</span> <span class="n">Serializable</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;query&#39;</span><span class="p">])</span>
         <span class="n">output</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">))</span>  <span class="c1"># TODO - support cursor with flask streaming</span>
@@ -312,6 +323,17 @@
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/select_one&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">select_one</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute a Select query in the database for a single component and return</span>
+<span class="sd">        the ID for the component in the server cache.</span>
+
+<span class="sd">        This endpoint deserializes the query, executes the query, generates a unique</span>
+<span class="sd">        ID for the result, stores the result in the server cache, and returns the ID</span>
+<span class="sd">        to the client.</span>
+
+<span class="sd">        :param request_id: unique identifier for the request, generated by client</span>
+<span class="sd">        :param query: serialized query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
         <span class="n">query</span> <span class="o">=</span> <span class="n">Serializable</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;query&#39;</span><span class="p">])</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -321,6 +343,18 @@
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/insert&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">insert</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute an Insert query in the database.</span>
+
+<span class="sd">        This endpoint assumes that serialized documents have already been sent</span>
+<span class="sd">        by the client and exist in memory in the server cache. It then deserializes</span>
+<span class="sd">        the documents in the cache, deletes the documents from the cache and</span>
+<span class="sd">        deserializes the query. Finally, it executes the query.</span>
+
+<span class="sd">        :param request_id: unique identifier for the request, generated by client</span>
+<span class="sd">        :param documents: unique identifier for the documents, generated by client</span>
+<span class="sd">        :param query: serialized query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
         <span class="n">binary</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;request_id&#39;</span><span class="p">]][</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;documents&#39;</span><span class="p">]]</span>
         <span class="k">del</span> <span class="n">cache</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;request_id&#39;</span><span class="p">]]</span>
@@ -332,6 +366,18 @@
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/update&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">update</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute an Update query in the database.</span>
+
+<span class="sd">        This endpoint assumes that serialized documents have already been sent</span>
+<span class="sd">        by the client and exist in memory in the server cache. It then deserializes</span>
+<span class="sd">        the documents in the cache, deletes the documents from the cache and</span>
+<span class="sd">        deserializes the query. Finally, it executes the query.</span>
+
+<span class="sd">        :param request_id: unique identifier for the request, generated by client</span>
+<span class="sd">        :param documents: unique identifier for the documents, generated by client</span>
+<span class="sd">        :param query: serialized query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
         <span class="n">binary</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;request_id&#39;</span><span class="p">]][</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;update&#39;</span><span class="p">]]</span>
         <span class="k">del</span> <span class="n">cache</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;request_id&#39;</span><span class="p">]]</span>
@@ -343,6 +389,11 @@
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/delete&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">delete</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute a delete query in the database.</span>
+
+<span class="sd">        :param query: serialized delete query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()[</span><span class="s1">&#39;query&#39;</span><span class="p">]</span>
         <span class="n">query</span> <span class="o">=</span> <span class="n">Serializable</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -350,6 +401,19 @@
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/add&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">add</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a component to the database.</span>
+
+<span class="sd">        This endpoint assumes that serialized artifacts have already been sent</span>
+<span class="sd">        by the client and exist in memory in the server cache. It then deserializes</span>
+<span class="sd">        the artifacts in the cache, adds these artifacts back to the original component,</span>
+<span class="sd">        deserializes any metadata that is contained on the component, and then adds the</span>
+<span class="sd">        component to the database. Finally, it deletes the artifacts from the cache.</span>
+
+<span class="sd">        :param request_id: unique identifier for the request, generated by client</span>
+<span class="sd">        :param serializers: mapping from random string to serializer name (eg `pickle`)</span>
+<span class="sd">        :param component: serialized component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
         <span class="n">artifact_cache</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;request_id&#39;</span><span class="p">]]</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifact_cache</span><span class="p">:</span>
@@ -364,6 +428,14 @@
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/artifacts/get/&lt;request_id&gt;/&lt;file_id&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">request_id</span><span class="p">,</span> <span class="n">file_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return data originally produced by the client to the client.</span>
+
+<span class="sd">        It also deletes the data from the cache.</span>
+
+<span class="sd">        :param request_id: unique identifier for the request, generated by client</span>
+<span class="sd">        :param file_id: unique identifier for the component, generated by client</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">bytes</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">request_id</span><span class="p">][</span><span class="n">file_id</span><span class="p">]</span>
         <span class="k">del</span> <span class="n">cache</span><span class="p">[</span><span class="n">request_id</span><span class="p">][</span><span class="n">file_id</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cache</span><span class="p">[</span><span class="n">request_id</span><span class="p">]:</span>
@@ -372,11 +444,36 @@
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/artifacts/put/&lt;request_id&gt;/&lt;file_id&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;PUT&#39;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="n">request_id</span><span class="p">,</span> <span class="n">file_id</span><span class="p">):</span>
-        <span class="n">cache</span><span class="p">[</span><span class="n">request_id</span><span class="p">][</span><span class="n">file_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read the buffered incoming data from the client into one bytes object and</span>
+<span class="sd">        then hold in memory in a cache.</span>
+
+<span class="sd">        Artifacts are serialized on the client and then sent to the server in</span>
+<span class="sd">        individual requests.</span>
+
+<span class="sd">        :param request_id: unique identifier for the request, generated by client</span>
+<span class="sd">        :param file_id: unique identifier for the component, generated by client</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cache</span><span class="p">[</span><span class="n">request_id</span><span class="p">][</span><span class="n">file_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;ok&#39;</span><span class="p">})</span>
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/load&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">load</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load component artifacts from the database into server cache and send</span>
+<span class="sd">        component metadata to the client.</span>
+
+<span class="sd">        This endpoint loads the component from the database using the provided</span>
+<span class="sd">        query parameters, serializes the component, stores the component artifacts</span>
+<span class="sd">        in the server cache, and sends the component metadata to the client.</span>
+
+<span class="sd">        :param type_id: type_id of component to load [&#39;encoder&#39;, &#39;model&#39;, &#39;listener&#39;,</span>
+<span class="sd">                       &#39;learning_task&#39;, &#39;training_configuration&#39;, &#39;metric&#39;,</span>
+<span class="sd">                       &#39;vector_index&#39;, &#39;job&#39;]</span>
+<span class="sd">        :param identifier: identifying string to component</span>
+<span class="sd">        :param request_id: unique identifier for the request, generated by client</span>
+<span class="sd">        :param version: (optional) numerical version - specify for full metadata</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
         <span class="n">request_id</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;request_id&#39;</span><span class="p">]</span>
         <span class="n">version</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">)</span>
@@ -396,6 +493,15 @@
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/remove&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">remove</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Force-remove a component from the database.</span>
+
+<span class="sd">        :param version: (optional) numerical version of the component to delete</span>
+<span class="sd">        :param type_id: type_id of component to show `[&#39;encoder&#39;, &#39;model&#39;, &#39;listener&#39;,</span>
+<span class="sd">                       &#39;learning_task&#39;, &#39;training_configuration&#39;, &#39;metric&#39;,</span>
+<span class="sd">                       &#39;vector_index&#39;, &#39;job&#39;]`</span>
+<span class="sd">        :param identifier: identifying string to component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
         <span class="n">version</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">version</span><span class="p">:</span>
@@ -411,6 +517,15 @@
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/show&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">show</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show components already added to the database.</span>
+
+<span class="sd">        :param type_id: type_id of component to show [&#39;encoder&#39;, &#39;model&#39;, &#39;listener&#39;,</span>
+<span class="sd">                       &#39;learning_task&#39;, &#39;training_configuration&#39;, &#39;metric&#39;,</span>
+<span class="sd">                       &#39;vector_index&#39;, &#39;job&#39;]</span>
+<span class="sd">        :param identifier: identifying string to component</span>
+<span class="sd">        :param version: (optional) numerical version - specify for full metadata</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="o">**</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()))</span>
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
@@ -424,20 +539,21 @@
         <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">response</span><span class="p">),</span> <span class="mi">500</span></div>
 
 
-<div class="viewcode-block" id="serve"><a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.server.serve">[docs]</a><span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="n">db</span><span class="p">):</span>
+<div class="viewcode-block" id="make_flask_app"><a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.server.make_flask_app">[docs]</a><span class="k">def</span> <span class="nf">make_flask_app</span><span class="p">(</span><span class="n">db</span><span class="p">):</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
     <span class="n">make_endpoints</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">app</span></div>
 
 
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.server.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">db</span> <span class="o">=</span> <span class="n">build_datalayer</span><span class="p">()</span>
-    <span class="n">app</span> <span class="o">=</span> <span class="n">serve</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+<div class="viewcode-block" id="serve"><a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.server.serve">[docs]</a><span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">build_datalayer</span><span class="p">()</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">make_flask_app</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">CFG</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">CFG</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">port</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">main</span><span class="p">()</span>
+    <span class="n">serve</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>
@@ -477,7 +593,6 @@
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
     </body>

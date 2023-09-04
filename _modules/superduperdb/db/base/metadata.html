@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
-        <title>superduperdb.db.base.metadata - SuperDuperDB documentation</title>
+        <title>superduperdb.db.base.metadata - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">SuperDuperDB  documentation</div></a>
+      <a href="../../../../index.html"><div class="brand">Python  documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,8 +145,11 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../../_static/SuperDuperDB_logo.png" alt="Logo"/>
+  </div>
   
-  <span class="sidebar-brand-text">SuperDuperDB  documentation</span>
+  <span class="sidebar-brand-text">Python  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -188,7 +191,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../how_to/index.html">How to …</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../how_to/playground.html"><strong>Welcome to the SuperDuperDB Playground!</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../how_to/playground.html">Welcome to the SuperDuperDB Playground!</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../how_to/add_images_or_audio.html">Add images, audio or video from URIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../how_to/create_replicaset.html">How to create a replica set in MongoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../how_to/mongo_cdc.html">Perform change data capture (CDC)</a></li>
@@ -233,10 +236,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of superduperdb.ext.vector package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l5"><a class="reference internal" href="../../../../source/superduperdb.ext.vector.vectors.html">superduperdb.ext.vector.vectors package</a></li>
-</ul>
-</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.misc.html">superduperdb.misc package</a></li>
@@ -303,90 +303,161 @@
 
 <div class="viewcode-block" id="MetaDataStore.create_component"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.create_component">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">create_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a component in the metadata store.</span>
+
+<span class="sd">        :param info: dictionary containing information about the component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.create_job"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.create_job">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">create_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a job in the metadata store.</span>
+
+<span class="sd">        :param info: dictionary containing information about the job.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.create_parent_child"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.create_parent_child">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">create_parent_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">child</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a parent-child relationship between two components.</span>
+
+<span class="sd">        :param parent: parent component</span>
+<span class="sd">        :param child: child component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.drop"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.drop">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Drop the metadata store.</span>
+
+<span class="sd">        :param force: whether to force the drop (without confirmation)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.get_job"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.get_job">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a job from the metadata store.</span>
+
+<span class="sd">        :param job_id: job identifier</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.update_job"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.update_job">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">update_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update a job in the metadata store.</span>
+
+<span class="sd">        :param job_id: job identifier</span>
+<span class="sd">        :param key: key to be updated</span>
+<span class="sd">        :param value: value to be updated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="MetaDataStore.listen_job"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.listen_job">[docs]</a>    <span class="k">def</span> <span class="nf">listen_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;pending&#39;</span>
-            <span class="n">n_lines</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">n_lines_stderr</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">while</span> <span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;pending&#39;</span><span class="p">,</span> <span class="s1">&#39;running&#39;</span><span class="p">}:</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_job</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
-                <span class="n">status</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;running&#39;</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">n_lines</span><span class="p">:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">][</span><span class="n">n_lines</span><span class="p">:]),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-                        <span class="n">n_lines</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">])</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stderr&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">n_lines_stderr</span><span class="p">:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stderr&#39;</span><span class="p">][</span><span class="n">n_lines_stderr</span><span class="p">:]),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-                        <span class="n">n_lines_stderr</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stderr&#39;</span><span class="p">])</span>
-                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+<div class="viewcode-block" id="MetaDataStore.watch_job"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.watch_job">[docs]</a>    <span class="k">def</span> <span class="nf">watch_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Listen to a job.</span>
+
+<span class="sd">        :param identifier: job identifier</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;pending&#39;</span>
+        <span class="n">n_lines</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n_lines_stderr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">status</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;pending&#39;</span><span class="p">,</span> <span class="s1">&#39;running&#39;</span><span class="p">}:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_job</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;success&#39;</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;running&#39;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">n_lines</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">][</span><span class="n">n_lines</span><span class="p">:]),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                    <span class="n">n_lines</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">])</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stderr&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">n_lines_stderr</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stderr&#39;</span><span class="p">][</span><span class="n">n_lines_stderr</span><span class="p">:]),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;failed&#39;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">])</span>
-        <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="k">return</span></div>
+                    <span class="n">n_lines_stderr</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stderr&#39;</span><span class="p">])</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_job</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;success&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">n_lines</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stdout&#39;</span><span class="p">][</span><span class="n">n_lines</span><span class="p">:]),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stderr&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">n_lines_stderr</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;stderr&#39;</span><span class="p">][</span><span class="n">n_lines_stderr</span><span class="p">:]),</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;failed&#39;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.show_jobs"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.show_jobs">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">show_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show all jobs in the metadata store.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.show_components"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.show_components">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">show_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show all components in the metadata store.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param **kwargs: additional arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.show_component_versions"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.show_component_versions">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">show_component_versions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show all versions of a component in the metadata store.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.delete_component_version"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.delete_component_version">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">delete_component_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete a component version from the metadata store.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        :param version: version of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.component_version_has_parents"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.component_version_has_parents">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">component_version_has_parents</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if a component version has parents.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        :param version: version of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.get_metadata"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.get_metadata">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get metadata from the metadata store.</span>
+
+<span class="sd">        :param key: key of metadata</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.get_latest_version"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.get_latest_version">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_latest_version</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">allow_hidden</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the latest version of a component.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        :param allow_hidden: whether to allow hidden components</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
     <span class="nd">@abstractmethod</span>
@@ -406,6 +477,14 @@
         <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">allow_hidden</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a component from the metadata store.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        :param version: version of component</span>
+<span class="sd">        :param allow_hidden: whether to allow hidden components</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_latest_version</span><span class="p">(</span>
                 <span class="n">type_id</span><span class="o">=</span><span class="n">type_id</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span> <span class="n">allow_hidden</span><span class="o">=</span><span class="n">allow_hidden</span>
@@ -431,9 +510,26 @@
     <span class="p">):</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="MetaDataStore.update_object"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.update_object">[docs]</a>    <span class="k">def</span> <span class="nf">update_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">type_id</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="MetaDataStore.update_object"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.update_object">[docs]</a>    <span class="k">def</span> <span class="nf">update_object</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update an object in the metadata store.</span>
+
+<span class="sd">        :param identifier: identifier of object</span>
+<span class="sd">        :param type_id: type of object</span>
+<span class="sd">        :param key: key to be updated</span>
+<span class="sd">        :param value: value to be updated</span>
+<span class="sd">        :param version: version of object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_latest_version</span><span class="p">(</span><span class="n">type_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_object</span><span class="p">(</span>
             <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span>
             <span class="n">type_id</span><span class="o">=</span><span class="n">type_id</span><span class="p">,</span>
@@ -453,6 +549,14 @@
         <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Replace an object in the metadata store.</span>
+
+<span class="sd">        :param info: dictionary containing information about the object</span>
+<span class="sd">        :param identifier: identifier of object</span>
+<span class="sd">        :param type_id: type of object</span>
+<span class="sd">        :param version: version of object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_latest_version</span><span class="p">(</span><span class="n">type_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replace_object</span><span class="p">(</span>
@@ -463,15 +567,34 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.write_output_to_job"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.write_output_to_job">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">write_output_to_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">write_output_to_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">stream</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write output to a job in the metadata store.</span>
+
+<span class="sd">        :param identifier: identifier of job</span>
+<span class="sd">        :param msg: message to be written</span>
+<span class="sd">        :param stream: stream to be written to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.get_component_version_parents"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.get_component_version_parents">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_component_version_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the parents of a component version.</span>
+
+<span class="sd">        :param unique_id: unique identifier of component version</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MetaDataStore.hide_component_version"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.metadata.MetaDataStore.hide_component_version">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">hide_component_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Hide a component version.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        :param version: version of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
 </pre></div>
         </article>
@@ -512,7 +635,6 @@
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
     </body>

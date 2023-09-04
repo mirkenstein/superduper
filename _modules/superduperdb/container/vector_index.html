@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
-        <title>superduperdb.container.vector_index - SuperDuperDB documentation</title>
+        <title>superduperdb.container.vector_index - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">SuperDuperDB  documentation</div></a>
+      <a href="../../../index.html"><div class="brand">Python  documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,8 +145,11 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/SuperDuperDB_logo.png" alt="Logo"/>
+  </div>
   
-  <span class="sidebar-brand-text">SuperDuperDB  documentation</span>
+  <span class="sidebar-brand-text">Python  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -188,7 +191,7 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../how_to/index.html">How to …</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of How to …</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../how_to/playground.html"><strong>Welcome to the SuperDuperDB Playground!</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../how_to/playground.html">Welcome to the SuperDuperDB Playground!</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how_to/add_images_or_audio.html">Add images, audio or video from URIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how_to/create_replicaset.html">How to create a replica set in MongoDB</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../how_to/mongo_cdc.html">Perform change data capture (CDC)</a></li>
@@ -233,10 +236,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of superduperdb.ext.vector package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l5"><a class="reference internal" href="../../../source/superduperdb.ext.vector.vectors.html">superduperdb.ext.vector.vectors package</a></li>
-</ul>
-</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.misc.html">superduperdb.misc package</a></li>
@@ -295,7 +295,14 @@
 <span class="kn">from</span> <span class="nn">superduperdb.container.listener</span> <span class="kn">import</span> <span class="n">Listener</span>
 <span class="kn">from</span> <span class="nn">superduperdb.db.base.db</span> <span class="kn">import</span> <span class="n">DB</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.special_dicts</span> <span class="kn">import</span> <span class="n">MongoStyleDict</span>
-<span class="kn">from</span> <span class="nn">superduperdb.vector_search.base</span> <span class="kn">import</span> <span class="n">VectorCollectionConfig</span><span class="p">,</span> <span class="n">VectorCollectionItem</span>
+<span class="kn">from</span> <span class="nn">superduperdb.vector_search.base</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">VectorCollectionConfig</span><span class="p">,</span>
+    <span class="n">VectorCollectionItem</span><span class="p">,</span>
+    <span class="n">VectorIndexMeasureType</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="k">pass</span>
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
 
@@ -317,27 +324,25 @@
 
 <div class="viewcode-block" id="VectorIndex"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.vector_index.VectorIndex">[docs]</a><span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">VectorIndex</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A component representing a VectorIndex&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A component carrying the information to apply a vector index to a ``DB`` instance</span>
 
-    <span class="c1">#: Unique string identifier of index</span>
+<span class="sd">    :param identifier: unique string identifier of index</span>
+<span class="sd">    :param indexing_listener: listener which is applied to created vectors</span>
+<span class="sd">    :param compatible_listener: listener which is applied to vectors to be compared</span>
+<span class="sd">    :param measure: measure to use for comparison</span>
+<span class="sd">    :param version: version of this index</span>
+<span class="sd">    :param metric_values: metric values for this index</span>
+<span class="sd">    :param type_id: type of this component</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
-
-    <span class="c1">#: Listener which is applied to created vectors</span>
     <span class="n">indexing_listener</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
-
-    <span class="c1">#: List of additional listeners which can &quot;talk&quot; to the index (e.g. multi-modal)</span>
     <span class="n">compatible_listener</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="c1">#: Measure which is used to compare vectors in index</span>
-    <span class="n">measure</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cosine&#39;</span>
-
-    <span class="c1">#: A version number for the index (unused)</span>
+    <span class="n">measure</span><span class="p">:</span> <span class="n">VectorIndexMeasureType</span> <span class="o">=</span> <span class="n">VectorIndexMeasureType</span><span class="o">.</span><span class="n">cosine</span>
     <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Metric values used for training</span>
     <span class="n">metric_values</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-
-    <span class="c1">#: A unique name for the class</span>
     <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;vector_index&#39;</span>
 
 <div class="viewcode-block" id="VectorIndex.on_create"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.vector_index.VectorIndex.on_create">[docs]</a>    <span class="nd">@override</span>
@@ -346,23 +351,31 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span>
                 <span class="n">Listener</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;listener&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">)</span>
             <span class="p">)</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compatible_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">compatible_listener</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span>
                 <span class="n">Listener</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;listener&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compatible_listener</span><span class="p">)</span>
-            <span class="p">)</span></div>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s1">&#39;selfhosted&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">create</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="p">,</span> <span class="s1">&#39;create_vector_index&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;VectorIndex is not supported by the current database backend&#39;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+            <span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VectorIndex.on_load"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.vector_index.VectorIndex.on_load">[docs]</a>    <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vector_table</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">db</span><span class="o">.</span><span class="n">vector_database</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span>  <span class="c1"># type: ignore[call-arg, union-attr]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s1">&#39;selfhosted&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="n">db</span><span class="o">.</span><span class="n">vector_database</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vector_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">vector_database</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span>
                 <span class="n">VectorCollectionConfig</span><span class="p">(</span>
                     <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                    <span class="n">dimensions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimensions</span><span class="p">,</span>
-                    <span class="n">measure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">measure</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+                    <span class="n">dimensions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
+                    <span class="n">measure</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">measure</span><span class="p">,</span>
                 <span class="p">),</span>
-                <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># type: ignore[call-arg]</span>
             <span class="p">)</span>
-        <span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cdc</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_vector_database</span><span class="p">(</span><span class="n">db</span><span class="p">)</span></div>
@@ -373,6 +386,44 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compatible_listener</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;compatible_listener&#39;</span><span class="p">,</span> <span class="s1">&#39;listener&#39;</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">out</span>
+
+<div class="viewcode-block" id="VectorIndex.get_vector"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.vector_index.VectorIndex.get_vector">[docs]</a>    <span class="k">def</span> <span class="nf">get_vector</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">like</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span>
+        <span class="n">models</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">keys</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">outputs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">featurize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">document</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">like</span><span class="o">.</span><span class="n">unpack</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">featurize</span><span class="p">:</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">outputs</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="s1">&#39;_outputs&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">document</span><span class="p">:</span>
+                <span class="n">document</span><span class="p">[</span><span class="s1">&#39;_outputs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">document</span><span class="p">[</span><span class="s1">&#39;_outputs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+
+            <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">features</span> <span class="ow">or</span> <span class="p">()</span>
+            <span class="k">for</span> <span class="n">subkey</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+                <span class="n">subout</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;_outputs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">subkey</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="n">f_subkey</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">subkey</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">f_subkey</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subout</span><span class="p">:</span>
+                    <span class="n">subout</span><span class="p">[</span><span class="n">f_subkey</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">f_subkey</span><span class="p">]</span><span class="o">.</span><span class="n">_predict</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="n">subkey</span><span class="p">])</span>
+                <span class="n">document</span><span class="p">[</span><span class="n">subkey</span><span class="p">]</span> <span class="o">=</span> <span class="n">subout</span><span class="p">[</span><span class="n">f_subkey</span><span class="p">]</span>
+        <span class="n">available_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;_base&#39;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">model_name</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">available_keys</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Keys in provided </span><span class="si">{</span><span class="n">like</span><span class="si">}</span><span class="s1"> don</span><span class="se">\&#39;</span><span class="s1">t match&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39; VectorIndex keys: </span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s1">, with model: </span><span class="si">{</span><span class="n">models</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+        <span class="n">model_input</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;_base&#39;</span> <span class="k">else</span> <span class="n">document</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">model_input</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">model</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">key</span></div>
 
 <div class="viewcode-block" id="VectorIndex.get_nearest"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.vector_index.VectorIndex.get_nearest">[docs]</a>    <span class="k">def</span> <span class="nf">get_nearest</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -406,35 +457,14 @@
                 <span class="p">[</span><span class="n">result</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">nearest</span><span class="p">],</span>
                 <span class="p">[</span><span class="n">result</span><span class="o">.</span><span class="n">score</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">nearest</span><span class="p">],</span>
             <span class="p">)</span>
-
-        <span class="n">document</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">like</span><span class="o">.</span><span class="n">unpack</span><span class="p">())</span>
-
-        <span class="k">if</span> <span class="n">featurize</span><span class="p">:</span>
-            <span class="n">outputs</span> <span class="o">=</span> <span class="n">outputs</span> <span class="ow">or</span> <span class="p">{}</span>
-            <span class="k">if</span> <span class="s1">&#39;_outputs&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">document</span><span class="p">:</span>
-                <span class="n">document</span><span class="p">[</span><span class="s1">&#39;_outputs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">document</span><span class="p">[</span><span class="s1">&#39;_outputs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
-            <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">features</span> <span class="ow">or</span> <span class="p">()</span>  <span class="c1"># type: ignore[union-attr]</span>
-            <span class="k">for</span> <span class="n">subkey</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
-                <span class="n">subout</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="s1">&#39;_outputs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">subkey</span><span class="p">,</span> <span class="p">{})</span>
-                <span class="n">f_subkey</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">subkey</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">f_subkey</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subout</span><span class="p">:</span>
-                    <span class="n">subout</span><span class="p">[</span><span class="n">f_subkey</span><span class="p">]</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">f_subkey</span><span class="p">]</span><span class="o">.</span><span class="n">_predict</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="n">subkey</span><span class="p">])</span>
-                <span class="n">document</span><span class="p">[</span><span class="n">subkey</span><span class="p">]</span> <span class="o">=</span> <span class="n">subout</span><span class="p">[</span><span class="n">f_subkey</span><span class="p">]</span>
-        <span class="n">available_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;_base&#39;</span><span class="p">]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">model</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">available_keys</span>
-            <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Keys in provided </span><span class="si">{</span><span class="n">like</span><span class="si">}</span><span class="s1"> don</span><span class="se">\&#39;</span><span class="s1">t match&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39; VectorIndex keys: </span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s1">, with model: </span><span class="si">{</span><span class="n">models</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
-        <span class="n">model_input</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;_base&#39;</span> <span class="k">else</span> <span class="n">document</span>
-
-        <span class="n">model</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model</span><span class="p">]</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">model_input</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># type: ignore[attr-defined]</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vector</span><span class="p">(</span>
+            <span class="n">like</span><span class="o">=</span><span class="n">like</span><span class="p">,</span>
+            <span class="n">models</span><span class="o">=</span><span class="n">models</span><span class="p">,</span>
+            <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span>
+            <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+            <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
+            <span class="n">featurize</span><span class="o">=</span><span class="n">featurize</span><span class="p">,</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">nearest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">find_nearest_from_array</span><span class="p">(</span>
             <span class="n">h</span><span class="p">,</span> <span class="n">within_ids</span><span class="o">=</span><span class="n">within_ids</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">n</span>
         <span class="p">)</span>
@@ -444,37 +474,46 @@
         <span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">models_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">models_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a list of model and keys for each listener</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compatible_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compatible_listener</span><span class="p">:</span>
             <span class="n">listeners</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compatible_listener</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">listeners</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">]</span>
-        <span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">listeners</span><span class="p">]</span>  <span class="c1"># type: ignore[union-attr]</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">key</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">listeners</span><span class="p">]</span>  <span class="c1"># type: ignore[union-attr]</span>
+
+        <span class="n">models</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span>  <span class="c1"># type: ignore[assignment, identifier, union-attr]</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">listeners</span>
+        <span class="p">]</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">key</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">listeners</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">models</span><span class="p">,</span> <span class="n">keys</span>
 
-    <span class="c1"># ruff: noqa: E501</span>
     <span class="k">def</span> <span class="nf">_initialize_vector_database</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;loading hashes: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># type: ignore[union-attr]</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;.select must be set&#39;</span><span class="p">)</span>
 
         <span class="n">progress</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Loading vectors into vector-table...&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">record_batch</span> <span class="ow">in</span> <span class="n">ibatch</span><span class="p">(</span>
-            <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span><span class="p">),</span>  <span class="c1"># type: ignore[union-attr]</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span><span class="p">),</span>
             <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">backfill_batch_size</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">record_batch</span><span class="p">:</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">key</span>  <span class="c1"># type: ignore[union-attr]</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">key</span>
                 <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_outputs.&#39;</span><span class="p">):</span>
                     <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
                 <span class="nb">id</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">id_field</span><span class="p">]</span>
-                <span class="n">h</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">outputs</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>  <span class="c1"># type: ignore[union-attr]</span>
+                <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">outputs</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">):</span>
                     <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">x</span>
                 <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">VectorCollectionItem</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">),</span> <span class="n">vector</span><span class="o">=</span><span class="n">h</span><span class="p">))</span>
@@ -483,27 +522,12 @@
             <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">))</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">,</span> <span class="n">Listener</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">encoder</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span>  <span class="c1"># type: ignore[union-attr]</span>
-        <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                <span class="s1">&#39;Couldn</span><span class="se">\&#39;</span><span class="s1">t find shape of model outputs, based on model encoder.&#39;</span>
-            <span class="p">)</span>
-        <span class="n">model_encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">encoder</span>  <span class="c1"># type: ignore[union-attr]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">dimensions</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">model_encoder</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># type: ignore[index, union-attr]</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">dimensions</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">dimensions</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;Model &#39;</span>  <span class="c1"># type: ignore[union-attr]</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1"> &#39;</span>
-                <span class="s1">&#39;has no shape&#39;</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">dimensions</span></div>
+    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">shape</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">encoder</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Couldn</span><span class="se">\&#39;</span><span class="s1">t get shape of model outputs from model encoder&#39;</span><span class="p">)</span></div>
 </pre></div>
         </article>
       </div>
@@ -543,7 +567,6 @@
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
