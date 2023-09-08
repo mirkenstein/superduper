@@ -1,10 +1,10 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
         <title>superduperdb.container.vector_index - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -226,6 +226,8 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.db.html">superduperdb.db package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of superduperdb.db package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.db.base.html">superduperdb.db.base package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.db.filesystem.html">superduperdb.db.filesystem package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.db.ibis.html">superduperdb.db.ibis package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.db.mongodb.html">superduperdb.db.mongodb package</a></li>
 </ul>
 </li>
@@ -357,7 +359,7 @@
                 <span class="n">Listener</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;listener&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compatible_listener</span><span class="p">)</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s1">&#39;selfhosted&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span> <span class="o">==</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">data_backend</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">create</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="p">,</span> <span class="s1">&#39;create_vector_index&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;VectorIndex is not supported by the current database backend&#39;</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -366,7 +368,7 @@
 
 <div class="viewcode-block" id="VectorIndex.on_load"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.vector_index.VectorIndex.on_load">[docs]</a>    <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s1">&#39;selfhosted&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span> <span class="o">==</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">data_backend</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">db</span><span class="o">.</span><span class="n">vector_database</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">vector_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">vector_database</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span>
                 <span class="n">VectorCollectionConfig</span><span class="p">(</span>
@@ -377,7 +379,7 @@
                 <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># type: ignore[call-arg]</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cdc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">cdc</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_vector_database</span><span class="p">(</span><span class="n">db</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -486,10 +488,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">listeners</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">]</span>
 
-        <span class="n">models</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">w</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span>  <span class="c1"># type: ignore[assignment, identifier, union-attr]</span>
-            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">listeners</span>
-        <span class="p">]</span>
+        <span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">listeners</span><span class="p">]</span>  <span class="c1"># type: ignore[union-attr]</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">key</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">listeners</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">models</span><span class="p">,</span> <span class="n">keys</span>
 
@@ -503,7 +502,7 @@
         <span class="n">progress</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Loading vectors into vector-table...&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">record_batch</span> <span class="ow">in</span> <span class="n">ibatch</span><span class="p">(</span>
             <span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span><span class="p">),</span>
-            <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">backfill_batch_size</span><span class="p">,</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">backfill_batch_size</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">record_batch</span><span class="p">:</span>

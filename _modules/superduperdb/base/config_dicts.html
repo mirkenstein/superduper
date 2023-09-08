@@ -1,10 +1,10 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.07.26 -->
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
         <title>superduperdb.base.config_dicts - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
@@ -226,6 +226,8 @@
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.db.html">superduperdb.db package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of superduperdb.db package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.db.base.html">superduperdb.db.base package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.db.filesystem.html">superduperdb.db.filesystem package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.db.ibis.html">superduperdb.db.ibis package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.db.mongodb.html">superduperdb.db.mongodb package</a></li>
 </ul>
 </li>
@@ -292,34 +294,42 @@
 
 <span class="kn">import</span> <span class="nn">fil</span>
 
+<span class="n">Dict</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span>
+<span class="n">Files</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
+<span class="n">StrDict</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+
 <span class="n">SEP</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span>
 <span class="n">_NONE</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="read_all"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config_dicts.read_all">[docs]</a><span class="k">def</span> <span class="nf">read_all</span><span class="p">(</span>
-    <span class="n">files</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">fail</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]:</span>
+<div class="viewcode-block" id="config_dicts"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config_dicts.config_dicts">[docs]</a><span class="k">def</span> <span class="nf">config_dicts</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="n">Files</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">StrDict</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">environ</span><span class="p">:</span> <span class="n">StrDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">_read_all</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+    <span class="n">environ_dict</span> <span class="o">=</span> <span class="n">_environ_to_config_dict</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">environ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_combine</span><span class="p">((</span><span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">environ_dict</span><span class="p">))</span></div>
+
+
+<span class="k">def</span> <span class="nf">_read_all</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="n">Files</span><span class="p">,</span> <span class="n">fail</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
     <span class="k">if</span> <span class="n">fail</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">fil</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">fil</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">fil</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="combine"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config_dicts.combine">[docs]</a><span class="k">def</span> <span class="nf">combine</span><span class="p">(</span><span class="n">dicts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
-    <span class="n">result</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">def</span> <span class="nf">_combine</span><span class="p">(</span><span class="n">dicts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="n">result</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dicts</span><span class="p">:</span>
         <span class="n">_combine_one</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span></div>
+    <span class="k">return</span> <span class="n">result</span>
 
 
-<div class="viewcode-block" id="environ_to_config_dict"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config_dicts.environ_to_config_dict">[docs]</a><span class="k">def</span> <span class="nf">environ_to_config_dict</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">_environ_to_config_dict</span><span class="p">(</span>
     <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">parent</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span>
-    <span class="n">environ</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">parent</span><span class="p">:</span> <span class="n">StrDict</span><span class="p">,</span>
+    <span class="n">environ</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">StrDict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">err</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">TextIO</span><span class="p">]</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span>
     <span class="n">fail</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="n">env_dict</span> <span class="o">=</span> <span class="n">environ_dict</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">environ</span><span class="p">)</span>
+    <span class="n">env_dict</span> <span class="o">=</span> <span class="n">_environ_dict</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">environ</span><span class="p">)</span>
 
     <span class="n">good</span><span class="p">,</span> <span class="n">bad</span> <span class="o">=</span> <span class="n">_env_dict_to_config_dict</span><span class="p">(</span><span class="n">env_dict</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
 
@@ -334,12 +344,12 @@
         <span class="k">if</span> <span class="n">fail</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">good</span></div>
+    <span class="k">return</span> <span class="n">good</span>
 
 
-<div class="viewcode-block" id="split_address"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config_dicts.split_address">[docs]</a><span class="k">def</span> <span class="nf">split_address</span><span class="p">(</span>
-    <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
+<span class="k">def</span> <span class="nf">_split_address</span><span class="p">(</span>
+    <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">StrDict</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">StrDict</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
     <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">address</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">parent</span><span class="p">:</span>
             <span class="k">yield</span> <span class="o">*</span><span class="n">address</span><span class="p">,</span> <span class="n">key</span>
@@ -348,16 +358,16 @@
             <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">ks</span> <span class="o">:=</span> <span class="n">k</span> <span class="o">+</span> <span class="n">SEP</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="k">yield from</span> <span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">ks</span><span class="p">)</span> <span class="p">:],</span> <span class="n">v</span><span class="p">,</span> <span class="o">*</span><span class="n">address</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="environ_dict"><a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config_dicts.environ_dict">[docs]</a><span class="k">def</span> <span class="nf">environ_dict</span><span class="p">(</span><span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">environ</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_environ_dict</span><span class="p">(</span><span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">environ</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">StrDict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StrDict</span><span class="p">:</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">prefix</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span> <span class="ow">and</span> <span class="n">prefix</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">SEP</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">prefix</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">SEP</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Bad prefix=</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="n">d</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="k">if</span> <span class="n">environ</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">environ</span>
     <span class="n">items</span> <span class="o">=</span> <span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span> <span class="ow">and</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">))</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="p">:]</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">items</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="p">:]</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">items</span><span class="p">}</span>
 
 
 <span class="k">def</span> <span class="nf">_combine_one</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">source</span><span class="p">):</span>
@@ -378,13 +388,13 @@
 
 
 <span class="k">def</span> <span class="nf">_env_dict_to_config_dict</span><span class="p">(</span>
-    <span class="n">env_dict</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">parent</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]:</span>
+    <span class="n">env_dict</span><span class="p">:</span> <span class="n">StrDict</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">StrDict</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">StrDict</span><span class="p">,</span> <span class="n">StrDict</span><span class="p">]:</span>
     <span class="n">good</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">bad</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">env_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">addresses</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">split_address</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">parent</span><span class="p">))</span>
+        <span class="n">addresses</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_split_address</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">parent</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">addresses</span><span class="p">:</span>
             <span class="n">bad</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;unknown&#39;</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">addresses</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
