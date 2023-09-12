@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunknewdocs=self.webpackChunknewdocs||[]).push([[2535],{5641:e=>{e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Introducing SuperDuperDB","permalink":"/blog/welcome"},{"title":"Connect your traditional database with vector-search using SuperDuperDB","permalink":"/blog/vector-search-superduperdb"}]}')}}]);
