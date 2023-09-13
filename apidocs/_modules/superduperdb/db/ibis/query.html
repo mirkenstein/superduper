@@ -172,10 +172,13 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.db.base.html">superduperdb.db.base package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.db.filesystem.html">superduperdb.db.filesystem package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.db.ibis.html">superduperdb.db.ibis package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.db.mongodb.html">superduperdb.db.mongodb package</a></li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../../../source/superduperdb.db.mongodb.html">superduperdb.db.mongodb package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of superduperdb.db.mongodb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../source/superduperdb.db.mongodb.cdc.html">superduperdb.db.mongodb.cdc package</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -185,7 +188,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.misc.html">superduperdb.misc package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.misc package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.misc.html">superduperdb.misc package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of superduperdb.misc package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.misc.runnable.html">superduperdb.misc.runnable package</a></li>
 </ul>
 </li>
@@ -251,7 +254,7 @@
 <span class="n">ParentType</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;ParentType&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="QueryType"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.QueryType">[docs]</a><span class="k">class</span> <span class="nc">QueryType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="QueryType"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.QueryType">[docs]</a><span class="k">class</span> <span class="nc">QueryType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">QUERY</span> <span class="o">=</span> <span class="s1">&#39;query&#39;</span>
     <span class="n">ATTR</span> <span class="o">=</span> <span class="s1">&#39;attr&#39;</span></div>
 
@@ -312,7 +315,7 @@
                     <span class="n">mutated_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">QueryLinker</span><span class="p">):</span>
                 <span class="n">attr_query</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">get_latest_query</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">attr_query</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">ATTR</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">attr_query</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">ATTR</span><span class="p">:</span>
                     <span class="n">mutated_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">mutate_column</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">query_type</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">mutated_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
@@ -338,7 +341,7 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">QueryLinker</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">query_type</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">members</span><span class="o">=</span><span class="n">QueryChain</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">QueryType</span><span class="o">.</span><span class="n">ATTR</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">query_type</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">members</span><span class="o">=</span><span class="n">QueryChain</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">QueryType</span><span class="o">.</span><span class="n">ATTR</span><span class="p">)</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Table.like"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.Table.like">[docs]</a>    <span class="k">def</span> <span class="nf">like</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">vector_index</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -386,7 +389,7 @@
 
         <span class="n">insert</span> <span class="o">=</span> <span class="n">Query</span><span class="p">(</span>
             <span class="s1">&#39;insert&#39;</span><span class="p">,</span>
-            <span class="nb">type</span><span class="o">=</span><span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span><span class="p">,</span>
             <span class="n">args</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">args</span><span class="p">),</span>
             <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="n">sddb_kwargs</span><span class="o">=</span><span class="n">sddb_kwargs</span><span class="p">,</span>
@@ -420,7 +423,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span><span class="p">,</span>
         <span class="n">args</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">[],</span>
         <span class="n">kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="n">sddb_kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span>
@@ -444,7 +447,7 @@
         <span class="n">table</span><span class="p">:</span> <span class="n">Table</span><span class="p">,</span>
         <span class="n">ibis_table</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">IbisTableType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">ATTR</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">ATTR</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
         <span class="n">pre_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">pre</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
@@ -482,7 +485,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">seed</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Query</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">query</span> <span class="o">=</span> <span class="n">Query</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
@@ -493,7 +496,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">chain</span> <span class="o">=</span> <span class="p">[</span><span class="n">query</span><span class="p">]</span>
 
-<div class="viewcode-block" id="QueryChain.append"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.QueryChain.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="QueryChain.append"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.QueryChain.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span><span class="p">):</span>
         <span class="n">query</span> <span class="o">=</span> <span class="n">Query</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">query</span><span class="p">)</span></div>
 
@@ -514,7 +517,7 @@
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">query</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">ATTR</span><span class="o">.</span><span class="n">value</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span><span class="p">,</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">ATTR</span><span class="p">]:</span>
                 <span class="k">yield</span> <span class="n">query</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -599,7 +602,7 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">QueryLinker</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">query_type</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">members</span><span class="o">=</span><span class="n">QueryChain</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">QueryType</span><span class="o">.</span><span class="n">ATTR</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">query_type</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">members</span><span class="o">=</span><span class="n">QueryChain</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">QueryType</span><span class="o">.</span><span class="n">ATTR</span><span class="p">)</span>
         <span class="p">)</span></div></div>
 
 
@@ -755,7 +758,7 @@
         <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">mutate_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
         <span class="c1"># TODO: handle kwargs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="o">.</span><span class="n">update_last_query</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="o">.</span><span class="n">update_last_query</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">QueryLinker</span><span class="p">(</span>
             <span class="n">collection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">,</span>

@@ -172,10 +172,13 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.db.base.html">superduperdb.db.base package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.db.filesystem.html">superduperdb.db.filesystem package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.db.ibis.html">superduperdb.db.ibis package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.db.mongodb.html">superduperdb.db.mongodb package</a></li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../../source/superduperdb.db.mongodb.html">superduperdb.db.mongodb package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of superduperdb.db.mongodb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../source/superduperdb.db.mongodb.cdc.html">superduperdb.db.mongodb.cdc package</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -185,7 +188,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.vector.html">superduperdb.ext.vector package</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.misc.html">superduperdb.misc package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.misc package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.misc.html">superduperdb.misc package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of superduperdb.misc package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.misc.runnable.html">superduperdb.misc.runnable package</a></li>
 </ul>
 </li>
@@ -357,7 +360,10 @@
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_encode</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bson</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">)):</span>
+
+    <span class="kn">from</span> <span class="nn">superduperdb.db.mongodb.cdc.base</span> <span class="kn">import</span> <span class="n">ObjectId</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ObjectId</span><span class="p">)):</span>
         <span class="k">return</span> <span class="n">r</span>
     <span class="n">s</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">}</span><span class="s1"> in Document.encode&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">r</span>
