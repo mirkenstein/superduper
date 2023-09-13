@@ -730,8 +730,8 @@
                 <span class="p">{</span>
                     <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">ids</span><span class="p">[</span><span class="n">ix</span><span class="p">]),</span>
                     <span class="s1">&#39;input_id&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">ids</span><span class="p">[</span><span class="n">ix</span><span class="p">]),</span>
-                    <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">outputs</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span>
                     <span class="s1">&#39;query_id&#39;</span><span class="p">:</span> <span class="n">input_table</span><span class="p">,</span>
+                    <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">outputs</span><span class="p">[</span><span class="n">ix</span><span class="p">],</span>
                     <span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
                 <span class="p">}</span>
             <span class="p">)</span>
@@ -831,13 +831,9 @@
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="PreLike.post"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.PreLike.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ibis_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[],</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{}):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        ids, _ = db._select_nearest(</span>
-<span class="sd">            like=self.r, vector_index=self.vector_index, n=self.n</span>
-<span class="sd">        )</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="n">ids</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">_select_nearest</span><span class="p">(</span>
+            <span class="n">like</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">vector_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="p">)</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ibis_table</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">primary_id</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ids</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">f</span></div></div>
 
@@ -855,10 +851,6 @@
 
 <div class="viewcode-block" id="Insert.pre"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.Insert.pre">[docs]</a>    <span class="k">def</span> <span class="nf">pre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># TODO: handle adding table later</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        if self.base_table.identifier not in db.tables:</span>
-<span class="sd">            db.add(self.base_table)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">:</span>
             <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
