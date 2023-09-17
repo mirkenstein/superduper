@@ -238,7 +238,7 @@
 <span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">Empty</span><span class="p">,</span> <span class="n">Queue</span>
 
 <span class="kn">from</span> <span class="nn">.runnable</span> <span class="kn">import</span> <span class="n">Runnable</span>
-<span class="kn">from</span> <span class="nn">.thread</span> <span class="kn">import</span> <span class="n">HasThread</span><span class="p">,</span> <span class="n">print_err</span>
+<span class="kn">from</span> <span class="nn">.thread</span> <span class="kn">import</span> <span class="n">HasThread</span><span class="p">,</span> <span class="n">none</span>
 
 <span class="n">_SENTINEL_MESSAGE</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
 
@@ -286,7 +286,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">callback</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
-    <span class="n">error</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span> <span class="o">=</span> <span class="n">print_err</span>
+    <span class="n">error</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span> <span class="o">=</span> <span class="n">none</span>
     <span class="n">maxsize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;thread_queue&#39;</span>
     <span class="n">thread_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>

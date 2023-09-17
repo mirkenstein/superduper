@@ -232,7 +232,8 @@
         </div>
         <article role="main">
           <h1>Source code for superduperdb.db.mongodb.data_backend</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="kn">import</span> <span class="nn">click</span>
 <span class="kn">import</span> <span class="nn">pymongo</span>
@@ -269,6 +270,13 @@
         <span class="k">return</span> <span class="n">MongoMetaDataStore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MongoDataBackend.build_artifact_store"><a class="viewcode-back" href="../../../../source/superduperdb.db.mongodb.html#superduperdb.db.mongodb.data_backend.MongoDataBackend.build_artifact_store">[docs]</a>    <span class="k">def</span> <span class="nf">build_artifact_store</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">mongomock</span> <span class="kn">import</span> <span class="n">MongoClient</span> <span class="k">as</span> <span class="n">MockClient</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span> <span class="n">MockClient</span><span class="p">):</span>
+            <span class="kn">from</span> <span class="nn">superduperdb.db.filesystem.artifacts</span> <span class="kn">import</span> <span class="n">FileSystemArtifactStore</span>
+
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/tmp/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">FileSystemArtifactStore</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;/tmp/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">MongoArtifactStore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;_filesystem:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MongoDataBackend.drop"><a class="viewcode-back" href="../../../../source/superduperdb.db.mongodb.html#superduperdb.db.mongodb.data_backend.MongoDataBackend.drop">[docs]</a>    <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
