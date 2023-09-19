@@ -180,6 +180,8 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -327,6 +329,35 @@ queue for each consumer.</p>
 <dt class="sig sig-object py" id="superduperdb.misc.runnable.collection.ThreadQueue.timeout">
 <span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#superduperdb.misc.runnable.collection.ThreadQueue.timeout" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-superduperdb.misc.runnable.queue_chunker">
+<span id="superduperdb-misc-runnable-queue-chunker-module"></span><h2>superduperdb.misc.runnable.queue_chunker module<a class="headerlink" href="#module-superduperdb.misc.runnable.queue_chunker" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.misc.runnable.queue_chunker.QueueChunker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.misc.runnable.queue_chunker.</span></span><span class="sig-name descname"><span class="pre">QueueChunker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accumulate_timeouts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/misc/runnable/queue_chunker.html#QueueChunker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.misc.runnable.queue_chunker.QueueChunker" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Chunk a queue into lists of length at most <cite>chunk_size</cite> within time <cite>timeout</cite></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.misc.runnable.queue_chunker.QueueChunker.accumulate_timeouts">
+<span class="sig-name descname"><span class="pre">accumulate_timeouts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#superduperdb.misc.runnable.queue_chunker.QueueChunker.accumulate_timeouts" title="Permalink to this definition">#</a></dt>
+<dd><p>If accumulate timeouts is True, then <cite>timeout</cite> is the total timeout
+allowed over the whole chunk, otherwise the timeout is applied to each item.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.misc.runnable.queue_chunker.QueueChunker.chunk_size">
+<span class="sig-name descname"><span class="pre">chunk_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#superduperdb.misc.runnable.queue_chunker.QueueChunker.chunk_size" title="Permalink to this definition">#</a></dt>
+<dd><p>Maximum number of entries in a chunk</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.misc.runnable.queue_chunker.QueueChunker.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#superduperdb.misc.runnable.queue_chunker.QueueChunker.timeout" title="Permalink to this definition">#</a></dt>
+<dd><p>Maximum amount of time to block</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -698,6 +729,15 @@ else to the thread.</p>
 <li><a class="reference internal" href="#superduperdb.misc.runnable.collection.ThreadQueue.queue"><code class="docutils literal notranslate"><span class="pre">ThreadQueue.queue</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.misc.runnable.collection.ThreadQueue.thread_count"><code class="docutils literal notranslate"><span class="pre">ThreadQueue.thread_count</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.misc.runnable.collection.ThreadQueue.timeout"><code class="docutils literal notranslate"><span class="pre">ThreadQueue.timeout</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-superduperdb.misc.runnable.queue_chunker">superduperdb.misc.runnable.queue_chunker module</a><ul>
+<li><a class="reference internal" href="#superduperdb.misc.runnable.queue_chunker.QueueChunker"><code class="docutils literal notranslate"><span class="pre">QueueChunker</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.misc.runnable.queue_chunker.QueueChunker.accumulate_timeouts"><code class="docutils literal notranslate"><span class="pre">QueueChunker.accumulate_timeouts</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.misc.runnable.queue_chunker.QueueChunker.chunk_size"><code class="docutils literal notranslate"><span class="pre">QueueChunker.chunk_size</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.misc.runnable.queue_chunker.QueueChunker.timeout"><code class="docutils literal notranslate"><span class="pre">QueueChunker.timeout</span></code></a></li>
 </ul>
 </li>
 </ul>

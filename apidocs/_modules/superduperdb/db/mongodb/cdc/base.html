@@ -179,6 +179,8 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -318,7 +320,11 @@
     <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">ObjectId</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
     <span class="n">query</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Serializable</span><span class="p">]</span>
 
-    <span class="n">event_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DBEvent</span><span class="o">.</span><span class="n">insert</span>
+    <span class="n">event_type</span><span class="p">:</span> <span class="n">DBEvent</span> <span class="o">=</span> <span class="n">DBEvent</span><span class="o">.</span><span class="n">insert</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_type</span> <span class="o">==</span> <span class="n">DBEvent</span><span class="o">.</span><span class="n">delete</span>
 
 <div class="viewcode-block" id="Packet.collate"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.base.Packet.collate">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">collate</span><span class="p">(</span><span class="n">packets</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Packet&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Packet&#39;</span><span class="p">:</span>

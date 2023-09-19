@@ -179,6 +179,8 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -235,17 +237,19 @@
 <span></span><span class="kn">import</span> <span class="nn">queue</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.container.job</span> <span class="kn">import</span> <span class="n">FunctionJob</span>
-<span class="kn">from</span> <span class="nn">superduperdb.container.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
 <span class="kn">from</span> <span class="nn">superduperdb.container.task_workflow</span> <span class="kn">import</span> <span class="n">TaskWorkflow</span>
 <span class="kn">from</span> <span class="nn">superduperdb.db.base.db</span> <span class="kn">import</span> <span class="n">DB</span>
+<span class="kn">from</span> <span class="nn">superduperdb.misc.runnable.queue_chunker</span> <span class="kn">import</span> <span class="n">QueueChunker</span>
+<span class="kn">from</span> <span class="nn">superduperdb.misc.runnable.runnable</span> <span class="kn">import</span> <span class="n">Event</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">DBEvent</span><span class="p">,</span> <span class="n">Packet</span>
-<span class="kn">from</span> <span class="nn">.task_queue</span> <span class="kn">import</span> <span class="n">cdc_queue</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Packet</span>
 <span class="kn">from</span> <span class="nn">.vector_task_factory</span> <span class="kn">import</span> <span class="n">vector_task_factory</span>
+
+<span class="n">queue_chunker</span> <span class="o">=</span> <span class="n">QueueChunker</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">CDC_QUEUE</span><span class="p">:</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="CDCHandler"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.handler.CDCHandler">[docs]</a><span class="k">class</span> <span class="nc">CDCHandler</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
@@ -255,10 +259,7 @@
 <span class="sd">    does post model executiong jobs, i.e `copy_vectors`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_QUEUE_BATCH_SIZE</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
-    <span class="n">_QUEUE_TIMEOUT</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span>
-
-<div class="viewcode-block" id="CDCHandler.__init__"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.handler.CDCHandler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">,</span> <span class="n">stop_event</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">):</span>
+<div class="viewcode-block" id="CDCHandler.__init__"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.handler.CDCHandler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">,</span> <span class="n">stop_event</span><span class="p">:</span> <span class="n">Event</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;__init__.</span>
 
 <span class="sd">        :param db: a superduperdb instance.</span>
@@ -269,123 +270,57 @@
 
         <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CDCHandler.submit_task_workflow"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.handler.CDCHandler.submit_task_workflow">[docs]</a>    <span class="k">def</span> <span class="nf">submit_task_workflow</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">cdc_query</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Serializable</span><span class="p">],</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">task</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;copy&quot;</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;submit_task_workflow.</span>
-<span class="sd">        A fxn to build a taskflow and execute it with changed ids.</span>
-<span class="sd">        This also extends the task workflow graph with a node.</span>
-<span class="sd">        This node is responsible for applying a vector indexing listener,</span>
-<span class="sd">        and copying the vectors into a vector search database.</span>
+<div class="viewcode-block" id="CDCHandler.run"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.handler.CDCHandler.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">queue_chunker</span><span class="p">(</span><span class="n">CDC_QUEUE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span><span class="p">):</span>
+                <span class="n">_submit_task_workflow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">,</span> <span class="n">Packet</span><span class="o">.</span><span class="n">collate</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
 
-<span class="sd">        :param cdc_query: A query which will be used by `db._build_task_workflow` method</span>
-<span class="sd">        to extract the desired data.</span>
-<span class="sd">        :param ids: List of ids which were observed as changed document.</span>
-<span class="sd">        :param task: A task name to be executed on vector db.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">task</span> <span class="o">==</span> <span class="s2">&quot;delete&quot;</span><span class="p">:</span>
-            <span class="n">task_workflow</span> <span class="o">=</span> <span class="n">TaskWorkflow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">task_workflow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">_build_task_workflow</span><span class="p">(</span>
-                <span class="n">cdc_query</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
-            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while handling cdc batches :: reason </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div></div>
 
-        <span class="n">task_workflow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_vector_listener_task</span><span class="p">(</span>
-            <span class="n">task_workflow</span><span class="p">,</span> <span class="n">cdc_query</span><span class="o">=</span><span class="n">cdc_query</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="n">task</span>
-        <span class="p">)</span>
-        <span class="n">task_workflow</span><span class="o">.</span><span class="n">run_jobs</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CDCHandler.create_vector_listener_task"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.handler.CDCHandler.create_vector_listener_task">[docs]</a>    <span class="k">def</span> <span class="nf">create_vector_listener_task</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">task_workflow</span><span class="p">:</span> <span class="n">TaskWorkflow</span><span class="p">,</span>
-        <span class="n">cdc_query</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Serializable</span><span class="p">],</span>
-        <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-        <span class="n">task</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;copy&#39;</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskWorkflow</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;create_vector_listener_task.</span>
-<span class="sd">        A helper function to define a node in taskflow graph which is responsible for</span>
-<span class="sd">        executing the defined ``task`` on a vector db.</span>
+<div class="viewcode-block" id="_submit_task_workflow"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.handler._submit_task_workflow">[docs]</a><span class="k">def</span> <span class="nf">_submit_task_workflow</span><span class="p">(</span><span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">,</span> <span class="n">packet</span><span class="p">:</span> <span class="n">Packet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Build a taskflow and execute it with changed ids.</span>
 
-<span class="sd">        :param task_workflow: A DiGraph task flow which defines task on a di graph.</span>
-<span class="sd">        :param db: A superduperdb instance.</span>
-<span class="sd">        :param cdc_query: A basic find query to get cursor on collection.</span>
-<span class="sd">        :param ids: A list of ids observed during the change</span>
-<span class="sd">        :param task: A task name to be executed on vector db.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    This also extends the task workflow graph with a node.</span>
+<span class="sd">    This node is responsible for applying a vector indexing listener,</span>
+<span class="sd">    and copying the vectors into a vector search database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">packet</span><span class="o">.</span><span class="n">is_delete</span><span class="p">:</span>
+        <span class="n">workflow</span> <span class="o">=</span> <span class="n">TaskWorkflow</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">workflow</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">_build_task_workflow</span><span class="p">(</span><span class="n">packet</span><span class="o">.</span><span class="n">query</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">packet</span><span class="o">.</span><span class="n">ids</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">task</span> <span class="o">=</span> <span class="s1">&#39;delete&#39;</span> <span class="k">if</span> <span class="n">packet</span><span class="o">.</span><span class="n">is_delete</span> <span class="k">else</span> <span class="s1">&#39;copy&#39;</span>
+    <span class="n">task_callable</span><span class="p">,</span> <span class="n">task_name</span> <span class="o">=</span> <span class="n">vector_task_factory</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">)</span>
+
+    <span class="n">serialized_query</span> <span class="o">=</span> <span class="n">packet</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span> <span class="k">if</span> <span class="n">packet</span><span class="o">.</span><span class="n">query</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="n">identifier</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">superduperdb.container.vector_index</span> <span class="kn">import</span> <span class="n">VectorIndex</span>
 
-        <span class="n">task_callable</span><span class="p">,</span> <span class="n">task_name</span> <span class="o">=</span> <span class="n">vector_task_factory</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">)</span>
-        <span class="n">serialized_cdc_query</span> <span class="o">=</span> <span class="n">cdc_query</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span> <span class="k">if</span> <span class="n">cdc_query</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">identifier</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s1">&#39;vector_index&#39;</span><span class="p">):</span>
-            <span class="n">vector_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span> <span class="n">type_id</span><span class="o">=</span><span class="s1">&#39;vector_index&#39;</span><span class="p">)</span>
-            <span class="n">vector_index</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">VectorIndex</span><span class="p">,</span> <span class="n">vector_index</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vector_index</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-            <span class="n">indexing_listener_identifier</span> <span class="o">=</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">identifier</span>
-            <span class="n">task_workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">indexing_listener_identifier</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
-                <span class="n">job</span><span class="o">=</span><span class="n">FunctionJob</span><span class="p">(</span>
-                    <span class="nb">callable</span><span class="o">=</span><span class="n">task_callable</span><span class="p">,</span>
-                    <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">indexing_listener_identifier</span><span class="p">,</span> <span class="n">serialized_cdc_query</span><span class="p">,</span> <span class="n">ids</span><span class="p">],</span>
-                    <span class="n">kwargs</span><span class="o">=</span><span class="p">{},</span>
-                <span class="p">),</span>
-            <span class="p">)</span>
-        <span class="k">if</span> <span class="n">task</span> <span class="o">!=</span> <span class="s1">&#39;delete&#39;</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">indexing_listener_identifier</span>
-            <span class="n">model</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="n">indexing_listener_identifier</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
-            <span class="n">task_workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.predict(</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">indexing_listener_identifier</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">task_workflow</span></div>
+        <span class="n">vi</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span> <span class="n">type_id</span><span class="o">=</span><span class="s1">&#39;vector_index&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vi</span><span class="p">,</span> <span class="n">VectorIndex</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CDCHandler.on_create"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.handler.CDCHandler.on_create">[docs]</a>    <span class="k">def</span> <span class="nf">on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">:</span> <span class="n">Packet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ids</span> <span class="o">=</span> <span class="n">packet</span><span class="o">.</span><span class="n">ids</span>
-        <span class="n">cdc_query</span> <span class="o">=</span> <span class="n">packet</span><span class="o">.</span><span class="n">query</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">submit_task_workflow</span><span class="p">(</span><span class="n">cdc_query</span><span class="o">=</span><span class="n">cdc_query</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">)</span></div>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vi</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="n">listener_id</span> <span class="o">=</span> <span class="n">vi</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">identifier</span>
 
-<div class="viewcode-block" id="CDCHandler.on_update"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.handler.CDCHandler.on_update">[docs]</a>    <span class="k">def</span> <span class="nf">on_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">:</span> <span class="n">Packet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">on_create</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span></div>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">listener_id</span><span class="p">,</span> <span class="n">serialized_query</span><span class="p">,</span> <span class="n">packet</span><span class="o">.</span><span class="n">ids</span><span class="p">]</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">FunctionJob</span><span class="p">(</span><span class="nb">callable</span><span class="o">=</span><span class="n">task_callable</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">listener_id</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">job</span><span class="o">=</span><span class="n">job</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CDCHandler.on_delete"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.handler.CDCHandler.on_delete">[docs]</a>    <span class="k">def</span> <span class="nf">on_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">:</span> <span class="n">Packet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ids</span> <span class="o">=</span> <span class="n">packet</span><span class="o">.</span><span class="n">ids</span>
-        <span class="n">cdc_query</span> <span class="o">=</span> <span class="n">packet</span><span class="o">.</span><span class="n">query</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">submit_task_workflow</span><span class="p">(</span><span class="n">cdc_query</span><span class="o">=</span><span class="n">cdc_query</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">listener_id</span>
 
-    <span class="k">def</span> <span class="nf">_handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">:</span> <span class="n">Packet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">packet</span><span class="o">.</span><span class="n">event_type</span> <span class="o">==</span> <span class="n">DBEvent</span><span class="o">.</span><span class="n">insert</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_create</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">packet</span><span class="o">.</span><span class="n">event_type</span> <span class="o">==</span> <span class="n">DBEvent</span><span class="o">.</span><span class="n">update</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_update</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">packet</span><span class="o">.</span><span class="n">event_type</span> <span class="o">==</span> <span class="n">DBEvent</span><span class="o">.</span><span class="n">delete</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">on_delete</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span>
+    <span class="n">listener_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">add_node</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s1">&#39;vector_index&#39;</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">packet</span><span class="o">.</span><span class="n">is_delete</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">listener_ids</span>
+        <span class="n">listener_id</span> <span class="o">=</span> <span class="n">listener_ids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">model</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="n">listener_id</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+        <span class="n">workflow</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.predict(</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">listener_id</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CDCHandler.get_batch_from_queue"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.handler.CDCHandler.get_batch_from_queue">[docs]</a>    <span class="k">def</span> <span class="nf">get_batch_from_queue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get a batch of packets from task queue, with a timeout.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">packets</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_QUEUE_BATCH_SIZE</span><span class="p">):</span>
-                <span class="n">packets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cdc_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_QUEUE_TIMEOUT</span><span class="p">))</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
-                    <span class="k">return</span> <span class="mi">0</span>
-
-        <span class="k">except</span> <span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">packets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">Packet</span><span class="o">.</span><span class="n">collate</span><span class="p">(</span><span class="n">packets</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="CDCHandler.run"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.handler.CDCHandler.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">packets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_batch_from_queue</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">packets</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="p">(</span><span class="n">packets</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">packets</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="k">break</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error while handling cdc batches :: reason </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div></div>
+    <span class="n">workflow</span><span class="o">.</span><span class="n">run_jobs</span><span class="p">()</span></div>
 </pre></div>
         </article>
       </div>

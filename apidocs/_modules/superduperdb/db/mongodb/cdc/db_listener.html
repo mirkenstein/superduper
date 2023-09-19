@@ -179,6 +179,8 @@
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -246,10 +248,10 @@
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.db.base.db</span> <span class="kn">import</span> <span class="n">DB</span>
 <span class="kn">from</span> <span class="nn">superduperdb.db.mongodb</span> <span class="kn">import</span> <span class="n">CDC_COLLECTION_LOCKS</span><span class="p">,</span> <span class="n">query</span>
+<span class="kn">from</span> <span class="nn">superduperdb.misc.runnable.runnable</span> <span class="kn">import</span> <span class="n">Event</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseDatabaseListener</span><span class="p">,</span> <span class="n">CachedTokens</span><span class="p">,</span> <span class="n">DBEvent</span><span class="p">,</span> <span class="n">Packet</span><span class="p">,</span> <span class="n">TokenType</span>
-<span class="kn">from</span> <span class="nn">.handler</span> <span class="kn">import</span> <span class="n">CDCHandler</span>
-<span class="kn">from</span> <span class="nn">.task_queue</span> <span class="kn">import</span> <span class="n">cdc_queue</span>
+<span class="kn">from</span> <span class="nn">.handler</span> <span class="kn">import</span> <span class="n">CDC_QUEUE</span><span class="p">,</span> <span class="n">CDCHandler</span>
 
 <span class="n">MongoChangePipelines</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;generic&#39;</span><span class="p">:</span> <span class="p">[]}</span>
 
@@ -271,8 +273,8 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">listener</span><span class="p">:</span> <span class="n">BaseDatabaseListener</span><span class="p">,</span>
-        <span class="n">stop_event</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">,</span>
-        <span class="n">start_event</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">,</span>
+        <span class="n">stop_event</span><span class="p">:</span> <span class="n">Event</span><span class="p">,</span>
+        <span class="n">start_event</span><span class="p">:</span> <span class="n">Event</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stop_event</span> <span class="o">=</span> <span class="n">stop_event</span>
@@ -338,7 +340,7 @@
         <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">document</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_ID</span><span class="p">]]</span>
         <span class="n">cdc_query</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
         <span class="n">packet</span> <span class="o">=</span> <span class="n">Packet</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="n">event_type</span><span class="o">=</span><span class="n">DBEvent</span><span class="o">.</span><span class="n">insert</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">cdc_query</span><span class="p">)</span>
-        <span class="n">cdc_queue</span><span class="o">.</span><span class="n">put_nowait</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span></div>
+        <span class="n">CDC_QUEUE</span><span class="o">.</span><span class="n">put_nowait</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MongoEventMixin.on_update"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.db_listener.MongoEventMixin.on_update">[docs]</a>    <span class="k">def</span> <span class="nf">on_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">Collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;on_update.</span>
@@ -358,7 +360,7 @@
         <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">document</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_ID</span><span class="p">]]</span>
         <span class="n">cdc_query</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
         <span class="n">packet</span> <span class="o">=</span> <span class="n">Packet</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="n">event_type</span><span class="o">=</span><span class="n">DBEvent</span><span class="o">.</span><span class="n">insert</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">cdc_query</span><span class="p">)</span>
-        <span class="n">cdc_queue</span><span class="o">.</span><span class="n">put_nowait</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span></div>
+        <span class="n">CDC_QUEUE</span><span class="o">.</span><span class="n">put_nowait</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MongoEventMixin.on_delete"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.db_listener.MongoEventMixin.on_delete">[docs]</a>    <span class="k">def</span> <span class="nf">on_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">Collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;on_delete.</span>
@@ -377,7 +379,7 @@
         <span class="n">document</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="n">CDCKeys</span><span class="o">.</span><span class="n">deleted_document_data_key</span><span class="p">]</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">document</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_ID</span><span class="p">]]</span>
         <span class="n">packet</span> <span class="o">=</span> <span class="n">Packet</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="n">event_type</span><span class="o">=</span><span class="n">DBEvent</span><span class="o">.</span><span class="n">delete</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-        <span class="n">cdc_queue</span><span class="o">.</span><span class="n">put_nowait</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span></div></div>
+        <span class="n">CDC_QUEUE</span><span class="o">.</span><span class="n">put_nowait</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="MongoDatabaseListener"><a class="viewcode-back" href="../../../../../source/superduperdb.db.mongodb.cdc.html#superduperdb.db.mongodb.cdc.db_listener.MongoDatabaseListener">[docs]</a><span class="k">class</span> <span class="nc">MongoDatabaseListener</span><span class="p">(</span><span class="n">BaseDatabaseListener</span><span class="p">,</span> <span class="n">MongoEventMixin</span><span class="p">):</span>
@@ -401,7 +403,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">,</span>
         <span class="n">on</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">Collection</span><span class="p">,</span>
-        <span class="n">stop_event</span><span class="p">:</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">,</span>
+        <span class="n">stop_event</span><span class="p">:</span> <span class="n">Event</span><span class="p">,</span>
         <span class="n">identifier</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
         <span class="n">resume_token</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">TokenType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
@@ -426,7 +428,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_change_pipeline</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span> <span class="o">=</span> <span class="n">stop_event</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_startup_event</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_startup_event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_handler</span><span class="p">()</span>
 
