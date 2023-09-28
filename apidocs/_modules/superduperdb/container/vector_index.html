@@ -184,6 +184,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sentence_transformer.html">superduperdb.ext.sentence_transformer package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
@@ -281,27 +282,22 @@
 <span class="k">class</span> <span class="nc">VectorIndex</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A component carrying the information to apply a vector index to a ``DB`` instance</span>
+
+<span class="sd">    :param identifier: Unique string identifier of index</span>
+<span class="sd">    :param indexing_listener: Listener which is applied to created vectors</span>
+<span class="sd">    :param compatible_listener: Listener which is applied to vectors to be compared</span>
+<span class="sd">    :param measure: Measure to use for comparison</span>
+<span class="sd">    :param version: version of this index</span>
+<span class="sd">    :param metric_values: Metric values for this index</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1">#: Unique string identifier of index</span>
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
-
-    <span class="c1">#: Listener which is applied to created vectors</span>
     <span class="n">indexing_listener</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
-
-    <span class="c1">#: Listener which is applied to vectors to be compared</span>
     <span class="n">compatible_listener</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Measure to use for comparison</span>
     <span class="n">measure</span><span class="p">:</span> <span class="n">VectorIndexMeasureType</span> <span class="o">=</span> <span class="n">VectorIndexMeasureType</span><span class="o">.</span><span class="n">cosine</span>
-
-    <span class="c1">#: version of this index</span>
     <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Metric values for this index</span>
     <span class="n">metric_values</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
 
-    <span class="c1">#: Type of this component</span>
     <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;vector_index&#39;</span>
 
 <div class="viewcode-block" id="VectorIndex.on_create"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.vector_index.VectorIndex.on_create">[docs]</a>    <span class="nd">@override</span>

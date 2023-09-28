@@ -184,6 +184,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sentence_transformer.html">superduperdb.ext.sentence_transformer package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
@@ -283,7 +284,6 @@
     <span class="n">kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="c1">#: A unique name for the class</span>
     <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;training_configuration&#39;</span>
 
 <div class="viewcode-block" id="_TrainingConfiguration.get"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model._TrainingConfiguration.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -296,30 +296,24 @@
 <div class="viewcode-block" id="PredictMixin"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.PredictMixin">[docs]</a><span class="k">class</span> <span class="nc">PredictMixin</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Mixin class for components which can predict.</span>
+
+<span class="sd">    :param identifier: Unique identifier of model</span>
+<span class="sd">    :param encoder: Encoder instance (optional)</span>
+<span class="sd">    :param preprocess: Preprocess function (optional)</span>
+<span class="sd">    :param postprocess: Postprocess function (optional)</span>
+<span class="sd">    :param collate_fn: Collate function (optional)</span>
+<span class="sd">    :param batch_predict: Whether to batch predict (optional)</span>
+<span class="sd">    :param takes_context: Whether the model takes context into account (optional)</span>
+<span class="sd">    :param to_call: The method to use for prediction (optional)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1">#: Unique identifier of model</span>
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
-
-    <span class="c1">#: Encoder instance (optional)</span>
     <span class="n">encoder</span><span class="p">:</span> <span class="n">EncoderArg</span>
-
-    <span class="c1">#: Preprocess function (optional)</span>
     <span class="n">preprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Postprocess function (optional)</span>
     <span class="n">postprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Collate function (optional)</span>
     <span class="n">collate_fn</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Whether to batch predict (optional)</span>
     <span class="n">batch_predict</span><span class="p">:</span> <span class="nb">bool</span>
-
-    <span class="c1">#: Whether the model takes context into account (optional)</span>
     <span class="n">takes_context</span><span class="p">:</span> <span class="nb">bool</span>
-
-    <span class="c1">#: The method to use for prediction (optional)</span>
     <span class="n">to_call</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span>
 
 <div class="viewcode-block" id="PredictMixin.create_predict_job"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.PredictMixin.create_predict_job">[docs]</a>    <span class="k">def</span> <span class="nf">create_predict_job</span><span class="p">(</span>
@@ -607,41 +601,31 @@
 
 <div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.Model">[docs]</a><span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="n">Component</span><span class="p">,</span> <span class="n">PredictMixin</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model component which wraps a model to become serializable&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model component which wraps a model to become serializable</span>
 
-    <span class="c1">#: Unique identifier of model</span>
+<span class="sd">    :param identifier: Unique identifier of model</span>
+<span class="sd">    :param object: Model object, e.g. sklearn model, etc..</span>
+<span class="sd">    :param encoder: Encoder instance (optional)</span>
+<span class="sd">    :param preprocess: Preprocess function (optional)</span>
+<span class="sd">    :param postprocess: Postprocess function (optional)</span>
+<span class="sd">    :param collate_fn: Collate function (optional)</span>
+<span class="sd">    :param metrics: Metrics to use (optional)</span>
+<span class="sd">    :param predict_method: The method to use for prediction (optional)</span>
+<span class="sd">    :param model_to_device_method: The method to transfer the model to a device</span>
+<span class="sd">    :param batch_predict: Whether to batch predict (optional)</span>
+<span class="sd">    :param takes_context: Whether the model takes context into account (optional)&quot;&quot;&quot;</span>
+
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
-
-    <span class="c1">#: Model object, e.g. sklearn model, etc..</span>
     <span class="nb">object</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Artifact</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>
-
-    <span class="c1">#: Encoder instance (optional)</span>
     <span class="n">encoder</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Preprocess function (optional)</span>
     <span class="n">preprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Postprocess function (optional)</span>
     <span class="n">postprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Collate function (optional)</span>
     <span class="n">collate_fn</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Metrics to use (optional)</span>
     <span class="n">metrics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Metric</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">()</span>
-
-    <span class="c1">#: The method to use for prediction (optional)</span>
     <span class="n">predict_method</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: The method to transfer the model to a device</span>
     <span class="n">model_to_device_method</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Whether to batch predict (optional)</span>
     <span class="n">batch_predict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="c1">#: Whether the model takes context into account (optional)</span>
     <span class="n">takes_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-
     <span class="n">train_X</span><span class="p">:</span> <span class="n">DataArg</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">train_y</span><span class="p">:</span> <span class="n">DataArg</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">training_select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Select</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -671,15 +655,16 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">to_call</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">artifact</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_method</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">artifact_to_method</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_artifact_method</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_to_device_method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">artifact_to_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_to_device_method</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_artifact_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_to_device_method</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Model.on_load"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.model.Model.on_load">[docs]</a>    <span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">artifact_to_method</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_artifact_method</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">device</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preferred_devices</span><span class="p">):</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">artifact_to_method</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_artifact_method</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
                     <span class="k">return</span>
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>

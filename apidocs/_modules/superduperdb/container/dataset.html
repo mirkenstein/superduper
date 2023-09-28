@@ -184,6 +184,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sentence_transformer.html">superduperdb.ext.sentence_transformer package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
@@ -254,30 +255,25 @@
 
 <div class="viewcode-block" id="Dataset"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.dataset.Dataset">[docs]</a><span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Dataset</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A dataset is an immutable collection of documents that used for training&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A dataset is an immutable collection of documents that used for training</span>
 
-    <span class="c1">#: A unique identifier for the dataset</span>
+<span class="sd">    :param identifier: A unique identifier for the dataset</span>
+<span class="sd">    :param select: A query to select the documents for the dataset</span>
+<span class="sd">    :param sample_size: The number of documents to sample from the query</span>
+<span class="sd">    :param random_seed: The random seed to use for sampling</span>
+<span class="sd">    :param creation_date: The date the dataset was created</span>
+<span class="sd">    :param raw_data: The raw data for the dataset</span>
+<span class="sd">    :param version: The version of the dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
-
-    <span class="c1">#: A query to select the documents for the dataset</span>
     <span class="n">select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Find</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: The number of documents to sample from the query</span>
     <span class="n">sample_size</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: The random seed to use for sampling</span>
     <span class="n">random_seed</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: The date the dataset was created</span>
     <span class="n">creation_date</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: The raw data for the dataset</span>
     <span class="n">raw_data</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Artifact</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: The version of the dataset</span>
     <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="c1">#: A unique name for the class</span>
     <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;dataset&#39;</span>
 
 <div class="viewcode-block" id="Dataset.on_create"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.dataset.Dataset.on_create">[docs]</a>    <span class="nd">@override</span>

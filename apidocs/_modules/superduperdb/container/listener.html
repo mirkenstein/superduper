@@ -184,6 +184,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sentence_transformer.html">superduperdb.ext.sentence_transformer package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
@@ -252,33 +253,26 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Listener object which is used to process a column/ key of a collection or table,</span>
 <span class="sd">    and store the outputs.</span>
+
+<span class="sd">    :param key: Key to be bound to model</span>
+<span class="sd">    :param model: Model for processing data</span>
+<span class="sd">    :param select: Object for selecting which data is processed</span>
+<span class="sd">    :param active: Toggle to ``False`` to deactivate change data triggering</span>
+<span class="sd">    :param features: Dictionary of mappings from keys to model</span>
+<span class="sd">    :param identifier: A string used to identify the model.</span>
+<span class="sd">    :param predict_kwargs: Keyword arguments to self.model.predict</span>
+<span class="sd">    :param version: Version number of the model(?)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1">#: Key to be bound to model</span>
     <span class="n">key</span><span class="p">:</span> <span class="nb">str</span>
-
-    <span class="c1">#: Model for processing data</span>
     <span class="n">model</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Model</span><span class="p">]</span>
-
-    <span class="c1">#: Object for selecting which data is processed</span>
     <span class="n">select</span><span class="p">:</span> <span class="n">Select</span>
-
-    <span class="c1">#: Toggle to ``False`` to deactivate change data triggering</span>
     <span class="n">active</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="c1">#: Dictionary of mappings from keys to model</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: A string used to identify the model.</span>
     <span class="n">identifier</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Keyword arguments to self.model.predict</span>
     <span class="n">predict_kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-
-    <span class="c1">#: Version number of the model(?)</span>
     <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="c1">#: A unique name for the class</span>
     <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;listener&#39;</span>
 
     <span class="nd">@property</span>

@@ -184,6 +184,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.sentence_transformer.html">superduperdb.ext.sentence_transformer package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
@@ -250,23 +251,19 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A cursor that wraps a cursor and returns ``Document`` wrapping</span>
 <span class="sd">    a dict including ``Encodable`` objects.</span>
+
+<span class="sd">    :param raw_cursor: the cursor to wrap</span>
+<span class="sd">    :param id_field: the field to use as the document id</span>
+<span class="sd">    :param encoders: a dict of encoders to use to decode the documents</span>
+<span class="sd">    :param features: a dict of features to add to the documents</span>
+<span class="sd">    :param scores: a dict of scores to add to the documents</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1">#: the cursor to wrap</span>
     <span class="n">raw_cursor</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span>
-
-    <span class="c1">#: the field to use as the document id</span>
     <span class="n">id_field</span><span class="p">:</span> <span class="nb">str</span>
-
-    <span class="c1">#: a dict of encoders to use to decode the documents</span>
     <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Encoder</span><span class="p">]</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-
-    <span class="c1">#: a dict of features to add to the documents</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: a dict of scores to add to the documents</span>
     <span class="n">scores</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-
     <span class="n">_it</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="nd">@cached_property</span>

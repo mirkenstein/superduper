@@ -184,6 +184,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sentence_transformer.html">superduperdb.ext.sentence_transformer package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
@@ -260,28 +261,13 @@
 <span class="sd">    :param hash: in case the object isn&#39;t hashable (deduplication not possible)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1">#: The computed artifact, which may be of any type</span>
     <span class="n">artifact</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: A file_id is a key used to identify the file in the ``ArtifactStore``</span>
     <span class="n">file_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: The ``info`` dictionary is passed into ``ArtifactStore.create_artifact()``</span>
     <span class="n">info</span><span class="p">:</span> <span class="n">Info</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: The Python ``id()`` of the artifact</span>
     <span class="n">object_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="c1">#: The name of the finalization method on the artifact to call before saving</span>
     <span class="n">save_method</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: The name of the serializer</span>
     <span class="n">serializer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;dill&#39;</span>
-
-    <span class="c1">#: The sha1 hash of the artifact</span>
     <span class="n">sha1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-
-    <span class="c1"># In case the object isn&#39;t hashable (deduplication not possible)</span>
     <span class="nb">hash</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -334,15 +320,15 @@
 
 
 <div class="viewcode-block" id="ArtifactDesc"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.artifact.ArtifactDesc">[docs]</a><span class="k">class</span> <span class="nc">ArtifactDesc</span><span class="p">(</span><span class="n">te</span><span class="o">.</span><span class="n">TypedDict</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A description of an artifact in an artifact store&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A description of an artifact in an artifact store</span>
 
-    <span class="c1">#: A string identifying the artifact in the artifact store</span>
+<span class="sd">    :param file_id: A string identifying the artifact in the artifact store</span>
+<span class="sd">    :param info: An optional dictionary used to create the artifact</span>
+<span class="sd">    :param serializer: The name of the serializer used for the artifact store</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span>
-
-    <span class="c1">#: An optional dictionary used to create the artifact</span>
     <span class="n">info</span><span class="p">:</span> <span class="n">Info</span>
-
-    <span class="c1">#: The name of the serializer used for the artifact store</span>
     <span class="n">serializer</span><span class="p">:</span> <span class="nb">str</span></div>
 
 

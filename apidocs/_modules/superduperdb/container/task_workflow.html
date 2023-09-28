@@ -184,6 +184,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sentence_transformer.html">superduperdb.ext.sentence_transformer package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
@@ -256,12 +257,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Keep a graph of jobs that need to be performed and their dependencies,</span>
 <span class="sd">    and perform them when called.</span>
+
+<span class="sd">    :param database: ``DB`` instance to use</span>
+<span class="sd">    :param G: ``networkx.DiGraph`` to use as the graph</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1">#: ``DB`` instance to use</span>
     <span class="n">database</span><span class="p">:</span> <span class="n">DB</span>
-
-    <span class="c1">#: ``networkx.DiGraph`` to use as the graph</span>
     <span class="n">G</span><span class="p">:</span> <span class="n">DiGraph</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">DiGraph</span><span class="p">)</span>
 
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">DiGraph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">)</span>

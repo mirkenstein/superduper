@@ -184,6 +184,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.sentence_transformer.html">superduperdb.ext.sentence_transformer package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
@@ -244,16 +245,16 @@
 
 <div class="viewcode-block" id="QueueChunker"><a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.queue_chunker.QueueChunker">[docs]</a><span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">QueueChunker</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Chunk a queue into lists of length at most `chunk_size` within time `timeout`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Chunk a queue into lists of length at most `chunk_size` within time `timeout`</span>
+<span class="sd">    :param chunk_size: Maximum number of entries in a chunk</span>
+<span class="sd">    :param timeout: Maximum amount of time to block</span>
+<span class="sd">    :param accumulate_timeouts: If accumulate timeouts is True, then `timeout` is</span>
+<span class="sd">                                the total timeout allowed over the whole chunk,</span>
+<span class="sd">                                otherwise the timeout is applied to each item.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1">#: Maximum number of entries in a chunk</span>
     <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span>
-
-    <span class="c1">#: Maximum amount of time to block</span>
     <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span>
-
-    <span class="c1">#: If accumulate timeouts is True, then `timeout` is the total timeout</span>
-    <span class="c1">#: allowed over the whole chunk, otherwise the timeout is applied to each item.</span>
     <span class="n">accumulate_timeouts</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queue</span><span class="p">:</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">stop_event</span><span class="p">:</span> <span class="n">Event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">]:</span>

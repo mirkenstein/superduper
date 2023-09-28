@@ -184,6 +184,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.sentence_transformer.html">superduperdb.ext.sentence_transformer package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
@@ -263,24 +264,21 @@
 
 <div class="viewcode-block" id="Table"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.Table">[docs]</a><span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a representation of an SQL table in ibis.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a representation of an SQL table in ibis.</span>
 
-    <span class="c1">#: The name of the table</span>
+<span class="sd">    :param identifier: The name of the table</span>
+<span class="sd">    :param schema: The schema of the table</span>
+<span class="sd">    :param table: The table object</span>
+<span class="sd">    :param primary_id: Primary id of the table</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
-
-    <span class="c1">#: The schema of the table</span>
     <span class="n">schema</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">IbisSchema</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: The table object</span>
     <span class="n">table</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Primary id of the table</span>
     <span class="n">primary_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span>
-
-    <span class="c1">#: A unique name for the class</span>
-    <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;table&#39;</span>
-
     <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;table&#39;</span>
 
 <div class="viewcode-block" id="Table.on_create"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.Table.on_create">[docs]</a>    <span class="k">def</span> <span class="nf">on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">DB</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">db</span><span class="p">)</span></div>
@@ -528,18 +526,17 @@
 
 <div class="viewcode-block" id="OutputTable"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.OutputTable">[docs]</a><span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">OutputTable</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a representation of model output table in ibis&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This is a representation of model output table in ibis</span>
 
-    <span class="c1">#: The name of the table</span>
+<span class="sd">    :param model: The name of the table</span>
+<span class="sd">    :param primary_id: Primary id of the table</span>
+<span class="sd">    :param table: The table object</span>
+<span class="sd">    :param output_type: The schema of the table</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">model</span><span class="p">:</span> <span class="nb">str</span>
-
-    <span class="c1">#: Primary id of the table</span>
     <span class="n">primary_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span>
-
-    <span class="c1">#: The table object</span>
     <span class="n">table</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: The schema of the table</span>
     <span class="n">output_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="OutputTable.create"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.OutputTable.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">):</span>
@@ -573,15 +570,14 @@
 <span class="k">class</span> <span class="nc">InMemoryTable</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This is a representation of a table in memory (memtable) in ibis.</span>
+
+<span class="sd">    :param identifier: The name of the table</span>
+<span class="sd">    :param table: The table object</span>
+<span class="sd">    :param primary_id: Primary id of the table</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1">#: The name of the table</span>
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
-
-    <span class="c1">#: The table object</span>
     <span class="n">table</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="c1">#: Primary id of the table</span>
     <span class="n">primary_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span>
 
     <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;inmemory_table&#39;</span>
@@ -795,9 +791,10 @@
 
 <div class="viewcode-block" id="PostLike"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.PostLike">[docs]</a><span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">PostLike</span><span class="p">:</span>
-    <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;Ibis.PostLike&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Ibis.PostLike&#39;</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;postlike&#39;</span>
     <span class="n">namespace</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;sddb&#39;</span>
+
+    <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;Ibis.PostLike&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Ibis.PostLike&#39;</span>
 
 <div class="viewcode-block" id="PostLike.pre"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.PostLike.pre">[docs]</a>    <span class="k">def</span> <span class="nf">pre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">pass</span></div>
@@ -825,9 +822,10 @@
     <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
     <span class="n">collection</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;collection&#39;</span>
     <span class="n">primary_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span>
-    <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;Ibis.PreLike&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Ibis.PreLike&#39;</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;prelike&#39;</span>
     <span class="n">namespace</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;sddb&#39;</span>
+
+    <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;Ibis.PreLike&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Ibis.PreLike&#39;</span>
 
 <div class="viewcode-block" id="PreLike.pre"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.PreLike.pre">[docs]</a>    <span class="k">def</span> <span class="nf">pre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">pass</span></div>
@@ -847,9 +845,10 @@
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
-    <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;Ibis.insert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Ibis.insert&#39;</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;insert&#39;</span>
     <span class="n">namespace</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ibis&#39;</span>
+
+    <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;Ibis.insert&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Ibis.insert&#39;</span>
 
 <div class="viewcode-block" id="Insert.pre"><a class="viewcode-back" href="../../../../source/superduperdb.db.ibis.html#superduperdb.db.ibis.query.Insert.pre">[docs]</a>    <span class="k">def</span> <span class="nf">pre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># TODO: handle adding table later</span>
