@@ -235,12 +235,14 @@
         </div>
         <article role="main">
           <h1>Source code for superduperdb.ext.openai.model</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
+<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="kn">import</span> <span class="nn">tqdm</span>
-<span class="kn">from</span> <span class="nn">openai</span> <span class="kn">import</span> <span class="n">ChatCompletion</span><span class="p">,</span> <span class="n">Embedding</span><span class="p">,</span> <span class="n">Model</span> <span class="k">as</span> <span class="n">OpenAIModel</span>
+<span class="kn">from</span> <span class="nn">openai</span> <span class="kn">import</span> <span class="n">Audio</span><span class="p">,</span> <span class="n">ChatCompletion</span><span class="p">,</span> <span class="n">Embedding</span><span class="p">,</span> <span class="n">Model</span> <span class="k">as</span> <span class="n">OpenAIModel</span>
 <span class="kn">from</span> <span class="nn">openai.error</span> <span class="kn">import</span> <span class="n">RateLimitError</span><span class="p">,</span> <span class="n">ServiceUnavailableError</span><span class="p">,</span> <span class="n">Timeout</span><span class="p">,</span> <span class="n">TryAgain</span>
 
 <span class="kn">import</span> <span class="nn">superduperdb</span> <span class="k">as</span> <span class="nn">s</span>
@@ -354,6 +356,7 @@
             <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="c1"># Note: we submit the async requests in serial to avoid rate-limiting</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">):</span>
             <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_a_batch</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">out</span></div>
@@ -413,6 +416,192 @@
         <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
             <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">X</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="OpenAIAudioTranscription"><a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranscription">[docs]</a><span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">OpenAIAudioTranscription</span><span class="p">(</span><span class="n">OpenAI</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;OpenAI audio transcription predictor.</span>
+
+<span class="sd">    :param takes_context: Whether the model takes context into account.</span>
+<span class="sd">    :param prompt: The prompt to guide the model&#39;s style. Should contain ``{context}``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">takes_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<div class="viewcode-block" id="OpenAIAudioTranscription._predict_one"><a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranscription._predict_one">[docs]</a>    <span class="nd">@retry</span>
+    <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="s2">&quot;Converts a file-like Audio recording to text.&quot;</span>
+        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">Audio</span><span class="o">.</span><span class="n">transcribe</span><span class="p">(</span>
+                <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="OpenAIAudioTranscription._apredict_one"><a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranscription._apredict_one">[docs]</a>    <span class="nd">@retry</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_one</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="s2">&quot;Converts a file-like Audio recording to text.&quot;</span>
+        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Audio</span><span class="o">.</span><span class="n">atranscribe</span><span class="p">(</span>
+                <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="OpenAIAudioTranscription._predict_a_batch"><a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranscription._predict_a_batch">[docs]</a>    <span class="nd">@retry</span>
+    <span class="k">def</span> <span class="nf">_predict_a_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="s2">&quot;Converts multiple file-like Audio recordings to text.&quot;</span>
+        <span class="n">resps</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Audio</span><span class="o">.</span><span class="n">transcribe</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">resp</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">resps</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="OpenAIAudioTranscription._apredict_a_batch"><a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranscription._apredict_a_batch">[docs]</a>    <span class="nd">@retry</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_a_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="s2">&quot;Converts multiple file-like Audio recordings to text.&quot;</span>
+        <span class="n">resps</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">[</span>
+                <span class="n">Audio</span><span class="o">.</span><span class="n">atranscribe</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">resp</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">resps</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_predict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
+        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_one</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">)):</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_predict_a_batch</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
+        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">list_of_lists</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_a_batch</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">list_of_lists</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="OpenAIAudioTranslation"><a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranslation">[docs]</a><span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">OpenAIAudioTranslation</span><span class="p">(</span><span class="n">OpenAI</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;OpenAI audio translation predictor.</span>
+
+<span class="sd">    :param takes_context: Whether the model takes context into account.</span>
+<span class="sd">    :param prompt: The prompt to guide the model&#39;s style. Should contain ``{context}``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">takes_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<div class="viewcode-block" id="OpenAIAudioTranslation._predict_one"><a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranslation._predict_one">[docs]</a>    <span class="nd">@retry</span>
+    <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="s2">&quot;Translates a file-like Audio recording to English.&quot;</span>
+        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">Audio</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span>
+                <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="OpenAIAudioTranslation._apredict_one"><a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranslation._apredict_one">[docs]</a>    <span class="nd">@retry</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_one</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="s2">&quot;Translates a file-like Audio recording to English.&quot;</span>
+        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="k">await</span> <span class="n">Audio</span><span class="o">.</span><span class="n">atranslate</span><span class="p">(</span>
+                <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="OpenAIAudioTranslation._predict_a_batch"><a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranslation._predict_a_batch">[docs]</a>    <span class="nd">@retry</span>
+    <span class="k">def</span> <span class="nf">_predict_a_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="s2">&quot;Translates multiple file-like Audio recordings to English.&quot;</span>
+        <span class="n">resps</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Audio</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">resp</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">resps</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="OpenAIAudioTranslation._apredict_a_batch"><a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranslation._apredict_a_batch">[docs]</a>    <span class="nd">@retry</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_a_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="s2">&quot;Translates multiple file-like Audio recordings to English.&quot;</span>
+        <span class="n">resps</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">[</span>
+                <span class="n">Audio</span><span class="o">.</span><span class="n">atranslate</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">resp</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">resps</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_predict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
+        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_one</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">)):</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_predict_a_batch</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
+        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">list_of_lists</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_a_batch</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">list_of_lists</span><span class="p">))</span></div>
 </pre></div>
         </article>
       </div>
