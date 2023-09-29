@@ -363,7 +363,11 @@
     <span class="c1"># 4 main components are URI strings</span>
 
     <span class="n">data_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mongodb://localhost:27017&#39;</span>
-    <span class="n">vector_search</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;inmemory://&#39;</span>  <span class="c1"># &#39;lancedb://./.lancedb&#39;</span>
+
+    <span class="c1">#: The URI for the vector search</span>
+    <span class="n">vector_search</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;inmemory://&#39;</span>  <span class="c1"># &#39;lance://foo/bar/baz.lance&#39;</span>
+
+    <span class="c1">#: The URI for the artifact store</span>
     <span class="n">artifact_store</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">metadata_store</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">cluster</span><span class="p">:</span> <span class="n">Cluster</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Cluster</span><span class="p">)</span>

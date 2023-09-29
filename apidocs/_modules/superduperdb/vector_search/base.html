@@ -403,25 +403,21 @@
 
 
 <div class="viewcode-block" id="VectorDatabase"><a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.VectorDatabase">[docs]</a><span class="k">class</span> <span class="nc">VectorDatabase</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A manager for vector indexes within a vector database.</span>
-<span class="sd">    A vector database that manages indexed vector collections.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A vector database that manages vector collections.</span>
 
 <span class="sd">    Concrete implementations of this class are responsible for lifecycle management of</span>
 <span class="sd">    vector collections within a specific vector database.</span>
 
-<span class="sd">    Clients of this class retrieve vector collections by their identifier for subsequent</span>
-<span class="sd">    operations.</span>
+<span class="sd">    Implementations of this abstract base class retrieve vector collections by their</span>
+<span class="sd">    identifier for subsequent operations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
 
 <div class="viewcode-block" id="VectorDatabase.get_table"><a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.VectorDatabase.get_table">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">VectorCollectionConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorCollection</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a vector collection by its identifier.</span>
 
 <span class="sd">        :param config: configuration for the vector database</span>
-<span class="sd">        :param create: create the table if it does not exist</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
 </pre></div>
