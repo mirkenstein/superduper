@@ -237,7 +237,6 @@
           <h1>Source code for superduperdb.db.base.cursor</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span>
 <span class="kn">from</span> <span class="nn">superduperdb.container.document</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -264,14 +263,6 @@
     <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Encoder</span><span class="p">]</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">scores</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">_it</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]:</span>
-        <span class="k">def</span> <span class="nf">key</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-            <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">id_field</span><span class="p">])]</span>
-
-        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scores</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_cursor</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SuperDuperCursor.add_features"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.cursor.SuperDuperCursor.add_features">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_features</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
@@ -290,15 +281,9 @@
                     <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_other&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_outputs&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="n">features</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
-<div class="viewcode-block" id="SuperDuperCursor.count"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.cursor.SuperDuperCursor.count">[docs]</a>    <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SuperDuperCursor.limit"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.cursor.SuperDuperCursor.limit">[docs]</a>    <span class="k">def</span> <span class="nf">limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SuperDuperCursor&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Count the number of documents in the cursor.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_cursor</span><span class="o">.</span><span class="n">clone</span><span class="p">()))</span></div>
-
-<div class="viewcode-block" id="SuperDuperCursor.limit"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.cursor.SuperDuperCursor.limit">[docs]</a>    <span class="k">def</span> <span class="nf">limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Limit the number of documents in the cursor.</span>
+<span class="sd">        Limit the number of results returned by the cursor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">SuperDuperCursor</span><span class="p">(</span>
             <span class="n">raw_cursor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_cursor</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span>
@@ -307,6 +292,9 @@
             <span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span>
             <span class="n">scores</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="p">,</span>
         <span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperDuperCursor.cursor_next"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.cursor.SuperDuperCursor.cursor_next">[docs]</a>    <span class="k">def</span> <span class="nf">cursor_next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_cursor</span><span class="o">.</span><span class="n">next</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="SuperDuperCursor.wrap_document"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.cursor.SuperDuperCursor.wrap_document">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">wrap_document</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">encoders</span><span class="p">):</span>
@@ -318,18 +306,8 @@
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-<div class="viewcode-block" id="SuperDuperCursor.cursor_next"><a class="viewcode-back" href="../../../../source/superduperdb.db.base.html#superduperdb.db.base.cursor.SuperDuperCursor.cursor_next">[docs]</a>    <span class="k">def</span> <span class="nf">cursor_next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_cursor</span><span class="o">.</span><span class="n">next</span><span class="p">()</span></div>
-
     <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scores</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_it</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">StopIteration</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_it</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor_next</span><span class="p">()</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor_next</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scores</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">id_field</span><span class="p">])]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
