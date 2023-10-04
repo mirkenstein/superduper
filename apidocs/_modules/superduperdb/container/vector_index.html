@@ -332,11 +332,11 @@
                 <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># type: ignore[call-arg]</span>
             <span class="p">)</span>
 
-        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span><span class="p">,</span> <span class="s1">&#39;collection&#39;</span><span class="p">)</span>
-        <span class="n">clt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">collection</span>
+            <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span><span class="p">,</span> <span class="s1">&#39;collection&#39;</span><span class="p">)</span>
+            <span class="n">clt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">collection</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">CDC_COLLECTION_LOCKS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">clt</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_vector_database</span><span class="p">(</span><span class="n">db</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">CDC_COLLECTION_LOCKS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">clt</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_vector_database</span><span class="p">(</span><span class="n">db</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">child_components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
