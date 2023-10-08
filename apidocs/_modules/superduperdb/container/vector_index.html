@@ -377,7 +377,7 @@
         <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;Keys in provided </span><span class="si">{</span><span class="n">like</span><span class="si">}</span><span class="s1"> don</span><span class="se">\&#39;</span><span class="s1">t match&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39; VectorIndex keys: </span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s1">, with model: </span><span class="si">{</span><span class="n">models</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;VectorIndex keys: </span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s1">, with model: </span><span class="si">{</span><span class="n">models</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
         <span class="n">model_input</span> <span class="o">=</span> <span class="n">document</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;_base&#39;</span> <span class="k">else</span> <span class="n">document</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span>
@@ -402,6 +402,7 @@
 <span class="sd">        :param ids: A list of ids to match</span>
 <span class="sd">        :param n: Number of items to return</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">models</span><span class="p">,</span> <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models_keys</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;len(model=</span><span class="si">{</span><span class="n">models</span><span class="si">}</span><span class="s1">) != len(keys=</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
