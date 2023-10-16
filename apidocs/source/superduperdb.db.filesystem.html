@@ -241,49 +241,11 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-superduperdb.db.filesystem.artifacts">
-<span id="superduperdb-db-filesystem-artifacts-module"></span><h2>superduperdb.db.filesystem.artifacts module<a class="headerlink" href="#module-superduperdb.db.filesystem.artifacts" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="superduperdb.db.filesystem.artifacts.FileSystemArtifactStore">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.db.filesystem.artifacts.</span></span><span class="sig-name descname"><span class="pre">FileSystemArtifactStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/db/filesystem/artifacts.html#FileSystemArtifactStore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.db.filesystem.artifacts.FileSystemArtifactStore" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="superduperdb.db.base.html#superduperdb.db.base.artifact.ArtifactStore" title="superduperdb.db.base.artifact.ArtifactStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArtifactStore</span></code></a></p>
-<p>Abstraction for storing large artifacts separately from primary data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>conn</strong> – root directory of the artifact store</p></li>
-<li><p><strong>name</strong> – subdirectory to use for this artifact store</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.db.filesystem.artifacts.FileSystemArtifactStore.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/db/filesystem/artifacts.html#FileSystemArtifactStore.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.db.filesystem.artifacts.FileSystemArtifactStore.delete" title="Permalink to this definition">#</a></dt>
-<dd><p>Delete artifact from artifact store
-:param file_id: File id uses to identify artifact in store</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.db.filesystem.artifacts.FileSystemArtifactStore.drop">
-<span class="sig-name descname"><span class="pre">drop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/db/filesystem/artifacts.html#FileSystemArtifactStore.drop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.db.filesystem.artifacts.FileSystemArtifactStore.drop" title="Permalink to this definition">#</a></dt>
-<dd><p>Drop the artifact store.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.db.filesystem.artifacts.FileSystemArtifactStore.load_bytes">
-<span class="sig-name descname"><span class="pre">load_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/superduperdb/db/filesystem/artifacts.html#FileSystemArtifactStore.load_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.db.filesystem.artifacts.FileSystemArtifactStore.load_bytes" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.db.filesystem.artifacts.FileSystemArtifactStore.save_artifact">
-<span class="sig-name descname"><span class="pre">save_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serialized</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/superduperdb/db/filesystem/artifacts.html#FileSystemArtifactStore.save_artifact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.db.filesystem.artifacts.FileSystemArtifactStore.save_artifact" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<section id="superduperdb-db-filesystem-artifacts-module">
+<h2>superduperdb.db.filesystem.artifacts module<a class="headerlink" href="#superduperdb-db-filesystem-artifacts-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-superduperdb.db.filesystem">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-superduperdb.db.filesystem" title="Permalink to this heading">#</a></h2>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -344,17 +306,8 @@
             <ul>
 <li><a class="reference internal" href="#">superduperdb.db.filesystem package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-superduperdb.db.filesystem.artifacts">superduperdb.db.filesystem.artifacts module</a><ul>
-<li><a class="reference internal" href="#superduperdb.db.filesystem.artifacts.FileSystemArtifactStore"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore</span></code></a><ul>
-<li><a class="reference internal" href="#superduperdb.db.filesystem.artifacts.FileSystemArtifactStore.delete"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore.delete()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.db.filesystem.artifacts.FileSystemArtifactStore.drop"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore.drop()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.db.filesystem.artifacts.FileSystemArtifactStore.load_bytes"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore.load_bytes()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.db.filesystem.artifacts.FileSystemArtifactStore.save_artifact"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore.save_artifact()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-superduperdb.db.filesystem">Module contents</a></li>
+<li><a class="reference internal" href="#superduperdb-db-filesystem-artifacts-module">superduperdb.db.filesystem.artifacts module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>

@@ -241,66 +241,14 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-superduperdb.data.tree.for_each">
-<span id="superduperdb-data-tree-for-each-module"></span><h2>superduperdb.data.tree.for_each module<a class="headerlink" href="#module-superduperdb.data.tree.for_each" title="Permalink to this heading">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="superduperdb.data.tree.for_each.for_each">
-<span class="sig-prename descclassname"><span class="pre">superduperdb.data.tree.for_each.</span></span><span class="sig-name descname"><span class="pre">for_each</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/data/tree/for_each.html#for_each"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.tree.for_each.for_each" title="Permalink to this definition">#</a></dt>
-<dd><p>Recursively applies a function, breadth-first.</p>
-<p><cite>for_each</cite> recurses through dicts, lists and tuples, and also through
-members of dataclasses and Pydantic model.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fn</strong> – function to apply</p></li>
-<li><p><strong>item</strong> – item to apply function to</p></li>
-<li><p><strong>depth_first</strong> – whether to apply the function before recursing</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
+<section id="superduperdb-data-tree-for-each-module">
+<h2>superduperdb.data.tree.for_each module<a class="headerlink" href="#superduperdb-data-tree-for-each-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-superduperdb.data.tree.tree">
-<span id="superduperdb-data-tree-tree-module"></span><h2>superduperdb.data.tree.tree module<a class="headerlink" href="#module-superduperdb.data.tree.tree" title="Permalink to this heading">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="superduperdb.data.tree.tree.tree_find">
-<span class="sig-prename descclassname"><span class="pre">superduperdb.data.tree.tree.</span></span><span class="sig-name descname"><span class="pre">tree_find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accept</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/data/tree/tree.html#tree_find"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.tree.tree.tree_find" title="Permalink to this definition">#</a></dt>
-<dd><dl class="simple">
-<dt>Iterates recursively through lists and dicts, yielding all leaves <cite>x</cite></dt><dd><p>where <cite>accept(x)</cite> is True.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tree</strong> – A tree made of dicts and lists</p></li>
-<li><p><strong>accept</strong> – A function which returns True for values to yield</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="superduperdb.data.tree.tree.tree_rewrite">
-<span class="sig-prename descclassname"><span class="pre">superduperdb.data.tree.tree.</span></span><span class="sig-name descname"><span class="pre">tree_rewrite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tree</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accept</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rewrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/superduperdb/data/tree/tree.html#tree_rewrite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.tree.tree.tree_rewrite" title="Permalink to this definition">#</a></dt>
-<dd><dl class="simple">
-<dt>Iterates recursively through lists and dicts, rewriting all leaves <cite>x</cite></dt><dd><p>where <cite>accept(x)</cite> is True with <cite>rewrite(x)</cite></p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tree</strong> – A tree made of dicts and lists</p></li>
-<li><p><strong>accept</strong> – A function which returns True for values to rewrite</p></li>
-<li><p><strong>rewrite</strong> – A function which rewrites accepted values</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
+<section id="superduperdb-data-tree-tree-module">
+<h2>superduperdb.data.tree.tree module<a class="headerlink" href="#superduperdb-data-tree-tree-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-superduperdb.data.tree">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-superduperdb.data.tree" title="Permalink to this heading">#</a></h2>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -361,16 +309,9 @@ members of dataclasses and Pydantic model.</p>
             <ul>
 <li><a class="reference internal" href="#">superduperdb.data.tree package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-superduperdb.data.tree.for_each">superduperdb.data.tree.for_each module</a><ul>
-<li><a class="reference internal" href="#superduperdb.data.tree.for_each.for_each"><code class="docutils literal notranslate"><span class="pre">for_each()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-superduperdb.data.tree.tree">superduperdb.data.tree.tree module</a><ul>
-<li><a class="reference internal" href="#superduperdb.data.tree.tree.tree_find"><code class="docutils literal notranslate"><span class="pre">tree_find()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.data.tree.tree.tree_rewrite"><code class="docutils literal notranslate"><span class="pre">tree_rewrite()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-superduperdb.data.tree">Module contents</a></li>
+<li><a class="reference internal" href="#superduperdb-data-tree-for-each-module">superduperdb.data.tree.for_each module</a></li>
+<li><a class="reference internal" href="#superduperdb-data-tree-tree-module">superduperdb.data.tree.tree module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>

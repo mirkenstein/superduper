@@ -241,132 +241,17 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-superduperdb.data.cache.key_cache">
-<span id="superduperdb-data-cache-key-cache-module"></span><h2>superduperdb.data.cache.key_cache module<a class="headerlink" href="#module-superduperdb.data.cache.key_cache" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="superduperdb.data.cache.key_cache.Cache">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.data.cache.key_cache.</span></span><span class="sig-name descname"><span class="pre">Cache</span></span><a class="reference internal" href="../_modules/superduperdb/data/cache/key_cache.html#Cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.key_cache.Cache" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.data.cache.key_cache.Cache.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/superduperdb/data/cache/key_cache.html#Cache.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.key_cache.Cache.get" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.data.cache.key_cache.Cache.put">
-<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/data/cache/key_cache.html#Cache.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.key_cache.Cache.put" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="superduperdb.data.cache.key_cache.KeyCache">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.data.cache.key_cache.</span></span><span class="sig-name descname"><span class="pre">KeyCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_cache:</span> <span class="pre">Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tuple[~Entry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float]]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_count:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_inverse:</span> <span class="pre">Dict[~Entry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_lock:</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">allocate_lock&gt;</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/data/cache/key_cache.html#KeyCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.key_cache.KeyCache" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">Entry</span></code>], <a class="reference internal" href="#superduperdb.data.cache.key_cache.Cache" title="superduperdb.data.cache.key_cache.Cache"><code class="xref py py-class docutils literal notranslate"><span class="pre">Cache</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.data.cache.key_cache.KeyCache.expire">
-<span class="sig-name descname"><span class="pre">expire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">before</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/data/cache/key_cache.html#KeyCache.expire"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.key_cache.KeyCache.expire" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.data.cache.key_cache.KeyCache.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Entry</span></span></span><a class="reference internal" href="../_modules/superduperdb/data/cache/key_cache.html#KeyCache.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.key_cache.KeyCache.get" title="Permalink to this definition">#</a></dt>
-<dd><p>Given a key, returns an entry or raises KeyError</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.data.cache.key_cache.KeyCache.put">
-<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Entry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/data/cache/key_cache.html#KeyCache.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.key_cache.KeyCache.put" title="Permalink to this definition">#</a></dt>
-<dd><p>Put an item into the cache, return a string key</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="superduperdb-data-cache-key-cache-module">
+<h2>superduperdb.data.cache.key_cache module<a class="headerlink" href="#superduperdb-data-cache-key-cache-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-superduperdb.data.cache.typed_cache">
-<span id="superduperdb-data-cache-typed-cache-module"></span><h2>superduperdb.data.cache.typed_cache module<a class="headerlink" href="#module-superduperdb.data.cache.typed_cache" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="superduperdb.data.cache.typed_cache.TypedCache">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.data.cache.typed_cache.</span></span><span class="sig-name descname"><span class="pre">TypedCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_class_to_name:</span> <span class="pre">~typing.Dict[~typing.Type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_lock:</span> <span class="pre">~_thread.allocate_lock</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_name_to_cache:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~superduperdb.data.cache.key_cache.KeyCache]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/data/cache/typed_cache.html#TypedCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.typed_cache.TypedCache" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Cache objects by class.</p>
-<p>Each class of object is given a unique name and its own cache.</p>
-<p>The key for an object is that unique class name, joined with the object’s key from
-its class cache.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.data.cache.typed_cache.TypedCache.expire">
-<span class="sig-name descname"><span class="pre">expire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">before</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/data/cache/typed_cache.html#TypedCache.expire"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.typed_cache.TypedCache.expire" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.data.cache.typed_cache.TypedCache.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/superduperdb/data/cache/typed_cache.html#TypedCache.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.typed_cache.TypedCache.get" title="Permalink to this definition">#</a></dt>
-<dd><p>Given a key, returns an entry or raises KeyError</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.data.cache.typed_cache.TypedCache.put">
-<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/data/cache/typed_cache.html#TypedCache.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.typed_cache.TypedCache.put" title="Permalink to this definition">#</a></dt>
-<dd><p>Put an item into the cache, return a string key</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="superduperdb-data-cache-typed-cache-module">
+<h2>superduperdb.data.cache.typed_cache module<a class="headerlink" href="#superduperdb-data-cache-typed-cache-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-superduperdb.data.cache.uri_cache">
-<span id="superduperdb-data-cache-uri-cache-module"></span><h2>superduperdb.data.cache.uri_cache module<a class="headerlink" href="#module-superduperdb.data.cache.uri_cache" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="superduperdb.data.cache.uri_cache.Cached">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.data.cache.uri_cache.</span></span><span class="sig-name descname"><span class="pre">Cached</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dataclasses.InitVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ContentType</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/data/cache/uri_cache.html#Cached"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.uri_cache.Cached" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">ContentType</span></code>]</p>
-<p>A base class for classes that are cached using their uri and type</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="superduperdb.data.cache.uri_cache.Cached.content">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">content</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ContentType</span></em><a class="headerlink" href="#superduperdb.data.cache.uri_cache.Cached.content" title="Permalink to this definition">#</a></dt>
-<dd><p>Get the cached content. <cite>content</cite> is not JSONized</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="superduperdb.data.cache.uri_cache.Cached.uri">
-<span class="sig-name descname"><span class="pre">uri</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#superduperdb.data.cache.uri_cache.Cached.uri" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="superduperdb.data.cache.uri_cache.URICache">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.data.cache.uri_cache.</span></span><span class="sig-name descname"><span class="pre">URICache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_class_to_name:</span> <span class="pre">~typing.Dict[~typing.Type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_lock:</span> <span class="pre">~_thread.allocate_lock</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_name_to_cache:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~superduperdb.data.cache.key_cache.KeyCache]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/data/cache/uri_cache.html#URICache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.uri_cache.URICache" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#superduperdb.data.cache.typed_cache.TypedCache" title="superduperdb.data.cache.typed_cache.TypedCache"><code class="xref py py-class docutils literal notranslate"><span class="pre">TypedCache</span></code></a></p>
-<p>A typed cache for instances of <cite>Cached</cite>.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.data.cache.uri_cache.URICache.cache">
-<span class="sig-name descname"><span class="pre">cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/data/cache/uri_cache.html#URICache.cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.uri_cache.URICache.cache" title="Permalink to this definition">#</a></dt>
-<dd><p>Add a uri to the content in an instance of Cached</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.data.cache.uri_cache.URICache.cache_all">
-<span class="sig-name descname"><span class="pre">cache_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/data/cache/uri_cache.html#URICache.cache_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.uri_cache.URICache.cache_all" title="Permalink to this definition">#</a></dt>
-<dd><p>Run self.cache recursively</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.data.cache.uri_cache.URICache.uncache">
-<span class="sig-name descname"><span class="pre">uncache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/data/cache/uri_cache.html#URICache.uncache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.uri_cache.URICache.uncache" title="Permalink to this definition">#</a></dt>
-<dd><p>Retrieve the content from the uri in an instance of Cached</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.data.cache.uri_cache.URICache.uncache_all">
-<span class="sig-name descname"><span class="pre">uncache_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/data/cache/uri_cache.html#URICache.uncache_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.data.cache.uri_cache.URICache.uncache_all" title="Permalink to this definition">#</a></dt>
-<dd><p>Run self.uncache recursively</p>
-</dd></dl>
-
-</dd></dl>
-
+<section id="superduperdb-data-cache-uri-cache-module">
+<h2>superduperdb.data.cache.uri_cache module<a class="headerlink" href="#superduperdb-data-cache-uri-cache-module" title="Permalink to this heading">#</a></h2>
 </section>
-<section id="module-superduperdb.data.cache">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-superduperdb.data.cache" title="Permalink to this heading">#</a></h2>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -427,45 +312,10 @@ its class cache.</p>
             <ul>
 <li><a class="reference internal" href="#">superduperdb.data.cache package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-superduperdb.data.cache.key_cache">superduperdb.data.cache.key_cache module</a><ul>
-<li><a class="reference internal" href="#superduperdb.data.cache.key_cache.Cache"><code class="docutils literal notranslate"><span class="pre">Cache</span></code></a><ul>
-<li><a class="reference internal" href="#superduperdb.data.cache.key_cache.Cache.get"><code class="docutils literal notranslate"><span class="pre">Cache.get()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.data.cache.key_cache.Cache.put"><code class="docutils literal notranslate"><span class="pre">Cache.put()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#superduperdb.data.cache.key_cache.KeyCache"><code class="docutils literal notranslate"><span class="pre">KeyCache</span></code></a><ul>
-<li><a class="reference internal" href="#superduperdb.data.cache.key_cache.KeyCache.expire"><code class="docutils literal notranslate"><span class="pre">KeyCache.expire()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.data.cache.key_cache.KeyCache.get"><code class="docutils literal notranslate"><span class="pre">KeyCache.get()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.data.cache.key_cache.KeyCache.put"><code class="docutils literal notranslate"><span class="pre">KeyCache.put()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-superduperdb.data.cache.typed_cache">superduperdb.data.cache.typed_cache module</a><ul>
-<li><a class="reference internal" href="#superduperdb.data.cache.typed_cache.TypedCache"><code class="docutils literal notranslate"><span class="pre">TypedCache</span></code></a><ul>
-<li><a class="reference internal" href="#superduperdb.data.cache.typed_cache.TypedCache.expire"><code class="docutils literal notranslate"><span class="pre">TypedCache.expire()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.data.cache.typed_cache.TypedCache.get"><code class="docutils literal notranslate"><span class="pre">TypedCache.get()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.data.cache.typed_cache.TypedCache.put"><code class="docutils literal notranslate"><span class="pre">TypedCache.put()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-superduperdb.data.cache.uri_cache">superduperdb.data.cache.uri_cache module</a><ul>
-<li><a class="reference internal" href="#superduperdb.data.cache.uri_cache.Cached"><code class="docutils literal notranslate"><span class="pre">Cached</span></code></a><ul>
-<li><a class="reference internal" href="#superduperdb.data.cache.uri_cache.Cached.content"><code class="docutils literal notranslate"><span class="pre">Cached.content</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.data.cache.uri_cache.Cached.uri"><code class="docutils literal notranslate"><span class="pre">Cached.uri</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#superduperdb.data.cache.uri_cache.URICache"><code class="docutils literal notranslate"><span class="pre">URICache</span></code></a><ul>
-<li><a class="reference internal" href="#superduperdb.data.cache.uri_cache.URICache.cache"><code class="docutils literal notranslate"><span class="pre">URICache.cache()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.data.cache.uri_cache.URICache.cache_all"><code class="docutils literal notranslate"><span class="pre">URICache.cache_all()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.data.cache.uri_cache.URICache.uncache"><code class="docutils literal notranslate"><span class="pre">URICache.uncache()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.data.cache.uri_cache.URICache.uncache_all"><code class="docutils literal notranslate"><span class="pre">URICache.uncache_all()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-superduperdb.data.cache">Module contents</a></li>
+<li><a class="reference internal" href="#superduperdb-data-cache-key-cache-module">superduperdb.data.cache.key_cache module</a></li>
+<li><a class="reference internal" href="#superduperdb-data-cache-typed-cache-module">superduperdb.data.cache.typed_cache module</a></li>
+<li><a class="reference internal" href="#superduperdb-data-cache-uri-cache-module">superduperdb.data.cache.uri_cache module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
