@@ -240,8 +240,10 @@
 <span class="kn">import</span> <span class="nn">bson</span>
 <span class="kn">from</span> <span class="nn">bson.objectid</span> <span class="kn">import</span> <span class="n">ObjectId</span>
 
+<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span>
 <span class="kn">from</span> <span class="nn">superduperdb.container.encoder</span> <span class="kn">import</span> <span class="n">Encodable</span><span class="p">,</span> <span class="n">Encoder</span>
 <span class="kn">from</span> <span class="nn">superduperdb.container.schema</span> <span class="kn">import</span> <span class="n">Schema</span>
+<span class="kn">from</span> <span class="nn">superduperdb.misc.files</span> <span class="kn">import</span> <span class="n">get_file_from_uri</span>
 
 <span class="n">ContentType</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">]</span>
 <span class="n">ItemType</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span> <span class="n">Encodable</span><span class="p">,</span> <span class="n">ObjectId</span><span class="p">]</span>
@@ -382,6 +384,8 @@
 
 <span class="k">def</span> <span class="nf">_unpack</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">downloads</span><span class="o">.</span><span class="n">hybrid</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">item</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">load_hybrid</span> <span class="ow">and</span> <span class="n">item</span><span class="o">.</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">get_file_from_uri</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">x</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_unpack</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>

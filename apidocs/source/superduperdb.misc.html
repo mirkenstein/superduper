@@ -408,8 +408,8 @@
 <section id="module-superduperdb.misc.files">
 <span id="superduperdb-misc-files-module"></span><h2>superduperdb.misc.files module<a class="headerlink" href="#module-superduperdb.misc.files" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="superduperdb.misc.files._get_file">
-<span class="sig-prename descclassname"><span class="pre">superduperdb.misc.files.</span></span><span class="sig-name descname"><span class="pre">_get_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/misc/files.html#_get_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.misc.files._get_file" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="superduperdb.misc.files.get_file_from_uri">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.misc.files.</span></span><span class="sig-name descname"><span class="pre">get_file_from_uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/misc/files.html#get_file_from_uri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.misc.files.get_file_from_uri" title="Permalink to this definition">#</a></dt>
 <dd><p>Get file name from uri.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">_get_file</span><span class="p">(</span><span class="s1">&#39;file://test.txt&#39;</span><span class="p">)</span>
 <span class="go">&#39;test.txt&#39;</span>
@@ -421,7 +421,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="superduperdb.misc.files.load_uris">
-<span class="sig-prename descclassname"><span class="pre">superduperdb.misc.files.</span></span><span class="sig-name descname"><span class="pre">load_uris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raises</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/misc/files.html#load_uris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.misc.files.load_uris" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">superduperdb.misc.files.</span></span><span class="sig-name descname"><span class="pre">load_uris</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoders</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raises</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/misc/files.html#load_uris"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.misc.files.load_uris" title="Permalink to this definition">#</a></dt>
 <dd><p>Load <code class="docutils literal notranslate"><span class="pre">&quot;bytes&quot;</span></code> into <code class="docutils literal notranslate"><span class="pre">&quot;_content&quot;</span></code> from <code class="docutils literal notranslate"><span class="pre">&quot;uri&quot;</span></code> inside <code class="docutils literal notranslate"><span class="pre">r</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -631,6 +631,13 @@ returns a non-zero exit status.</p>
 
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.misc.serialization.asdict">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.misc.serialization.</span></span><span class="sig-name descname"><span class="pre">asdict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_method=&lt;function</span> <span class="pre">copy&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/misc/serialization.html#asdict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.misc.serialization.asdict" title="Permalink to this definition">#</a></dt>
+<dd><p>Custom <code class="docutils literal notranslate"><span class="pre">asdict</span></code> function which exports a dataclass object into a dict,
+with a option to choose for nested non atomic objects copy strategy.</p>
+</dd></dl>
+
 </section>
 <section id="module-superduperdb.misc.special_dicts">
 <span id="superduperdb-misc-special-dicts-module"></span><h2>superduperdb.misc.special_dicts module<a class="headerlink" href="#module-superduperdb.misc.special_dicts" title="Permalink to this heading">#</a></h2>
@@ -755,7 +762,7 @@ using duck typing to recognize it.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-superduperdb.misc.files">superduperdb.misc.files module</a><ul>
-<li><a class="reference internal" href="#superduperdb.misc.files._get_file"><code class="docutils literal notranslate"><span class="pre">_get_file()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.misc.files.get_file_from_uri"><code class="docutils literal notranslate"><span class="pre">get_file_from_uri()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.misc.files.load_uris"><code class="docutils literal notranslate"><span class="pre">load_uris()</span></code></a></li>
 </ul>
 </li>
@@ -804,6 +811,7 @@ using duck typing to recognize it.</p>
 <li><a class="reference internal" href="#superduperdb.misc.serialization.TorchSerializer.encode"><code class="docutils literal notranslate"><span class="pre">TorchSerializer.encode()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#superduperdb.misc.serialization.asdict"><code class="docutils literal notranslate"><span class="pre">asdict()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-superduperdb.misc.special_dicts">superduperdb.misc.special_dicts module</a><ul>

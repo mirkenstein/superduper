@@ -240,8 +240,21 @@
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
-<span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="k">pass</span>
+<span class="kn">from</span> <span class="nn">superduperdb.misc.serialization</span> <span class="kn">import</span> <span class="n">asdict</span>
+
+
+<div class="viewcode-block" id="is_component_metadata"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.serializable.is_component_metadata">[docs]</a><span class="k">def</span> <span class="nf">is_component_metadata</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">COMPONENT_KEYS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type_id&#39;</span><span class="p">,</span> <span class="s1">&#39;identifier&#39;</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">COMPONENT_KEYS</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="is_component"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.serializable.is_component">[docs]</a><span class="k">def</span> <span class="nf">is_component</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">COMPONENT_KEYS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;cls&#39;</span><span class="p">,</span> <span class="s1">&#39;dict&#39;</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">COMPONENT_KEYS</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
 
 
 <span class="k">def</span> <span class="nf">_deserialize</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
@@ -250,8 +263,7 @@
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">r</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">({</span><span class="s1">&#39;cls&#39;</span><span class="p">,</span> <span class="s1">&#39;dict&#39;</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">}</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">r</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_component</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_deserialize</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
     <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;module&#39;</span><span class="p">])</span>
@@ -265,7 +277,7 @@
 
 
 <span class="k">def</span> <span class="nf">_serialize</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-    <span class="k">def</span> <span class="nf">fix</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">_serialize</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
@@ -277,7 +289,7 @@
 
         <span class="k">return</span> <span class="n">v</span>
 
-    <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">fix</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">unpack</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
     <span class="kn">from</span> <span class="nn">superduperdb.container.component</span> <span class="kn">import</span> <span class="n">Component</span>
 
@@ -308,7 +320,7 @@
     <span class="n">serialize</span> <span class="o">=</span> <span class="n">_serialize</span>
 
 <div class="viewcode-block" id="Serializable.dict"><a class="viewcode-back" href="../../../source/superduperdb.container.html#superduperdb.container.serializable.Serializable.dict">[docs]</a>    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">dc</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
 </pre></div>
         </article>
       </div>

@@ -247,6 +247,7 @@
 
 <span class="kn">from</span> <span class="nn">superduperdb.container.job</span> <span class="kn">import</span> <span class="n">ComponentJob</span><span class="p">,</span> <span class="n">Job</span>
 <span class="kn">from</span> <span class="nn">superduperdb.container.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
+<span class="kn">from</span> <span class="nn">superduperdb.db.base.artifact</span> <span class="kn">import</span> <span class="n">ArtifactStore</span>
 
 <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">superduperdb.container.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
@@ -281,6 +282,12 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">child_components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">serialized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">serialized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
+        <span class="n">artifacts</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ArtifactStore</span><span class="o">.</span><span class="n">get_artifacts</span><span class="p">(</span><span class="n">serialized</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">serialized</span><span class="p">,</span> <span class="n">artifacts</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

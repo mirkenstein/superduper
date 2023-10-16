@@ -244,14 +244,10 @@
 <span class="kn">import</span> <span class="nn">click</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 
-<span class="kn">from</span> <span class="nn">superduperdb.container.artifact_tree</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">get_artifacts</span><span class="p">,</span>
-    <span class="n">load_artifacts</span><span class="p">,</span>
-    <span class="n">replace_artifacts_with_dict</span><span class="p">,</span>
-<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">superduperdb.container.component</span> <span class="kn">import</span> <span class="n">Component</span>
 <span class="kn">from</span> <span class="nn">superduperdb.container.document</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">dump_bsons</span><span class="p">,</span> <span class="n">load_bson</span><span class="p">,</span> <span class="n">load_bsons</span>
 <span class="kn">from</span> <span class="nn">superduperdb.container.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
+<span class="kn">from</span> <span class="nn">superduperdb.db.base.artifact</span> <span class="kn">import</span> <span class="n">ArtifactStore</span>
 <span class="kn">from</span> <span class="nn">superduperdb.db.base.db</span> <span class="kn">import</span> <span class="n">ExecuteQuery</span>
 <span class="kn">from</span> <span class="nn">superduperdb.db.base.query</span> <span class="kn">import</span> <span class="n">Delete</span><span class="p">,</span> <span class="n">Insert</span><span class="p">,</span> <span class="n">Like</span><span class="p">,</span> <span class="n">Select</span><span class="p">,</span> <span class="n">SelectOne</span><span class="p">,</span> <span class="n">Update</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.serialization</span> <span class="kn">import</span> <span class="n">serializers</span>
@@ -435,15 +431,14 @@
 <span class="sd">        :param component: component to be serialized and sent to the server</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">request_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
-        <span class="n">artifacts</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">get_artifacts</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
-        <span class="n">lookup</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">}</span>
-        <span class="n">serializers</span> <span class="o">=</span> <span class="p">{</span><span class="n">lookup</span><span class="p">[</span><span class="n">a</span><span class="p">]:</span> <span class="n">a</span><span class="o">.</span><span class="n">serializer</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">}</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">replace_artifacts_with_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">lookup</span><span class="p">)</span>
+        <span class="n">serialized</span><span class="p">,</span> <span class="n">artifacts</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">serialized</span>
+        <span class="n">lookup</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="o">.</span><span class="n">sha1</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">}</span>
+        <span class="n">serializers</span> <span class="o">=</span> <span class="p">{</span><span class="n">lookup</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">sha1</span><span class="p">]:</span> <span class="n">a</span><span class="o">.</span><span class="n">serializer</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">}</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">ArtifactStore</span><span class="o">.</span><span class="n">replace_artifacts_with_dict</span><span class="p">(</span><span class="n">serialized</span><span class="p">,</span> <span class="n">lookup</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_put</span><span class="p">(</span>
                 <span class="n">request_id</span><span class="o">=</span><span class="n">request_id</span><span class="p">,</span>
-                <span class="n">file_id</span><span class="o">=</span><span class="n">lookup</span><span class="p">[</span><span class="n">a</span><span class="p">],</span>
+                <span class="n">file_id</span><span class="o">=</span><span class="n">lookup</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">sha1</span><span class="p">],</span>
                 <span class="n">data</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">serialize</span><span class="p">(),</span>  <span class="c1"># Do we need to serialize again?</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_make_post_or_put_request</span><span class="p">(</span>
@@ -543,7 +538,7 @@
                 <span class="s1">&#39;request_id&#39;</span><span class="p">:</span> <span class="n">request_id</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">load_artifacts</span><span class="p">(</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">ArtifactStore</span><span class="o">.</span><span class="n">load_artifacts</span><span class="p">(</span>
             <span class="n">d</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="p">{},</span> <span class="n">getter</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">request_id</span><span class="o">=</span><span class="n">request_id</span><span class="p">,</span> <span class="n">file_id</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">Serializable</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
