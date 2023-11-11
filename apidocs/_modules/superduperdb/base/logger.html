@@ -171,6 +171,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.base.html">superduperdb.base package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.cdc.html">superduperdb.cdc package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.cli.html">superduperdb.cli package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -190,7 +191,10 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.server.html">superduperdb.server package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.vector_search.html">superduperdb.vector_search package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.vector_search.html">superduperdb.vector_search package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of superduperdb.vector_search package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.vector_search.server.html">superduperdb.vector_search.server package</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -230,10 +234,12 @@
         <article role="main">
           <h1>Source code for superduperdb.base.logger</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">stdout</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">stderr</span>
 
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">loki_logger_handler.loki_logger_handler</span> <span class="kn">import</span> <span class="n">LoguruFormatter</span><span class="p">,</span> <span class="n">LokiLoggerHandler</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb.base.config</span> <span class="kn">import</span> <span class="n">LogLevel</span><span class="p">,</span> <span class="n">LogType</span>
 
@@ -256,33 +262,84 @@
 
         <span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">handlers</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;sink&quot;</span><span class="p">:</span> <span class="n">custom_handler</span><span class="p">,</span> <span class="s2">&quot;serialize&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}])</span>
     <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Replace default logger with a custom SuperDuper format.</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
-        <span class="n">fmt</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;&lt;green&gt;{time:YYYY-MMM-DD HH:mm:ss}&lt;/green&gt; | &lt;level&gt;</span><span class="si">{level: &lt;8}</span><span class="s2">&lt;/level&gt; |&quot;</span>
-            <span class="s2">&quot;&lt;cyan&gt;</span><span class="si">{name}</span><span class="s2">&lt;/cyan&gt;:&lt;cyan&gt;</span><span class="si">{line}</span><span class="s2">&lt;/cyan&gt; |&quot;</span>
-            <span class="s2">&quot; &lt;cyan&gt;</span><span class="si">{extra}</span><span class="s2">&lt;/cyan&gt; &lt;level&gt; | </span><span class="si">{message}</span><span class="s2"> &lt;/level&gt;&quot;</span>
+
+        <span class="c1"># Enrich logger with additional information.</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+            <span class="n">extra</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;hostname&quot;</span><span class="p">:</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">(),</span>
+            <span class="p">}</span>
         <span class="p">)</span>
 
-        <span class="c1"># Send ERROR to stderr</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">LogLevel</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;&lt;green&gt; {time:YYYY-MMM-DD HH:mm:ss.SS}&lt;/green&gt;&quot;</span>
+            <span class="s2">&quot;| &lt;level&gt;</span><span class="si">{level: &lt;8}</span><span class="s2">&lt;/level&gt; &quot;</span>
+            <span class="s2">&quot;| &lt;cyan&gt;</span><span class="si">{extra[hostname]: &lt;8}</span><span class="s2">&lt;/cyan&gt;&quot;</span>
+            <span class="s2">&quot;| &lt;cyan&gt;</span><span class="si">{name}</span><span class="s2">&lt;/cyan&gt;:&lt;cyan&gt;</span><span class="si">{line: &lt;4}</span><span class="s2">&lt;/cyan&gt; &quot;</span>
+            <span class="s2">&quot;| &lt;level&gt;</span><span class="si">{message}</span><span class="s2">&lt;/level&gt;&quot;</span>
+        <span class="p">)</span>
 
-        <span class="c1"># Whether to copy ERROR to stdout or not</span>
-        <span class="n">COPY_ERROR_TO_STDOUT</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="n">COPY_ERROR_TO_STDOUT</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">CFG</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">level</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-                <span class="n">stdout</span><span class="p">,</span>
-                <span class="nb">filter</span><span class="o">=</span><span class="k">lambda</span> <span class="n">record</span><span class="p">:</span> <span class="n">record</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">no</span> <span class="o">&lt;</span> <span class="mi">40</span><span class="p">,</span>
-                <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span>
-            <span class="p">)</span>
+        <span class="c1"># DEBUG until WARNING are sent to stdout.</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">msg</span><span class="p">:</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="nb">format</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">CFG</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">level</span><span class="p">,</span>
+            <span class="nb">filter</span><span class="o">=</span><span class="k">lambda</span> <span class="n">record</span><span class="p">:</span> <span class="n">record</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">no</span> <span class="o">&lt;</span> <span class="mi">40</span><span class="p">,</span>
+            <span class="n">colorize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
 
-    <span class="c1"># Set log levels</span>
-    <span class="n">debug</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">debug</span>
-    <span class="n">info</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">info</span>
-    <span class="n">success</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">success</span>
-    <span class="n">warn</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">warning</span>
-    <span class="n">error</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">error</span></div>
+        <span class="c1"># ERROR and above sent to stderr</span>
+        <span class="c1"># https://loguru.readthedocs.io/en/stable/api/logger.html</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">stderr</span><span class="p">,</span>
+            <span class="nb">format</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">LogLevel</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span>
+            <span class="n">colorize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Set Multi-Key loggers</span>
+    <span class="c1"># Example: logging.info(&quot;param 1&quot;, &quot;param 2&quot;, ..)</span>
+<div class="viewcode-block" id="Logging.multikey_debug">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.logger.Logging.multikey_debug">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">multikey_debug</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
+
+
+<div class="viewcode-block" id="Logging.multikey_info">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.logger.Logging.multikey_info">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">multikey_info</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
+
+
+<div class="viewcode-block" id="Logging.multikey_success">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.logger.Logging.multikey_success">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">multikey_success</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
+
+
+<div class="viewcode-block" id="Logging.multikey_warn">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.logger.Logging.multikey_warn">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">multikey_warn</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
+
+
+<div class="viewcode-block" id="Logging.multikey_error">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.logger.Logging.multikey_error">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">multikey_error</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
+
+
+    <span class="n">debug</span> <span class="o">=</span> <span class="n">multikey_debug</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">multikey_info</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="n">multikey_success</span>
+    <span class="n">warn</span> <span class="o">=</span> <span class="n">multikey_warn</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">multikey_error</span></div>
 
 </pre></div>
         </article>

@@ -172,6 +172,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="superduperdb.base.html">superduperdb.base package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="superduperdb.cdc.html">superduperdb.cdc package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="superduperdb.cli.html">superduperdb.cli package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -191,7 +192,10 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="superduperdb.server.html">superduperdb.server package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="superduperdb.vector_search.html">superduperdb.vector_search package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="superduperdb.vector_search.html">superduperdb.vector_search package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of superduperdb.vector_search package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.vector_search.server.html">superduperdb.vector_search.server package</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -479,14 +483,18 @@ runnable.join()</p>
 <p>This ThreadBase contains a thread, and is constructed with a callback</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.misc.runnable.thread.HasThread.callback">
-<span class="sig-name descname"><span class="pre">callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superduperdb.misc.runnable.thread.HasThread.callback" title="Link to this definition">#</a></dt>
-<dd><p>print(value, …, sep=’ ‘, end=’n’, file=sys.stdout, flush=False)</p>
-<p>Prints the values to a stream, or to sys.stdout by default.
-Optional keyword arguments:
-file:  a file-like object (stream); defaults to the current sys.stdout.
-sep:   string inserted between values, default a space.
-end:   string appended after the last value, default a newline.
-flush: whether to forcibly flush the stream.</p>
+<span class="sig-name descname"><span class="pre">callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\n'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#superduperdb.misc.runnable.thread.HasThread.callback" title="Link to this definition">#</a></dt>
+<dd><p>Prints the values to a stream, or to sys.stdout by default.</p>
+<dl class="simple">
+<dt>sep</dt><dd><p>string inserted between values, default a space.</p>
+</dd>
+<dt>end</dt><dd><p>string appended after the last value, default a newline.</p>
+</dd>
+<dt>file</dt><dd><p>a file-like object (stream); defaults to the current sys.stdout.</p>
+</dd>
+<dt>flush</dt><dd><p>whether to forcibly flush the stream.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -548,7 +556,7 @@ class is implemented.</p>
 method. Defaults to None, meaning nothing is called.</p>
 <p><em>name</em> is the thread name. By default, a unique name is constructed of
 the form “Thread-N” where N is a small decimal number.</p>
-<p><em>args</em> is the argument tuple for the target invocation. Defaults to ().</p>
+<p><em>args</em> is a list or tuple of arguments for the target invocation. Defaults to ().</p>
 <p><em>kwargs</em> is a dictionary of keyword arguments for the target
 invocation. Defaults to {}.</p>
 <p>If a subclass overrides the constructor, it must make sure to invoke
