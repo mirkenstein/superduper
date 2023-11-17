@@ -241,23 +241,27 @@
 <span class="kn">from</span> <span class="nn">superduperdb.misc.server</span> <span class="kn">import</span> <span class="n">request_server</span>
 <span class="kn">from</span> <span class="nn">superduperdb.vector_search.base</span> <span class="kn">import</span> <span class="n">BaseVectorSearcher</span><span class="p">,</span> <span class="n">VectorItem</span>
 
+<span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
+
 
 <div class="viewcode-block" id="FastVectorSearcher">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.interface.FastVectorSearcher">[docs]</a>
 <span class="k">class</span> <span class="nc">FastVectorSearcher</span><span class="p">(</span><span class="n">BaseVectorSearcher</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector_searcher</span><span class="p">,</span> <span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s1">&#39;Datalayer&#39;</span><span class="p">,</span> <span class="n">vector_searcher</span><span class="p">,</span> <span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">searcher</span> <span class="o">=</span> <span class="n">vector_searcher</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span> <span class="o">=</span> <span class="n">vector_index</span>
 
         <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span><span class="p">:</span>
-            <span class="n">request_server</span><span class="p">(</span>
-                <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
-                <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;create/search&#39;</span><span class="p">,</span>
-                <span class="n">args</span><span class="o">=</span><span class="p">{</span>
-                    <span class="s1">&#39;vector_index&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span><span class="p">,</span>
-                <span class="p">},</span>
-                <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;get&#39;</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">db</span><span class="o">.</span><span class="n">server_mode</span><span class="p">:</span>
+                <span class="n">request_server</span><span class="p">(</span>
+                    <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
+                    <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;create/search&#39;</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">=</span><span class="p">{</span>
+                        <span class="s1">&#39;vector_index&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span><span class="p">,</span>
+                    <span class="p">},</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;get&#39;</span><span class="p">,</span>
+                <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">searcher</span><span class="p">)</span>

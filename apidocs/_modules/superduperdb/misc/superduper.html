@@ -233,7 +233,8 @@
         </div>
         <article role="main">
           <h1>Source code for superduperdb.misc.superduper</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb.base.configs</span> <span class="kn">import</span> <span class="n">CFG</span>
 
@@ -271,7 +272,9 @@
         <span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span> <span class="o">=</span> <span class="n">item</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Can</span><span class="se">\&#39;</span><span class="s1">t auto-identify connection string </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[a-zA-Z0-9]+://&#39;</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1"> is not a valid connection string&#39;</span><span class="p">)</span>
+        <span class="n">CFG</span><span class="o">.</span><span class="n">data_backend</span> <span class="o">=</span> <span class="n">item</span>
     <span class="k">return</span> <span class="n">build_datalayer</span><span class="p">(</span><span class="n">CFG</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 

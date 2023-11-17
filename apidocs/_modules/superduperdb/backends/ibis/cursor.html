@@ -235,6 +235,8 @@
           <h1>Source code for superduperdb.backends.ibis.cursor</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
 
+<span class="kn">import</span> <span class="nn">pandas</span>
+
 <span class="kn">from</span> <span class="nn">superduperdb.base.cursor</span> <span class="kn">import</span> <span class="n">SuperDuperCursor</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">Document</span>
 
@@ -253,18 +255,30 @@
 
 
 
-<div class="viewcode-block" id="SuperDuperIbisCursor">
-<a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.cursor.SuperDuperIbisCursor">[docs]</a>
+<div class="viewcode-block" id="SuperDuperIbisResult">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.cursor.SuperDuperIbisResult">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">SuperDuperIbisCursor</span><span class="p">(</span><span class="n">SuperDuperCursor</span><span class="p">):</span>
-<div class="viewcode-block" id="SuperDuperIbisCursor.wrap_document">
-<a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.cursor.SuperDuperIbisCursor.wrap_document">[docs]</a>
+<span class="k">class</span> <span class="nc">SuperDuperIbisResult</span><span class="p">(</span><span class="n">SuperDuperCursor</span><span class="p">):</span>
+<div class="viewcode-block" id="SuperDuperIbisResult.wrap_document">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.cursor.SuperDuperIbisResult.wrap_document">[docs]</a>
     <span class="k">def</span> <span class="nf">wrap_document</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">encoders</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Wrap a document in a ``Document``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">IbisDocument</span><span class="p">(</span><span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">encoders</span><span class="p">))</span></div>
-</div>
+
+
+<div class="viewcode-block" id="SuperDuperIbisResult.as_pandas">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.cursor.SuperDuperIbisResult.as_pandas">[docs]</a>
+    <span class="k">def</span> <span class="nf">as_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_cursor</span><span class="p">])</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_cursor</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_cursor</span><span class="p">)</span></div>
 
 </pre></div>
         </article>

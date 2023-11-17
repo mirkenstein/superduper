@@ -239,8 +239,6 @@
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.cursor</span> <span class="kn">import</span> <span class="n">SuperDuperCursor</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -292,9 +290,6 @@
 <span class="sd">        :param model: The model to update</span>
 <span class="sd">        :param outputs: The outputs to update</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">serialized_select</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;serialized_select&#39;</span><span class="p">:</span> <span class="n">serialized_select</span><span class="p">})</span>
-
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">model_update</span><span class="p">(</span>
             <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
             <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
@@ -553,7 +548,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_from_parts</span><span class="p">(</span>
             <span class="n">table_or_collection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="p">,</span>
-            <span class="n">query_linker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span><span class="o">.</span><span class="n">select_ids_of_missing_outputs</span><span class="p">(</span>
+            <span class="n">query_linker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span><span class="o">.</span><span class="n">_select_ids_of_missing_outputs</span><span class="p">(</span>
                 <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span>
             <span class="p">),</span>
         <span class="p">)</span></div>
@@ -602,14 +597,15 @@
 <span class="sd">        String representation of the query.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">repr_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span><span class="p">:</span>
-            <span class="n">repr_str</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span><span class="p">)</span>
+            <span class="n">components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span><span class="p">:</span>
-            <span class="n">repr_str</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span><span class="o">.</span><span class="n">repr_</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+            <span class="n">components</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span><span class="o">.</span><span class="n">repr_</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_like</span><span class="p">:</span>
-            <span class="n">repr_str</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">post_like</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">repr_str</span></div>
+            <span class="n">components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">post_like</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">components</span><span class="p">)</span></div>
 
 
     <span class="nd">@classmethod</span>
@@ -669,35 +665,13 @@
 
 <div class="viewcode-block" id="CompoundSelect.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.CompoundSelect.execute">[docs]</a>
+    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Execute the compound query on the DB instance.</span>
 
 <span class="sd">        :param db: The DB instance to use</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">similar_scores</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">query_linker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span><span class="p">:</span>
-            <span class="n">similar_ids</span><span class="p">,</span> <span class="n">similar_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
-            <span class="n">similar_scores</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">similar_ids</span><span class="p">,</span> <span class="n">similar_scores</span><span class="p">))</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">similar_ids</span><span class="p">,</span> <span class="n">similar_scores</span>
-            <span class="n">query_linker</span> <span class="o">=</span> <span class="n">query_linker</span><span class="o">.</span><span class="n">select_using_ids</span><span class="p">(</span><span class="n">similar_ids</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_like</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">query_linker</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">db</span><span class="p">),</span> <span class="n">similar_scores</span>
-
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span> <span class="ow">is</span> <span class="kc">None</span>
-        <span class="n">cursor</span> <span class="o">=</span> <span class="n">query_linker</span><span class="o">.</span><span class="n">select_ids</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cursor</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
-            <span class="n">query_ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">id</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">query_ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">document</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">primary_id</span><span class="p">])</span> <span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">]</span>
-        <span class="n">similar_ids</span><span class="p">,</span> <span class="n">similar_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_like</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">query_ids</span><span class="p">)</span>
-        <span class="n">similar_scores</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">similar_ids</span><span class="p">,</span> <span class="n">similar_scores</span><span class="p">))</span>
-
-        <span class="n">post_query_linker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span><span class="o">.</span><span class="n">select_using_ids</span><span class="p">(</span><span class="n">similar_ids</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">post_query_linker</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">db</span><span class="p">),</span> <span class="n">similar_scores</span></div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="CompoundSelect.like">
@@ -944,13 +918,6 @@
         <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="QueryLinker.select_ids_of_missing_outputs">
-<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.QueryLinker.select_ids_of_missing_outputs">[docs]</a>
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">select_ids_of_missing_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">pass</span></div>
-
-
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">members</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)]</span>
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">table_or_collection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="p">,</span> <span class="n">members</span><span class="o">=</span><span class="n">members</span><span class="p">)</span>
@@ -1006,21 +973,6 @@
     <span class="n">query_components</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;table_or_collection&#39;</span>
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
-
-<div class="viewcode-block" id="TableOrCollection.model_update">
-<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.TableOrCollection.model_update">[docs]</a>
-    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">model_update</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">db</span><span class="p">,</span>
-        <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
-        <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">outputs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="k">pass</span></div>
-
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">_get_query_linker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">members</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryLinker</span><span class="p">:</span>

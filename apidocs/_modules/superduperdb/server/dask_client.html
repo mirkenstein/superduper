@@ -237,6 +237,8 @@
 
 <span class="kn">from</span> <span class="nn">dask</span> <span class="kn">import</span> <span class="n">distributed</span>
 
+<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
+
 
 <div class="viewcode-block" id="DaskClient">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.dask_client.DaskClient">[docs]</a>
@@ -275,6 +277,8 @@
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
 
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Compute Client is ready.&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+
 <div class="viewcode-block" id="DaskClient.submit">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.dask_client.DaskClient.submit">[docs]</a>
     <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">distributed</span><span class="o">.</span><span class="n">Future</span><span class="p">:</span>
@@ -286,6 +290,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">futures_collection</span><span class="p">[</span><span class="n">future</span><span class="o">.</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">future</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Job submitted.  function:</span><span class="si">{</span><span class="n">function</span><span class="si">}</span><span class="s2"> future:</span><span class="si">{</span><span class="n">future</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">future</span></div>
 
 
@@ -301,14 +307,25 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">distributed</span><span class="o">.</span><span class="n">fire_and_forget</span><span class="p">(</span><span class="n">future</span><span class="p">)</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submit job.  function:</span><span class="si">{</span><span class="n">function</span><span class="si">}</span><span class="s2"> future:</span><span class="si">{</span><span class="n">future</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">future</span></div>
+
+
+<div class="viewcode-block" id="DaskClient.disconnect">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.dask_client.DaskClient.disconnect">[docs]</a>
+    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Disconnect the Dask client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="DaskClient.shutdown">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.dask_client.DaskClient.shutdown">[docs]</a>
     <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Shuts down the Dask client.</span>
+<span class="sd">        Shuts down the Dask cluster.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
 

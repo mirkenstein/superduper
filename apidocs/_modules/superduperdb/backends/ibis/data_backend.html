@@ -240,8 +240,10 @@
 <span class="kn">from</span> <span class="nn">ibis.backends.base</span> <span class="kn">import</span> <span class="n">BaseBackend</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb.backends.base.data_backend</span> <span class="kn">import</span> <span class="n">BaseDataBackend</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.filesystem.artifacts</span> <span class="kn">import</span> <span class="n">FileSystemArtifactStore</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.field_types</span> <span class="kn">import</span> <span class="n">FieldType</span><span class="p">,</span> <span class="n">dtype</span>
-<span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.query</span> <span class="kn">import</span> <span class="n">IbisTable</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.query</span> <span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.sqlalchemy.metadata</span> <span class="kn">import</span> <span class="n">SQLAlchemyMetadata</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">Model</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.schema</span> <span class="kn">import</span> <span class="n">Schema</span>
 
@@ -256,13 +258,13 @@
 <div class="viewcode-block" id="IbisDataBackend.build_artifact_store">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.build_artifact_store">[docs]</a>
     <span class="k">def</span> <span class="nf">build_artifact_store</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">return</span> <span class="n">FileSystemArtifactStore</span><span class="p">(</span><span class="n">conn</span><span class="o">=</span><span class="s1">&#39;.superduperdb/artifacts/&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ibis&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="IbisDataBackend.build_metadata">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.build_metadata">[docs]</a>
     <span class="k">def</span> <span class="nf">build_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">return</span> <span class="n">SQLAlchemyMetadata</span><span class="p">(</span><span class="n">conn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">con</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ibis&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="IbisDataBackend.create_ibis_table">
@@ -294,12 +296,12 @@
             <span class="n">output_type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encoder</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;output_id&#39;</span><span class="p">:</span> <span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">),</span>
-            <span class="s1">&#39;input_id&#39;</span><span class="p">:</span> <span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;input_id&#39;</span><span class="p">:</span> <span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">),</span>
             <span class="s1">&#39;query_id&#39;</span><span class="p">:</span> <span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">),</span>
             <span class="s1">&#39;output&#39;</span><span class="p">:</span> <span class="n">output_type</span><span class="p">,</span>
             <span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">),</span>
         <span class="p">}</span>
-        <span class="k">return</span> <span class="n">IbisTable</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">Table</span><span class="p">(</span>
             <span class="n">identifier</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;_outputs/</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
             <span class="n">schema</span><span class="o">=</span><span class="n">Schema</span><span class="p">(</span><span class="n">identifier</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;_schema/</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="n">fields</span><span class="p">),</span>
         <span class="p">)</span></div>

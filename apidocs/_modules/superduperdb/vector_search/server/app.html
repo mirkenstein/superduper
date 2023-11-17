@@ -250,13 +250,14 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.vector_search.server.html#superduperdb.vector_search.server.app.VectorItem">[docs]</a>
 <span class="k">class</span> <span class="nc">VectorItem</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">vector</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span></div>
+    <span class="n">vector</span><span class="p">:</span> <span class="n">service</span><span class="o">.</span><span class="n">ListVectorType</span></div>
 
 
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;/create/search&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;get&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">create_search</span><span class="p">(</span><span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span> <span class="o">=</span> <span class="n">DatalayerDependency</span><span class="p">()):</span>
     <span class="n">service</span><span class="o">.</span><span class="n">create_search</span><span class="p">(</span><span class="n">vector_index</span><span class="o">=</span><span class="n">vector_index</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">fast_vector_searchers</span><span class="p">[</span><span class="s1">&#39;test_search_index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">searcher</span><span class="o">.</span><span class="n">h</span>
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Vector index created successfuly&#39;</span><span class="p">}</span>
 
 
