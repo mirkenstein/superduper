@@ -8,7 +8,6 @@
         <title>superduperdb.misc.server - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -235,6 +234,7 @@
           <h1>Source code for superduperdb.misc.server</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 
 <span class="kn">import</span> <span class="nn">requests</span>
 
@@ -242,12 +242,23 @@
 <span class="kn">from</span> <span class="nn">superduperdb.ext.utils</span> <span class="kn">import</span> <span class="n">superduperencode</span>
 
 
-<div class="viewcode-block" id="request_server">
-<a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.server.request_server">[docs]</a>
-<span class="k">def</span> <span class="nf">request_server</span><span class="p">(</span>
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_handshake</span><span class="p">(</span><span class="n">service</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="s1">&#39;handshake/config&#39;</span>
+    <span class="n">cfg</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">CFG</span><span class="o">.</span><span class="n">comparables</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_request_server</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;cfg&#39;</span><span class="p">:</span> <span class="n">cfg</span><span class="p">},</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">endpoint</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+            <span class="s1">&#39;Service </span><span class="si">{service}</span><span class="s1"> not compatible with current client,</span><span class="se">\</span>
+<span class="s1">             its configured with different configuration.&#39;</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_request_server</span><span class="p">(</span>
     <span class="n">service</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;vector_search&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">{},</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;post&#39;</span>
 <span class="p">):</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">CFG</span><span class="o">.</span><span class="n">server</span><span class="p">,</span> <span class="n">service</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">service</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">endpoint</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="p">,</span> <span class="n">service</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">service</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">endpoint</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Trying to connect </span><span class="si">{</span><span class="n">service</span><span class="si">}</span><span class="s1"> at </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1"> method: </span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;post&#39;</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">superduperencode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -266,7 +277,18 @@
         <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Server error at </span><span class="si">{</span><span class="n">service</span><span class="si">}</span><span class="s1"> with </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s1"> :: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span></div>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<div class="viewcode-block" id="request_server">
+<a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.server.request_server">[docs]</a>
+<span class="k">def</span> <span class="nf">request_server</span><span class="p">(</span>
+    <span class="n">service</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;vector_search&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">{},</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;post&#39;</span>
+<span class="p">):</span>
+    <span class="n">_handshake</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_request_server</span><span class="p">(</span>
+        <span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span>
+    <span class="p">)</span></div>
 
 </pre></div>
         </article>
@@ -304,10 +326,5 @@
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
-    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../../_static/copybutton.js?v=f281be69"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

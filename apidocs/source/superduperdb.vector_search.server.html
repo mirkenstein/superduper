@@ -9,7 +9,6 @@
         <title>superduperdb.vector_search.server package - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -239,81 +238,11 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
 </section>
-<section id="module-superduperdb.vector_search.server.app">
-<span id="superduperdb-vector-search-server-app-module"></span><h2>superduperdb.vector_search.server.app module<a class="headerlink" href="#module-superduperdb.vector_search.server.app" title="Link to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="superduperdb.vector_search.server.app.VectorItem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.vector_search.server.app.</span></span><span class="sig-name descname"><span class="pre">VectorItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/vector_search/server/app.html#VectorItem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.vector_search.server.app.VectorItem" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
-<p>Create a new model by parsing and validating input data from keyword arguments.</p>
-<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.</p>
-<p><cite>__init__</cite> uses <cite>__pydantic_self__</cite> instead of the more common <cite>self</cite> for the first arg to
-allow <cite>self</cite> as a field name.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="superduperdb.vector_search.server.app.VectorItem.id">
-<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.vector_search.server.app.VectorItem.id" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="superduperdb.vector_search.server.app.VectorItem.model_config">
-<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#superduperdb.vector_search.server.app.VectorItem.model_config" title="Link to this definition">#</a></dt>
-<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="superduperdb.vector_search.server.app.VectorItem.model_fields">
-<span class="sig-name descname"><span class="pre">model_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">FieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'id':</span> <span class="pre">FieldInfo(annotation=str,</span> <span class="pre">required=True),</span> <span class="pre">'vector':</span> <span class="pre">FieldInfo(annotation=Union[List[Union[int,</span> <span class="pre">float]],</span> <span class="pre">Dict],</span> <span class="pre">required=True)}</span></em><a class="headerlink" href="#superduperdb.vector_search.server.app.VectorItem.model_fields" title="Link to this definition">#</a></dt>
-<dd><p>Metadata about the fields defined on the model,
-mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</p>
-<p>This replaces <cite>Model.__fields__</cite> from Pydantic V1.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="superduperdb.vector_search.server.app.VectorItem.vector">
-<span class="sig-name descname"><span class="pre">vector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#superduperdb.vector_search.server.app.VectorItem.vector" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<section id="superduperdb-vector-search-server-app-module">
+<h2>superduperdb.vector_search.server.app module<a class="headerlink" href="#superduperdb-vector-search-server-app-module" title="Link to this heading">#</a></h2>
 </section>
-<section id="module-superduperdb.vector_search.server.service">
-<span id="superduperdb-vector-search-server-service-module"></span><h2>superduperdb.vector_search.server.service module<a class="headerlink" href="#module-superduperdb.vector_search.server.service" title="Link to this heading">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="superduperdb.vector_search.server.service.add_search">
-<span class="sig-prename descclassname"><span class="pre">superduperdb.vector_search.server.service.</span></span><span class="sig-name descname"><span class="pre">add_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/vector_search/server/service.html#add_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.vector_search.server.service.add_search" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="superduperdb.vector_search.server.service.create_search">
-<span class="sig-prename descclassname"><span class="pre">superduperdb.vector_search.server.service.</span></span><span class="sig-name descname"><span class="pre">create_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/vector_search/server/service.html#create_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.vector_search.server.service.create_search" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="superduperdb.vector_search.server.service.database">
-<span class="sig-prename descclassname"><span class="pre">superduperdb.vector_search.server.service.</span></span><span class="sig-name descname"><span class="pre">database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></span><a class="reference internal" href="../_modules/superduperdb/vector_search/server/service.html#database"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.vector_search.server.service.database" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="superduperdb.vector_search.server.service.delete_search">
-<span class="sig-prename descclassname"><span class="pre">superduperdb.vector_search.server.service.</span></span><span class="sig-name descname"><span class="pre">delete_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/vector_search/server/service.html#delete_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.vector_search.server.service.delete_search" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="superduperdb.vector_search.server.service.list_search">
-<span class="sig-prename descclassname"><span class="pre">superduperdb.vector_search.server.service.</span></span><span class="sig-name descname"><span class="pre">list_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/vector_search/server/service.html#list_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.vector_search.server.service.list_search" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="superduperdb.vector_search.server.service.query_search_from_array">
-<span class="sig-prename descclassname"><span class="pre">superduperdb.vector_search.server.service.</span></span><span class="sig-name descname"><span class="pre">query_search_from_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/vector_search/server/service.html#query_search_from_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.vector_search.server.service.query_search_from_array" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="superduperdb.vector_search.server.service.query_search_from_id">
-<span class="sig-prename descclassname"><span class="pre">superduperdb.vector_search.server.service.</span></span><span class="sig-name descname"><span class="pre">query_search_from_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/vector_search/server/service.html#query_search_from_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.vector_search.server.service.query_search_from_id" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
+<section id="superduperdb-vector-search-server-service-module">
+<h2>superduperdb.vector_search.server.service module<a class="headerlink" href="#superduperdb-vector-search-server-service-module" title="Link to this heading">#</a></h2>
 </section>
 <section id="module-superduperdb.vector_search.server">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-superduperdb.vector_search.server" title="Link to this heading">#</a></h2>
@@ -369,26 +298,8 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
             <ul>
 <li><a class="reference internal" href="#">superduperdb.vector_search.server package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-superduperdb.vector_search.server.app">superduperdb.vector_search.server.app module</a><ul>
-<li><a class="reference internal" href="#superduperdb.vector_search.server.app.VectorItem"><code class="docutils literal notranslate"><span class="pre">VectorItem</span></code></a><ul>
-<li><a class="reference internal" href="#superduperdb.vector_search.server.app.VectorItem.id"><code class="docutils literal notranslate"><span class="pre">VectorItem.id</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.vector_search.server.app.VectorItem.model_config"><code class="docutils literal notranslate"><span class="pre">VectorItem.model_config</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.vector_search.server.app.VectorItem.model_fields"><code class="docutils literal notranslate"><span class="pre">VectorItem.model_fields</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.vector_search.server.app.VectorItem.vector"><code class="docutils literal notranslate"><span class="pre">VectorItem.vector</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-superduperdb.vector_search.server.service">superduperdb.vector_search.server.service module</a><ul>
-<li><a class="reference internal" href="#superduperdb.vector_search.server.service.add_search"><code class="docutils literal notranslate"><span class="pre">add_search()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.vector_search.server.service.create_search"><code class="docutils literal notranslate"><span class="pre">create_search()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.vector_search.server.service.database"><code class="docutils literal notranslate"><span class="pre">database()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.vector_search.server.service.delete_search"><code class="docutils literal notranslate"><span class="pre">delete_search()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.vector_search.server.service.list_search"><code class="docutils literal notranslate"><span class="pre">list_search()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.vector_search.server.service.query_search_from_array"><code class="docutils literal notranslate"><span class="pre">query_search_from_array()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.vector_search.server.service.query_search_from_id"><code class="docutils literal notranslate"><span class="pre">query_search_from_id()</span></code></a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#superduperdb-vector-search-server-app-module">superduperdb.vector_search.server.app module</a></li>
+<li><a class="reference internal" href="#superduperdb-vector-search-server-service-module">superduperdb.vector_search.server.service module</a></li>
 <li><a class="reference internal" href="#module-superduperdb.vector_search.server">Module contents</a></li>
 </ul>
 </li>
@@ -405,8 +316,5 @@ mapping of field names to [<cite>FieldInfo</cite>][pydantic.fields.FieldInfo].</
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
-    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     </body>
 </html>

@@ -8,7 +8,6 @@
         <title>superduperdb.base.config_dicts - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -241,42 +240,27 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-
-<span class="kn">import</span> <span class="nn">fil</span>
 
 <span class="n">Dict</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span>
-<span class="n">Files</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
 <span class="n">StrDict</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
 
 <span class="n">SEP</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span>
 <span class="n">_NONE</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="config_dicts">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config_dicts.config_dicts">[docs]</a>
-<span class="k">def</span> <span class="nf">config_dicts</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="n">Files</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">StrDict</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">environ</span><span class="p">:</span> <span class="n">StrDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">_read_all</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
-    <span class="n">environ_dict</span> <span class="o">=</span> <span class="n">_environ_to_config_dict</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">environ</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_combine</span><span class="p">((</span><span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">environ_dict</span><span class="p">))</span></div>
-
-
-
-<span class="k">def</span> <span class="nf">_read_all</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="n">Files</span><span class="p">,</span> <span class="n">fail</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
-    <span class="k">if</span> <span class="n">fail</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">fil</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">fil</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">{})</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
-
-
-<span class="k">def</span> <span class="nf">_combine</span><span class="p">(</span><span class="n">dicts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<div class="viewcode-block" id="combine_configs">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config_dicts.combine_configs">[docs]</a>
+<span class="k">def</span> <span class="nf">combine_configs</span><span class="p">(</span><span class="n">dicts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
     <span class="n">result</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dicts</span><span class="p">:</span>
         <span class="n">_combine_one</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="n">result</span></div>
 
 
-<span class="k">def</span> <span class="nf">_environ_to_config_dict</span><span class="p">(</span>
+
+<div class="viewcode-block" id="environ_to_config_dict">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config_dicts.environ_to_config_dict">[docs]</a>
+<span class="k">def</span> <span class="nf">environ_to_config_dict</span><span class="p">(</span>
     <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">parent</span><span class="p">:</span> <span class="n">StrDict</span><span class="p">,</span>
     <span class="n">environ</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">StrDict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -284,7 +268,6 @@
     <span class="n">fail</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">env_dict</span> <span class="o">=</span> <span class="n">_environ_dict</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">environ</span><span class="p">)</span>
-
     <span class="n">good</span><span class="p">,</span> <span class="n">bad</span> <span class="o">=</span> <span class="n">_env_dict_to_config_dict</span><span class="p">(</span><span class="n">env_dict</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">bad</span><span class="p">:</span>
@@ -298,7 +281,8 @@
         <span class="k">if</span> <span class="n">fail</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">good</span>
+    <span class="k">return</span> <span class="n">good</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">_split_address</span><span class="p">(</span>
@@ -397,10 +381,5 @@
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
-    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../../_static/copybutton.js?v=f281be69"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

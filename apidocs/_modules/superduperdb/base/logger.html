@@ -8,7 +8,6 @@
         <title>superduperdb.base.logger - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -235,6 +234,7 @@
           <h1>Source code for superduperdb.base.logger</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">stderr</span>
 
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
@@ -251,7 +251,7 @@
 <div class="viewcode-block" id="Logging">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.logger.Logging">[docs]</a>
 <span class="k">class</span> <span class="nc">Logging</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">LogType</span><span class="o">.</span><span class="n">LOKI</span><span class="p">:</span>  <span class="c1"># Send logs to Loki</span>
+    <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">logging_type</span> <span class="o">==</span> <span class="n">LogType</span><span class="o">.</span><span class="n">LOKI</span><span class="p">:</span>  <span class="c1"># Send logs to Loki</span>
         <span class="n">custom_handler</span> <span class="o">=</span> <span class="n">LokiLoggerHandler</span><span class="p">(</span>
             <span class="n">url</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;LOKI_URI&quot;</span><span class="p">],</span>
             <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;application&quot;</span><span class="p">:</span> <span class="s2">&quot;Test&quot;</span><span class="p">,</span> <span class="s2">&quot;environment&quot;</span><span class="p">:</span> <span class="s2">&quot;Develop&quot;</span><span class="p">},</span>
@@ -269,6 +269,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
             <span class="n">extra</span><span class="o">=</span><span class="p">{</span>
                 <span class="s2">&quot;hostname&quot;</span><span class="p">:</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">(),</span>
+                <span class="s2">&quot;session_id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
             <span class="p">}</span>
         <span class="p">)</span>
 
@@ -276,6 +277,7 @@
             <span class="s2">&quot;&lt;green&gt; {time:YYYY-MMM-DD HH:mm:ss.SS}&lt;/green&gt;&quot;</span>
             <span class="s2">&quot;| &lt;level&gt;</span><span class="si">{level: &lt;8}</span><span class="s2">&lt;/level&gt; &quot;</span>
             <span class="s2">&quot;| &lt;cyan&gt;</span><span class="si">{extra[hostname]: &lt;8}</span><span class="s2">&lt;/cyan&gt;&quot;</span>
+            <span class="s2">&quot;| &lt;cyan&gt;</span><span class="si">{extra[session_id]}</span><span class="s2">&lt;/cyan&gt;&quot;</span>
             <span class="s2">&quot;| &lt;cyan&gt;</span><span class="si">{name}</span><span class="s2">&lt;/cyan&gt;:&lt;cyan&gt;</span><span class="si">{line: &lt;4}</span><span class="s2">&lt;/cyan&gt; &quot;</span>
             <span class="s2">&quot;| &lt;level&gt;</span><span class="si">{message}</span><span class="s2">&lt;/level&gt;&quot;</span>
         <span class="p">)</span>
@@ -284,7 +286,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">msg</span><span class="p">:</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
             <span class="nb">format</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span>
-            <span class="n">level</span><span class="o">=</span><span class="n">CFG</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">level</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">CFG</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
             <span class="nb">filter</span><span class="o">=</span><span class="k">lambda</span> <span class="n">record</span><span class="p">:</span> <span class="n">record</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">no</span> <span class="o">&lt;</span> <span class="mi">40</span><span class="p">,</span>
             <span class="n">colorize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
@@ -377,10 +379,5 @@
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
-    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../../_static/copybutton.js?v=f281be69"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

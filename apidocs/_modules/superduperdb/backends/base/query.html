@@ -8,7 +8,6 @@
         <title>superduperdb.backends.base.query - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -236,17 +235,16 @@
 <span></span><span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
 <span class="kn">import</span> <span class="nn">enum</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span><span class="p">,</span> <span class="n">abstractproperty</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
-<span class="kn">from</span> <span class="nn">superduperdb.base.cursor</span> <span class="kn">import</span> <span class="n">SuperDuperCursor</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">Document</span>
-<span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
+<span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">Variable</span>
 
 <span class="n">GREEN</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[92m&#39;</span>
 <span class="n">BOLD</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[1m&#39;</span>
-<span class="n">END</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m&#39;</span>
+<span class="n">END</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[0m}&#39;</span>
 
 
 <span class="k">class</span> <span class="nc">_ReprMixin</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
@@ -269,8 +267,7 @@
 <span class="sd">    Base class for all select queries.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nd">@property</span>
-    <span class="nd">@abstractmethod</span>
+    <span class="nd">@abstractproperty</span>
     <span class="k">def</span> <span class="nf">id_field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
@@ -280,7 +277,16 @@
 
 <div class="viewcode-block" id="Select.model_update">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Select.model_update">[docs]</a>
-    <span class="k">def</span> <span class="nf">model_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">model_update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">db</span><span class="p">,</span>
+        <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">outputs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update model outputs for a set of ids.</span>
 
@@ -296,12 +302,12 @@
             <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
             <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
             <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
+            <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
-    <span class="nd">@property</span>
-    <span class="nd">@abstractmethod</span>
+    <span class="nd">@abstractproperty</span>
     <span class="k">def</span> <span class="nf">select_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
@@ -319,15 +325,16 @@
         <span class="k">pass</span></div>
 
 
-    <span class="nd">@property</span>
-    <span class="nd">@abstractmethod</span>
+    <span class="nd">@abstractproperty</span>
     <span class="k">def</span> <span class="nf">select_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Select&#39;</span><span class="p">:</span>
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="Select.select_ids_of_missing_outputs">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Select.select_ids_of_missing_outputs">[docs]</a>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">select_ids_of_missing_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Select&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">select_ids_of_missing_outputs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Select&#39;</span><span class="p">:</span>
         <span class="k">pass</span></div>
 
 
@@ -346,79 +353,6 @@
 <span class="sd">        Execute the query on the DB instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="Featurize">
-<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Featurize">[docs]</a>
-<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Featurize</span><span class="p">(</span><span class="n">_ReprMixin</span><span class="p">,</span> <span class="n">Select</span><span class="p">):</span>
-    <span class="n">features</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span>
-    <span class="n">parent</span><span class="p">:</span> <span class="n">Select</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">table_or_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">table_or_collection</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">id_field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id_field</span>
-
-<div class="viewcode-block" id="Featurize.repr_">
-<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Featurize.repr_">[docs]</a>
-    <span class="k">def</span> <span class="nf">repr_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">repr_</span><span class="p">()</span><span class="si">}</span><span class="s1">.featurize(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="si">}</span><span class="s1">)&#39;</span></div>
-
-
-<div class="viewcode-block" id="Featurize.execute">
-<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Featurize.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">SuperDuperCursor</span><span class="o">.</span><span class="n">add_features</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">SuperDuperCursor</span><span class="p">):</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">featurize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">out</span></div>
-
-
-<div class="viewcode-block" id="Featurize.add_fold">
-<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Featurize.add_fold">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_fold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fold</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Featurize</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">add_fold</span><span class="p">(</span><span class="n">fold</span><span class="p">),</span> <span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span></div>
-
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">select_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Featurize</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">select_table</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">select_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Featurize</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">select_ids</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Featurize.select_single_id">
-<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Featurize.select_single_id">[docs]</a>
-    <span class="k">def</span> <span class="nf">select_single_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Featurize</span><span class="p">(</span>
-            <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">select_single_id</span><span class="p">(</span><span class="nb">id</span><span class="p">),</span> <span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span>
-        <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Featurize.select_ids_of_missing_outputs">
-<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Featurize.select_ids_of_missing_outputs">[docs]</a>
-    <span class="k">def</span> <span class="nf">select_ids_of_missing_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Featurize</span><span class="p">(</span>
-            <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">select_ids_of_missing_outputs</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">),</span>
-            <span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">,</span>
-        <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Featurize.select_using_ids">
-<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Featurize.select_using_ids">[docs]</a>
-    <span class="k">def</span> <span class="nf">select_using_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Featurize</span><span class="p">(</span>
-            <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">select_using_ids</span><span class="p">(</span><span class="n">ids</span><span class="p">),</span> <span class="n">features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span>
-        <span class="p">)</span></div>
 </div>
 
 
@@ -497,6 +431,10 @@
     <span class="n">post_like</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Like&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">query_linker</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;QueryLinker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
+    <span class="nd">@abstractproperty</span>
+    <span class="k">def</span> <span class="nf">output_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id_field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primary_id</span>
@@ -504,10 +442,6 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">primary_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">primary_id</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="CompoundSelect.add_fold">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.CompoundSelect.add_fold">[docs]</a>
@@ -537,7 +471,7 @@
 
 <div class="viewcode-block" id="CompoundSelect.select_ids_of_missing_outputs">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.CompoundSelect.select_ids_of_missing_outputs">[docs]</a>
-    <span class="k">def</span> <span class="nf">select_ids_of_missing_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">select_ids_of_missing_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Query which selects ids where outputs are missing.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -549,7 +483,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_from_parts</span><span class="p">(</span>
             <span class="n">table_or_collection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="p">,</span>
             <span class="n">query_linker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span><span class="o">.</span><span class="n">_select_ids_of_missing_outputs</span><span class="p">(</span>
-                <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span>
+                <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span>
             <span class="p">),</span>
         <span class="p">)</span></div>
 
@@ -598,7 +532,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">components</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="n">components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span><span class="p">:</span>
             <span class="n">components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span><span class="p">:</span>
@@ -950,7 +884,7 @@
 <div class="viewcode-block" id="Like.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Like.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">_select_nearest</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">select_nearest</span><span class="p">(</span>
             <span class="n">like</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span>
             <span class="n">vector_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span><span class="p">,</span>
             <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
@@ -972,7 +906,7 @@
 
     <span class="n">query_components</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;table_or_collection&#39;</span>
-    <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">identifier</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Variable</span><span class="p">]</span>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">_get_query_linker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">members</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QueryLinker</span><span class="p">:</span>
@@ -1091,10 +1025,5 @@
     <script src="../../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../_static/scripts/furo.js?v=32e29ea5"></script>
-    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../../../_static/copybutton.js?v=f281be69"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

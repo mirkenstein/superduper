@@ -8,7 +8,6 @@
         <title>superduperdb.backends.query_dataset - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -261,7 +260,6 @@
 <span class="sd">    :param fold: The fold to be used for the dataset.</span>
 <span class="sd">    :param suppress: A list of keys to be suppressed from the dataset.</span>
 <span class="sd">    :param transform: A callable which can be used to transform the dataset.</span>
-<span class="sd">    :param features: A dictionary of features to be returned from the dataset.</span>
 <span class="sd">    :param db: A ``DB`` object to be used for the dataset.</span>
 <span class="sd">    :param ids: A list of ids to be used for the dataset.</span>
 <span class="sd">    :param in_memory: A boolean flag to indicate if the dataset should be loaded</span>
@@ -276,7 +274,6 @@
         <span class="n">fold</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span>
         <span class="n">suppress</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
         <span class="n">transform</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">features</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">in_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -309,7 +306,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ids</span> <span class="o">=</span> <span class="n">ids</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">select_one</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">select_single_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">suppress</span> <span class="o">=</span> <span class="n">suppress</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extract</span> <span class="o">=</span> <span class="n">extract</span>
 
     <span class="nd">@property</span>
@@ -335,12 +331,10 @@
             <span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">unpack</span><span class="p">())</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">({})</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
-            <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_outputs&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;_base&#39;</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;_base&#39;</span><span class="p">:</span>
                     <span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
@@ -373,7 +367,6 @@
         <span class="n">fold</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span>
         <span class="n">suppress</span><span class="o">=</span><span class="p">(),</span>
         <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">database</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">prefetch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
     <span class="p">):</span>
@@ -385,7 +378,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">select_ids</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">suppress</span> <span class="o">=</span> <span class="n">suppress</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">features</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_cache_size</span> <span class="o">=</span> <span class="n">prefetch_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span> <span class="n">ExpiryCache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_cache</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_total_documents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_documents</span><span class="p">()</span>
@@ -416,12 +408,10 @@
         <span class="k">for</span> <span class="n">document</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">unpack</span><span class="p">())</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">({})</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
-                <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_outputs&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;_base&#39;</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;_base&#39;</span><span class="p">:</span>
                         <span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
@@ -447,12 +437,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_backfill_cache</span><span class="p">()</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">unpack</span><span class="p">())</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">({})</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
-            <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_outputs&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;_base&#39;</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;_base&#39;</span><span class="p">:</span>
                     <span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
@@ -505,10 +493,5 @@
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
-    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../../_static/copybutton.js?v=f281be69"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

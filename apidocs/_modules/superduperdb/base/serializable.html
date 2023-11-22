@@ -8,7 +8,6 @@
         <title>superduperdb.base.serializable - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -262,11 +261,12 @@
 
 
 <span class="k">def</span> <span class="nf">_deserialize</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">_deserialize</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">r</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_component</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_deserialize</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
@@ -286,7 +286,10 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">_serialize</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">attr</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
                     <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_serialize</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
@@ -317,6 +320,77 @@
     <span class="p">}</span>
 
 
+<div class="viewcode-block" id="VariableError">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.VariableError">[docs]</a>
+<span class="k">class</span> <span class="nc">VariableError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="Variable">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Variable">[docs]</a>
+<span class="k">class</span> <span class="nc">Variable</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mechanism for allowing &quot;free variables&quot; in a serializable object.</span>
+<span class="sd">    The idea is to allow a variable to be set at runtime, rather than</span>
+<span class="sd">    at object creation time.</span>
+
+<span class="sd">    :param value: The name of the variable to be set at runtime.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">setter_callback</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setter_callback</span> <span class="o">=</span> <span class="n">setter_callback</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;$&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Variable.set">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Variable.set">[docs]</a>
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the intended value from the values of the global variables.</span>
+
+<span class="sd">        &gt;&gt;&gt; Variable(&#39;number&#39;).set(number=1.5, other=&#39;test&#39;)</span>
+<span class="sd">        1.5</span>
+
+<span class="sd">        :param db: The datalayer instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">setter_callback</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">VariableError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Could not set variable </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1"> based on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">setter_callback</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+</div>
+
+
+
+<span class="k">def</span> <span class="nf">_find_variables</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">_find_variables</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="p">[])</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">_find_variables</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="p">],</span> <span class="p">[])</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Variable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">r</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[]</span>
+
+
+<span class="k">def</span> <span class="nf">_replace_variables</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">_replace_variables</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span> <span class="n">_replace_variables</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_replace_variables</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Variable</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+
 <div class="viewcode-block" id="Serializable">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Serializable">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
@@ -328,6 +402,18 @@
 
     <span class="n">deserialize</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_deserialize</span><span class="p">)</span>
     <span class="n">serialize</span> <span class="o">=</span> <span class="n">_serialize</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Variable</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
+
+<div class="viewcode-block" id="Serializable.set_variables">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Serializable.set_variables">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Serializable&#39;</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>  <span class="c1"># get serialized version of class instance</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">_replace_variables</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>  <span class="c1"># replace variables with values</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>  <span class="c1"># rebuild new class instance</span></div>
+
 
 <div class="viewcode-block" id="Serializable.dict">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Serializable.dict">[docs]</a>
@@ -371,10 +457,5 @@
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
-    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../../_static/copybutton.js?v=f281be69"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

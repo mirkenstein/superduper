@@ -8,7 +8,6 @@
         <title>superduperdb.misc.download - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -250,6 +249,7 @@
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span><span class="p">,</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.base.query</span> <span class="kn">import</span> <span class="n">Insert</span><span class="p">,</span> <span class="n">Select</span>
+<span class="kn">from</span> <span class="nn">superduperdb.base</span> <span class="kn">import</span> <span class="n">exceptions</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
 
@@ -408,9 +408,9 @@
 
     <span class="k">def</span> <span class="nf">_check_exists_if_hybrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;file://&#39;</span><span class="p">):</span>
-            <span class="n">file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">CFG</span><span class="o">.</span><span class="n">downloads</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;file://&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">CFG</span><span class="o">.</span><span class="n">downloads_folder</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;file://&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">CFG</span><span class="o">.</span><span class="n">downloads</span><span class="o">.</span><span class="n">root</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">CFG</span><span class="o">.</span><span class="n">downloads_folder</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -500,7 +500,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span> <span class="o">=</span> <span class="n">Fetcher</span><span class="p">(</span><span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="n">n_workers</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_download</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">downloads</span><span class="o">.</span><span class="n">hybrid</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">hybrid_storage</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_exists_if_hybrid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uris</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
                 <span class="k">return</span>
         <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetcher</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uris</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -632,23 +632,23 @@
     <span class="k">if</span> <span class="n">n_download_workers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">n_download_workers</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;n_download_workers&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">MetadatastoreException</span><span class="p">:</span>
             <span class="n">n_download_workers</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">if</span> <span class="n">headers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">headers</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;headers&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">MetadatastoreException</span><span class="p">:</span>
             <span class="k">pass</span>
 
     <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">timeout</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;download_timeout&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">MetadatastoreException</span><span class="p">:</span>
             <span class="k">pass</span>
 
-    <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">downloads</span><span class="o">.</span><span class="n">hybrid</span><span class="p">:</span>
-        <span class="n">_download_update</span> <span class="o">=</span> <span class="n">SaveFile</span><span class="p">(</span><span class="n">CFG</span><span class="o">.</span><span class="n">downloads</span><span class="o">.</span><span class="n">root</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">hybrid_storage</span><span class="p">:</span>
+        <span class="n">_download_update</span> <span class="o">=</span> <span class="n">SaveFile</span><span class="p">(</span><span class="n">CFG</span><span class="o">.</span><span class="n">downloads_folder</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
 
         <span class="k">def</span> <span class="nf">_download_update</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">bytes_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># type: ignore[misc]</span>
@@ -713,10 +713,5 @@
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
-    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../../_static/copybutton.js?v=f281be69"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>

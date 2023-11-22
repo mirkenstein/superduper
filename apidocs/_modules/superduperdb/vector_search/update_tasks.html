@@ -8,7 +8,6 @@
         <title>superduperdb.vector_search.update_tasks - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -237,6 +236,7 @@
 
 <span class="kn">from</span> <span class="nn">superduperdb.backends.base.query</span> <span class="kn">import</span> <span class="n">CompoundSelect</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
+<span class="kn">from</span> <span class="nn">superduperdb.misc.special_dicts</span> <span class="kn">import</span> <span class="n">MongoStyleDict</span>
 <span class="kn">from</span> <span class="nn">superduperdb.vector_search.base</span> <span class="kn">import</span> <span class="n">VectorItem</span>
 
 
@@ -286,8 +286,13 @@
     <span class="n">docs</span> <span class="o">=</span> <span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">]</span>
     <span class="n">key</span> <span class="o">=</span> <span class="n">vi</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">key</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">vi</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">vi</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">version</span>
     <span class="n">vectors</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">{</span><span class="s1">&#39;vector&#39;</span><span class="p">:</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;_outputs&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">][</span><span class="n">model</span><span class="p">],</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">])}</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;vector&#39;</span><span class="p">:</span> <span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">doc</span><span class="p">)[</span><span class="sa">f</span><span class="s1">&#39;_outputs.</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">]),</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span>
     <span class="p">]</span>
     <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">vectors</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;vector&#39;</span><span class="p">],</span> <span class="s1">&#39;numpy&#39;</span><span class="p">):</span>
@@ -332,10 +337,5 @@
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>
-    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../../../_static/copybutton.js?v=f281be69"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/mermaid@10.2.0/dist/mermaid.min.js"></script>
-    <script>mermaid.initialize({startOnLoad:true});</script>
     </body>
 </html>
