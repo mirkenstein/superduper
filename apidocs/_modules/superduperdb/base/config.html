@@ -161,8 +161,9 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/superduperdb.html">superduperdb package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of superduperdb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.backends.html">superduperdb.backends package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of superduperdb.backends package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.base.html">superduperdb.backends.base package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.filesystem.html">superduperdb.backends.filesystem package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.dask.html">superduperdb.backends.dask package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.ibis.html">superduperdb.backends.ibis package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.local.html">superduperdb.backends.local package</a></li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../../source/superduperdb.backends.mongodb.html">superduperdb.backends.mongodb package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of superduperdb.backends.mongodb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../../source/superduperdb.backends.mongodb.cdc.html">superduperdb.backends.mongodb.cdc package</a></li>
 </ul>
@@ -243,8 +244,6 @@
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span>
-
 <span class="kn">from</span> <span class="nn">.jsonable</span> <span class="kn">import</span> <span class="n">Factory</span><span class="p">,</span> <span class="n">JSONable</span>
 
 <span class="n">_CONFIG_IMMUTABLE</span> <span class="o">=</span> <span class="kc">True</span>
@@ -301,13 +300,14 @@
 <span class="sd">    :param backfill_batch_size: The number of rows to backfill at a time</span>
 <span class="sd">                                for vector-search loading</span>
 <span class="sd">    :param vector_search: The URI for the vector search service</span>
-<span class="sd">    :param cdc: The URI for the change data capture service</span>
+<span class="sd">    :param cdc: The URI for the change data capture service (if ``None``</span>
+<span class="sd">                then no cdc assumed)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">dask_scheduler</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;tcp://localhost:8786&#39;</span>
+    <span class="n">dask_scheduler</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;tcp://localhost:8786&#39;</span>  <span class="c1"># None</span>
     <span class="n">backfill_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
-    <span class="n">vector_search</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:8000&#39;</span>
-    <span class="n">cdc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:8001&#39;</span></div>
+    <span class="n">vector_search</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:8000&#39;</span>  <span class="c1"># None</span>
+    <span class="n">cdc</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:8001&#39;</span>  <span class="c1"># None</span></div>
 
 
 
@@ -339,6 +339,17 @@
 
 
 
+<div class="viewcode-block" id="Mode">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Mode">[docs]</a>
+<span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enumerate the standard operation modes&quot;&quot;&quot;</span>
+
+    <span class="n">Development</span> <span class="o">=</span> <span class="s2">&quot;DEVELOPMENT&quot;</span>
+
+    <span class="n">Production</span> <span class="o">=</span> <span class="s2">&quot;PRODUCTION&quot;</span></div>
+
+
+
 <div class="viewcode-block" id="Config">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config">[docs]</a>
 <span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">BaseConfigJSONable</span><span class="p">):</span>
@@ -355,7 +366,7 @@
 <span class="sd">    :param downloads_folder: Settings for downloading files</span>
 
 <span class="sd">    :param fold_probability: The probability of validation fold</span>
-<span class="sd">    :param mode: The mode of the application {&#39;development&#39;, &#39;production&#39;}</span>
+<span class="sd">    :param mode: The mode of the application {Mode.Development, Mode.Production}</span>
 
 <span class="sd">    :param log_level: The severity level of the logs</span>
 <span class="sd">    :param logging_type: The type of logging to use</span>
@@ -376,13 +387,11 @@
 
     <span class="n">cluster</span><span class="p">:</span> <span class="n">Cluster</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Cluster</span><span class="p">)</span>
     <span class="n">retries</span><span class="p">:</span> <span class="n">Retry</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Retry</span><span class="p">)</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="n">Mode</span> <span class="o">=</span> <span class="n">Mode</span><span class="o">.</span><span class="n">Development</span>
 
     <span class="n">hybrid_storage</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">downloads_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;.superduperdb/downloads&#39;</span>
     <span class="n">fold_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span>
-
-    <span class="c1"># mode: development or production</span>
-    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;development&#39;</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="s1">&#39;^(development|production)$&#39;</span><span class="p">)</span>
 
     <span class="n">log_level</span><span class="p">:</span> <span class="n">LogLevel</span> <span class="o">=</span> <span class="n">LogLevel</span><span class="o">.</span><span class="n">DEBUG</span>
     <span class="n">logging_type</span><span class="p">:</span> <span class="n">LogType</span> <span class="o">=</span> <span class="n">LogType</span><span class="o">.</span><span class="n">SYSTEM</span>
@@ -395,9 +404,9 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">comparables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A dict of `self` excluding some defined attributes.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
         <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;cluster&#39;</span><span class="p">,</span> <span class="s1">&#39;retries&#39;</span><span class="p">,</span> <span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;downloads_folder&#39;</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">_dict</span>
@@ -405,9 +414,9 @@
 <div class="viewcode-block" id="Config.match">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config.match">[docs]</a>
     <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Match the target cfg dict with `self` comparables dict.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">self_cfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">comparables</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">self_cfg</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span> <span class="o">==</span> <span class="nb">hash</span><span class="p">(</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -417,12 +426,12 @@
 <div class="viewcode-block" id="Config.force_set">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config.force_set">[docs]</a>
     <span class="k">def</span> <span class="nf">force_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Brings immutable behaviour to `CFG` instance.</span>
 
 <span class="sd">        CAUTION: Only use it in development mode with caution,</span>
 <span class="sd">        as this can bring unexpected behaviour.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="n">names</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>

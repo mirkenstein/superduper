@@ -161,8 +161,9 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/superduperdb.html">superduperdb package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of superduperdb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.backends.html">superduperdb.backends package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of superduperdb.backends package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.base.html">superduperdb.backends.base package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.filesystem.html">superduperdb.backends.filesystem package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.dask.html">superduperdb.backends.dask package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.ibis.html">superduperdb.backends.ibis package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.local.html">superduperdb.backends.local package</a></li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../../source/superduperdb.backends.mongodb.html">superduperdb.backends.mongodb package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of superduperdb.backends.mongodb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../../source/superduperdb.backends.mongodb.cdc.html">superduperdb.backends.mongodb.cdc package</a></li>
 </ul>
@@ -272,14 +273,14 @@
 <a class="viewcode-back" href="../../../source/superduperdb.cli.html#superduperdb.cli.serve.local_cluster">[docs]</a>
 <span class="nd">@command</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Start local cluster: server, dask and change data capture&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">local_cluster</span><span class="p">(</span><span class="n">on</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]):</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.backends.dask.compute</span> <span class="kn">import</span> <span class="n">DaskComputeBackend</span>
     <span class="kn">from</span> <span class="nn">superduperdb.backends.mongodb.query</span> <span class="kn">import</span> <span class="n">Collection</span>
     <span class="kn">from</span> <span class="nn">superduperdb.base.build</span> <span class="kn">import</span> <span class="n">build_datalayer</span>
-    <span class="kn">from</span> <span class="nn">superduperdb.server.dask_client</span> <span class="kn">import</span> <span class="n">dask_client</span>
     <span class="kn">from</span> <span class="nn">superduperdb.server.server</span> <span class="kn">import</span> <span class="n">serve</span>
 
     <span class="n">db</span> <span class="o">=</span> <span class="n">build_datalayer</span><span class="p">()</span>
-    <span class="n">dask_client</span><span class="p">(</span>
-        <span class="n">uri</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">dask_scheduler</span><span class="p">,</span>
+    <span class="n">DaskComputeBackend</span><span class="p">(</span>
+        <span class="n">address</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">dask_scheduler</span><span class="p">,</span>
         <span class="n">local</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">on</span><span class="p">:</span>

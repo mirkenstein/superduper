@@ -161,8 +161,9 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/superduperdb.html">superduperdb package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of superduperdb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.backends.html">superduperdb.backends package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of superduperdb.backends package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.base.html">superduperdb.backends.base package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.filesystem.html">superduperdb.backends.filesystem package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.dask.html">superduperdb.backends.dask package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.ibis.html">superduperdb.backends.ibis package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.local.html">superduperdb.backends.local package</a></li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../../source/superduperdb.backends.mongodb.html">superduperdb.backends.mongodb package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of superduperdb.backends.mongodb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../../source/superduperdb.backends.mongodb.cdc.html">superduperdb.backends.mongodb.cdc package</a></li>
 </ul>
@@ -242,10 +243,12 @@
 <span class="kn">import</span> <span class="nn">superduperdb</span> <span class="k">as</span> <span class="nn">s</span>
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.base.backends</span> <span class="kn">import</span> <span class="n">data_backends</span><span class="p">,</span> <span class="n">metadata_stores</span>
-<span class="kn">from</span> <span class="nn">superduperdb.backends.filesystem.artifacts</span> <span class="kn">import</span> <span class="n">FileSystemArtifactStore</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.dask.compute</span> <span class="kn">import</span> <span class="n">DaskComputeBackend</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.local.artifacts</span> <span class="kn">import</span> <span class="n">FileSystemArtifactStore</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.local.compute</span> <span class="kn">import</span> <span class="n">LocalComputeBackend</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.mongodb.artifacts</span> <span class="kn">import</span> <span class="n">MongoArtifactStore</span>
+<span class="kn">from</span> <span class="nn">superduperdb.base.config</span> <span class="kn">import</span> <span class="n">Mode</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
-<span class="kn">from</span> <span class="nn">superduperdb.server.dask_client</span> <span class="kn">import</span> <span class="n">dask_client</span>
 
 
 <div class="viewcode-block" id="build_artifact_store">
@@ -267,6 +270,31 @@
 
 
 
+<span class="c1"># Helper function to build a data backend based on the URI.</span>
+<div class="viewcode-block" id="build">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.build">[docs]</a>
+<span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">mapping</span><span class="p">):</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsing data connection URI:</span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^mongodb:\/\/|^mongodb\+srv:\/\/&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span>
+            <span class="n">uri</span><span class="p">,</span>
+            <span class="n">serverSelectionTimeoutMS</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;mongodb&#39;</span><span class="p">](</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;mongomock://&#39;</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">mongomock</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;mongodb&#39;</span><span class="p">](</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">ibis</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;ibis&#39;</span><span class="p">](</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+
+
+
 <div class="viewcode-block" id="build_datalayer">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.build_datalayer">[docs]</a>
 <span class="k">def</span> <span class="nf">build_datalayer</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Datalayer</span><span class="p">:</span>
@@ -276,35 +304,17 @@
 <span class="sd">    :param cfg: Configuration to use. If None, use ``superduperdb.CFG``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="c1"># Configuration</span>
+    <span class="c1"># ------------------------------</span>
     <span class="c1"># Use the provided configuration or fall back to the default configuration.</span>
     <span class="n">cfg</span> <span class="o">=</span> <span class="n">cfg</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span>
 
     <span class="c1"># Update configuration with keyword arguments.</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-
-    <span class="c1"># Helper function to build a data backend based on the URI.</span>
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">mapping</span><span class="p">):</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsing data connection URI:</span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^mongodb:\/\/|^mongodb\+srv:\/\/&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">conn</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span>
-                <span class="n">uri</span><span class="p">,</span>
-                <span class="n">serverSelectionTimeoutMS</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
-            <span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;mongodb&#39;</span><span class="p">](</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;mongomock://&#39;</span><span class="p">):</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">conn</span> <span class="o">=</span> <span class="n">mongomock</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;mongodb&#39;</span><span class="p">](</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">conn</span> <span class="o">=</span> <span class="n">ibis</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;ibis&#39;</span><span class="p">](</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">cfg</span><span class="o">.</span><span class="n">force_set</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
     <span class="c1"># Connect to data backend.</span>
+    <span class="c1"># ------------------------------</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">databackend</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">data_backend</span><span class="p">,</span> <span class="n">data_backends</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Data Client is ready.&quot;</span><span class="p">,</span> <span class="n">databackend</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
@@ -313,7 +323,8 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error initializing to DataBackend Client:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="c1"># Build a Datalayer object with the specified components.</span>
+    <span class="c1"># Build DataLayer</span>
+    <span class="c1"># ------------------------------</span>
     <span class="n">db</span> <span class="o">=</span> <span class="n">Datalayer</span><span class="p">(</span>
         <span class="n">databackend</span><span class="o">=</span><span class="n">databackend</span><span class="p">,</span>
         <span class="n">metadata</span><span class="o">=</span><span class="p">(</span>
@@ -326,14 +337,14 @@
             <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="k">else</span> <span class="n">databackend</span><span class="o">.</span><span class="n">build_artifact_store</span><span class="p">()</span>
         <span class="p">),</span>
-        <span class="n">distributed_client</span><span class="o">=</span><span class="n">dask_client</span><span class="p">(</span>
-            <span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">dask_scheduler</span><span class="p">,</span>
-            <span class="n">local</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">local</span><span class="p">,</span>
-            <span class="n">serializers</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">serializers</span><span class="p">,</span>
-            <span class="n">deserializers</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">deserializers</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span>
-        <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">compute</span><span class="o">=</span><span class="p">(</span>
+            <span class="n">DaskComputeBackend</span><span class="p">(</span>
+                <span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">dask_scheduler</span><span class="p">,</span>
+                <span class="n">local</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">Production</span>
+            <span class="k">else</span> <span class="n">LocalComputeBackend</span><span class="p">()</span>  <span class="c1"># Development mode</span>
+        <span class="p">),</span>
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">db</span></div>

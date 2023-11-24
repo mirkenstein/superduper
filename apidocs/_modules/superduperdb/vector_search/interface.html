@@ -161,8 +161,9 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/superduperdb.html">superduperdb package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of superduperdb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.backends.html">superduperdb.backends package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of superduperdb.backends package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.base.html">superduperdb.backends.base package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.filesystem.html">superduperdb.backends.filesystem package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.dask.html">superduperdb.backends.dask package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.ibis.html">superduperdb.backends.ibis package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.local.html">superduperdb.backends.local package</a></li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../../source/superduperdb.backends.mongodb.html">superduperdb.backends.mongodb package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of superduperdb.backends.mongodb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../../source/superduperdb.backends.mongodb.cdc.html">superduperdb.backends.mongodb.cdc package</a></li>
 </ul>
@@ -238,6 +239,7 @@
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base</span> <span class="kn">import</span> <span class="n">exceptions</span>
+<span class="kn">from</span> <span class="nn">superduperdb.base.config</span> <span class="kn">import</span> <span class="n">Mode</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.server</span> <span class="kn">import</span> <span class="n">request_server</span>
 <span class="kn">from</span> <span class="nn">superduperdb.vector_search.base</span> <span class="kn">import</span> <span class="n">BaseVectorSearcher</span><span class="p">,</span> <span class="n">VectorItem</span>
 
@@ -252,7 +254,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">searcher</span> <span class="o">=</span> <span class="n">vector_searcher</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span> <span class="o">=</span> <span class="n">vector_index</span>
 
-        <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">Production</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">db</span><span class="o">.</span><span class="n">server_mode</span><span class="p">:</span>
                 <span class="n">request_server</span><span class="p">(</span>
                     <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
@@ -276,7 +278,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">vector_items</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;vector&#39;</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">vector</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">id</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">Production</span><span class="p">:</span>
                 <span class="n">request_server</span><span class="p">(</span>
                     <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
                     <span class="n">data</span><span class="o">=</span><span class="n">vector_items</span><span class="p">,</span>
@@ -291,7 +293,7 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">local_msg</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="s1">&#39;remote vector search service&#39;</span>
-                <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span>
+                <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">Production</span>
                 <span class="k">else</span> <span class="s1">&#39;local vector search&#39;</span>
             <span class="p">)</span>
             <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VectorSearchException</span><span class="p">(</span>
@@ -308,7 +310,7 @@
 <span class="sd">        :param ids: t.Sequence of ids of vectors.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">Production</span><span class="p">:</span>
                 <span class="n">request_server</span><span class="p">(</span>
                     <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
                     <span class="n">data</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
@@ -323,7 +325,7 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">local_msg</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="s1">&#39;remote vector search service&#39;</span>
-                <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span>
+                <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">Production</span>
                 <span class="k">else</span> <span class="s1">&#39;local vector search&#39;</span>
             <span class="p">)</span>
             <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VectorSearchException</span><span class="p">(</span>
@@ -346,7 +348,7 @@
 <span class="sd">        :param n: number of nearest vectors to return</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">Production</span><span class="p">:</span>
                 <span class="n">response</span> <span class="o">=</span> <span class="n">request_server</span><span class="p">(</span>
                     <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
                     <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;query/id/search&#39;</span><span class="p">,</span>
@@ -358,11 +360,15 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">local_msg</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="s1">&#39;remote vector search service&#39;</span>
-                <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span>
+                <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">Production</span>
                 <span class="k">else</span> <span class="s1">&#39;local vector search&#39;</span>
             <span class="p">)</span>
             <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VectorSearchException</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Error while finding nearest id </span><span class="si">{</span><span class="n">_id</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">local_msg</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Error while finding nearest array from </span><span class="si">{</span><span class="n">local_msg</span><span class="si">}</span><span class="s1"> </span><span class="se">\n\</span>
+<span class="s1">                The problem might be either wrong id </span><span class="si">{</span><span class="n">_id</span><span class="si">}</span><span class="s1"> provided or vector database </span><span class="se">\</span>
+<span class="s1">                is empty (Not initialized properly), check if model/listener outputs </span><span class="se">\</span>
+<span class="s1">                are successfully computed, generally have issues </span><span class="se">\</span>
+<span class="s1">                when computes is distributed to dask for example. &#39;</span>
             <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
 
 
@@ -381,7 +387,7 @@
 <span class="sd">        :param n: number of nearest vectors to return</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">Production</span><span class="p">:</span>
                 <span class="n">response</span> <span class="o">=</span> <span class="n">request_server</span><span class="p">(</span>
                     <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
                     <span class="n">data</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
@@ -396,11 +402,15 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">local_msg</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="s1">&#39;remote vector search service&#39;</span>
-                <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span>
+                <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">Production</span>
                 <span class="k">else</span> <span class="s1">&#39;local vector search&#39;</span>
             <span class="p">)</span>
             <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VectorSearchException</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Error while finding nearest array from </span><span class="si">{</span><span class="n">local_msg</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Error while finding nearest array from </span><span class="si">{</span><span class="n">local_msg</span><span class="si">}</span><span class="s1"> </span><span class="se">\n\</span>
+<span class="s1">                The problem might be either wrong vector provided or vector database </span><span class="se">\</span>
+<span class="s1">                is empty (Not initialized properly), check if model/listener outputs </span><span class="se">\</span>
+<span class="s1">                are successfully computed, generally have issues </span><span class="se">\</span>
+<span class="s1">                when computes is distributed to dask for example. &#39;</span>
             <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
 </div>
 
