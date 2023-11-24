@@ -709,17 +709,20 @@
 <span class="sd">        Stop all registered listeners</span>
 <span class="sd">        :param name: Listener name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_CDC_LISTENERS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> is already down or not added yet&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_CDC_LISTENERS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_CDC_LISTENERS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> is already down or not added yet&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_CDC_LISTENERS</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 
-        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_CDC_LISTENERS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">listener</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_CDC_LISTENERS</span> <span class="o">=</span> <span class="p">{}</span></div>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_CDC_LISTENERS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">listener</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_CDC_LISTENERS</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop_handler</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="DatabaseChangeDataCapture.stop_handler">
@@ -728,9 +731,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop the cdc handler thread</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cdc_stop_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cdc_stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdc_change_handler</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cdc_change_handler</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cdc_change_handler</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cdc_change_handler</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="DatabaseChangeDataCapture.add">

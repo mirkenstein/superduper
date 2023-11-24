@@ -340,7 +340,6 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">database</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">,</span>
         <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
-        <span class="n">distributed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -348,7 +347,6 @@
 
 <span class="sd">        :param database: The DB instance to process</span>
 <span class="sd">        :param dependencies: A list of dependencies</span>
-<span class="sd">        :param distributed: Whether to run the job on a distributed system</span>
 <span class="sd">        :param verbose: Whether to print verbose output</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
@@ -360,7 +358,6 @@
                 <span class="n">X</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span>
                 <span class="n">db</span><span class="o">=</span><span class="n">database</span><span class="p">,</span>
                 <span class="n">select</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">,</span>
-                <span class="n">distributed</span><span class="o">=</span><span class="n">distributed</span><span class="p">,</span>
                 <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">,</span>
                 <span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span> <span class="ow">or</span> <span class="p">{}),</span>
             <span class="p">)</span>

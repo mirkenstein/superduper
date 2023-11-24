@@ -325,7 +325,6 @@
             <span class="n">method_name</span><span class="o">=</span><span class="s1">&#39;predict&#39;</span><span class="p">,</span>
             <span class="n">type_id</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span>
             <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
-                <span class="s1">&#39;distributed&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                 <span class="s1">&#39;validation_set&#39;</span><span class="p">:</span> <span class="n">validation_set</span><span class="p">,</span>
                 <span class="s1">&#39;metrics&#39;</span><span class="p">:</span> <span class="n">metrics</span><span class="p">,</span>
             <span class="p">},</span>
@@ -338,14 +337,12 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">database</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">,</span>
         <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
-        <span class="n">distributed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the job for this listener</span>
 
 <span class="sd">        :param database: The db to process</span>
 <span class="sd">        :param dependencies: A sequence of dependencies,</span>
-<span class="sd">        :param distributed: Is the computation distributed</span>
 <span class="sd">        :param verbose: If true, print more information</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[]</span></div>

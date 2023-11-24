@@ -329,9 +329,9 @@ Note: This will block until the future is completed.</p>
 <dd><p>List for all pending tasks</p>
 </dd></dl>
 
-<dl class="py method">
+<dl class="py property">
 <dt class="sig sig-object py" id="superduperdb.backends.local.compute.LocalComputeBackend.name">
-<span class="sig-name descname"><span class="pre">name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/local/compute.html#LocalComputeBackend.name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.local.compute.LocalComputeBackend.name" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.backends.local.compute.LocalComputeBackend.name" title="Link to this definition">#</a></dt>
 <dd><p>Return the name of current compute engine</p>
 </dd></dl>
 
@@ -343,16 +343,19 @@ Note: This will block until the future is completed.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.local.compute.LocalComputeBackend.submit">
-<span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/local/compute.html#LocalComputeBackend.submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.local.compute.LocalComputeBackend.submit" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/local/compute.html#LocalComputeBackend.submit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.local.compute.LocalComputeBackend.submit" title="Link to this definition">#</a></dt>
 <dd><p>Submits a function for local execution.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>function</strong> – The function to be executed.</p></li>
-<li><p><strong>kwargs</strong> – Additional keyword arguments to be passed to the function.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>function</strong> – The function to be executed.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="superduperdb.backends.local.compute.LocalComputeBackend.type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.backends.local.compute.LocalComputeBackend.type" title="Link to this definition">#</a></dt>
+<dd><p>Return the type of compute engine</p>
 </dd></dl>
 
 <dl class="py method">
@@ -442,9 +445,10 @@ Note: This will block until the future is completed.</p>
 <li><a class="reference internal" href="#superduperdb.backends.local.compute.LocalComputeBackend.disconnect"><code class="docutils literal notranslate"><span class="pre">LocalComputeBackend.disconnect()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.local.compute.LocalComputeBackend.get_result"><code class="docutils literal notranslate"><span class="pre">LocalComputeBackend.get_result()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.local.compute.LocalComputeBackend.list_all_pending_tasks"><code class="docutils literal notranslate"><span class="pre">LocalComputeBackend.list_all_pending_tasks()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.backends.local.compute.LocalComputeBackend.name"><code class="docutils literal notranslate"><span class="pre">LocalComputeBackend.name()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.local.compute.LocalComputeBackend.name"><code class="docutils literal notranslate"><span class="pre">LocalComputeBackend.name</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.local.compute.LocalComputeBackend.shutdown"><code class="docutils literal notranslate"><span class="pre">LocalComputeBackend.shutdown()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.local.compute.LocalComputeBackend.submit"><code class="docutils literal notranslate"><span class="pre">LocalComputeBackend.submit()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.local.compute.LocalComputeBackend.type"><code class="docutils literal notranslate"><span class="pre">LocalComputeBackend.type</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.local.compute.LocalComputeBackend.wait_all_pending_tasks"><code class="docutils literal notranslate"><span class="pre">LocalComputeBackend.wait_all_pending_tasks()</span></code></a></li>
 </ul>
 </li>
