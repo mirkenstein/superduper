@@ -260,6 +260,27 @@ into endpoint implementation</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.server.app.Server">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.server.app.</span></span><span class="sig-name descname"><span class="pre">Server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#Server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.Server" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Server</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.server.app.Server.install_signal_handlers">
+<span class="sig-name descname"><span class="pre">install_signal_handlers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#Server.install_signal_handlers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.Server.install_signal_handlers" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.server.app.Server.run_in_thread">
+<span class="sig-name descname"><span class="pre">run_in_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#Server.run_in_thread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.Server.run_in_thread" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.server.app.Server.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#Server.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.Server.stop" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="superduperdb.server.app.SuperDuperApp">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.server.app.</span></span><span class="sig-name descname"><span class="pre">SuperDuperApp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vector_search'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#SuperDuperApp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.SuperDuperApp" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -291,6 +312,11 @@ comes out of box with <cite>SuperDuperApp</cite></p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.server.app.SuperDuperApp.pre_start">
+<span class="sig-name descname"><span class="pre">pre_start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#SuperDuperApp.pre_start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.SuperDuperApp.pre_start" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.server.app.SuperDuperApp.shutdown">
 <span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#SuperDuperApp.shutdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.SuperDuperApp.shutdown" title="Link to this definition">#</a></dt>
 <dd><p>This method is used to register a shutdown function</p>
@@ -304,7 +330,7 @@ comes out of box with <cite>SuperDuperApp</cite></p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.server.app.SuperDuperApp.startup">
-<span class="sig-name descname"><span class="pre">startup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#SuperDuperApp.startup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.SuperDuperApp.startup" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">startup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#SuperDuperApp.startup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.SuperDuperApp.startup" title="Link to this definition">#</a></dt>
 <dd><p>This method is used to register a startup function</p>
 </dd></dl>
 
@@ -314,6 +340,18 @@ comes out of box with <cite>SuperDuperApp</cite></p>
 <dt class="sig sig-object py" id="superduperdb.server.app.database">
 <span class="sig-prename descclassname"><span class="pre">superduperdb.server.app.</span></span><span class="sig-name descname"><span class="pre">database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></span><a class="reference internal" href="../_modules/superduperdb/server/app.html#database"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.database" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+</section>
+<section id="module-superduperdb.server.cluster">
+<span id="superduperdb-server-cluster-module"></span><h2>superduperdb.server.cluster module<a class="headerlink" href="#module-superduperdb.server.cluster" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.server.cluster.local_cluster">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.server.cluster.</span></span><span class="sig-name descname"><span class="pre">local_cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/cluster.html#local_cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.cluster.local_cluster" title="Link to this definition">#</a></dt>
+<dd><p>This method is used to create a local cluster consisting of
+Vector search service, cdc service and dask setup.</p>
+<p>Once this cluster is up, user can offload vector search,
+cdc on these service.</p>
+</dd></dl>
 
 </section>
 <section id="module-superduperdb.server">
@@ -384,17 +422,28 @@ comes out of box with <cite>SuperDuperApp</cite></p>
 <li><a class="reference internal" href="#superduperdb.server.app.ExceptionHandlerMiddleware.dispatch"><code class="docutils literal notranslate"><span class="pre">ExceptionHandlerMiddleware.dispatch()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#superduperdb.server.app.Server"><code class="docutils literal notranslate"><span class="pre">Server</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.server.app.Server.install_signal_handlers"><code class="docutils literal notranslate"><span class="pre">Server.install_signal_handlers()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.server.app.Server.run_in_thread"><code class="docutils literal notranslate"><span class="pre">Server.run_in_thread()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.server.app.Server.stop"><code class="docutils literal notranslate"><span class="pre">Server.stop()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.add"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.add()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.app"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.app</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.db"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.db</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.default_endpoints"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.default_endpoints()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.pre_start"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.pre_start()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.shutdown"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.shutdown()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.start"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.start()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.startup"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.startup()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#superduperdb.server.app.database"><code class="docutils literal notranslate"><span class="pre">database()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-superduperdb.server.cluster">superduperdb.server.cluster module</a><ul>
+<li><a class="reference internal" href="#superduperdb.server.cluster.local_cluster"><code class="docutils literal notranslate"><span class="pre">local_cluster()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-superduperdb.server">Module contents</a></li>

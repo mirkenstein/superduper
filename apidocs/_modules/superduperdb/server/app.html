@@ -235,6 +235,8 @@
           <h1>Source code for superduperdb.server.app</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span>
 <span class="kn">from</span> <span class="nn">traceback</span> <span class="kn">import</span> <span class="n">format_exc</span>
 
@@ -243,165 +245,9 @@
 <span class="kn">from</span> <span class="nn">fastapi.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
 <span class="kn">from</span> <span class="nn">starlette.middleware.base</span> <span class="kn">import</span> <span class="n">BaseHTTPMiddleware</span>
 
-<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span><span class="p">,</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.build</span> <span class="kn">import</span> <span class="n">build_datalayer</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
-
-<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
-
-
-<div class="viewcode-block" id="SuperDuperApp">
-<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp">[docs]</a>
-<span class="k">class</span> <span class="nc">SuperDuperApp</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    This is a wrapper class which helps to create a fastapi application</span>
-<span class="sd">    in the realm of superduperdb.</span>
-
-<span class="sd">    This class prepares a basic api setup and only endpoint implementation</span>
-<span class="sd">    are need to be added into the app</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">app_host</span> <span class="o">=</span> <span class="s1">&#39;0.0.0.0&#39;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_user_startup</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_user_shutdown</span> <span class="o">=</span> <span class="kc">False</span>
-
-<div class="viewcode-block" id="SuperDuperApp.default_endpoints">
-<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.default_endpoints">[docs]</a>
-    <span class="k">def</span> <span class="nf">default_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        A list of default endpoints, health and config handshake</span>
-<span class="sd">        comes out of box with `SuperDuperApp`</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="nd">@self</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/health&#39;</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">health</span><span class="p">():</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
-
-        <span class="nd">@self</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/handshake/config&#39;</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">handshake</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">cfg_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">cfg_dict</span><span class="p">):</span>
-                <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;matched&#39;</span><span class="p">}</span>
-
-            <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span>
-                <span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
-                <span class="n">content</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Config is not match&#39;</span><span class="p">},</span>
-            <span class="p">)</span></div>
-
-
-    <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pool</span>
-
-<div class="viewcode-block" id="SuperDuperApp.add">
-<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.add">[docs]</a>
-    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Register an endpoint with this method.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
-                <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">function</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="n">method</span><span class="p">]</span>
-            <span class="p">)</span>
-            <span class="k">return</span>
-
-        <span class="k">return</span> <span class="n">decorator</span></div>
-
-
-    <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">app</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">app</span>
-
-<div class="viewcode-block" id="SuperDuperApp.start">
-<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.start">[docs]</a>
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        This method is used to start the application server</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_endpoints</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_startup</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">startup</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_shutdown</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span>
-
-        <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-            <span class="n">app</span><span class="p">,</span>
-            <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app_host</span><span class="p">,</span>
-            <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
-            <span class="n">reload</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="SuperDuperApp.startup">
-<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.startup">[docs]</a>
-    <span class="k">def</span> <span class="nf">startup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        This method is used to register a startup function</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_user_startup</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="nd">@app</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s1">&#39;startup&#39;</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">startup_db_client</span><span class="p">():</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">)</span>
-            <span class="n">db</span> <span class="o">=</span> <span class="n">build_datalayer</span><span class="p">()</span>
-            <span class="n">db</span><span class="o">.</span><span class="n">server_mode</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">if</span> <span class="n">function</span><span class="p">:</span>
-                <span class="n">function</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
-            <span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">db</span>
-
-        <span class="k">return</span></div>
-
-
-<div class="viewcode-block" id="SuperDuperApp.shutdown">
-<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.shutdown">[docs]</a>
-    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        This method is used to register a shutdown function</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_user_shutdown</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="nd">@app</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s1">&#39;shutdown&#39;</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">shutdown_db_client</span><span class="p">():</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">function</span><span class="p">:</span>
-                    <span class="n">function</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pool</span><span class="p">)</span>
-                <span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Could not close the database properly&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="database">
-<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.database">[docs]</a>
-<span class="k">def</span> <span class="nf">database</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Datalayer</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pool</span></div>
-
-
-
-<div class="viewcode-block" id="DatalayerDependency">
-<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.DatalayerDependency">[docs]</a>
-<span class="k">def</span> <span class="nf">DatalayerDependency</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    A helper method to be used for injecting datalayer instance</span>
-<span class="sd">    into endpoint implementation</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">Depends</span><span class="p">(</span><span class="n">database</span><span class="p">)</span></div>
-
-
 
 <span class="c1"># --------------- Create exception handler middleware-----------------</span>
 
@@ -441,7 +287,195 @@
 
 
 
-<span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span><span class="n">ExceptionHandlerMiddleware</span><span class="p">)</span>
+<div class="viewcode-block" id="SuperDuperApp">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp">[docs]</a>
+<span class="k">class</span> <span class="nc">SuperDuperApp</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This is a wrapper class which helps to create a fastapi application</span>
+<span class="sd">    in the realm of superduperdb.</span>
+
+<span class="sd">    This class prepares a basic api setup and only endpoint implementation</span>
+<span class="sd">    are need to be added into the app</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">app_host</span> <span class="o">=</span> <span class="s1">&#39;0.0.0.0&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user_startup</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user_shutdown</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span><span class="n">ExceptionHandlerMiddleware</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SuperDuperApp.default_endpoints">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.default_endpoints">[docs]</a>
+    <span class="k">def</span> <span class="nf">default_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        A list of default endpoints, health and config handshake</span>
+<span class="sd">        comes out of box with `SuperDuperApp`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="nd">@self</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/health&#39;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">health</span><span class="p">():</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
+
+        <span class="nd">@self</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/handshake/config&#39;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">handshake</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span>
+
+            <span class="n">cfg_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">cfg_dict</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;matched&#39;</span><span class="p">}</span>
+
+            <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span>
+                <span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
+                <span class="n">content</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Config is not match&#39;</span><span class="p">},</span>
+            <span class="p">)</span></div>
+
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pool</span>
+
+<div class="viewcode-block" id="SuperDuperApp.add">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.add">[docs]</a>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Register an endpoint with this method.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_api_route</span><span class="p">(</span>
+                <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">function</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="n">method</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">return</span> <span class="n">decorator</span></div>
+
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">app</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_app</span>
+
+<div class="viewcode-block" id="SuperDuperApp.pre_start">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.pre_start">[docs]</a>
+    <span class="k">def</span> <span class="nf">pre_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_endpoints</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_startup</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">startup</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="n">cfg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_shutdown</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span></div>
+
+
+<div class="viewcode-block" id="SuperDuperApp.start">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.start">[docs]</a>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        This method is used to start the application server</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_start</span><span class="p">()</span>
+
+        <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_app</span><span class="p">,</span>
+            <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app_host</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+            <span class="n">reload</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SuperDuperApp.startup">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.startup">[docs]</a>
+    <span class="k">def</span> <span class="nf">startup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        This method is used to register a startup function</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user_startup</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="nd">@self</span><span class="o">.</span><span class="n">_app</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s1">&#39;startup&#39;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">startup_db_client</span><span class="p">():</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">)</span>
+            <span class="n">db</span> <span class="o">=</span> <span class="n">build_datalayer</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">server_mode</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">function</span><span class="p">:</span>
+                <span class="n">function</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pool</span> <span class="o">=</span> <span class="n">db</span>
+
+        <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="SuperDuperApp.shutdown">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.shutdown">[docs]</a>
+    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        This method is used to register a shutdown function</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user_shutdown</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="nd">@self</span><span class="o">.</span><span class="n">_app</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s1">&#39;shutdown&#39;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">shutdown_db_client</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">function</span><span class="p">:</span>
+                    <span class="n">function</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pool</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Could not close the database properly&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="database">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.database">[docs]</a>
+<span class="k">def</span> <span class="nf">database</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Datalayer</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pool</span></div>
+
+
+
+<div class="viewcode-block" id="DatalayerDependency">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.DatalayerDependency">[docs]</a>
+<span class="k">def</span> <span class="nf">DatalayerDependency</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A helper method to be used for injecting datalayer instance</span>
+<span class="sd">    into endpoint implementation</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">Depends</span><span class="p">(</span><span class="n">database</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Server">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.Server">[docs]</a>
+<span class="k">class</span> <span class="nc">Server</span><span class="p">(</span><span class="n">uvicorn</span><span class="o">.</span><span class="n">Server</span><span class="p">):</span>
+<div class="viewcode-block" id="Server.install_signal_handlers">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.Server.install_signal_handlers">[docs]</a>
+    <span class="k">def</span> <span class="nf">install_signal_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Server.run_in_thread">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.Server.run_in_thread">[docs]</a>
+    <span class="k">def</span> <span class="nf">run_in_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">started</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Server.stop">
+<a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.Server.stop">[docs]</a>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">should_exit</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></div>
+</div>
+
 </pre></div>
         </article>
       </div>

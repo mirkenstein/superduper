@@ -247,7 +247,6 @@
 <span class="kn">from</span> <span class="nn">superduperdb.backends.local.artifacts</span> <span class="kn">import</span> <span class="n">FileSystemArtifactStore</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.local.compute</span> <span class="kn">import</span> <span class="n">LocalComputeBackend</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.mongodb.artifacts</span> <span class="kn">import</span> <span class="n">MongoArtifactStore</span>
-<span class="kn">from</span> <span class="nn">superduperdb.base.config</span> <span class="kn">import</span> <span class="n">Mode</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
 
 
@@ -295,6 +294,24 @@
 
 
 
+<div class="viewcode-block" id="build_compute">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.build_compute">[docs]</a>
+<span class="k">def</span> <span class="nf">build_compute</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
+    <span class="n">compute</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">compute</span>
+    <span class="k">if</span> <span class="n">compute</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span> <span class="ow">or</span> <span class="n">compute</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">LocalComputeBackend</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">compute</span> <span class="o">==</span> <span class="s1">&#39;dask+thread&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DaskComputeBackend</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">compute</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;dask+tcp&#39;</span><span class="p">:</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="n">compute</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">DaskComputeBackend</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">LocalComputeBackend</span><span class="p">()</span></div>
+
+
+
 <div class="viewcode-block" id="build_datalayer">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.build_datalayer">[docs]</a>
 <span class="k">def</span> <span class="nf">build_datalayer</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Datalayer</span><span class="p">:</span>
@@ -337,14 +354,7 @@
             <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="k">else</span> <span class="n">databackend</span><span class="o">.</span><span class="n">build_artifact_store</span><span class="p">()</span>
         <span class="p">),</span>
-        <span class="n">compute</span><span class="o">=</span><span class="p">(</span>
-            <span class="n">DaskComputeBackend</span><span class="p">(</span>
-                <span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">dask_scheduler</span><span class="p">,</span>
-                <span class="n">local</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">Mode</span><span class="o">.</span><span class="n">Production</span>
-            <span class="k">else</span> <span class="n">LocalComputeBackend</span><span class="p">()</span>  <span class="c1"># Development mode</span>
-        <span class="p">),</span>
+        <span class="n">compute</span><span class="o">=</span><span class="n">build_compute</span><span class="p">(</span><span class="n">cfg</span><span class="p">),</span>
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">db</span></div>

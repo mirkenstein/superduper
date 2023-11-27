@@ -296,18 +296,27 @@
 <span class="k">class</span> <span class="nc">Cluster</span><span class="p">(</span><span class="n">BaseConfigJSONable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes a connection to distributed work via Dask</span>
 
-<span class="sd">    :param dask_scheduler: The Dask scheduler URI</span>
 <span class="sd">    :param backfill_batch_size: The number of rows to backfill at a time</span>
 <span class="sd">                                for vector-search loading</span>
+<span class="sd">    :param compute: The URI for compute i.e &#39;local&#39;, &#39;dask+tcp://localhost:8786&#39;</span>
+<span class="sd">                    &quot;None&quot;: Run all jobs in local mode i.e simple function call</span>
+<span class="sd">                    &quot;local&quot;: same as above</span>
+<span class="sd">                    &quot;dask+thread&quot;: Run all jobs on a local threaded dask cluster</span>
+<span class="sd">                    &quot;dask+tcp://&lt;host&gt;:&lt;port&gt;&quot;: Run all jobs on a remote dask cluster</span>
+
 <span class="sd">    :param vector_search: The URI for the vector search service</span>
-<span class="sd">    :param cdc: The URI for the change data capture service (if ``None``</span>
+<span class="sd">                          &quot;None&quot;: Run vector search on local</span>
+<span class="sd">                          &quot;http://&lt;host&gt;:&lt;port&gt;&quot;: Connect a remote vector search service</span>
+<span class="sd">    :param cdc: The URI for the change data capture service (if &quot;None&quot;</span>
 <span class="sd">                then no cdc assumed)</span>
+<span class="sd">                &quot;None&quot;: Run cdc on local as a thread.</span>
+<span class="sd">                &quot;http://&lt;host&gt;:&lt;port&gt;&quot;: Connect a remote cdc service</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">dask_scheduler</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;tcp://localhost:8786&#39;</span>  <span class="c1"># None</span>
-    <span class="n">backfill_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
-    <span class="n">vector_search</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:8000&#39;</span>  <span class="c1"># None</span>
-    <span class="n">cdc</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;http://localhost:8001&#39;</span>  <span class="c1"># None</span></div>
+    <span class="n">compute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;local&#39;</span>  <span class="c1"># &#39;dask+tcp://local&#39;, &#39;dask+thread&#39;, &#39;local&#39;</span>
+    <span class="n">vector_search</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1">#&#39;http://localhost:8000&#39;  # None</span>
+    <span class="n">cdc</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1">#&#39;http://localhost:8001&#39;  # None</span>
+    <span class="n">backfill_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></div>
 
 
 
@@ -339,17 +348,6 @@
 
 
 
-<div class="viewcode-block" id="Mode">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Mode">[docs]</a>
-<span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enumerate the standard operation modes&quot;&quot;&quot;</span>
-
-    <span class="n">Development</span> <span class="o">=</span> <span class="s2">&quot;DEVELOPMENT&quot;</span>
-
-    <span class="n">Production</span> <span class="o">=</span> <span class="s2">&quot;PRODUCTION&quot;</span></div>
-
-
-
 <div class="viewcode-block" id="Config">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config">[docs]</a>
 <span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">BaseConfigJSONable</span><span class="p">):</span>
@@ -366,7 +364,6 @@
 <span class="sd">    :param downloads_folder: Settings for downloading files</span>
 
 <span class="sd">    :param fold_probability: The probability of validation fold</span>
-<span class="sd">    :param mode: The mode of the application {Mode.Development, Mode.Production}</span>
 
 <span class="sd">    :param log_level: The severity level of the logs</span>
 <span class="sd">    :param logging_type: The type of logging to use</span>
@@ -387,7 +384,6 @@
 
     <span class="n">cluster</span><span class="p">:</span> <span class="n">Cluster</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Cluster</span><span class="p">)</span>
     <span class="n">retries</span><span class="p">:</span> <span class="n">Retry</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Retry</span><span class="p">)</span>
-    <span class="n">mode</span><span class="p">:</span> <span class="n">Mode</span> <span class="o">=</span> <span class="n">Mode</span><span class="o">.</span><span class="n">Development</span>
 
     <span class="n">hybrid_storage</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">downloads_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;.superduperdb/downloads&#39;</span>
@@ -408,7 +404,7 @@
 <span class="sd">        A dict of `self` excluding some defined attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
-        <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;cluster&#39;</span><span class="p">,</span> <span class="s1">&#39;retries&#39;</span><span class="p">,</span> <span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;downloads_folder&#39;</span><span class="p">)))</span>
+        <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;cluster&#39;</span><span class="p">,</span> <span class="s1">&#39;retries&#39;</span><span class="p">,</span> <span class="s1">&#39;downloads_folder&#39;</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">_dict</span>
 
 <div class="viewcode-block" id="Config.match">
