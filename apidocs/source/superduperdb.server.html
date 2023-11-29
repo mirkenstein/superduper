@@ -284,14 +284,18 @@ into endpoint implementation</p>
 <dt class="sig sig-object py" id="superduperdb.server.app.SuperDuperApp">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.server.app.</span></span><span class="sig-name descname"><span class="pre">SuperDuperApp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vector_search'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#SuperDuperApp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.SuperDuperApp" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This is a wrapper class which helps to create a fastapi application
-in the realm of superduperdb.</p>
-<p>This class prepares a basic api setup and only endpoint implementation
-are need to be added into the app</p>
+<p>This is a wrapper class that prepares helper functions used to create a
+fastapi application in the realm of superduperdb.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.server.app.SuperDuperApp.add">
 <span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'post'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#SuperDuperApp.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.SuperDuperApp.add" title="Link to this definition">#</a></dt>
 <dd><p>Register an endpoint with this method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.server.app.SuperDuperApp.add_default_endpoints">
+<span class="sig-name descname"><span class="pre">add_default_endpoints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#SuperDuperApp.add_default_endpoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.SuperDuperApp.add_default_endpoints" title="Link to this definition">#</a></dt>
+<dd><p>Add a list of default endpoints which comes out of the box with <cite>SuperDuperApp</cite></p>
 </dd></dl>
 
 <dl class="py property">
@@ -305,15 +309,13 @@ are need to be added into the app</p>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.server.app.SuperDuperApp.default_endpoints">
-<span class="sig-name descname"><span class="pre">default_endpoints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#SuperDuperApp.default_endpoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.SuperDuperApp.default_endpoints" title="Link to this definition">#</a></dt>
-<dd><p>A list of default endpoints, health and config handshake
-comes out of box with <cite>SuperDuperApp</cite></p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.server.app.SuperDuperApp.pre_start">
 <span class="sig-name descname"><span class="pre">pre_start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#SuperDuperApp.pre_start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.SuperDuperApp.pre_start" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.server.app.SuperDuperApp.print_routes">
+<span class="sig-name descname"><span class="pre">print_routes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/server/app.html#SuperDuperApp.print_routes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.server.app.SuperDuperApp.print_routes" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -350,7 +352,7 @@ comes out of box with <cite>SuperDuperApp</cite></p>
 <dd><p>This method is used to create a local cluster consisting of
 Vector search service, cdc service and dask setup.</p>
 <p>Once this cluster is up, user can offload vector search,
-cdc on these service.</p>
+cdc on these services.</p>
 </dd></dl>
 
 </section>
@@ -430,10 +432,11 @@ cdc on these service.</p>
 </li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.add"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.add()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.add_default_endpoints"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.add_default_endpoints()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.app"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.app</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.db"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.db</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.default_endpoints"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.default_endpoints()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.pre_start"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.pre_start()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.print_routes"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.print_routes()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.shutdown"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.shutdown()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.start"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.start()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.server.app.SuperDuperApp.startup"><code class="docutils literal notranslate"><span class="pre">SuperDuperApp.startup()</span></code></a></li>

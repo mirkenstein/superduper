@@ -276,10 +276,11 @@
 
     <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;vector_index&#39;</span>
 
-<div class="viewcode-block" id="VectorIndex.pre_create">
-<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.VectorIndex.pre_create">[docs]</a>
+<div class="viewcode-block" id="VectorIndex.post_create">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.VectorIndex.post_create">[docs]</a>
     <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">pre_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">post_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">post_create</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span> <span class="o">==</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">data_backend</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">create</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="p">,</span> <span class="s1">&#39;create_vector_index&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;VectorIndex is not supported by the current database backend&#39;</span>

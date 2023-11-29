@@ -251,17 +251,15 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">_request_server</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;cfg&#39;</span><span class="p">:</span> <span class="n">cfg</span><span class="p">},</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">endpoint</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s1">&#39;Service </span><span class="si">{service}</span><span class="s1"> not compatible with current client,</span><span class="se">\</span>
-<span class="s1">             its configured with different configuration.&#39;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Incompatible configuration&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_request_server</span><span class="p">(</span>
     <span class="n">service</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;vector_search&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">{},</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;post&#39;</span>
 <span class="p">):</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="p">,</span> <span class="n">service</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">service</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">endpoint</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="p">,</span> <span class="n">service</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">endpoint</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Trying to connect </span><span class="si">{</span><span class="n">service</span><span class="si">}</span><span class="s1"> at </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1"> method: </span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;post&#39;</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">superduperencode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>

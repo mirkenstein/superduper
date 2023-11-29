@@ -388,14 +388,33 @@
         <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^_outputs\.[A-Za-z0-9_]+\.[A-Za-z0-9_]+&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">model</span><span class="p">:</span> <span class="p">[</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">version</span>
+        <span class="n">fields4</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">):</span> <span class="p">[</span>
                 <span class="p">{</span>
                     <span class="s2">&quot;dimensions&quot;</span><span class="p">:</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
                     <span class="s2">&quot;similarity&quot;</span><span class="p">:</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">measure</span><span class="p">,</span>
                     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;knnVector&quot;</span><span class="p">,</span>
                 <span class="p">}</span>
             <span class="p">]</span>
+        <span class="p">}</span>
+        <span class="n">fields3</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">model</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">fields4</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;document&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="n">fields2</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">fields3</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;document&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="n">fields1</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;_outputs&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">fields2</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;document&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
         <span class="p">}</span>
         <span class="n">index_definition</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;createSearchIndexes&quot;</span><span class="p">:</span> <span class="n">collection</span><span class="p">,</span>
@@ -405,17 +424,7 @@
                     <span class="s2">&quot;definition&quot;</span><span class="p">:</span> <span class="p">{</span>
                         <span class="s2">&quot;mappings&quot;</span><span class="p">:</span> <span class="p">{</span>
                             <span class="s2">&quot;dynamic&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                            <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                <span class="s2">&quot;_outputs&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                        <span class="n">key</span><span class="p">:</span> <span class="p">{</span>
-                                            <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">fields</span><span class="p">,</span>
-                                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;document&quot;</span><span class="p">,</span>
-                                        <span class="p">}</span>
-                                    <span class="p">},</span>
-                                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;document&quot;</span><span class="p">,</span>
-                                <span class="p">}</span>
-                            <span class="p">},</span>
+                            <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">fields1</span><span class="p">,</span>
                         <span class="p">}</span>
                     <span class="p">},</span>
                 <span class="p">}</span>
@@ -424,8 +433,18 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">index_definition</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dry_run</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">index_definition</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MongoDataBackend.disconnect">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.disconnect">[docs]</a>
+    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Disconnect the client</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 </div>
 
+
+        <span class="c1"># TODO: implement me</span>
 </pre></div>
         </article>
       </div>
