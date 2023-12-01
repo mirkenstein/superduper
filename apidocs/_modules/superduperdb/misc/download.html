@@ -250,7 +250,6 @@
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span><span class="p">,</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.base.query</span> <span class="kn">import</span> <span class="n">Insert</span><span class="p">,</span> <span class="n">Select</span>
-<span class="kn">from</span> <span class="nn">superduperdb.base</span> <span class="kn">import</span> <span class="n">exceptions</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
 
@@ -633,19 +632,19 @@
     <span class="k">if</span> <span class="n">n_download_workers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">n_download_workers</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;n_download_workers&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">MetadatastoreException</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="n">n_download_workers</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">if</span> <span class="n">headers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">headers</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;headers&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">MetadatastoreException</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">pass</span>
 
     <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">timeout</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;download_timeout&#39;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">MetadatastoreException</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">pass</span>
 
     <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">hybrid_storage</span><span class="p">:</span>

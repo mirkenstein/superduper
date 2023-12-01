@@ -238,7 +238,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span>
-<span class="kn">from</span> <span class="nn">superduperdb.base</span> <span class="kn">import</span> <span class="n">exceptions</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.server</span> <span class="kn">import</span> <span class="n">request_server</span>
 <span class="kn">from</span> <span class="nn">superduperdb.vector_search.base</span> <span class="kn">import</span> <span class="n">BaseVectorSearcher</span><span class="p">,</span> <span class="n">VectorItem</span>
 
@@ -275,29 +274,19 @@
 
 <span class="sd">        :param items: t.Sequence of VectorItems</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">vector_items</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;vector&#39;</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">vector</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">id</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="p">:</span>
-                <span class="n">request_server</span><span class="p">(</span>
-                    <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
-                    <span class="n">data</span><span class="o">=</span><span class="n">vector_items</span><span class="p">,</span>
-                    <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;add/search&#39;</span><span class="p">,</span>
-                    <span class="n">args</span><span class="o">=</span><span class="p">{</span>
-                        <span class="s1">&#39;vector_index&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span><span class="p">,</span>
-                    <span class="p">},</span>
-                <span class="p">)</span>
-                <span class="k">return</span>
-
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">searcher</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">local_msg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s1">&#39;remote vector search service&#39;</span>
-                <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span>
-                <span class="k">else</span> <span class="s1">&#39;local vector search&#39;</span>
+        <span class="n">vector_items</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;vector&#39;</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">vector</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">id</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="p">:</span>
+            <span class="n">request_server</span><span class="p">(</span>
+                <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">vector_items</span><span class="p">,</span>
+                <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;add/search&#39;</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s1">&#39;vector_index&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span><span class="p">,</span>
+                <span class="p">},</span>
             <span class="p">)</span>
-            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VectorSearchException</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Error while adding vector to </span><span class="si">{</span><span class="n">local_msg</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+            <span class="k">return</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">searcher</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">items</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FastVectorSearcher.delete">
@@ -308,28 +297,18 @@
 
 <span class="sd">        :param ids: t.Sequence of ids of vectors.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="p">:</span>
-                <span class="n">request_server</span><span class="p">(</span>
-                    <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
-                    <span class="n">data</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
-                    <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;delete/search&#39;</span><span class="p">,</span>
-                    <span class="n">args</span><span class="o">=</span><span class="p">{</span>
-                        <span class="s1">&#39;vector_index&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span><span class="p">,</span>
-                    <span class="p">},</span>
-                <span class="p">)</span>
-                <span class="k">return</span>
-
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">searcher</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">local_msg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s1">&#39;remote vector search service&#39;</span>
-                <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span>
-                <span class="k">else</span> <span class="s1">&#39;local vector search&#39;</span>
+        <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="p">:</span>
+            <span class="n">request_server</span><span class="p">(</span>
+                <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
+                <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;delete/search&#39;</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s1">&#39;vector_index&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span><span class="p">,</span>
+                <span class="p">},</span>
             <span class="p">)</span>
-            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VectorSearchException</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Error while deleting ids </span><span class="si">{</span><span class="n">ids</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">local_msg</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+            <span class="k">return</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">searcher</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FastVectorSearcher.find_nearest_from_id">
@@ -346,29 +325,15 @@
 <span class="sd">        :param _id: id of the vector</span>
 <span class="sd">        :param n: number of nearest vectors to return</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="p">:</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="n">request_server</span><span class="p">(</span>
-                    <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
-                    <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;query/id/search&#39;</span><span class="p">,</span>
-                    <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;vector_index&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">_id</span><span class="p">},</span>
-                <span class="p">)</span>
-                <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;ids&#39;</span><span class="p">],</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>
-
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">searcher</span><span class="o">.</span><span class="n">find_nearest_from_id</span><span class="p">(</span><span class="n">_id</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">within_ids</span><span class="o">=</span><span class="n">within_ids</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">local_msg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s1">&#39;remote vector search service&#39;</span>
-                <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span>
-                <span class="k">else</span> <span class="s1">&#39;local vector search&#39;</span>
+        <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">request_server</span><span class="p">(</span>
+                <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
+                <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;query/id/search&#39;</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;vector_index&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">_id</span><span class="p">},</span>
             <span class="p">)</span>
-            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VectorSearchException</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Error while finding nearest array from </span><span class="si">{</span><span class="n">local_msg</span><span class="si">}</span><span class="s1"> </span><span class="se">\n\</span>
-<span class="s1">                The problem might be either wrong id </span><span class="si">{</span><span class="n">_id</span><span class="si">}</span><span class="s1"> provided or vector database </span><span class="se">\</span>
-<span class="s1">                is empty (Not initialized properly), check if model/listener outputs </span><span class="se">\</span>
-<span class="s1">                are successfully computed, generally have issues </span><span class="se">\</span>
-<span class="s1">                when computes is distributed to dask for example. &#39;</span>
-            <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+            <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;ids&#39;</span><span class="p">],</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">searcher</span><span class="o">.</span><span class="n">find_nearest_from_id</span><span class="p">(</span><span class="n">_id</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">within_ids</span><span class="o">=</span><span class="n">within_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FastVectorSearcher.find_nearest_from_array">
@@ -385,32 +350,16 @@
 <span class="sd">        :param h: vector</span>
 <span class="sd">        :param n: number of nearest vectors to return</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="p">:</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="n">request_server</span><span class="p">(</span>
-                    <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
-                    <span class="n">data</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
-                    <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;query/search&#39;</span><span class="p">,</span>
-                    <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;vector_index&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="n">n</span><span class="p">},</span>
-                <span class="p">)</span>
-                <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;ids&#39;</span><span class="p">],</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">request_server</span><span class="p">(</span>
+                <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+                <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;query/search&#39;</span><span class="p">,</span>
+                <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;vector_index&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="n">n</span><span class="p">},</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;ids&#39;</span><span class="p">],</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>
 
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">searcher</span><span class="o">.</span><span class="n">find_nearest_from_array</span><span class="p">(</span>
-                <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">within_ids</span><span class="o">=</span><span class="n">within_ids</span>
-            <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">local_msg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s1">&#39;remote vector search service&#39;</span>
-                <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span>
-                <span class="k">else</span> <span class="s1">&#39;local vector search&#39;</span>
-            <span class="p">)</span>
-            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">VectorSearchException</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Error while finding nearest array from </span><span class="si">{</span><span class="n">local_msg</span><span class="si">}</span><span class="s1"> </span><span class="se">\n\</span>
-<span class="s1">                The problem might be either wrong vector provided or vector database </span><span class="se">\</span>
-<span class="s1">                is empty (Not initialized properly), check if model/listener outputs </span><span class="se">\</span>
-<span class="s1">                are successfully computed, generally have issues </span><span class="se">\</span>
-<span class="s1">                when computes is distributed to dask for example. &#39;</span>
-            <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">searcher</span><span class="o">.</span><span class="n">find_nearest_from_array</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">within_ids</span><span class="o">=</span><span class="n">within_ids</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

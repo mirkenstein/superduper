@@ -235,6 +235,7 @@
           <h1>Source code for superduperdb.base.build</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="kn">import</span> <span class="nn">ibis</span>
 <span class="kn">import</span> <span class="nn">mongomock</span>
@@ -250,22 +251,40 @@
 <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
 
 
+<div class="viewcode-block" id="build_metadata">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.build_metadata">[docs]</a>
+<span class="k">def</span> <span class="nf">build_metadata</span><span class="p">(</span><span class="n">metadata_store</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">metadata_store</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">metadata_store</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">metadata_store</span>
+    <span class="k">return</span> <span class="n">build</span><span class="p">(</span><span class="n">metadata_store</span><span class="p">,</span> <span class="n">metadata_stores</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="build_databackend">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.build_databackend">[docs]</a>
+<span class="k">def</span> <span class="nf">build_databackend</span><span class="p">(</span><span class="n">databackend</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">databackend</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">databackend</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">data_backend</span>
+    <span class="k">return</span> <span class="n">build</span><span class="p">(</span><span class="n">databackend</span><span class="p">,</span> <span class="n">data_backends</span><span class="p">)</span></div>
+
+
+
 <div class="viewcode-block" id="build_artifact_store">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.build_artifact_store">[docs]</a>
-<span class="k">def</span> <span class="nf">build_artifact_store</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No artifact store specified&#39;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;mongodb://&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">build_artifact_store</span><span class="p">(</span><span class="n">artifact_store</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">artifact_store</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;mongodb://&#39;</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">pymongo</span>
 
-        <span class="n">conn</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">conn</span><span class="p">:</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span>
+            <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">artifact_store</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">MongoArtifactStore</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;filesystem://&#39;</span><span class="p">):</span>
-        <span class="n">directory</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">artifact_store</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;filesystem://&#39;</span><span class="p">):</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">artifact_store</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">FileSystemArtifactStore</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown artifact store: </span><span class="si">{</span><span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown artifact store: </span><span class="si">{</span><span class="n">artifact_store</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 
 
@@ -303,8 +322,7 @@
 
 <div class="viewcode-block" id="build_compute">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.build_compute">[docs]</a>
-<span class="k">def</span> <span class="nf">build_compute</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
-    <span class="n">compute</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">compute</span>
+<span class="k">def</span> <span class="nf">build_compute</span><span class="p">(</span><span class="n">compute</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">compute</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span> <span class="ow">or</span> <span class="n">compute</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">LocalComputeBackend</span><span class="p">()</span>
 
@@ -360,11 +378,11 @@
             <span class="k">else</span> <span class="n">databackend</span><span class="o">.</span><span class="n">build_metadata</span><span class="p">()</span>
         <span class="p">),</span>
         <span class="n">artifact_store</span><span class="o">=</span><span class="p">(</span>
-            <span class="n">build_artifact_store</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+            <span class="n">build_artifact_store</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="k">else</span> <span class="n">databackend</span><span class="o">.</span><span class="n">build_artifact_store</span><span class="p">()</span>
         <span class="p">),</span>
-        <span class="n">compute</span><span class="o">=</span><span class="n">build_compute</span><span class="p">(</span><span class="n">cfg</span><span class="p">),</span>
+        <span class="n">compute</span><span class="o">=</span><span class="n">build_compute</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">compute</span><span class="p">),</span>
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">db</span></div>
