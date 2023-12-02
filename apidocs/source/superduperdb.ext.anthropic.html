@@ -239,11 +239,146 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
 </section>
-<section id="superduperdb-ext-anthropic-model-module">
-<h2>superduperdb.ext.anthropic.model module<a class="headerlink" href="#superduperdb-ext-anthropic-model-module" title="Link to this heading">#</a></h2>
+<section id="module-superduperdb.ext.anthropic.model">
+<span id="superduperdb-ext-anthropic-model-module"></span><h2>superduperdb.ext.anthropic.model module<a class="headerlink" href="#module-superduperdb.ext.anthropic.model" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.model.Anthropic">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.anthropic.model.</span></span><span class="sig-name descname"><span class="pre">Anthropic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">~superduperdb.components.encoder.Encoder</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_kwargs:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/anthropic/model.html#Anthropic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.anthropic.model.Anthropic" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="superduperdb.components.html#superduperdb.components.component.Component" title="superduperdb.components.component.Component"><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code></a>, <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.Predictor" title="superduperdb.components.model.Predictor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Predictor</span></code></a></p>
+<p>Anthropic predictor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – The model to use, e.g. <code class="docutils literal notranslate"><span class="pre">'claude-2'</span></code>.</p></li>
+<li><p><strong>identifier</strong> – The identifier to use, e.g. <code class="docutils literal notranslate"><span class="pre">'my-model'</span></code>.</p></li>
+<li><p><strong>version</strong> – The version to use, e.g. <code class="docutils literal notranslate"><span class="pre">0</span></code> (leave empty)</p></li>
+<li><p><strong>takes_context</strong> – Whether the model takes context into account.</p></li>
+<li><p><strong>encoder</strong> – The encoder identifier.</p></li>
+<li><p><strong>type_id</strong> – A unique name for the class</p></li>
+<li><p><strong>client_kwargs</strong> – Keyword arguments to pass to the client</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.model.Anthropic.child_components">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">child_components</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#superduperdb.ext.anthropic.model.Anthropic.child_components" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.model.Anthropic.client_kwargs">
+<span class="sig-name descname"><span class="pre">client_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#superduperdb.ext.anthropic.model.Anthropic.client_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.model.Anthropic.encoder">
+<span class="sig-name descname"><span class="pre">encoder</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.components.html#superduperdb.components.encoder.Encoder" title="superduperdb.components.encoder.Encoder"><span class="pre">Encoder</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.model.Anthropic.encoder" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.model.Anthropic.identifier">
+<span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.model.Anthropic.identifier" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.model.Anthropic.model">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.model.Anthropic.model" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.model.Anthropic.takes_context">
+<span class="sig-name descname"><span class="pre">takes_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.model.Anthropic.takes_context" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.model.Anthropic.type_id">
+<span class="sig-name descname"><span class="pre">type_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'model'</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.model.Anthropic.type_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.model.Anthropic.version">
+<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.model.Anthropic.version" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.model.AnthropicCompletions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.anthropic.model.</span></span><span class="sig-name descname"><span class="pre">AnthropicCompletions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">~superduperdb.components.encoder.Encoder</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_kwargs:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/anthropic/model.html#AnthropicCompletions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.anthropic.model.AnthropicCompletions" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.anthropic.model.Anthropic" title="superduperdb.ext.anthropic.model.Anthropic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Anthropic</span></code></a></p>
+<p>Cohere completions (chat) predictor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>takes_context</strong> – Whether the model takes context into account.</p></li>
+<li><p><strong>prompt</strong> – The prompt to use to seed the response.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.model.AnthropicCompletions.prompt">
+<span class="sig-name descname"><span class="pre">prompt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.model.AnthropicCompletions.prompt" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.model.AnthropicCompletions.takes_context">
+<span class="sig-name descname"><span class="pre">takes_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.model.AnthropicCompletions.takes_context" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<section id="module-superduperdb.ext.anthropic">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-superduperdb.ext.anthropic" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.AnthropicCompletions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.anthropic.</span></span><span class="sig-name descname"><span class="pre">AnthropicCompletions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">~superduperdb.components.encoder.Encoder</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_kwargs:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/anthropic/model.html#AnthropicCompletions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.anthropic.AnthropicCompletions" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.anthropic.model.Anthropic" title="superduperdb.ext.anthropic.model.Anthropic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Anthropic</span></code></a></p>
+<p>Cohere completions (chat) predictor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>takes_context</strong> – Whether the model takes context into account.</p></li>
+<li><p><strong>prompt</strong> – The prompt to use to seed the response.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.AnthropicCompletions.batch_predict">
+<span class="sig-name descname"><span class="pre">batch_predict</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.AnthropicCompletions.batch_predict" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.AnthropicCompletions.client_kwargs">
+<span class="sig-name descname"><span class="pre">client_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">t.Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#superduperdb.ext.anthropic.AnthropicCompletions.client_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.AnthropicCompletions.model">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.AnthropicCompletions.model" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.AnthropicCompletions.model_update_kwargs">
+<span class="sig-name descname"><span class="pre">model_update_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.AnthropicCompletions.model_update_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.AnthropicCompletions.prompt">
+<span class="sig-name descname"><span class="pre">prompt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.AnthropicCompletions.prompt" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.AnthropicCompletions.takes_context">
+<span class="sig-name descname"><span class="pre">takes_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.AnthropicCompletions.takes_context" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.anthropic.AnthropicCompletions.to_call">
+<span class="sig-name descname"><span class="pre">to_call</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Callable</span></em><a class="headerlink" href="#superduperdb.ext.anthropic.AnthropicCompletions.to_call" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 
@@ -304,8 +439,38 @@
             <ul>
 <li><a class="reference internal" href="#">superduperdb.ext.anthropic package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#superduperdb-ext-anthropic-model-module">superduperdb.ext.anthropic.model module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-superduperdb.ext.anthropic.model">superduperdb.ext.anthropic.model module</a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.model.Anthropic"><code class="docutils literal notranslate"><span class="pre">Anthropic</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.model.Anthropic.child_components"><code class="docutils literal notranslate"><span class="pre">Anthropic.child_components</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.model.Anthropic.client_kwargs"><code class="docutils literal notranslate"><span class="pre">Anthropic.client_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.model.Anthropic.encoder"><code class="docutils literal notranslate"><span class="pre">Anthropic.encoder</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.model.Anthropic.identifier"><code class="docutils literal notranslate"><span class="pre">Anthropic.identifier</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.model.Anthropic.model"><code class="docutils literal notranslate"><span class="pre">Anthropic.model</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.model.Anthropic.takes_context"><code class="docutils literal notranslate"><span class="pre">Anthropic.takes_context</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.model.Anthropic.type_id"><code class="docutils literal notranslate"><span class="pre">Anthropic.type_id</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.model.Anthropic.version"><code class="docutils literal notranslate"><span class="pre">Anthropic.version</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.model.AnthropicCompletions"><code class="docutils literal notranslate"><span class="pre">AnthropicCompletions</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.model.AnthropicCompletions.prompt"><code class="docutils literal notranslate"><span class="pre">AnthropicCompletions.prompt</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.model.AnthropicCompletions.takes_context"><code class="docutils literal notranslate"><span class="pre">AnthropicCompletions.takes_context</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-superduperdb.ext.anthropic">Module contents</a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.AnthropicCompletions"><code class="docutils literal notranslate"><span class="pre">AnthropicCompletions</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.AnthropicCompletions.batch_predict"><code class="docutils literal notranslate"><span class="pre">AnthropicCompletions.batch_predict</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.AnthropicCompletions.client_kwargs"><code class="docutils literal notranslate"><span class="pre">AnthropicCompletions.client_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.AnthropicCompletions.model"><code class="docutils literal notranslate"><span class="pre">AnthropicCompletions.model</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.AnthropicCompletions.model_update_kwargs"><code class="docutils literal notranslate"><span class="pre">AnthropicCompletions.model_update_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.AnthropicCompletions.prompt"><code class="docutils literal notranslate"><span class="pre">AnthropicCompletions.prompt</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.AnthropicCompletions.takes_context"><code class="docutils literal notranslate"><span class="pre">AnthropicCompletions.takes_context</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.anthropic.AnthropicCompletions.to_call"><code class="docutils literal notranslate"><span class="pre">AnthropicCompletions.to_call</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

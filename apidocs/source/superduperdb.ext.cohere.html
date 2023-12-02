@@ -239,11 +239,214 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
 </section>
-<section id="superduperdb-ext-cohere-model-module">
-<h2>superduperdb.ext.cohere.model module<a class="headerlink" href="#superduperdb-ext-cohere-model-module" title="Link to this heading">#</a></h2>
+<section id="module-superduperdb.ext.cohere.model">
+<span id="superduperdb-ext-cohere-model-module"></span><h2>superduperdb.ext.cohere.model module<a class="headerlink" href="#module-superduperdb.ext.cohere.model" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.Cohere">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.cohere.model.</span></span><span class="sig-name descname"><span class="pre">Cohere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">~superduperdb.components.encoder.Encoder</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_kwargs:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/cohere/model.html#Cohere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.cohere.model.Cohere" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="superduperdb.components.html#superduperdb.components.component.Component" title="superduperdb.components.component.Component"><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code></a>, <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.Predictor" title="superduperdb.components.model.Predictor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Predictor</span></code></a></p>
+<p>Cohere predictor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – The model to use, e.g. <code class="docutils literal notranslate"><span class="pre">'base-light'</span></code>.</p></li>
+<li><p><strong>identifier</strong> – The identifier to use, e.g. <code class="docutils literal notranslate"><span class="pre">'my-model'</span></code>.</p></li>
+<li><p><strong>version</strong> – The version to use, e.g. <code class="docutils literal notranslate"><span class="pre">0</span></code> (leave empty)</p></li>
+<li><p><strong>takes_context</strong> – Whether the model takes context into account.</p></li>
+<li><p><strong>encoder</strong> – The encoder identifier.</p></li>
+<li><p><strong>client_kwargs</strong> – Keyword arguments to pass to the client</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.Cohere.child_components">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">child_components</span></span><a class="headerlink" href="#superduperdb.ext.cohere.model.Cohere.child_components" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.Cohere.client_kwargs">
+<span class="sig-name descname"><span class="pre">client_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#superduperdb.ext.cohere.model.Cohere.client_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.Cohere.encoder">
+<span class="sig-name descname"><span class="pre">encoder</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.components.html#superduperdb.components.encoder.Encoder" title="superduperdb.components.encoder.Encoder"><span class="pre">Encoder</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.cohere.model.Cohere.encoder" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.Cohere.identifier">
+<span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#superduperdb.ext.cohere.model.Cohere.identifier" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.Cohere.model">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.ext.cohere.model.Cohere.model" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.Cohere.takes_context">
+<span class="sig-name descname"><span class="pre">takes_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#superduperdb.ext.cohere.model.Cohere.takes_context" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.Cohere.type_id">
+<span class="sig-name descname"><span class="pre">type_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'model'</span></em><a class="headerlink" href="#superduperdb.ext.cohere.model.Cohere.type_id" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.Cohere.version">
+<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.cohere.model.Cohere.version" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.CohereEmbed">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.cohere.model.</span></span><span class="sig-name descname"><span class="pre">CohereEmbed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">~superduperdb.components.encoder.Encoder</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_kwargs:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape:</span> <span class="pre">~typing.Sequence[int]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/cohere/model.html#CohereEmbed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.cohere.model.CohereEmbed" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.cohere.model.Cohere" title="superduperdb.ext.cohere.model.Cohere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Cohere</span></code></a></p>
+<p>Cohere embedding predictor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>shape</strong> – The shape as <code class="docutils literal notranslate"><span class="pre">tuple</span></code> of the embedding.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.CohereEmbed.shape">
+<span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.cohere.model.CohereEmbed.shape" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.CohereEmbed.shapes">
+<span class="sig-name descname"><span class="pre">shapes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'embed-english-v2.0':</span> <span class="pre">(4096,)}</span></em><a class="headerlink" href="#superduperdb.ext.cohere.model.CohereEmbed.shapes" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.CohereGenerate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.cohere.model.</span></span><span class="sig-name descname"><span class="pre">CohereGenerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">~superduperdb.components.encoder.Encoder</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_kwargs:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/cohere/model.html#CohereGenerate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.cohere.model.CohereGenerate" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.cohere.model.Cohere" title="superduperdb.ext.cohere.model.Cohere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Cohere</span></code></a></p>
+<p>Cohere realistic text generator (chat predictor)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>takes_context</strong> – Whether the model takes context into account.</p></li>
+<li><p><strong>prompt</strong> – The prompt to use to seed the response.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.CohereGenerate.prompt">
+<span class="sig-name descname"><span class="pre">prompt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#superduperdb.ext.cohere.model.CohereGenerate.prompt" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.model.CohereGenerate.takes_context">
+<span class="sig-name descname"><span class="pre">takes_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#superduperdb.ext.cohere.model.CohereGenerate.takes_context" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<section id="module-superduperdb.ext.cohere">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-superduperdb.ext.cohere" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereEmbed">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.cohere.</span></span><span class="sig-name descname"><span class="pre">CohereEmbed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">~superduperdb.components.encoder.Encoder</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_kwargs:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape:</span> <span class="pre">~typing.Sequence[int]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/cohere/model.html#CohereEmbed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.cohere.CohereEmbed" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.cohere.model.Cohere" title="superduperdb.ext.cohere.model.Cohere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Cohere</span></code></a></p>
+<p>Cohere embedding predictor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>shape</strong> – The shape as <code class="docutils literal notranslate"><span class="pre">tuple</span></code> of the embedding.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereEmbed.batch_predict">
+<span class="sig-name descname"><span class="pre">batch_predict</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereEmbed.batch_predict" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereEmbed.client_kwargs">
+<span class="sig-name descname"><span class="pre">client_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">t.Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereEmbed.client_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereEmbed.model">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereEmbed.model" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereEmbed.model_update_kwargs">
+<span class="sig-name descname"><span class="pre">model_update_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereEmbed.model_update_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereEmbed.shape">
+<span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereEmbed.shape" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereEmbed.shapes">
+<span class="sig-name descname"><span class="pre">shapes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'embed-english-v2.0':</span> <span class="pre">(4096,)}</span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereEmbed.shapes" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereEmbed.to_call">
+<span class="sig-name descname"><span class="pre">to_call</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Callable</span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereEmbed.to_call" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereGenerate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.cohere.</span></span><span class="sig-name descname"><span class="pre">CohereGenerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">~superduperdb.components.encoder.Encoder</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_kwargs:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/cohere/model.html#CohereGenerate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.cohere.CohereGenerate" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.cohere.model.Cohere" title="superduperdb.ext.cohere.model.Cohere"><code class="xref py py-class docutils literal notranslate"><span class="pre">Cohere</span></code></a></p>
+<p>Cohere realistic text generator (chat predictor)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>takes_context</strong> – Whether the model takes context into account.</p></li>
+<li><p><strong>prompt</strong> – The prompt to use to seed the response.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereGenerate.batch_predict">
+<span class="sig-name descname"><span class="pre">batch_predict</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereGenerate.batch_predict" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereGenerate.client_kwargs">
+<span class="sig-name descname"><span class="pre">client_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">t.Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereGenerate.client_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereGenerate.model">
+<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereGenerate.model" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereGenerate.model_update_kwargs">
+<span class="sig-name descname"><span class="pre">model_update_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereGenerate.model_update_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereGenerate.prompt">
+<span class="sig-name descname"><span class="pre">prompt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereGenerate.prompt" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereGenerate.takes_context">
+<span class="sig-name descname"><span class="pre">takes_context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereGenerate.takes_context" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.cohere.CohereGenerate.to_call">
+<span class="sig-name descname"><span class="pre">to_call</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Callable</span></em><a class="headerlink" href="#superduperdb.ext.cohere.CohereGenerate.to_call" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 
@@ -304,8 +507,53 @@
             <ul>
 <li><a class="reference internal" href="#">superduperdb.ext.cohere package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#superduperdb-ext-cohere-model-module">superduperdb.ext.cohere.model module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-superduperdb.ext.cohere.model">superduperdb.ext.cohere.model module</a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.Cohere"><code class="docutils literal notranslate"><span class="pre">Cohere</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.Cohere.child_components"><code class="docutils literal notranslate"><span class="pre">Cohere.child_components</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.Cohere.client_kwargs"><code class="docutils literal notranslate"><span class="pre">Cohere.client_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.Cohere.encoder"><code class="docutils literal notranslate"><span class="pre">Cohere.encoder</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.Cohere.identifier"><code class="docutils literal notranslate"><span class="pre">Cohere.identifier</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.Cohere.model"><code class="docutils literal notranslate"><span class="pre">Cohere.model</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.Cohere.takes_context"><code class="docutils literal notranslate"><span class="pre">Cohere.takes_context</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.Cohere.type_id"><code class="docutils literal notranslate"><span class="pre">Cohere.type_id</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.Cohere.version"><code class="docutils literal notranslate"><span class="pre">Cohere.version</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.CohereEmbed"><code class="docutils literal notranslate"><span class="pre">CohereEmbed</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.CohereEmbed.shape"><code class="docutils literal notranslate"><span class="pre">CohereEmbed.shape</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.CohereEmbed.shapes"><code class="docutils literal notranslate"><span class="pre">CohereEmbed.shapes</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.CohereGenerate"><code class="docutils literal notranslate"><span class="pre">CohereGenerate</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.CohereGenerate.prompt"><code class="docutils literal notranslate"><span class="pre">CohereGenerate.prompt</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.model.CohereGenerate.takes_context"><code class="docutils literal notranslate"><span class="pre">CohereGenerate.takes_context</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-superduperdb.ext.cohere">Module contents</a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereEmbed"><code class="docutils literal notranslate"><span class="pre">CohereEmbed</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereEmbed.batch_predict"><code class="docutils literal notranslate"><span class="pre">CohereEmbed.batch_predict</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereEmbed.client_kwargs"><code class="docutils literal notranslate"><span class="pre">CohereEmbed.client_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereEmbed.model"><code class="docutils literal notranslate"><span class="pre">CohereEmbed.model</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereEmbed.model_update_kwargs"><code class="docutils literal notranslate"><span class="pre">CohereEmbed.model_update_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereEmbed.shape"><code class="docutils literal notranslate"><span class="pre">CohereEmbed.shape</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereEmbed.shapes"><code class="docutils literal notranslate"><span class="pre">CohereEmbed.shapes</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereEmbed.to_call"><code class="docutils literal notranslate"><span class="pre">CohereEmbed.to_call</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereGenerate"><code class="docutils literal notranslate"><span class="pre">CohereGenerate</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereGenerate.batch_predict"><code class="docutils literal notranslate"><span class="pre">CohereGenerate.batch_predict</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereGenerate.client_kwargs"><code class="docutils literal notranslate"><span class="pre">CohereGenerate.client_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereGenerate.model"><code class="docutils literal notranslate"><span class="pre">CohereGenerate.model</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereGenerate.model_update_kwargs"><code class="docutils literal notranslate"><span class="pre">CohereGenerate.model_update_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereGenerate.prompt"><code class="docutils literal notranslate"><span class="pre">CohereGenerate.prompt</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereGenerate.takes_context"><code class="docutils literal notranslate"><span class="pre">CohereGenerate.takes_context</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.cohere.CohereGenerate.to_call"><code class="docutils literal notranslate"><span class="pre">CohereGenerate.to_call</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
