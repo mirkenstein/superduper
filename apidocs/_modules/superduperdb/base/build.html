@@ -297,7 +297,7 @@
 
     <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^mongodb:\/\/&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">conn</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span>
+        <span class="n">conn</span><span class="p">:</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span>
             <span class="n">uri</span><span class="p">,</span>
             <span class="n">serverSelectionTimeoutMS</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
         <span class="p">)</span>
@@ -315,28 +315,32 @@
         <span class="n">name</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">conn</span> <span class="o">=</span> <span class="n">mongomock</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;mongodb&#39;</span><span class="p">](</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
     <span class="k">elif</span> <span class="n">uri</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;metadata&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot build metadata from a CSV file.&#39;</span><span class="p">)</span>
 
         <span class="kn">import</span> <span class="nn">glob</span>
+
         <span class="n">csv_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-        <span class="n">tables</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^.*/(.*)\.csv$&#39;</span><span class="p">,</span> <span class="n">csv_file</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">csv_file</span> <span class="ow">in</span> <span class="n">csv_files</span>
-        <span class="p">}</span>
-        <span class="n">conn</span> <span class="o">=</span> <span class="n">ibis</span><span class="o">.</span><span class="n">pandas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;ibis&#39;</span><span class="p">](</span><span class="n">conn</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">tables</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">csv_file</span> <span class="ow">in</span> <span class="n">csv_files</span><span class="p">:</span>
+            <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^.*/(.*)\.csv$&#39;</span><span class="p">,</span> <span class="n">csv_file</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="n">tables</span><span class="p">[</span><span class="n">pattern</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
+        <span class="n">ibis_conn</span> <span class="o">=</span> <span class="n">ibis</span><span class="o">.</span><span class="n">pandas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;ibis&#39;</span><span class="p">](</span><span class="n">ibis_conn</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;data_backend&#39;</span><span class="p">:</span>
-            <span class="n">conn</span> <span class="o">=</span> <span class="n">ibis</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;ibis&#39;</span><span class="p">](</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">ibis_conn</span> <span class="o">=</span> <span class="n">ibis</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;ibis&#39;</span><span class="p">](</span><span class="n">ibis_conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;metadata&#39;</span>
             <span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
-            <span class="n">conn</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;sqlalchemy&#39;</span><span class="p">](</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+
+            <span class="n">sql_conn</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;sqlalchemy&#39;</span><span class="p">](</span><span class="n">sql_conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
 
 
