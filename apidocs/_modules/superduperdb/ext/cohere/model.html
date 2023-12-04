@@ -240,10 +240,11 @@
 <span class="kn">import</span> <span class="nn">tqdm</span>
 <span class="kn">from</span> <span class="nn">cohere.error</span> <span class="kn">import</span> <span class="n">CohereAPIError</span><span class="p">,</span> <span class="n">CohereConnectionError</span>
 
-<span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">Component</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.encoder</span> <span class="kn">import</span> <span class="n">Encoder</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">Predictor</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.vector_index</span> <span class="kn">import</span> <span class="n">vector</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.data_backend</span> <span class="kn">import</span> <span class="n">IbisDataBackend</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.field_types</span> <span class="kn">import</span> <span class="n">dtype</span>
+<span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">APIModel</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.vector_index</span> <span class="kn">import</span> <span class="n">sqlvector</span><span class="p">,</span> <span class="n">vector</span>
 <span class="kn">from</span> <span class="nn">superduperdb.ext.utils</span> <span class="kn">import</span> <span class="n">format_prompt</span><span class="p">,</span> <span class="n">get_key</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.retry</span> <span class="kn">import</span> <span class="n">Retry</span>
 
@@ -255,33 +256,13 @@
 <div class="viewcode-block" id="Cohere">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.cohere.html#superduperdb.ext.cohere.model.Cohere">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">Cohere</span><span class="p">(</span><span class="n">Component</span><span class="p">,</span> <span class="n">Predictor</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cohere predictor</span>
+<span class="k">class</span> <span class="nc">Cohere</span><span class="p">(</span><span class="n">APIModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cohere predictor&quot;&quot;&quot;</span>
 
-<span class="sd">    :param model: The model to use, e.g. ``&#39;base-light&#39;``.</span>
-<span class="sd">    :param identifier: The identifier to use, e.g. ``&#39;my-model&#39;``.</span>
-<span class="sd">    :param version: The version to use, e.g. ``0`` (leave empty)</span>
-<span class="sd">    :param takes_context: Whether the model takes context into account.</span>
-<span class="sd">    :param encoder: The encoder identifier.</span>
-<span class="sd">    :param client_kwargs: Keyword arguments to pass to the client&quot;&quot;&quot;</span>
-
-    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">takes_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">encoder</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Encoder</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">client_kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
 
-    <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;model&#39;</span>
-
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">child_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[(</span><span class="s1">&#39;encoder&#39;</span><span class="p">,</span> <span class="s1">&#39;encoder&#39;</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="p">[]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span></div>
 
 
 
@@ -301,7 +282,17 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CohereEmbed.pre_create">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.cohere.html#superduperdb.ext.cohere.model.CohereEmbed.pre_create">[docs]</a>
+    <span class="k">def</span> <span class="nf">pre_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pre_create</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="p">,</span> <span class="n">IbisDataBackend</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">sqlvector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
+
 
     <span class="nd">@retry</span>
     <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -361,6 +352,14 @@
 
     <span class="n">takes_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<div class="viewcode-block" id="CohereGenerate.pre_create">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.cohere.html#superduperdb.ext.cohere.model.CohereGenerate.pre_create">[docs]</a>
+    <span class="k">def</span> <span class="nf">pre_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pre_create</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="p">,</span> <span class="n">IbisDataBackend</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">)</span></div>
+
 
     <span class="nd">@retry</span>
     <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
