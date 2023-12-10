@@ -725,7 +725,7 @@ last_values: the list of values assigned</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="superduperdb.backends.ibis.query.Table">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.backends.ibis.query.</span></span><span class="sig-name descname"><span class="pre">Table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.components.html#superduperdb.components.schema.Schema" title="superduperdb.components.schema.Schema"><span class="pre">Schema</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'id'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/query.html#Table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.query.Table" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.backends.ibis.query.</span></span><span class="sig-name descname"><span class="pre">Table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.components.html#superduperdb.components.schema.Schema" title="superduperdb.components.schema.Schema"><span class="pre">Schema</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'id'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/query.html#Table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.query.Table" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="superduperdb.components.html#superduperdb.components.component.Component" title="superduperdb.components.component.Component"><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code></a></p>
 <p>This is a representation of an SQL table in ibis,
 saving the important meta-data associated with the table
@@ -733,21 +733,14 @@ in the <code class="docutils literal notranslate"><span class="pre">superduperdb
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>identifier</strong> – The name of the table</p></li>
-<li><p><strong>schema</strong> – The schema of the table</p></li>
+<li><p><strong>identifier</strong> – A unique identifier for the component:param schema: The schema of the table</p></li>
 <li><p><strong>primary_id</strong> – The primary id of the table</p></li>
-<li><p><strong>version</strong> – The version of the table</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.ibis.query.Table.compile">
 <span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/query.html#Table.compile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.query.Table.compile" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="superduperdb.backends.ibis.query.Table.identifier">
-<span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.backends.ibis.query.Table.identifier" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -799,11 +792,6 @@ in the <code class="docutils literal notranslate"><span class="pre">superduperdb
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.backends.ibis.query.Table.type_id">
 <span class="sig-name descname"><span class="pre">type_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'table'</span></em><a class="headerlink" href="#superduperdb.backends.ibis.query.Table.type_id" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="superduperdb.backends.ibis.query.Table.version">
-<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.backends.ibis.query.Table.version" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -971,7 +959,6 @@ in the <code class="docutils literal notranslate"><span class="pre">superduperdb
 </li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table"><code class="docutils literal notranslate"><span class="pre">Table</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.compile"><code class="docutils literal notranslate"><span class="pre">Table.compile()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.identifier"><code class="docutils literal notranslate"><span class="pre">Table.identifier</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.insert"><code class="docutils literal notranslate"><span class="pre">Table.insert()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.like"><code class="docutils literal notranslate"><span class="pre">Table.like()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.outputs"><code class="docutils literal notranslate"><span class="pre">Table.outputs()</span></code></a></li>
@@ -981,7 +968,6 @@ in the <code class="docutils literal notranslate"><span class="pre">superduperdb
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.table_or_collection"><code class="docutils literal notranslate"><span class="pre">Table.table_or_collection</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.to_query"><code class="docutils literal notranslate"><span class="pre">Table.to_query()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.type_id"><code class="docutils literal notranslate"><span class="pre">Table.type_id</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.version"><code class="docutils literal notranslate"><span class="pre">Table.version</span></code></a></li>
 </ul>
 </li>
 </ul>

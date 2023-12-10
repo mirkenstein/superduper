@@ -242,9 +242,9 @@
 <div class="viewcode-block" id="apply">
 <a class="viewcode-back" href="../../../source/superduperdb.cli.html#superduperdb.cli.stack.apply">[docs]</a>
 <span class="nd">@command</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Apply the stack tarball to the database&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="n">yaml_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="n">yaml_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="n">db</span> <span class="o">=</span> <span class="n">build_datalayer</span><span class="p">()</span>
-    <span class="n">stack</span> <span class="o">=</span> <span class="n">Stack</span><span class="p">()</span>
+    <span class="n">stack</span> <span class="o">=</span> <span class="n">Stack</span><span class="p">(</span><span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">)</span>
     <span class="n">stack</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">yaml_path</span><span class="p">)</span>
     <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span></div>
 
