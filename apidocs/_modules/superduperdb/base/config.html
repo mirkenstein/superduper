@@ -316,9 +316,21 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">compute</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;local&#39;</span>  <span class="c1"># &#39;dask+tcp://local&#39;, &#39;dask+thread&#39;, &#39;local&#39;</span>
-    <span class="n">vector_search</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># &#39;http://localhost:8000&#39;  # None</span>
+    <span class="n">vector_search</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;in_memory&#39;</span>  <span class="c1"># &#39;&lt;in_memory|lance&gt;://localhost:8000&#39;</span>
     <span class="n">cdc</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># &#39;http://localhost:8001&#39;  # None</span>
-    <span class="n">backfill_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></div>
+    <span class="n">backfill_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">vector_search_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">search_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">search_type</span> <span class="o">==</span> <span class="s1">&#39;http&#39;</span><span class="p">:</span>
+            <span class="c1"># Return default vector_search</span>
+            <span class="k">return</span> <span class="s1">&#39;in_memory&#39;</span>
+        <span class="k">return</span> <span class="n">search_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_remote_vector_search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span></div>
 
 
 
@@ -378,11 +390,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">self_hosted_vector_search</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_backend</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_search</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_backend</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span>
 
     <span class="n">data_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mongodb://superduper:superduper@localhost:27017/test_db&#39;</span>
 
-    <span class="n">vector_search</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;in_memory&#39;</span>
     <span class="n">lance_home</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;.superduperdb&#39;</span><span class="p">,</span> <span class="s1">&#39;vector_indices&#39;</span><span class="p">)</span>
 
     <span class="n">artifact_store</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>

@@ -364,8 +364,8 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.initialize_vector_searcher">[docs]</a>
     <span class="k">def</span> <span class="nf">initialize_vector_searcher</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">searcher_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">backfill</span><span class="o">=</span><span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseVectorSearcher</span><span class="p">:</span>
-        <span class="n">searcher_type</span> <span class="o">=</span> <span class="n">searcher_type</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">BaseVectorSearcher</span><span class="p">]:</span>
+        <span class="n">searcher_type</span> <span class="o">=</span> <span class="n">searcher_type</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search_type</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;loading of vectors of vector-index: &#39;</span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
         <span class="n">vi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_indices</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span>
 
@@ -373,7 +373,7 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdc</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;CDC only supported for vector search via lance format&#39;</span>
-            <span class="k">assert</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span> <span class="o">==</span> <span class="s1">&#39;lance&#39;</span><span class="p">,</span> <span class="n">msg</span>
+            <span class="k">assert</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search_type</span> <span class="o">==</span> <span class="s1">&#39;lance&#39;</span><span class="p">,</span> <span class="n">msg</span>
 
         <span class="n">vector_search_cls</span> <span class="o">=</span> <span class="n">vector_searcher_implementations</span><span class="p">[</span><span class="n">searcher_type</span><span class="p">]</span>
         <span class="n">vector_comparison</span> <span class="o">=</span> <span class="n">vector_search_cls</span><span class="p">(</span>
@@ -381,12 +381,10 @@
             <span class="n">dimensions</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
             <span class="n">measure</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">measure</span><span class="p">,</span>
         <span class="p">)</span>
+
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clt</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="s1">&#39;clt.identifier must be a string&#39;</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdc</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
-            <span class="c1"># In this case, loading has already happened on disk via CDC mechanism</span>
-            <span class="k">return</span> <span class="n">vector_comparison</span>
-        <span class="k">if</span> <span class="n">backfill</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">backfill</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">is_remote_vector_search</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">backfill_vector_search</span><span class="p">(</span><span class="n">vi</span><span class="p">,</span> <span class="n">vector_comparison</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">FastVectorSearcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector_comparison</span><span class="p">,</span> <span class="n">vi</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span></div>
@@ -987,7 +985,7 @@
                 <span class="k">continue</span>
 
             <span class="k">if</span> <span class="p">(</span>
-                <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span> <span class="o">==</span> <span class="s1">&#39;in_memory&#39;</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search_type</span> <span class="o">==</span> <span class="s1">&#39;in_memory&#39;</span>
                 <span class="ow">and</span> <span class="n">vi</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_vector_searchers</span>
             <span class="p">):</span>
                 <span class="k">continue</span>
@@ -1096,11 +1094,11 @@
 
         <span class="k">for</span> <span class="n">identifier</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s1">&#39;vector_index&#39;</span><span class="p">):</span>
             <span class="c1"># if a vector-searcher is not loaded, then skip</span>
-            <span class="c1"># since s.CFG.vector_search == &#39;in_memory&#39; implies the</span>
+            <span class="c1"># since s.CFG.cluster.vector_search_type == &#39;in_memory&#39; implies the</span>
             <span class="c1"># program is standalone</span>
 
             <span class="k">if</span> <span class="p">(</span>
-                <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">vector_search</span> <span class="o">==</span> <span class="s1">&#39;in_memory&#39;</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search_type</span> <span class="o">==</span> <span class="s1">&#39;in_memory&#39;</span>
                 <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fast_vector_searchers</span>
             <span class="p">):</span>
                 <span class="k">continue</span>
