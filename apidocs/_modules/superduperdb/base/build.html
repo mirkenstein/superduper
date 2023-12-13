@@ -177,6 +177,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -395,15 +396,41 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error initializing to DataBackend Client:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
+    <span class="c1"># Connect to metadata store.</span>
+    <span class="c1"># ------------------------------</span>
+    <span class="c1"># 1. try to connect to the metadata store specified in the configuration.</span>
+    <span class="c1"># 2. if that fails, try to connect to the data backend engine.</span>
+    <span class="c1"># 3. if that fails, try to connect to the data backend uri.</span>
+    <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">metadata_store</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># try to connect to the metadata store specified in the configuration.</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Connecting to Metadata Client:&quot;</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">metadata_store</span><span class="p">)</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">metadata_store</span><span class="p">,</span> <span class="n">metadata_stores</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;metadata&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># try to connect to the data backend engine.</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Connecting to Metadata Client with engine: &quot;</span><span class="p">,</span> <span class="n">databackend</span><span class="o">.</span><span class="n">conn</span>
+            <span class="p">)</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="n">databackend</span><span class="o">.</span><span class="n">build_metadata</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Error building metadata from DataBackend:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># try to connect to the data backend uri.</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Connecting to Metadata Client with URI: &quot;</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">data_backend</span><span class="p">)</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">data_backend</span><span class="p">,</span> <span class="n">metadata_stores</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;metadata&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># Exit quickly if a connection fails.</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error initializing to Metadata Client:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
     <span class="c1"># Build DataLayer</span>
     <span class="c1"># ------------------------------</span>
     <span class="n">db</span> <span class="o">=</span> <span class="n">Datalayer</span><span class="p">(</span>
         <span class="n">databackend</span><span class="o">=</span><span class="n">databackend</span><span class="p">,</span>
-        <span class="n">metadata</span><span class="o">=</span><span class="p">(</span>
-            <span class="n">build</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">metadata_store</span><span class="p">,</span> <span class="n">metadata_stores</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;metadata&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">metadata_store</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="n">databackend</span><span class="o">.</span><span class="n">build_metadata</span><span class="p">()</span>
-        <span class="p">),</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
         <span class="n">artifact_store</span><span class="o">=</span><span class="p">(</span>
             <span class="n">build_artifact_store</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>

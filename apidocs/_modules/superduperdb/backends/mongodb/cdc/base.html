@@ -177,6 +177,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -235,6 +236,7 @@
           <h1>Source code for superduperdb.backends.mongodb.cdc.base</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="kn">from</span> <span class="nn">bson</span> <span class="kn">import</span> <span class="n">objectid</span>
@@ -248,7 +250,7 @@
 <div class="viewcode-block" id="CachedTokens">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.base.CachedTokens">[docs]</a>
 <span class="k">class</span> <span class="nc">CachedTokens</span><span class="p">:</span>
-    <span class="n">token_path</span> <span class="o">=</span> <span class="s1">&#39;.cdc.tokens&#39;</span>
+    <span class="n">token_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;.superduperdb&#39;</span><span class="p">,</span> <span class="s1">&#39;.cdc.tokens&#39;</span><span class="p">)</span>
     <span class="n">separate</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

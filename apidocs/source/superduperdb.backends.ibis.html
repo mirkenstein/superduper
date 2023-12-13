@@ -178,6 +178,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -315,6 +316,86 @@
 <dd><p>Databackend connection url</p>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-superduperdb.backends.ibis.db_helper">
+<span id="superduperdb-backends-ibis-db-helper-module"></span><h2>superduperdb.backends.ibis.db_helper module<a class="headerlink" href="#module-superduperdb.backends.ibis.db_helper" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.Base64Mixin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.backends.ibis.db_helper.</span></span><span class="sig-name descname"><span class="pre">Base64Mixin</span></span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/db_helper.html#Base64Mixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.Base64Mixin" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.Base64Mixin.convert_data_format">
+<span class="sig-name descname"><span class="pre">convert_data_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/db_helper.html#Base64Mixin.convert_data_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.Base64Mixin.convert_data_format" title="Link to this definition">#</a></dt>
+<dd><p>Convert byte data to base64 format for storage in the database.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.Base64Mixin.process_schema_types">
+<span class="sig-name descname"><span class="pre">process_schema_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_mapping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/db_helper.html#Base64Mixin.process_schema_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.Base64Mixin.process_schema_types" title="Link to this definition">#</a></dt>
+<dd><p>Convert bytes to string in the schema.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.Base64Mixin.recover_data_format">
+<span class="sig-name descname"><span class="pre">recover_data_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/db_helper.html#Base64Mixin.recover_data_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.Base64Mixin.recover_data_format" title="Link to this definition">#</a></dt>
+<dd><p>Recover byte data from base64 format stored in the database.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.ClickHouseHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.backends.ibis.db_helper.</span></span><span class="sig-name descname"><span class="pre">ClickHouseHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dialect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/db_helper.html#ClickHouseHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.ClickHouseHelper" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.backends.ibis.db_helper.Base64Mixin" title="superduperdb.backends.ibis.db_helper.Base64Mixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base64Mixin</span></code></a>, <a class="reference internal" href="#superduperdb.backends.ibis.db_helper.DBHelper" title="superduperdb.backends.ibis.db_helper.DBHelper"><code class="xref py py-class docutils literal notranslate"><span class="pre">DBHelper</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.ClickHouseHelper.match_dialect">
+<span class="sig-name descname"><span class="pre">match_dialect</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'clickhouse'</span></em><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.ClickHouseHelper.match_dialect" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.ClickHouseHelper.process_before_insert">
+<span class="sig-name descname"><span class="pre">process_before_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/db_helper.html#ClickHouseHelper.process_before_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.ClickHouseHelper.process_before_insert" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.DBHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.backends.ibis.db_helper.</span></span><span class="sig-name descname"><span class="pre">DBHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dialect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/db_helper.html#DBHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.DBHelper" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.DBHelper.convert_data_format">
+<span class="sig-name descname"><span class="pre">convert_data_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/db_helper.html#DBHelper.convert_data_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.DBHelper.convert_data_format" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.DBHelper.match_dialect">
+<span class="sig-name descname"><span class="pre">match_dialect</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'base'</span></em><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.DBHelper.match_dialect" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.DBHelper.process_before_insert">
+<span class="sig-name descname"><span class="pre">process_before_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/db_helper.html#DBHelper.process_before_insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.DBHelper.process_before_insert" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.DBHelper.process_schema_types">
+<span class="sig-name descname"><span class="pre">process_schema_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_mapping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/db_helper.html#DBHelper.process_schema_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.DBHelper.process_schema_types" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.DBHelper.recover_data_format">
+<span class="sig-name descname"><span class="pre">recover_data_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/db_helper.html#DBHelper.recover_data_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.DBHelper.recover_data_format" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.db_helper.get_db_helper">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.backends.ibis.db_helper.</span></span><span class="sig-name descname"><span class="pre">get_db_helper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dialect</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.DBHelper" title="superduperdb.backends.ibis.db_helper.DBHelper"><span class="pre">DBHelper</span></a></span></span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/db_helper.html#get_db_helper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.db_helper.get_db_helper" title="Link to this definition">#</a></dt>
+<dd><p>Get the insert processor for the given dialect.</p>
 </dd></dl>
 
 </section>
@@ -797,6 +878,15 @@ in the <code class="docutils literal notranslate"><span class="pre">superduperdb
 </dd></dl>
 
 </section>
+<section id="module-superduperdb.backends.ibis.utils">
+<span id="superduperdb-backends-ibis-utils-module"></span><h2>superduperdb.backends.ibis.utils module<a class="headerlink" href="#module-superduperdb.backends.ibis.utils" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.utils.get_output_table_name">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.backends.ibis.utils.</span></span><span class="sig-name descname"><span class="pre">get_output_table_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_identifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/utils.html#get_output_table_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.utils.get_output_table_name" title="Link to this definition">#</a></dt>
+<dd><p>Get the output table name for the given model.</p>
+</dd></dl>
+
+</section>
 <section id="module-superduperdb.backends.ibis">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-superduperdb.backends.ibis" title="Link to this heading">#</a></h2>
 </section>
@@ -880,6 +970,29 @@ in the <code class="docutils literal notranslate"><span class="pre">superduperdb
 <li><a class="reference internal" href="#superduperdb.backends.ibis.data_backend.IbisDataBackend.url"><code class="docutils literal notranslate"><span class="pre">IbisDataBackend.url()</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-superduperdb.backends.ibis.db_helper">superduperdb.backends.ibis.db_helper module</a><ul>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.Base64Mixin"><code class="docutils literal notranslate"><span class="pre">Base64Mixin</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.Base64Mixin.convert_data_format"><code class="docutils literal notranslate"><span class="pre">Base64Mixin.convert_data_format()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.Base64Mixin.process_schema_types"><code class="docutils literal notranslate"><span class="pre">Base64Mixin.process_schema_types()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.Base64Mixin.recover_data_format"><code class="docutils literal notranslate"><span class="pre">Base64Mixin.recover_data_format()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.ClickHouseHelper"><code class="docutils literal notranslate"><span class="pre">ClickHouseHelper</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.ClickHouseHelper.match_dialect"><code class="docutils literal notranslate"><span class="pre">ClickHouseHelper.match_dialect</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.ClickHouseHelper.process_before_insert"><code class="docutils literal notranslate"><span class="pre">ClickHouseHelper.process_before_insert()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.DBHelper"><code class="docutils literal notranslate"><span class="pre">DBHelper</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.DBHelper.convert_data_format"><code class="docutils literal notranslate"><span class="pre">DBHelper.convert_data_format()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.DBHelper.match_dialect"><code class="docutils literal notranslate"><span class="pre">DBHelper.match_dialect</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.DBHelper.process_before_insert"><code class="docutils literal notranslate"><span class="pre">DBHelper.process_before_insert()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.DBHelper.process_schema_types"><code class="docutils literal notranslate"><span class="pre">DBHelper.process_schema_types()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.DBHelper.recover_data_format"><code class="docutils literal notranslate"><span class="pre">DBHelper.recover_data_format()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.db_helper.get_db_helper"><code class="docutils literal notranslate"><span class="pre">get_db_helper()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-superduperdb.backends.ibis.field_types">superduperdb.backends.ibis.field_types module</a><ul>
@@ -970,6 +1083,10 @@ in the <code class="docutils literal notranslate"><span class="pre">superduperdb
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.type_id"><code class="docutils literal notranslate"><span class="pre">Table.type_id</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-superduperdb.backends.ibis.utils">superduperdb.backends.ibis.utils module</a><ul>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.utils.get_output_table_name"><code class="docutils literal notranslate"><span class="pre">get_output_table_name()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-superduperdb.backends.ibis">Module contents</a></li>

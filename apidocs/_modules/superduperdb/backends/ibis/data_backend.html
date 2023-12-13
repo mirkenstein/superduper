@@ -177,6 +177,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -241,12 +242,16 @@
 <span class="kn">from</span> <span class="nn">ibis.backends.base</span> <span class="kn">import</span> <span class="n">BaseBackend</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb.backends.base.data_backend</span> <span class="kn">import</span> <span class="n">BaseDataBackend</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.db_helper</span> <span class="kn">import</span> <span class="n">get_db_helper</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.field_types</span> <span class="kn">import</span> <span class="n">FieldType</span><span class="p">,</span> <span class="n">dtype</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.query</span> <span class="kn">import</span> <span class="n">Table</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.utils</span> <span class="kn">import</span> <span class="n">get_output_table_name</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.local.artifacts</span> <span class="kn">import</span> <span class="n">FileSystemArtifactStore</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.sqlalchemy.metadata</span> <span class="kn">import</span> <span class="n">SQLAlchemyMetadata</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">APIModel</span><span class="p">,</span> <span class="n">Model</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.schema</span> <span class="kn">import</span> <span class="n">Schema</span>
+
+<span class="n">BASE64_PREFIX</span> <span class="o">=</span> <span class="s1">&#39;base64:&#39;</span>
 
 
 <div class="viewcode-block" id="IbisDataBackend">
@@ -255,6 +260,8 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">:</span> <span class="n">BaseBackend</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">in_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">conn</span><span class="o">=</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">in_memory</span> <span class="o">=</span> <span class="n">in_memory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dialect</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;base&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_helper</span> <span class="o">=</span> <span class="n">get_db_helper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dialect</span><span class="p">)</span>
 
 <div class="viewcode-block" id="IbisDataBackend.url">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.url">[docs]</a>
@@ -283,6 +290,12 @@
 <div class="viewcode-block" id="IbisDataBackend.insert">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.insert">[docs]</a>
     <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">raw_documents</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">raw_documents</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">doc</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_helper</span><span class="o">.</span><span class="n">convert_data_format</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">table_name</span><span class="p">,</span> <span class="n">raw_documents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_helper</span><span class="o">.</span><span class="n">process_before_insert</span><span class="p">(</span>
+            <span class="n">table_name</span><span class="p">,</span> <span class="n">raw_documents</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_memory</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">raw_documents</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -309,7 +322,7 @@
             <span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">),</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">Table</span><span class="p">(</span>
-            <span class="n">identifier</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;_outputs/</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">identifier</span><span class="o">=</span><span class="n">get_output_table_name</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">version</span><span class="p">),</span>
             <span class="n">schema</span><span class="o">=</span><span class="n">Schema</span><span class="p">(</span>
                 <span class="n">identifier</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;_schema/</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="n">fields</span>
             <span class="p">),</span>
@@ -324,6 +337,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">try</span><span class="p">:</span>
+            <span class="n">mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_helper</span><span class="o">.</span><span class="n">process_schema_types</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span>
             <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">ibis</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span><span class="n">mapping</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">if</span> <span class="s1">&#39;exists&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
