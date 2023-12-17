@@ -377,7 +377,7 @@
                 <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span>
                     <span class="n">Variable</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s1">&#39;_outputs.</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;.</span><span class="si">{version}</span><span class="s1">&#39;</span><span class="p">,</span>
-                        <span class="k">lambda</span> <span class="n">db</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="k">lambda</span> <span class="n">db</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                             <span class="n">version</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                         <span class="p">),</span>
                     <span class="p">)</span>
@@ -947,6 +947,8 @@
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Collection</span><span class="p">(</span><span class="n">TableOrCollection</span><span class="p">):</span>
     <span class="n">query_components</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;find&#39;</span><span class="p">:</span> <span class="n">Find</span><span class="p">,</span> <span class="s1">&#39;find_one&#39;</span><span class="p">:</span> <span class="n">FindOne</span><span class="p">}</span>
+    <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;collection&#39;</span>
+
     <span class="n">primary_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;_id&#39;</span>
 
 <div class="viewcode-block" id="Collection.get_table">
@@ -1042,6 +1044,12 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Collection.insert">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection.insert">[docs]</a>
+    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_many</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Collection.insert_many">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection.insert_many">[docs]</a>
     <span class="k">def</span> <span class="nf">insert_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1067,9 +1075,8 @@
                     <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
                         <span class="n">second_part</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;$match&quot;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span> <span class="k">else</span> <span class="p">{}})</span>
                     <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-                        <span class="n">project_args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                            <span class="p">{</span><span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$meta&quot;</span><span class="p">:</span> <span class="s2">&quot;vectorSearchScore&quot;</span><span class="p">}}</span>
-                        <span class="p">)</span>
+                        <span class="n">project_args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                        <span class="n">project_args</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$meta&quot;</span><span class="p">:</span> <span class="s2">&quot;vectorSearchScore&quot;</span><span class="p">}})</span>
                         <span class="n">second_part</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;$project&quot;</span><span class="p">:</span> <span class="n">project_args</span><span class="p">})</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">second_part</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -1099,15 +1106,16 @@
     <span class="k">def</span> <span class="nf">model_update</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">db</span><span class="p">,</span>
-        <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
+        <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
         <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">outputs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
-        <span class="n">document_embedded</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">flatten</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
+        <span class="n">document_embedded</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;document_embedded&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_outputs&#39;</span><span class="p">):</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">outputs</span><span class="p">:</span>
