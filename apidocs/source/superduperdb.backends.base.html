@@ -169,6 +169,7 @@
 <li class="toctree-l5"><a class="reference internal" href="superduperdb.backends.mongodb.cdc.html">superduperdb.backends.mongodb.cdc package</a></li>
 </ul>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.backends.ray.html">superduperdb.backends.ray package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="superduperdb.base.html">superduperdb.base package</a></li>
@@ -182,7 +183,7 @@
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.sentence_transformer.html">superduperdb.ext.sentence_transformer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.sentence_transformers.html">superduperdb.ext.sentence_transformers package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
@@ -505,9 +506,15 @@ artifact lookup.</p>
 <dd><p>Returns a local version of self</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="superduperdb.backends.base.compute.ComputeBackend.name">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.backends.base.compute.ComputeBackend.name" title="Link to this definition">#</a></dt>
+<dd><p>Return the name of current compute engine</p>
+</dd></dl>
+
 <dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.backends.base.compute.ComputeBackend.get_result">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/base/compute.html#ComputeBackend.get_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.compute.ComputeBackend.get_result" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="superduperdb.backends.base.compute.ComputeBackend.result">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/base/compute.html#ComputeBackend.result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.compute.ComputeBackend.result" title="Link to this definition">#</a></dt>
 <dd><p>Retrieves the result of a previously submitted task.
 Note: This will block until the future is completed.</p>
 <dl class="field-list simple">
@@ -515,18 +522,6 @@ Note: This will block until the future is completed.</p>
 <dd class="field-odd"><p><strong>identifier</strong> – The identifier of the submitted task.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.backends.base.compute.ComputeBackend.list_all_pending_tasks">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_all_pending_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/base/compute.html#ComputeBackend.list_all_pending_tasks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.compute.ComputeBackend.list_all_pending_tasks" title="Link to this definition">#</a></dt>
-<dd><p>List for all pending tasks</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="superduperdb.backends.base.compute.ComputeBackend.name">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.backends.base.compute.ComputeBackend.name" title="Link to this definition">#</a></dt>
-<dd><p>Return the name of current compute engine</p>
 </dd></dl>
 
 <dl class="py method">
@@ -550,14 +545,20 @@ Note: This will block until the future is completed.</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="superduperdb.backends.base.compute.ComputeBackend.tasks">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tasks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><a class="headerlink" href="#superduperdb.backends.base.compute.ComputeBackend.tasks" title="Link to this definition">#</a></dt>
+<dd><p>List for all tasks</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="superduperdb.backends.base.compute.ComputeBackend.type">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.backends.base.compute.ComputeBackend.type" title="Link to this definition">#</a></dt>
 <dd><p>Return the type of compute engine</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.backends.base.compute.ComputeBackend.wait_all_pending_tasks">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wait_all_pending_tasks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/base/compute.html#ComputeBackend.wait_all_pending_tasks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.compute.ComputeBackend.wait_all_pending_tasks" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="superduperdb.backends.base.compute.ComputeBackend.wait_all">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wait_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/base/compute.html#ComputeBackend.wait_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.compute.ComputeBackend.wait_all" title="Link to this definition">#</a></dt>
 <dd><p>Waits for all pending tasks to complete.</p>
 </dd></dl>
 
@@ -607,11 +608,6 @@ Note: This will block until the future is completed.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.base.data_backend.BaseDataBackend.get_table_or_collection">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_table_or_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/base/data_backend.html#BaseDataBackend.get_table_or_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.data_backend.BaseDataBackend.get_table_or_collection" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="superduperdb.backends.base.data_backend.BaseDataBackend.id_field">
-<span class="sig-name descname"><span class="pre">id_field</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'id'</span></em><a class="headerlink" href="#superduperdb.backends.base.data_backend.BaseDataBackend.id_field" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1624,13 +1620,13 @@ for performing a vector search on the parent query chain inputs.</p>
 <li><a class="reference internal" href="#superduperdb.backends.base.compute.ComputeBackend"><code class="docutils literal notranslate"><span class="pre">ComputeBackend</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.base.compute.ComputeBackend.disconnect"><code class="docutils literal notranslate"><span class="pre">ComputeBackend.disconnect()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.compute.ComputeBackend.get_local_client"><code class="docutils literal notranslate"><span class="pre">ComputeBackend.get_local_client()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.backends.base.compute.ComputeBackend.get_result"><code class="docutils literal notranslate"><span class="pre">ComputeBackend.get_result()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.backends.base.compute.ComputeBackend.list_all_pending_tasks"><code class="docutils literal notranslate"><span class="pre">ComputeBackend.list_all_pending_tasks()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.compute.ComputeBackend.name"><code class="docutils literal notranslate"><span class="pre">ComputeBackend.name</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.compute.ComputeBackend.result"><code class="docutils literal notranslate"><span class="pre">ComputeBackend.result()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.compute.ComputeBackend.shutdown"><code class="docutils literal notranslate"><span class="pre">ComputeBackend.shutdown()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.compute.ComputeBackend.submit"><code class="docutils literal notranslate"><span class="pre">ComputeBackend.submit()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.compute.ComputeBackend.tasks"><code class="docutils literal notranslate"><span class="pre">ComputeBackend.tasks</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.compute.ComputeBackend.type"><code class="docutils literal notranslate"><span class="pre">ComputeBackend.type</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.backends.base.compute.ComputeBackend.wait_all_pending_tasks"><code class="docutils literal notranslate"><span class="pre">ComputeBackend.wait_all_pending_tasks()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.compute.ComputeBackend.wait_all"><code class="docutils literal notranslate"><span class="pre">ComputeBackend.wait_all()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -1644,7 +1640,6 @@ for performing a vector search on the parent query chain inputs.</p>
 <li><a class="reference internal" href="#superduperdb.backends.base.data_backend.BaseDataBackend.disconnect"><code class="docutils literal notranslate"><span class="pre">BaseDataBackend.disconnect()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.data_backend.BaseDataBackend.drop"><code class="docutils literal notranslate"><span class="pre">BaseDataBackend.drop()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.data_backend.BaseDataBackend.get_table_or_collection"><code class="docutils literal notranslate"><span class="pre">BaseDataBackend.get_table_or_collection()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.backends.base.data_backend.BaseDataBackend.id_field"><code class="docutils literal notranslate"><span class="pre">BaseDataBackend.id_field</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.data_backend.BaseDataBackend.set_content_bytes"><code class="docutils literal notranslate"><span class="pre">BaseDataBackend.set_content_bytes()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.data_backend.BaseDataBackend.url"><code class="docutils literal notranslate"><span class="pre">BaseDataBackend.url()</span></code></a></li>
 </ul>

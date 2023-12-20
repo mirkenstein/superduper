@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>superduperdb.ext.sentence_transformer.model - Python documentation</title>
+        <title>superduperdb.backends.ray.compute - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -168,6 +168,7 @@
 <li class="toctree-l5"><a class="reference internal" href="../../../../source/superduperdb.backends.mongodb.cdc.html">superduperdb.backends.mongodb.cdc package</a></li>
 </ul>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.backends.ray.html">superduperdb.backends.ray package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.base.html">superduperdb.base package</a></li>
@@ -181,7 +182,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.sentence_transformer.html">superduperdb.ext.sentence_transformer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.sentence_transformers.html">superduperdb.ext.sentence_transformers package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
@@ -233,20 +234,128 @@
           </label>
         </div>
         <article role="main">
-          <h1>Source code for superduperdb.ext.sentence_transformer.model</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">Model</span>
+          <h1>Source code for superduperdb.backends.ray.compute</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+
+<span class="kn">import</span> <span class="nn">ray</span>
+
+<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.base.compute</span> <span class="kn">import</span> <span class="n">ComputeBackend</span>
 
 
-<div class="viewcode-block" id="SentenceTransformer">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.sentence_transformer.html#superduperdb.ext.sentence_transformer.model.SentenceTransformer">[docs]</a>
-<span class="k">class</span> <span class="nc">SentenceTransformer</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model_to_device_method</span> <span class="o">=</span> <span class="s1">&#39;_to&#39;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
+<div class="viewcode-block" id="RayComputeBackend">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.ray.html#superduperdb.backends.ray.compute.RayComputeBackend">[docs]</a>
+<span class="k">class</span> <span class="nc">RayComputeBackend</span><span class="p">(</span><span class="n">ComputeBackend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A client for interacting with a ray cluster. Initialize the ray client.</span>
 
-    <span class="k">def</span> <span class="nf">_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">artifact</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">artifact</span><span class="o">.</span><span class="n">_target_device</span> <span class="o">=</span> <span class="n">device</span></div>
+<span class="sd">    :param address: The address of the ray cluster.</span>
+<span class="sd">    :param **kwargs: Additional keyword arguments to be passed to the ray client.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">address</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_futures_collection</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ray</span><span class="o">.</span><span class="n">ObjectRef</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">ray</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">address</span><span class="o">=</span><span class="n">address</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;distributed&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;ray&quot;</span>
+
+<div class="viewcode-block" id="RayComputeBackend.submit">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.ray.html#superduperdb.backends.ray.compute.RayComputeBackend.submit">[docs]</a>
+    <span class="k">def</span> <span class="nf">submit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ray</span><span class="o">.</span><span class="n">ObjectRef</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Submits a function to the ray server for execution.</span>
+
+<span class="sd">        :param function: The function to be executed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">_dependable_remote_job</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">function</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;method_job&#39;</span><span class="p">,</span> <span class="s1">&#39;callable_job&#39;</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="s1">&#39;dependencies&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span>
+            <span class="p">):</span>
+                <span class="n">dependencies</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dependencies&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">dependencies</span><span class="p">:</span>
+                    <span class="n">ray</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">dependencies</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">remote_function</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">_dependable_remote_job</span><span class="p">)</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">remote_function</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_futures_collection</span><span class="p">[</span><span class="n">future</span><span class="o">.</span><span class="n">task_id</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">()]</span> <span class="o">=</span> <span class="n">future</span>
+
+        <span class="n">logging</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Job submitted.  function:</span><span class="si">{</span><span class="n">function</span><span class="si">}</span><span class="s2"> future:</span><span class="si">{</span><span class="n">future</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">future</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ray</span><span class="o">.</span><span class="n">ObjectRef</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List all pending tasks</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_futures_collection</span>
+
+<div class="viewcode-block" id="RayComputeBackend.wait">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.ray.html#superduperdb.backends.ray.compute.RayComputeBackend.wait">[docs]</a>
+    <span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for task corresponding to identifier to complete.</span>
+<span class="sd">        :param identifier: Future task id to wait</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ray</span><span class="o">.</span><span class="n">wait</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_futures_collection</span><span class="p">[</span><span class="n">identifier</span><span class="p">]])</span></div>
+
+
+<div class="viewcode-block" id="RayComputeBackend.wait_all">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.ray.html#superduperdb.backends.ray.compute.RayComputeBackend.wait_all">[docs]</a>
+    <span class="k">def</span> <span class="nf">wait_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for all tasks to complete.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ray</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_futures_collection</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span>
+            <span class="n">num_returns</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_futures_collection</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RayComputeBackend.result">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.ray.html#superduperdb.backends.ray.compute.RayComputeBackend.result">[docs]</a>
+    <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the result of a previously submitted task.</span>
+<span class="sd">        Note: This will block until the future is completed.</span>
+
+<span class="sd">        :param identifier: The identifier of the submitted task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_futures_collection</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ray</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">future</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RayComputeBackend.disconnect">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.ray.html#superduperdb.backends.ray.compute.RayComputeBackend.disconnect">[docs]</a>
+    <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Disconnect the ray client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ray</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="RayComputeBackend.shutdown">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.ray.html#superduperdb.backends.ray.compute.RayComputeBackend.shutdown">[docs]</a>
+    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shuts down the ray cluster.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ray</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
+</div>
 
 </pre></div>
         </article>

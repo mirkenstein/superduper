@@ -168,6 +168,7 @@
 <li class="toctree-l5"><a class="reference internal" href="../../../source/superduperdb.backends.mongodb.cdc.html">superduperdb.backends.mongodb.cdc package</a></li>
 </ul>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.ray.html">superduperdb.backends.ray package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.base.html">superduperdb.base package</a></li>
@@ -181,7 +182,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sentence_transformer.html">superduperdb.ext.sentence_transformer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sentence_transformers.html">superduperdb.ext.sentence_transformers package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
@@ -234,12 +235,15 @@
         </div>
         <article role="main">
           <h1>Source code for superduperdb.components.encoder</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
+<span></span><span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
 <span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
+<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.artifact</span> <span class="kn">import</span> <span class="n">Artifact</span>
+<span class="kn">from</span> <span class="nn">superduperdb.base.config</span> <span class="kn">import</span> <span class="n">BytesEncoding</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">Component</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.annotations</span> <span class="kn">import</span> <span class="n">public_api</span>
 
@@ -309,8 +313,10 @@
 
 <div class="viewcode-block" id="Encoder.decode">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Encoder.decode">[docs]</a>
-    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">bytes_encoding</span> <span class="o">==</span> <span class="n">BytesEncoding</span><span class="o">.</span><span class="n">BASE64</span><span class="p">:</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_base64</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="o">.</span><span class="n">artifact</span><span class="p">(</span><span class="n">b</span><span class="p">))</span></div>
 
 
@@ -318,6 +324,20 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Encoder.dump">[docs]</a>
     <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">artifact</span><span class="p">(</span><span class="n">other</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Encoder.to_base64">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Encoder.to_base64">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">to_base64</span><span class="p">(</span><span class="nb">bytes</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="nb">bytes</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Encoder.from_base64">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Encoder.from_base64">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_base64</span><span class="p">(</span><span class="n">encoded</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">encoded</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Encoder.encode">
@@ -329,10 +349,17 @@
         <span class="n">wrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]]:</span>
         <span class="c1"># TODO clarify what is going on here</span>
+
+        <span class="k">def</span> <span class="nf">_encode</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="n">bytes_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">artifact</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">bytes_encoding</span> <span class="o">==</span> <span class="n">BytesEncoding</span><span class="o">.</span><span class="n">BASE64</span><span class="p">:</span>
+                <span class="n">bytes_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_base64</span><span class="p">(</span><span class="n">bytes_</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">bytes_</span>
+
         <span class="k">def</span> <span class="nf">_wrap_content</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">{</span>
                 <span class="s1">&#39;_content&#39;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s1">&#39;bytes&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">artifact</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+                    <span class="s1">&#39;bytes&#39;</span><span class="p">:</span> <span class="n">_encode</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
                     <span class="s1">&#39;encoder&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
                 <span class="p">}</span>
             <span class="p">}</span>
@@ -341,7 +368,7 @@
             <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">wrap</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">_wrap_content</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">artifact</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># type: ignore[union-attr]</span>
+                <span class="k">return</span> <span class="n">_encode</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">wrap</span><span class="p">:</span>
                     <span class="k">return</span> <span class="p">{</span>

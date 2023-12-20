@@ -168,6 +168,7 @@
 <li class="toctree-l5"><a class="reference internal" href="../../../source/superduperdb.backends.mongodb.cdc.html">superduperdb.backends.mongodb.cdc package</a></li>
 </ul>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.ray.html">superduperdb.backends.ray package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.base.html">superduperdb.base package</a></li>
@@ -181,7 +182,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sentence_transformer.html">superduperdb.ext.sentence_transformer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sentence_transformers.html">superduperdb.ext.sentence_transformers package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
@@ -249,6 +250,7 @@
 <span class="kn">from</span> <span class="nn">superduperdb.backends.local.artifacts</span> <span class="kn">import</span> <span class="n">FileSystemArtifactStore</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.local.compute</span> <span class="kn">import</span> <span class="n">LocalComputeBackend</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.mongodb.artifacts</span> <span class="kn">import</span> <span class="n">MongoArtifactStore</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.ray.compute</span> <span class="kn">import</span> <span class="n">RayComputeBackend</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
 
 
@@ -360,6 +362,9 @@
 
         <span class="n">uri</span> <span class="o">=</span> <span class="n">compute</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">DaskComputeBackend</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">compute</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ray&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RayComputeBackend</span><span class="p">(</span><span class="n">compute</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">LocalComputeBackend</span><span class="p">()</span></div>
 
