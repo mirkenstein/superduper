@@ -1404,8 +1404,14 @@ about the types or <cite>Encoders</cite> of a <cite>Table</cite></p>
 <section id="module-superduperdb.components.serializer">
 <span id="superduperdb-components-serializer-module"></span><h2>superduperdb.components.serializer module<a class="headerlink" href="#module-superduperdb.components.serializer" title="Link to this heading">#</a></h2>
 <dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.DecodeTorchStateDict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.components.serializer.</span></span><span class="sig-name descname"><span class="pre">DecodeTorchStateDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#DecodeTorchStateDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.DecodeTorchStateDict" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="superduperdb.components.serializer.Serializer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.components.serializer.</span></span><span class="sig-name descname"><span class="pre">Serializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#Serializer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.Serializer" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.components.serializer.</span></span><span class="sig-name descname"><span class="pre">Serializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.base.html#superduperdb.base.artifact.Artifact" title="superduperdb.base.artifact.Artifact"><span class="pre">Artifact</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">decoder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.base.html#superduperdb.base.artifact.Artifact" title="superduperdb.base.artifact.Artifact"><span class="pre">Artifact</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">constructor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.base.html#superduperdb.base.artifact.Artifact" title="superduperdb.base.artifact.Artifact"><span class="pre">Artifact</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#Serializer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.Serializer" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#superduperdb.components.component.Component" title="superduperdb.components.component.Component"><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code></a></p>
 <p>A component carrying the information to apply a serializer to a
 model.</p>
@@ -1418,14 +1424,44 @@ model.</p>
 </dd>
 </dl>
 <p><strong>public_api(beta):</strong> This API is in beta and may change before becoming stable.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.Serializer.construct">
+<span class="sig-name descname"><span class="pre">construct</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#Serializer.construct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.Serializer.construct" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.Serializer.constructor">
+<span class="sig-name descname"><span class="pre">constructor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.base.html#superduperdb.base.artifact.Artifact" title="superduperdb.base.artifact.Artifact"><span class="pre">Artifact</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.components.serializer.Serializer.constructor" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.Serializer.decode">
+<span class="sig-name descname"><span class="pre">decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#Serializer.decode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.Serializer.decode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.Serializer.decoder">
+<span class="sig-name descname"><span class="pre">decoder</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.base.html#superduperdb.base.artifact.Artifact" title="superduperdb.base.artifact.Artifact"><span class="pre">Artifact</span></a></em><a class="headerlink" href="#superduperdb.components.serializer.Serializer.decoder" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.Serializer.encode">
+<span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#Serializer.encode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.Serializer.encode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.Serializer.encoder">
+<span class="sig-name descname"><span class="pre">encoder</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.base.html#superduperdb.base.artifact.Artifact" title="superduperdb.base.artifact.Artifact"><span class="pre">Artifact</span></a></em><a class="headerlink" href="#superduperdb.components.serializer.Serializer.encoder" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.components.serializer.Serializer.identifier">
 <span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.components.serializer.Serializer.identifier" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="superduperdb.components.serializer.Serializer.object">
-<span class="sig-name descname"><span class="pre">object</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Type</span></em><a class="headerlink" href="#superduperdb.components.serializer.Serializer.object" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="superduperdb.components.serializer.Serializer.info">
+<span class="sig-name descname"><span class="pre">info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.components.serializer.Serializer.info" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1445,6 +1481,62 @@ model.</p>
 <dd></dd></dl>
 
 </dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.Serializers">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.components.serializer.</span></span><span class="sig-name descname"><span class="pre">Serializers</span></span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#Serializers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.Serializers" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.Serializers.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serializer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#superduperdb.components.serializer.Serializer" title="superduperdb.components.serializer.Serializer"><span class="pre">Serializer</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#Serializers.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.Serializers.add" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.Serializers.serializers">
+<span class="sig-name descname"><span class="pre">serializers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#superduperdb.components.serializer.Serializer" title="superduperdb.components.serializer.Serializer"><span class="pre">Serializer</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'dill':</span> <span class="pre">Serializer(identifier='dill',</span> <span class="pre">encoder=&lt;Artifact</span> <span class="pre">artifact=&lt;function</span> <span class="pre">dill_encode&gt;</span> <span class="pre">serializer=dill&gt;,</span> <span class="pre">decoder=&lt;Artifact</span> <span class="pre">artifact=&lt;function</span> <span class="pre">dill_decode&gt;</span> <span class="pre">serializer=dill&gt;,</span> <span class="pre">constructor=None,</span> <span class="pre">info=None),</span> <span class="pre">'pickle':</span> <span class="pre">Serializer(identifier='pickle',</span> <span class="pre">encoder=&lt;Artifact</span> <span class="pre">artifact=&lt;function</span> <span class="pre">pickle_encode&gt;</span> <span class="pre">serializer=dill&gt;,</span> <span class="pre">decoder=&lt;Artifact</span> <span class="pre">artifact=&lt;function</span> <span class="pre">pickle_decode&gt;</span> <span class="pre">serializer=dill&gt;,</span> <span class="pre">constructor=None,</span> <span class="pre">info=None),</span> <span class="pre">'torch':</span> <span class="pre">Serializer(identifier='torch',</span> <span class="pre">encoder=&lt;Artifact</span> <span class="pre">artifact=&lt;function</span> <span class="pre">torch_encode&gt;</span> <span class="pre">serializer=dill&gt;,</span> <span class="pre">decoder=&lt;Artifact</span> <span class="pre">artifact=&lt;function</span> <span class="pre">torch_decode&gt;</span> <span class="pre">serializer=dill&gt;,</span> <span class="pre">constructor=None,</span> <span class="pre">info=None)}</span></em><a class="headerlink" href="#superduperdb.components.serializer.Serializers.serializers" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.build_torch_state_serializer">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.components.serializer.</span></span><span class="sig-name descname"><span class="pre">build_torch_state_serializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#build_torch_state_serializer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.build_torch_state_serializer" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.dill_decode">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.components.serializer.</span></span><span class="sig-name descname"><span class="pre">dill_decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#dill_decode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.dill_decode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.dill_encode">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.components.serializer.</span></span><span class="sig-name descname"><span class="pre">dill_encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#dill_encode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.dill_encode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.encode_torch_state_dict">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.components.serializer.</span></span><span class="sig-name descname"><span class="pre">encode_torch_state_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#encode_torch_state_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.encode_torch_state_dict" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.pickle_decode">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.components.serializer.</span></span><span class="sig-name descname"><span class="pre">pickle_decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#pickle_decode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.pickle_decode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.pickle_encode">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.components.serializer.</span></span><span class="sig-name descname"><span class="pre">pickle_encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#pickle_encode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.pickle_encode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.torch_decode">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.components.serializer.</span></span><span class="sig-name descname"><span class="pre">torch_decode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#torch_decode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.torch_decode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.components.serializer.torch_encode">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.components.serializer.</span></span><span class="sig-name descname"><span class="pre">torch_encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/superduperdb/components/serializer.html#torch_encode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.serializer.torch_encode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 </section>
 <section id="module-superduperdb.components.stack">
@@ -1469,6 +1561,59 @@ This tarball can be retrieved back to a <cite>Stack</cite> instance with <code c
 <dt class="sig sig-object py" id="superduperdb.components.stack.Stack.components">
 <span class="sig-name descname"><span class="pre">components</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#superduperdb.components.component.Component" title="superduperdb.components.component.Component"><span class="pre">Component</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#superduperdb.components.stack.Stack.components" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.components.stack.Stack.from_dict">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/components/stack.html#Stack.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.stack.Stack.from_dict" title="Link to this definition">#</a></dt>
+<dd><p>Load a stack from a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d</strong> – Dictionary containing the stack definition.</p></li>
+<li><p><strong>db</strong> – Datalayer instance to use for loading artifacts.</p></li>
+</ul>
+</dd>
+</dl>
+<p>The dictionary should look something like below.
+1. An <code class="docutils literal notranslate"><span class="pre">identifier</span></code> field
+2. An <code class="docutils literal notranslate"><span class="pre">artifact</span></code> field containing a list of artifacts including the</p>
+<blockquote>
+<div><p>serializer used</p>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>A <code class="docutils literal notranslate"><span class="pre">components</span></code> field containing a list of component definitions.
+These definitions can recursively refer to other components or artifacts,
+resp. <code class="docutils literal notranslate"><span class="pre">$components.&lt;identifier&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">$artifacts[&lt;index&gt;]</span></code>.</p></li>
+</ol>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>   <span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="s1">&#39;my_stack&#39;</span><span class="p">,</span>
+<span class="gp">... </span>   <span class="s1">&#39;artifacts&#39;</span><span class="p">:</span> <span class="p">[</span>
+<span class="gp">... </span>       <span class="p">{</span>
+<span class="gp">... </span>           <span class="s1">&#39;serializer&#39;</span><span class="p">:</span> <span class="s1">&#39;pickle&#39;</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="s1">&#39;bytes&#39;</span><span class="p">:</span> <span class="n">bytes_</span><span class="p">,</span>
+<span class="gp">... </span>       <span class="p">},</span>
+<span class="gp">... </span>   <span class="p">],</span>
+<span class="gp">... </span>   <span class="s1">&#39;components&#39;</span><span class="p">:</span> <span class="p">[</span>
+<span class="gp">... </span>       <span class="p">{</span><span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="s1">&#39;superduperdb.ext.pillow&#39;</span><span class="p">,</span> <span class="s1">&#39;variable&#39;</span><span class="p">:</span> <span class="s1">&#39;pil_image&#39;</span><span class="p">},</span>
+<span class="gp">... </span>       <span class="p">{</span>
+<span class="gp">... </span>           <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="s1">&#39;superduperdb.components.model&#39;</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="s1">&#39;cls&#39;</span><span class="p">:</span> <span class="s1">&#39;Model&#39;</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="s1">&#39;dict&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>               <span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="s1">&#39;my_model&#39;</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="s1">&#39;$artifacts[0]&#39;</span><span class="p">,</span>
+<span class="gp">... </span>               <span class="s1">&#39;encoder&#39;</span><span class="p">:</span> <span class="s1">&#39;$components.pil_image&#39;</span><span class="p">,</span>
+<span class="gp">... </span>           <span class="p">},</span>
+<span class="gp">... </span>       <span class="p">},</span>
+<span class="gp">... </span>   <span class="p">],</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Stack</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Stack</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Model</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.components.stack.Stack.from_tarball">
@@ -1507,7 +1652,7 @@ override the exisitng artibutes.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.components.stack.Stack.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/components/stack.html#Stack.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.stack.Stack.save" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/components/stack.html#Stack.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.components.stack.Stack.save" title="Link to this definition">#</a></dt>
 <dd><p>Save method takes a stack name and exports <code class="docutils literal notranslate"><span class="pre">self</span></code>
 to tarball by serializing <code class="docutils literal notranslate"><span class="pre">Stack</span></code> along with storing
 artifacts to filesystem</p>
@@ -1938,19 +2083,40 @@ defining AI functionality.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-superduperdb.components.serializer">superduperdb.components.serializer module</a><ul>
+<li><a class="reference internal" href="#superduperdb.components.serializer.DecodeTorchStateDict"><code class="docutils literal notranslate"><span class="pre">DecodeTorchStateDict</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.components.serializer.Serializer"><code class="docutils literal notranslate"><span class="pre">Serializer</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.components.serializer.Serializer.construct"><code class="docutils literal notranslate"><span class="pre">Serializer.construct()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.Serializer.constructor"><code class="docutils literal notranslate"><span class="pre">Serializer.constructor</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.Serializer.decode"><code class="docutils literal notranslate"><span class="pre">Serializer.decode()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.Serializer.decoder"><code class="docutils literal notranslate"><span class="pre">Serializer.decoder</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.Serializer.encode"><code class="docutils literal notranslate"><span class="pre">Serializer.encode()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.Serializer.encoder"><code class="docutils literal notranslate"><span class="pre">Serializer.encoder</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.components.serializer.Serializer.identifier"><code class="docutils literal notranslate"><span class="pre">Serializer.identifier</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.components.serializer.Serializer.object"><code class="docutils literal notranslate"><span class="pre">Serializer.object</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.Serializer.info"><code class="docutils literal notranslate"><span class="pre">Serializer.info</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.components.serializer.Serializer.pre_create"><code class="docutils literal notranslate"><span class="pre">Serializer.pre_create()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.components.serializer.Serializer.type_id"><code class="docutils literal notranslate"><span class="pre">Serializer.type_id</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.Serializers"><code class="docutils literal notranslate"><span class="pre">Serializers</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.components.serializer.Serializers.add"><code class="docutils literal notranslate"><span class="pre">Serializers.add()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.Serializers.serializers"><code class="docutils literal notranslate"><span class="pre">Serializers.serializers</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.build_torch_state_serializer"><code class="docutils literal notranslate"><span class="pre">build_torch_state_serializer()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.dill_decode"><code class="docutils literal notranslate"><span class="pre">dill_decode()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.dill_encode"><code class="docutils literal notranslate"><span class="pre">dill_encode()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.encode_torch_state_dict"><code class="docutils literal notranslate"><span class="pre">encode_torch_state_dict()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.pickle_decode"><code class="docutils literal notranslate"><span class="pre">pickle_decode()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.pickle_encode"><code class="docutils literal notranslate"><span class="pre">pickle_encode()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.torch_decode"><code class="docutils literal notranslate"><span class="pre">torch_decode()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.serializer.torch_encode"><code class="docutils literal notranslate"><span class="pre">torch_encode()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-superduperdb.components.stack">superduperdb.components.stack module</a><ul>
 <li><a class="reference internal" href="#superduperdb.components.stack.Stack"><code class="docutils literal notranslate"><span class="pre">Stack</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.components.stack.Stack.child_components"><code class="docutils literal notranslate"><span class="pre">Stack.child_components</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.components.stack.Stack.components"><code class="docutils literal notranslate"><span class="pre">Stack.components</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.components.stack.Stack.from_dict"><code class="docutils literal notranslate"><span class="pre">Stack.from_dict()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.components.stack.Stack.from_tarball"><code class="docutils literal notranslate"><span class="pre">Stack.from_tarball()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.components.stack.Stack.get"><code class="docutils literal notranslate"><span class="pre">Stack.get()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.components.stack.Stack.get_component_type"><code class="docutils literal notranslate"><span class="pre">Stack.get_component_type()</span></code></a></li>

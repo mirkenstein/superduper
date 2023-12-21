@@ -238,15 +238,16 @@
 <span></span><span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
-<span class="kn">from</span> <span class="nn">superduperdb.base.artifact</span> <span class="kn">import</span> <span class="n">Artifact</span>
-<span class="kn">from</span> <span class="nn">superduperdb.misc.serialization</span> <span class="kn">import</span> <span class="n">Info</span><span class="p">,</span> <span class="n">serializers</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.tree</span> <span class="kn">import</span> <span class="n">tree_find</span><span class="p">,</span> <span class="n">tree_rewrite</span>
 
 <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.base.artifact</span> <span class="kn">import</span> <span class="n">Artifact</span>
     <span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">Component</span>
 
 
 <span class="k">def</span> <span class="nf">_is_artifact</span><span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.base.artifact</span> <span class="kn">import</span> <span class="n">Artifact</span>
+
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">)</span>
 
 
@@ -260,7 +261,7 @@
 <div class="viewcode-block" id="ArtifactStoreMixin.get_artifacts">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifact.ArtifactStoreMixin.get_artifacts">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_artifacts</span><span class="p">(</span><span class="n">tree</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">Artifact</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">get_artifacts</span><span class="p">(</span><span class="n">tree</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;Artifact&#39;</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Yield all Artifacts in a tree</span>
 
 <span class="sd">        :param tree: A tree made up of dicts and lists</span>
@@ -301,8 +302,9 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load_artifacts</span><span class="p">(</span>
         <span class="n">tree</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
-        <span class="n">cache</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">],</span>
+        <span class="n">cache</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Artifact&#39;</span><span class="p">],</span>
         <span class="n">getter</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">bytes</span><span class="p">],</span>
+        <span class="n">serializers</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace ArtifactDesc dicts in a tree by Artifacts with a getter</span>
 
@@ -320,8 +322,7 @@
 
 <div class="viewcode-block" id="ArtifactStoreMixin._replace_artifacts">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifact.ArtifactStoreMixin._replace_artifacts">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_replace_artifacts</span><span class="p">(</span><span class="n">tree</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">Info</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_replace_artifacts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tree</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace every Artifact in a tree with hash of the value, looked up in Info</span>
 
 <span class="sd">        :param tree: A tree made up of dicts and lists</span>
@@ -329,7 +330,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">rewrite</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">info</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">sha1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">info</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">serializers</span><span class="p">)]</span>
 
         <span class="k">return</span> <span class="n">tree_rewrite</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">_is_artifact</span><span class="p">,</span> <span class="n">rewrite</span><span class="p">)</span></div>
 
@@ -337,7 +338,9 @@
 <div class="viewcode-block" id="ArtifactStoreMixin._load_artifacts_from_cache">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifact.ArtifactStoreMixin._load_artifacts_from_cache">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_load_artifacts_from_cache</span><span class="p">(</span><span class="n">tree</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_load_artifacts_from_cache</span><span class="p">(</span>
+        <span class="n">tree</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">cache</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Artifact&#39;</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace ArtifactDesc dicts in a tree by Artifacts.&quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">rewrite</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
@@ -353,10 +356,11 @@
     <span class="k">def</span> <span class="nf">_load_artifacts</span><span class="p">(</span>
         <span class="n">tree</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
         <span class="n">make</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span>
-        <span class="n">cache</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Artifact</span><span class="p">],</span>
+        <span class="n">cache</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Artifact&#39;</span><span class="p">],</span>
         <span class="n">artifact_store</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;ArtifactStore&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace ArtifactDesc dicts in a tree by Artifacts.&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">superduperdb.base.artifact</span> <span class="kn">import</span> <span class="n">Artifact</span>
 
         <span class="k">def</span> <span class="nf">rewrite</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
             <span class="n">file_id</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;file_id&#39;</span><span class="p">]</span>
@@ -364,12 +368,10 @@
                 <span class="k">return</span> <span class="n">cache</span><span class="p">[</span><span class="n">file_id</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
-            <span class="n">info</span><span class="p">,</span> <span class="n">serializer</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;info&#39;</span><span class="p">),</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;serializer&#39;</span><span class="p">]</span>
-            <span class="n">artifact</span> <span class="o">=</span> <span class="n">make</span><span class="p">(</span><span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span> <span class="n">serializer</span><span class="o">=</span><span class="n">serializer</span><span class="p">)</span>
+            <span class="n">artifact</span> <span class="o">=</span> <span class="n">make</span><span class="p">(</span><span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span> <span class="n">serializer</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;serializer&#39;</span><span class="p">])</span>
             <span class="n">cache</span><span class="p">[</span><span class="n">file_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">Artifact</span><span class="p">(</span>
                 <span class="n">artifact</span><span class="o">=</span><span class="n">artifact</span><span class="p">,</span>
-                <span class="n">info</span><span class="o">=</span><span class="n">info</span><span class="p">,</span>
-                <span class="n">serializer</span><span class="o">=</span><span class="n">serializer</span><span class="p">,</span>
+                <span class="n">serializer</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;serializer&#39;</span><span class="p">],</span>
                 <span class="n">artifact_store</span><span class="o">=</span><span class="n">artifact_store</span><span class="p">,</span>
                 <span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span>
             <span class="p">)</span>
@@ -397,6 +399,16 @@
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_serializers</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">serializers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serializers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Serializers not initialized!&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serializers</span>
+
+    <span class="nd">@serializers</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">serializers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_serializers</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="ArtifactStore.url">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifact.ArtifactStore.url">[docs]</a>
@@ -469,7 +481,7 @@
 
 <div class="viewcode-block" id="ArtifactStore.load_artifact">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifact.ArtifactStore.load_artifact">[docs]</a>
-    <span class="k">def</span> <span class="nf">load_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">serializer</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">Info</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">load_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">serializer</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load artifact from artifact store, and deserialize.</span>
 
@@ -477,13 +489,13 @@
 <span class="sd">        :param serializer: Serializer to use for deserialization</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_bytes</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
-        <span class="n">serializer_function</span> <span class="o">=</span> <span class="n">serializers</span><span class="p">[</span><span class="n">serializer</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">serializer_function</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span></div>
+        <span class="n">serializer_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serializers</span><span class="p">[</span><span class="n">serializer</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">serializer_function</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="nb">bytes</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ArtifactStore.save">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifact.ArtifactStore.save">[docs]</a>
-    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">Artifact</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;Artifact&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save list of artifacts and replace the artifacts with file reference</span>
 <span class="sd">        :param artifacts: List of ``Artifact`` instances</span>
@@ -498,14 +510,14 @@
 
 <div class="viewcode-block" id="ArtifactStore.replace">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifact.ArtifactStore.replace">[docs]</a>
-    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serialized</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">artifact_info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serialized</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace every Artifact in the given ``object`` serialized info with</span>
 <span class="sd">        artifact lookup.</span>
 
 <span class="sd">        :param serialized: Serialized component dict</span>
 <span class="sd">        :param artifact_info: A dictionary mapping hashes to [TBD]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replace_artifacts</span><span class="p">(</span><span class="n">serialized</span><span class="p">,</span> <span class="n">artifact_info</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replace_artifacts</span><span class="p">(</span><span class="n">serialized</span><span class="p">,</span> <span class="n">info</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="ArtifactStore.update">
