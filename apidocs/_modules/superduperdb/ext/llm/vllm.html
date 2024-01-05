@@ -236,15 +236,12 @@
         </div>
         <article role="main">
           <h1>Source code for superduperdb.ext.llm.vllm</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span></span><span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
 
-<span class="kn">import</span> <span class="nn">aiohttp</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 
-<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
-<span class="kn">from</span> <span class="nn">superduperdb.ext.llm.base</span> <span class="kn">import</span> <span class="n">BaseLLMAPI</span><span class="p">,</span> <span class="n">BaseLLMModel</span><span class="p">,</span> <span class="n">BaseOpenAI</span>
+<span class="kn">from</span> <span class="nn">superduperdb.ext.llm.base</span> <span class="kn">import</span> <span class="n">BaseLLMAPI</span><span class="p">,</span> <span class="n">BaseLLMModel</span>
 
 <span class="n">VLLM_INFERENCE_PARAMETERS_LIST</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;n&quot;</span><span class="p">,</span>
@@ -272,23 +269,6 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="VllmOpenAI">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.vllm.VllmOpenAI">[docs]</a>
-<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">VllmOpenAI</span><span class="p">(</span><span class="n">BaseOpenAI</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Wrapper for requesting the vLLM API service</span>
-<span class="sd">    (OpenAI format, started by vllm.entrypoints.openai.api_server)</span>
-
-<span class="sd">    {parent_doc}</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">openai_api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;EMPTY&quot;</span>
-
-    <span class="vm">__doc__</span> <span class="o">=</span> <span class="vm">__doc__</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parent_doc</span><span class="o">=</span><span class="n">BaseOpenAI</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span></div>
-
-
-
 <div class="viewcode-block" id="VllmAPI">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.vllm.VllmAPI">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
@@ -311,35 +291,6 @@
         <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">post_data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;text&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
 
-
-<div class="viewcode-block" id="VllmAPI._batch_generate">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.vllm.VllmAPI._batch_generate">[docs]</a>
-    <span class="k">def</span> <span class="nf">_batch_generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Use asyncio to batch generate text from a list of prompts.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_async_batch_generate</span><span class="p">(</span><span class="n">prompts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
-
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_async_generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">semaphore</span><span class="p">,</span> <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">post_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_post_data</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">async</span> <span class="k">with</span> <span class="n">semaphore</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">post_data</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
-                    <span class="n">response_json</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-                    <span class="k">return</span> <span class="n">response_json</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">except</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HTTP request failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. Prompt: </span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="s2">&quot;&quot;</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_async_batch_generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="k">async</span> <span class="k">with</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-            <span class="n">semaphore</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Semaphore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_batch_size</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompts</span><span class="p">))</span>
-            <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_async_generate</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">semaphore</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">prompt</span> <span class="ow">in</span> <span class="n">prompts</span>
-            <span class="p">]</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
 
 <div class="viewcode-block" id="VllmAPI.build_post_data">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.vllm.VllmAPI.build_post_data">[docs]</a>
