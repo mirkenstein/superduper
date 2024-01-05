@@ -179,6 +179,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -387,11 +388,7 @@
             <span class="k">assert</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search_type</span> <span class="o">==</span> <span class="s1">&#39;lance&#39;</span><span class="p">,</span> <span class="n">msg</span>
 
         <span class="n">vector_search_cls</span> <span class="o">=</span> <span class="n">vector_searcher_implementations</span><span class="p">[</span><span class="n">searcher_type</span><span class="p">]</span>
-        <span class="n">vector_comparison</span> <span class="o">=</span> <span class="n">vector_search_cls</span><span class="p">(</span>
-            <span class="n">identifier</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-            <span class="n">dimensions</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
-            <span class="n">measure</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">measure</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="n">vector_comparison</span> <span class="o">=</span> <span class="n">vector_search_cls</span><span class="o">.</span><span class="n">from_component</span><span class="p">(</span><span class="n">vi</span><span class="p">)</span>
 
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clt</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="s1">&#39;clt.identifier must be a string&#39;</span>
 
@@ -1214,6 +1211,7 @@
         <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_parent_child</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="nb">object</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span>
         <span class="nb">object</span><span class="o">.</span><span class="n">post_create</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_component_to_cache</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
         <span class="n">these_jobs</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">schedule_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
         <span class="n">jobs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">these_jobs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">jobs</span>
@@ -1571,6 +1569,19 @@
 
         <span class="c1"># TODO: gracefully close all opened connections</span>
         <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="Datalayer._add_component_to_cache">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer._add_component_to_cache">[docs]</a>
+    <span class="k">def</span> <span class="nf">_add_component_to_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">:</span> <span class="n">Component</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add component to cache when it is added to the db.</span>
+<span class="sd">        Avoiding the need to load it from the db again.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">type_id</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">type_id</span>
+        <span class="k">if</span> <span class="n">cm</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_id_to_cache_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">type_id</span><span class="p">):</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cm</span><span class="p">)[</span><span class="n">component</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="n">component</span>
+        <span class="n">component</span><span class="o">.</span><span class="n">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 </div>
 
 

@@ -1,0 +1,1008 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="superduperdb.ext.numpy package" href="superduperdb.ext.numpy.html" /><link rel="prev" title="superduperdb.ext.jina package" href="superduperdb.ext.jina.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>superduperdb.ext.llm package - Python documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Python  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/SuperDuperDB_logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Python  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">superduperdb</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of superduperdb</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="superduperdb.html">superduperdb package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of superduperdb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="superduperdb.backends.html">superduperdb.backends package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of superduperdb.backends package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.backends.base.html">superduperdb.backends.base package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.backends.dask.html">superduperdb.backends.dask package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.backends.ibis.html">superduperdb.backends.ibis package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.backends.local.html">superduperdb.backends.local package</a></li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="superduperdb.backends.mongodb.html">superduperdb.backends.mongodb package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of superduperdb.backends.mongodb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="superduperdb.backends.mongodb.cdc.html">superduperdb.backends.mongodb.cdc package</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.backends.ray.html">superduperdb.backends.ray package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="superduperdb.base.html">superduperdb.base package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="superduperdb.cdc.html">superduperdb.cdc package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="superduperdb.cli.html">superduperdb.cli package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="superduperdb.components.html">superduperdb.components package</a></li>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="superduperdb.ext.html">superduperdb.ext package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">superduperdb.ext.llm package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.sentence_transformers.html">superduperdb.ext.sentence_transformers package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.sklearn.html">superduperdb.ext.sklearn package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.torch.html">superduperdb.ext.torch package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.transformers.html">superduperdb.ext.transformers package</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="superduperdb.misc.html">superduperdb.misc package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.misc package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.misc.runnable.html">superduperdb.misc.runnable package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="superduperdb.server.html">superduperdb.server package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="superduperdb.vector_search.html">superduperdb.vector_search package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of superduperdb.vector_search package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.vector_search.server.html">superduperdb.vector_search.server package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="superduperdb-ext-llm-package">
+<h1>superduperdb.ext.llm package<a class="headerlink" href="#superduperdb-ext-llm-package" title="Link to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-superduperdb.ext.llm.base">
+<span id="superduperdb-ext-llm-base-module"></span><h2>superduperdb.ext.llm.base module<a class="headerlink" href="#module-superduperdb.ext.llm.base" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseLLMAPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.base.</span></span><span class="sig-name descname"><span class="pre">BaseLLMAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_template:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_url:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[t.Union[Schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">t.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">t.Optional[CompoundSelect]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">t.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Optional[t.Dict]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#BaseLLMAPI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base.BaseLLMAPI" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM" title="superduperdb.ext.llm.base._BaseLLM"><code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseLLM</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api_url</strong> – The URL for the API.</p></li>
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>inference_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseLLMAPI.api_url">
+<span class="sig-name descname"><span class="pre">api_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseLLMAPI.api_url" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseLLMAPI.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#BaseLLMAPI.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base.BaseLLMAPI.init" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseLLMModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.base.</span></span><span class="sig-name descname"><span class="pre">BaseLLMModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_template:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_ray:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_address:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_config:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[t.Union[Schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">t.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">t.Optional[CompoundSelect]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">t.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Optional[t.Dict]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#BaseLLMModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base.BaseLLMModel" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM" title="superduperdb.ext.llm.base._BaseLLM"><code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseLLM</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_name</strong> – The name of the model to use.</p></li>
+<li><p><strong>on_ray</strong> – Whether to run the model on Ray.</p></li>
+<li><p><strong>ray_config</strong> – The Ray config to use.</p></li>
+<li><p><strong>ray_addredd</strong> – The address of the ray cluster.</p></li>
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>inference_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseLLMModel.identifier">
+<span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseLLMModel.identifier" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseLLMModel.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseLLMModel.model_name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseLLMModel.on_ray">
+<span class="sig-name descname"><span class="pre">on_ray</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseLLMModel.on_ray" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseLLMModel.ray_address">
+<span class="sig-name descname"><span class="pre">ray_address</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseLLMModel.ray_address" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseLLMModel.ray_config">
+<span class="sig-name descname"><span class="pre">ray_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseLLMModel.ray_config" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.base.</span></span><span class="sig-name descname"><span class="pre">BaseOpenAI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_template:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openai_api_base:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openai_api_key:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'gpt-3.5-turbo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_role:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'user'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_role:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'system'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[t.Union[Schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">t.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">t.Optional[CompoundSelect]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">t.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Optional[t.Dict]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#BaseOpenAI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM" title="superduperdb.ext.llm.base._BaseLLM"><code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseLLM</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>openai_api_base</strong> – The base URL for the OpenAI API.</p></li>
+<li><p><strong>openai_api_key</strong> – The API key to use for the OpenAI API.</p></li>
+<li><p><strong>model_name</strong> – The name of the model to use.</p></li>
+<li><p><strong>chat</strong> – Whether to use the chat API or the completion API. Defaults to False.</p></li>
+<li><p><strong>system_prompt</strong> – The prompt to use for the system.</p></li>
+<li><p><strong>user_role</strong> – The role to use for the user.</p></li>
+<li><p><strong>system_role</strong> – The role to use for the system.</p></li>
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>inference_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI._async_batch_generate">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_async_batch_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#BaseOpenAI._async_batch_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI._async_batch_generate" title="Link to this definition">#</a></dt>
+<dd><p>Async method to concurrently process multiple prompts.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI._async_chat_generate">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_async_chat_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#BaseOpenAI._async_chat_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI._async_chat_generate" title="Link to this definition">#</a></dt>
+<dd><p>Async method to generate a completion for a given prompt with chat format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI._async_prompt_generate">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_async_prompt_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#BaseOpenAI._async_prompt_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI._async_prompt_generate" title="Link to this definition">#</a></dt>
+<dd><p>Async method to generate a completion for a given prompt with prompt format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI._batch_generate">
+<span class="sig-name descname"><span class="pre">_batch_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#BaseOpenAI._batch_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI._batch_generate" title="Link to this definition">#</a></dt>
+<dd><p>Use asyncio to batch generate text from a list of prompts.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI._chat_generate">
+<span class="sig-name descname"><span class="pre">_chat_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#BaseOpenAI._chat_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI._chat_generate" title="Link to this definition">#</a></dt>
+<dd><p>Generate a completion for a given prompt with chat format.
+:param prompt: The prompt to generate a completion for.
+:param kwargs: Any additional arguments to pass to the API.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI._prompt_generate">
+<span class="sig-name descname"><span class="pre">_prompt_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#BaseOpenAI._prompt_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI._prompt_generate" title="Link to this definition">#</a></dt>
+<dd><p>Generate a completion for a given prompt with prompt format.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI.chat">
+<span class="sig-name descname"><span class="pre">chat</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI.chat" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI.identifier">
+<span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI.identifier" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#BaseOpenAI.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI.init" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI.model_name">
+<span class="sig-name descname"><span class="pre">model_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'gpt-3.5-turbo'</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI.model_name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI.openai_api_base">
+<span class="sig-name descname"><span class="pre">openai_api_base</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI.openai_api_base" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI.openai_api_key">
+<span class="sig-name descname"><span class="pre">openai_api_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI.openai_api_key" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI.system_prompt">
+<span class="sig-name descname"><span class="pre">system_prompt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI.system_prompt" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI.system_role">
+<span class="sig-name descname"><span class="pre">system_role</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'system'</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI.system_role" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.BaseOpenAI.user_role">
+<span class="sig-name descname"><span class="pre">user_role</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'user'</span></em><a class="headerlink" href="#superduperdb.ext.llm.base.BaseOpenAI.user_role" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base._BaseLLM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.base.</span></span><span class="sig-name descname"><span class="pre">_BaseLLM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_template:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[t.Union[Schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">t.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">t.Optional[CompoundSelect]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">t.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Optional[t.Dict]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#_BaseLLM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base._BaseLLM" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="superduperdb.components.html#superduperdb.components.component.Component" title="superduperdb.components.component.Component"><code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code></a>, <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model._Predictor" title="superduperdb.components.model._Predictor"><code class="xref py py-class docutils literal notranslate"><span class="pre">_Predictor</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>inference_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base._BaseLLM._batch_generate">
+<span class="sig-name descname"><span class="pre">_batch_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#_BaseLLM._batch_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base._BaseLLM._batch_generate" title="Link to this definition">#</a></dt>
+<dd><p>Base method to batch generate text from a list of prompts.
+If the model can run batch generation efficiently, pls override this method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base._BaseLLM.format_prompt">
+<span class="sig-name descname"><span class="pre">format_prompt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#_BaseLLM.format_prompt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base._BaseLLM.format_prompt" title="Link to this definition">#</a></dt>
+<dd><p>Format a prompt with the given prompt function or template.
+:param x: The input to format.
+:param kwargs: Any additional arguments to pass to the prompt function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base._BaseLLM.get_kwargs">
+<span class="sig-name descname"><span class="pre">get_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">kwargs_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#_BaseLLM.get_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base._BaseLLM.get_kwargs" title="Link to this definition">#</a></dt>
+<dd><p>Get kwargs and object attributes that are in the function signature
+:param func (Callable): function to get kwargs for
+:param kwargs (list of dict): kwargs to filter</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base._BaseLLM.inference_kwargs">
+<span class="sig-name descname"><span class="pre">inference_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#superduperdb.ext.llm.base._BaseLLM.inference_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base._BaseLLM.init">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#_BaseLLM.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base._BaseLLM.init" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base._BaseLLM.max_batch_size">
+<span class="sig-name descname"><span class="pre">max_batch_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">64</span></em><a class="headerlink" href="#superduperdb.ext.llm.base._BaseLLM.max_batch_size" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base._BaseLLM.post_create">
+<span class="sig-name descname"><span class="pre">post_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#_BaseLLM.post_create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base._BaseLLM.post_create" title="Link to this definition">#</a></dt>
+<dd><p>Called after the first time this component is created.
+Generally used if <code class="docutils literal notranslate"><span class="pre">self.version</span></code> is important in this logic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>db</strong> – the db that creates the component</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base._BaseLLM.prompt_func">
+<span class="sig-name descname"><span class="pre">prompt_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.llm.base._BaseLLM.prompt_func" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base._BaseLLM.prompt_template">
+<span class="sig-name descname"><span class="pre">prompt_template</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{input}'</span></em><a class="headerlink" href="#superduperdb.ext.llm.base._BaseLLM.prompt_template" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base._BaseLLM.to_call">
+<span class="sig-name descname"><span class="pre">to_call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#_BaseLLM.to_call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base._BaseLLM.to_call" title="Link to this definition">#</a></dt>
+<dd><p>The method to use to call prediction. Should be implemented
+by the child class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.base.ensure_initialized">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.base.</span></span><span class="sig-name descname"><span class="pre">ensure_initialized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/base.html#ensure_initialized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.base.ensure_initialized" title="Link to this definition">#</a></dt>
+<dd><p>Decorator to ensure that the model is initialized before calling the function</p>
+</dd></dl>
+
+</section>
+<section id="module-superduperdb.ext.llm.openai">
+<span id="superduperdb-ext-llm-openai-module"></span><h2>superduperdb.ext.llm.openai module<a class="headerlink" href="#module-superduperdb.ext.llm.openai" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.openai.OpenAI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.openai.</span></span><span class="sig-name descname"><span class="pre">OpenAI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_template:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openai_api_base:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openai_api_key:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'gpt-3.5-turbo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_role:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'user'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_role:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'system'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[t.Union[Schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">t.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">t.Optional[CompoundSelect]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">t.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Optional[t.Dict]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/openai.html#OpenAI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.openai.OpenAI" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI" title="superduperdb.ext.llm.base.BaseOpenAI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOpenAI</span></code></a></p>
+<p>OpenAI chat completion predictor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>openai_api_base</strong> – The base URL for the OpenAI API.</p></li>
+<li><p><strong>openai_api_key</strong> – The API key to use for the OpenAI API.</p></li>
+<li><p><strong>model_name</strong> – The name of the model to use.</p></li>
+<li><p><strong>chat</strong> – Whether to use the chat API or the completion API. Defaults to False.</p></li>
+<li><p><strong>system_prompt</strong> – The prompt to use for the system.</p></li>
+<li><p><strong>user_role</strong> – The role to use for the user.</p></li>
+<li><p><strong>system_role</strong> – The role to use for the system.</p></li>
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>inference_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.openai.OpenAI.__post_init__">
+<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/openai.html#OpenAI.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.openai.OpenAI.__post_init__" title="Link to this definition">#</a></dt>
+<dd><p>Set model name.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-superduperdb.ext.llm.vllm">
+<span id="superduperdb-ext-llm-vllm-module"></span><h2>superduperdb.ext.llm.vllm module<a class="headerlink" href="#module-superduperdb.ext.llm.vllm" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.vllm.VllmAPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.vllm.</span></span><span class="sig-name descname"><span class="pre">VllmAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_template:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_url:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[t.Union[Schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">t.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">t.Optional[CompoundSelect]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">t.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Optional[t.Dict]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmAPI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.vllm.VllmAPI" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.llm.base.BaseLLMAPI" title="superduperdb.ext.llm.base.BaseLLMAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLMAPI</span></code></a></p>
+<p>Wrapper for requesting the vLLM API service
+(API Server format, started by vllm.entrypoints.api_server)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api_url</strong> – The URL for the API.</p></li>
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>inference_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.vllm.VllmAPI._batch_generate">
+<span class="sig-name descname"><span class="pre">_batch_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmAPI._batch_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.vllm.VllmAPI._batch_generate" title="Link to this definition">#</a></dt>
+<dd><p>Use asyncio to batch generate text from a list of prompts.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.vllm.VllmAPI._generate">
+<span class="sig-name descname"><span class="pre">_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmAPI._generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.vllm.VllmAPI._generate" title="Link to this definition">#</a></dt>
+<dd><p>Batch generate text from a prompt.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.vllm.VllmAPI.build_post_data">
+<span class="sig-name descname"><span class="pre">build_post_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmAPI.build_post_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.vllm.VllmAPI.build_post_data" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.vllm.VllmModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.vllm.</span></span><span class="sig-name descname"><span class="pre">VllmModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_template:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_ray:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_address:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_config:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tensor_parallel_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trust_remote_code:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vllm_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[t.Union[Schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">t.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">t.Optional[CompoundSelect]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">t.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Optional[t.Dict]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.vllm.VllmModel" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.llm.base.BaseLLMModel" title="superduperdb.ext.llm.base.BaseLLMModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLMModel</span></code></a></p>
+<p>Load a large language model from VLLM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_name</strong> – The name of the model to use.</p></li>
+<li><p><strong>trust_remote_code</strong> – Whether to trust remote code.</p></li>
+<li><p><strong>dtype</strong> – The data type to use.</p></li>
+<li><p><strong>model_name</strong> – The name of the model to use.</p></li>
+<li><p><strong>on_ray</strong> – Whether to run the model on Ray.</p></li>
+<li><p><strong>ray_config</strong> – The Ray config to use.</p></li>
+<li><p><strong>ray_addredd</strong> – The address of the ray cluster.</p></li>
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>inference_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.vllm.VllmModel.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmModel.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.vllm.VllmModel.init" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.vllm.VllmModel.tensor_parallel_size">
+<span class="sig-name descname"><span class="pre">tensor_parallel_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#superduperdb.ext.llm.vllm.VllmModel.tensor_parallel_size" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.vllm.VllmModel.trust_remote_code">
+<span class="sig-name descname"><span class="pre">trust_remote_code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#superduperdb.ext.llm.vllm.VllmModel.trust_remote_code" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.vllm.VllmModel.vllm_kwargs">
+<span class="sig-name descname"><span class="pre">vllm_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#superduperdb.ext.llm.vllm.VllmModel.vllm_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.vllm.VllmOpenAI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.vllm.</span></span><span class="sig-name descname"><span class="pre">VllmOpenAI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_template:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openai_api_base:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openai_api_key:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">'EMPTY'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'gpt-3.5-turbo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_role:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'user'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_role:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'system'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[t.Union[Schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">t.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">t.Optional[CompoundSelect]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">t.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Optional[t.Dict]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmOpenAI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.vllm.VllmOpenAI" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI" title="superduperdb.ext.llm.base.BaseOpenAI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOpenAI</span></code></a></p>
+<p>Wrapper for requesting the vLLM API service
+(OpenAI format, started by vllm.entrypoints.openai.api_server)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>openai_api_base</strong> – The base URL for the OpenAI API.</p></li>
+<li><p><strong>openai_api_key</strong> – The API key to use for the OpenAI API.</p></li>
+<li><p><strong>model_name</strong> – The name of the model to use.</p></li>
+<li><p><strong>chat</strong> – Whether to use the chat API or the completion API. Defaults to False.</p></li>
+<li><p><strong>system_prompt</strong> – The prompt to use for the system.</p></li>
+<li><p><strong>user_role</strong> – The role to use for the user.</p></li>
+<li><p><strong>system_role</strong> – The role to use for the system.</p></li>
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>inference_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.vllm.VllmOpenAI.openai_api_key">
+<span class="sig-name descname"><span class="pre">openai_api_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EMPTY'</span></em><a class="headerlink" href="#superduperdb.ext.llm.vllm.VllmOpenAI.openai_api_key" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-superduperdb.ext.llm">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-superduperdb.ext.llm" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.OpenAI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.</span></span><span class="sig-name descname"><span class="pre">OpenAI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_template:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openai_api_base:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openai_api_key:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'gpt-3.5-turbo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_role:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'user'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_role:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'system'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[t.Union[Schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">t.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">t.Optional[CompoundSelect]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">t.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Optional[t.Dict]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/openai.html#OpenAI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.OpenAI" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI" title="superduperdb.ext.llm.base.BaseOpenAI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOpenAI</span></code></a></p>
+<p>OpenAI chat completion predictor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>openai_api_base</strong> – The base URL for the OpenAI API.</p></li>
+<li><p><strong>openai_api_key</strong> – The API key to use for the OpenAI API.</p></li>
+<li><p><strong>model_name</strong> – The name of the model to use.</p></li>
+<li><p><strong>chat</strong> – Whether to use the chat API or the completion API. Defaults to False.</p></li>
+<li><p><strong>system_prompt</strong> – The prompt to use for the system.</p></li>
+<li><p><strong>user_role</strong> – The role to use for the user.</p></li>
+<li><p><strong>system_role</strong> – The role to use for the system.</p></li>
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>inference_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.OpenAI.__post_init__">
+<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/openai.html#OpenAI.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.OpenAI.__post_init__" title="Link to this definition">#</a></dt>
+<dd><p>Set model name.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmAPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.</span></span><span class="sig-name descname"><span class="pre">VllmAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_template:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_url:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[t.Union[Schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">t.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">t.Optional[CompoundSelect]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">t.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Optional[t.Dict]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmAPI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.VllmAPI" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.llm.base.BaseLLMAPI" title="superduperdb.ext.llm.base.BaseLLMAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLMAPI</span></code></a></p>
+<p>Wrapper for requesting the vLLM API service
+(API Server format, started by vllm.entrypoints.api_server)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api_url</strong> – The URL for the API.</p></li>
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>inference_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmAPI._batch_generate">
+<span class="sig-name descname"><span class="pre">_batch_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmAPI._batch_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.VllmAPI._batch_generate" title="Link to this definition">#</a></dt>
+<dd><p>Use asyncio to batch generate text from a list of prompts.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmAPI._generate">
+<span class="sig-name descname"><span class="pre">_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmAPI._generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.VllmAPI._generate" title="Link to this definition">#</a></dt>
+<dd><p>Batch generate text from a prompt.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmAPI.build_post_data">
+<span class="sig-name descname"><span class="pre">build_post_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmAPI.build_post_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.VllmAPI.build_post_data" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.</span></span><span class="sig-name descname"><span class="pre">VllmModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_template:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_ray:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_address:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_config:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tensor_parallel_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trust_remote_code:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vllm_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[t.Union[Schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">t.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">t.Optional[CompoundSelect]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">t.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Optional[t.Dict]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.VllmModel" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.llm.base.BaseLLMModel" title="superduperdb.ext.llm.base.BaseLLMModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLMModel</span></code></a></p>
+<p>Load a large language model from VLLM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_name</strong> – The name of the model to use.</p></li>
+<li><p><strong>trust_remote_code</strong> – Whether to trust remote code.</p></li>
+<li><p><strong>dtype</strong> – The data type to use.</p></li>
+<li><p><strong>model_name</strong> – The name of the model to use.</p></li>
+<li><p><strong>on_ray</strong> – Whether to run the model on Ray.</p></li>
+<li><p><strong>ray_config</strong> – The Ray config to use.</p></li>
+<li><p><strong>ray_addredd</strong> – The address of the ray cluster.</p></li>
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>inference_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmModel.inference_kwargs">
+<span class="sig-name descname"><span class="pre">inference_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#superduperdb.ext.llm.VllmModel.inference_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmModel.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmModel.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.VllmModel.init" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmModel.model_update_kwargs">
+<span class="sig-name descname"><span class="pre">model_update_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span></em><a class="headerlink" href="#superduperdb.ext.llm.VllmModel.model_update_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmModel.ray_config">
+<span class="sig-name descname"><span class="pre">ray_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#superduperdb.ext.llm.VllmModel.ray_config" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmModel.tensor_parallel_size">
+<span class="sig-name descname"><span class="pre">tensor_parallel_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#superduperdb.ext.llm.VllmModel.tensor_parallel_size" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmModel.trust_remote_code">
+<span class="sig-name descname"><span class="pre">trust_remote_code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#superduperdb.ext.llm.VllmModel.trust_remote_code" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmModel.vllm_kwargs">
+<span class="sig-name descname"><span class="pre">vllm_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#superduperdb.ext.llm.VllmModel.vllm_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmOpenAI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.</span></span><span class="sig-name descname"><span class="pre">VllmOpenAI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_template:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_kwargs:</span> <span class="pre">dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openai_api_base:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openai_api_key:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">'EMPTY'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'gpt-3.5-turbo'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_prompt:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_role:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'user'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_role:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'system'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[t.Union[Schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">t.Union[t.Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Artifact</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">t.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">t.Optional[CompoundSelect]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">t.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Optional[t.Dict]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/vllm.html#VllmOpenAI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.VllmOpenAI" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI" title="superduperdb.ext.llm.base.BaseOpenAI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseOpenAI</span></code></a></p>
+<p>Wrapper for requesting the vLLM API service
+(OpenAI format, started by vllm.entrypoints.openai.api_server)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>openai_api_base</strong> – The base URL for the OpenAI API.</p></li>
+<li><p><strong>openai_api_key</strong> – The API key to use for the OpenAI API.</p></li>
+<li><p><strong>model_name</strong> – The name of the model to use.</p></li>
+<li><p><strong>chat</strong> – Whether to use the chat API or the completion API. Defaults to False.</p></li>
+<li><p><strong>system_prompt</strong> – The prompt to use for the system.</p></li>
+<li><p><strong>user_role</strong> – The role to use for the user.</p></li>
+<li><p><strong>system_role</strong> – The role to use for the system.</p></li>
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>inference_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmOpenAI.inference_kwargs">
+<span class="sig-name descname"><span class="pre">inference_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#superduperdb.ext.llm.VllmOpenAI.inference_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmOpenAI.model_update_kwargs">
+<span class="sig-name descname"><span class="pre">model_update_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span></em><a class="headerlink" href="#superduperdb.ext.llm.VllmOpenAI.model_update_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.VllmOpenAI.openai_api_key">
+<span class="sig-name descname"><span class="pre">openai_api_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'EMPTY'</span></em><a class="headerlink" href="#superduperdb.ext.llm.VllmOpenAI.openai_api_key" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="superduperdb.ext.numpy.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">superduperdb.ext.numpy package</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="superduperdb.ext.jina.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">superduperdb.ext.jina package</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; SuperDuperDB Inc., opensource@superduperdb.com
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">superduperdb.ext.llm package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-superduperdb.ext.llm.base">superduperdb.ext.llm.base module</a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseLLMAPI"><code class="docutils literal notranslate"><span class="pre">BaseLLMAPI</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseLLMAPI.api_url"><code class="docutils literal notranslate"><span class="pre">BaseLLMAPI.api_url</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseLLMAPI.init"><code class="docutils literal notranslate"><span class="pre">BaseLLMAPI.init()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseLLMModel"><code class="docutils literal notranslate"><span class="pre">BaseLLMModel</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseLLMModel.identifier"><code class="docutils literal notranslate"><span class="pre">BaseLLMModel.identifier</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseLLMModel.model_name"><code class="docutils literal notranslate"><span class="pre">BaseLLMModel.model_name</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseLLMModel.on_ray"><code class="docutils literal notranslate"><span class="pre">BaseLLMModel.on_ray</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseLLMModel.ray_address"><code class="docutils literal notranslate"><span class="pre">BaseLLMModel.ray_address</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseLLMModel.ray_config"><code class="docutils literal notranslate"><span class="pre">BaseLLMModel.ray_config</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI._async_batch_generate"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI._async_batch_generate()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI._async_chat_generate"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI._async_chat_generate()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI._async_prompt_generate"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI._async_prompt_generate()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI._batch_generate"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI._batch_generate()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI._chat_generate"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI._chat_generate()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI._prompt_generate"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI._prompt_generate()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI.chat"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI.chat</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI.identifier"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI.identifier</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI.init"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI.init()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI.model_name"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI.model_name</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI.openai_api_base"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI.openai_api_base</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI.openai_api_key"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI.openai_api_key</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI.system_prompt"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI.system_prompt</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI.system_role"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI.system_role</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.BaseOpenAI.user_role"><code class="docutils literal notranslate"><span class="pre">BaseOpenAI.user_role</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM"><code class="docutils literal notranslate"><span class="pre">_BaseLLM</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM._batch_generate"><code class="docutils literal notranslate"><span class="pre">_BaseLLM._batch_generate()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM.format_prompt"><code class="docutils literal notranslate"><span class="pre">_BaseLLM.format_prompt()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM.get_kwargs"><code class="docutils literal notranslate"><span class="pre">_BaseLLM.get_kwargs()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM.inference_kwargs"><code class="docutils literal notranslate"><span class="pre">_BaseLLM.inference_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM.init"><code class="docutils literal notranslate"><span class="pre">_BaseLLM.init()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM.max_batch_size"><code class="docutils literal notranslate"><span class="pre">_BaseLLM.max_batch_size</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM.post_create"><code class="docutils literal notranslate"><span class="pre">_BaseLLM.post_create()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM.prompt_func"><code class="docutils literal notranslate"><span class="pre">_BaseLLM.prompt_func</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM.prompt_template"><code class="docutils literal notranslate"><span class="pre">_BaseLLM.prompt_template</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base._BaseLLM.to_call"><code class="docutils literal notranslate"><span class="pre">_BaseLLM.to_call()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.base.ensure_initialized"><code class="docutils literal notranslate"><span class="pre">ensure_initialized()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-superduperdb.ext.llm.openai">superduperdb.ext.llm.openai module</a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.openai.OpenAI"><code class="docutils literal notranslate"><span class="pre">OpenAI</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.openai.OpenAI.__post_init__"><code class="docutils literal notranslate"><span class="pre">OpenAI.__post_init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-superduperdb.ext.llm.vllm">superduperdb.ext.llm.vllm module</a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.vllm.VllmAPI"><code class="docutils literal notranslate"><span class="pre">VllmAPI</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.vllm.VllmAPI._batch_generate"><code class="docutils literal notranslate"><span class="pre">VllmAPI._batch_generate()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.vllm.VllmAPI._generate"><code class="docutils literal notranslate"><span class="pre">VllmAPI._generate()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.vllm.VllmAPI.build_post_data"><code class="docutils literal notranslate"><span class="pre">VllmAPI.build_post_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.vllm.VllmModel"><code class="docutils literal notranslate"><span class="pre">VllmModel</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.vllm.VllmModel.init"><code class="docutils literal notranslate"><span class="pre">VllmModel.init()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.vllm.VllmModel.tensor_parallel_size"><code class="docutils literal notranslate"><span class="pre">VllmModel.tensor_parallel_size</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.vllm.VllmModel.trust_remote_code"><code class="docutils literal notranslate"><span class="pre">VllmModel.trust_remote_code</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.vllm.VllmModel.vllm_kwargs"><code class="docutils literal notranslate"><span class="pre">VllmModel.vllm_kwargs</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.vllm.VllmOpenAI"><code class="docutils literal notranslate"><span class="pre">VllmOpenAI</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.vllm.VllmOpenAI.openai_api_key"><code class="docutils literal notranslate"><span class="pre">VllmOpenAI.openai_api_key</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-superduperdb.ext.llm">Module contents</a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.OpenAI"><code class="docutils literal notranslate"><span class="pre">OpenAI</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.OpenAI.__post_init__"><code class="docutils literal notranslate"><span class="pre">OpenAI.__post_init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmAPI"><code class="docutils literal notranslate"><span class="pre">VllmAPI</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmAPI._batch_generate"><code class="docutils literal notranslate"><span class="pre">VllmAPI._batch_generate()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmAPI._generate"><code class="docutils literal notranslate"><span class="pre">VllmAPI._generate()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmAPI.build_post_data"><code class="docutils literal notranslate"><span class="pre">VllmAPI.build_post_data()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmModel"><code class="docutils literal notranslate"><span class="pre">VllmModel</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmModel.inference_kwargs"><code class="docutils literal notranslate"><span class="pre">VllmModel.inference_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmModel.init"><code class="docutils literal notranslate"><span class="pre">VllmModel.init()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmModel.model_update_kwargs"><code class="docutils literal notranslate"><span class="pre">VllmModel.model_update_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmModel.ray_config"><code class="docutils literal notranslate"><span class="pre">VllmModel.ray_config</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmModel.tensor_parallel_size"><code class="docutils literal notranslate"><span class="pre">VllmModel.tensor_parallel_size</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmModel.trust_remote_code"><code class="docutils literal notranslate"><span class="pre">VllmModel.trust_remote_code</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmModel.vllm_kwargs"><code class="docutils literal notranslate"><span class="pre">VllmModel.vllm_kwargs</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmOpenAI"><code class="docutils literal notranslate"><span class="pre">VllmOpenAI</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmOpenAI.inference_kwargs"><code class="docutils literal notranslate"><span class="pre">VllmOpenAI.inference_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmOpenAI.model_update_kwargs"><code class="docutils literal notranslate"><span class="pre">VllmOpenAI.model_update_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.VllmOpenAI.openai_api_key"><code class="docutils literal notranslate"><span class="pre">VllmOpenAI.openai_api_key</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>

@@ -179,6 +179,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -255,7 +256,7 @@
 <span class="sd">    in the fast_vector_search backend.</span>
 
 <span class="sd">    :param vector_index: A identifier of vector-index.</span>
-<span class="sd">    :param ids: List of ids which were observed as changed documents.</span>
+<span class="sd">    :param ids: List of ids which were observed as deleted documents.</span>
 <span class="sd">    :param db: A ``DB`` instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">fast_vector_searchers</span><span class="p">[</span><span class="n">vector_index</span><span class="p">]</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span></div>
@@ -276,7 +277,7 @@
 
 <span class="sd">    :param vector-index: A identifier of the vector-index.</span>
 <span class="sd">    :param query: A query which was used by `db._build_task_workflow` method</span>
-<span class="sd">    :param ids: List of ids which were observed as changed documents.</span>
+<span class="sd">    :param ids: List of ids which were observed as added/updated documents.</span>
 <span class="sd">    :param db: A ``DB`` instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">vi</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">vector_indices</span><span class="p">[</span><span class="n">vector_index</span><span class="p">]</span>

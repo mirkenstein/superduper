@@ -179,6 +179,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -235,9 +236,7 @@
         </div>
         <article role="main">
           <h1>Source code for superduperdb.backends.mongodb.data_backend</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="kn">import</span> <span class="nn">click</span>
@@ -373,68 +372,6 @@
                 <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="MongoDataBackend.create_vector_index">
-<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.create_vector_index">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_vector_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector_index</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a vector index in the data backend if an Atlas deployment.</span>
-
-<span class="sd">        :param vector_index: vector index to create</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">collection</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">vector_index</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
-        <span class="p">)</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">key</span>
-        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^_outputs\.[A-Za-z0-9_]+\.[A-Za-z0-9_]+&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span>
-        <span class="n">version</span> <span class="o">=</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">version</span>
-        <span class="n">fields4</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">):</span> <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;dimensions&quot;</span><span class="p">:</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
-                    <span class="s2">&quot;similarity&quot;</span><span class="p">:</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">measure</span><span class="p">,</span>
-                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;knnVector&quot;</span><span class="p">,</span>
-                <span class="p">}</span>
-            <span class="p">]</span>
-        <span class="p">}</span>
-        <span class="n">fields3</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">model</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">fields4</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;document&quot;</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="n">fields2</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">key</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">fields3</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;document&quot;</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="n">fields1</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;_outputs&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">fields2</span><span class="p">,</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;document&quot;</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="n">index_definition</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;createSearchIndexes&quot;</span><span class="p">:</span> <span class="n">collection</span><span class="p">,</span>
-            <span class="s2">&quot;indexes&quot;</span><span class="p">:</span> <span class="p">[</span>
-                <span class="p">{</span>
-                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">vector_index</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                    <span class="s2">&quot;definition&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;mappings&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s2">&quot;dynamic&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                            <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="n">fields1</span><span class="p">,</span>
-                        <span class="p">}</span>
-                    <span class="p">},</span>
-                <span class="p">}</span>
-            <span class="p">],</span>
-        <span class="p">}</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">index_definition</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">dry_run</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">index_definition</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MongoDataBackend.disconnect">

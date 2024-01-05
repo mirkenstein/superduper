@@ -179,6 +179,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -245,10 +246,22 @@
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">numpy.typing</span>
 
+<span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.components.vector_index</span> <span class="kn">import</span> <span class="n">VectorIndex</span>
+
 
 <div class="viewcode-block" id="BaseVectorSearcher">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.BaseVectorSearcher">[docs]</a>
 <span class="k">class</span> <span class="nc">BaseVectorSearcher</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseVectorSearcher.from_component">
+<a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.BaseVectorSearcher.from_component">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_component</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">vi</span><span class="p">:</span> <span class="s1">&#39;VectorIndex&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">identifier</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">measure</span>
+        <span class="p">)</span></div>
+
+
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -360,6 +373,11 @@
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.VectorSearchConfig">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">VectorSearchConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Represents search config which helps initiate a vector</span>
+<span class="sd">    searcher class.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">dimensions</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">measure</span><span class="p">:</span> <span class="n">VectorIndexMeasureType</span> <span class="o">=</span> <span class="n">VectorIndexMeasureType</span><span class="o">.</span><span class="n">l2</span>
@@ -371,6 +389,12 @@
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.VectorItem">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">VectorItem</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Class for representing a vector in vector search with</span>
+<span class="sd">    id and vector.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">vector</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>
 
@@ -398,6 +422,11 @@
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.VectorSearchResult">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">VectorSearchResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Dataclass for representing vector search results with</span>
+<span class="sd">    `id` and `score`.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">score</span><span class="p">:</span> <span class="nb">float</span></div>
 
@@ -406,6 +435,9 @@
 <div class="viewcode-block" id="l2">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.l2">[docs]</a>
 <span class="k">def</span> <span class="nf">l2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    L2 function for vector similarity search</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)])</span></div>
 
 
@@ -413,6 +445,9 @@
 <div class="viewcode-block" id="dot">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.dot">[docs]</a>
 <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Dot function for vector similarity search</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">T</span><span class="p">)</span></div>
 
 
@@ -420,6 +455,9 @@
 <div class="viewcode-block" id="cosine">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.cosine">[docs]</a>
 <span class="k">def</span> <span class="nf">cosine</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Cosine similarity function for vector search</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>

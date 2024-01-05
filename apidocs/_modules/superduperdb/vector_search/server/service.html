@@ -179,6 +179,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -276,6 +277,10 @@
 <div class="viewcode-block" id="list_search">
 <a class="viewcode-back" href="../../../../source/superduperdb.vector_search.server.html#superduperdb.vector_search.server.service.list_search">[docs]</a>
 <span class="k">def</span> <span class="nf">list_search</span><span class="p">(</span><span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Helper functon for listing all vector search indices.</span>
+<span class="sd">    :param db: Datalayer instance</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s1">&#39;vector_index&#39;</span><span class="p">)</span></div>
 
 
@@ -283,6 +288,11 @@
 <div class="viewcode-block" id="create_search">
 <a class="viewcode-back" href="../../../../source/superduperdb.vector_search.server.html#superduperdb.vector_search.server.service.create_search">[docs]</a>
 <span class="k">def</span> <span class="nf">create_search</span><span class="p">(</span><span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Initiates a vector search class corresponding to `vector_index`</span>
+<span class="sd">    :param vector_index: Vector class to initiate</span>
+<span class="sd">    :param db: Datalayer instance</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">db</span><span class="o">.</span><span class="n">fast_vector_searchers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
         <span class="p">{</span><span class="n">vector_index</span><span class="p">:</span> <span class="n">db</span><span class="o">.</span><span class="n">initialize_vector_searcher</span><span class="p">(</span><span class="n">vector_index</span><span class="p">,</span> <span class="n">backfill</span><span class="o">=</span><span class="kc">True</span><span class="p">)}</span>
     <span class="p">)</span></div>
@@ -294,6 +304,12 @@
 <span class="k">def</span> <span class="nf">query_search_from_array</span><span class="p">(</span>
     <span class="n">array</span><span class="p">:</span> <span class="n">ListVectorType</span><span class="p">,</span> <span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorSearchResultType</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Perform a vector search with an array</span>
+<span class="sd">    :param array: Array to perform vector search on index.</span>
+<span class="sd">    :param vector_index: Vector search index</span>
+<span class="sd">    :param db: Datalayer instance</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">_vector_search</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">vector_index</span><span class="o">=</span><span class="n">vector_index</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span></div>
 
 
@@ -303,6 +319,12 @@
 <span class="k">def</span> <span class="nf">query_search_from_id</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorSearchResultType</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Perform a vector search with an id</span>
+<span class="sd">    :param id: Identifier for vector</span>
+<span class="sd">    :param vector_index: Vector search index</span>
+<span class="sd">    :param db: Datalayer instance</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">_vector_search</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">vector_index</span><span class="o">=</span><span class="n">vector_index</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">by_array</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
@@ -310,6 +332,12 @@
 <div class="viewcode-block" id="add_search">
 <a class="viewcode-back" href="../../../../source/superduperdb.vector_search.server.html#superduperdb.vector_search.server.service.add_search">[docs]</a>
 <span class="k">def</span> <span class="nf">add_search</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Adds a vector in vector index `vector_index`</span>
+<span class="sd">    :param vector: Vector to be added.</span>
+<span class="sd">    :param vector_index: Vector index where vector needs to be added.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">vector</span> <span class="o">=</span> <span class="p">[</span><span class="n">VectorItem</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">vector</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vector</span><span class="p">]</span>
 
     <span class="n">vi</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">fast_vector_searchers</span><span class="p">[</span><span class="n">vector_index</span><span class="p">]</span>
@@ -320,6 +348,9 @@
 <div class="viewcode-block" id="delete_search">
 <a class="viewcode-back" href="../../../../source/superduperdb.vector_search.server.html#superduperdb.vector_search.server.service.delete_search">[docs]</a>
 <span class="k">def</span> <span class="nf">delete_search</span><span class="p">(</span><span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Deletes a vector corresponding to `id`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">vi</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">fast_vector_searchers</span><span class="p">[</span><span class="n">vector_index</span><span class="p">]</span>
     <span class="n">vi</span><span class="o">.</span><span class="n">searcher</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span></div>
 

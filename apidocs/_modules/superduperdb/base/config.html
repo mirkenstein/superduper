@@ -179,6 +179,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.pillow.html">superduperdb.ext.pillow package</a></li>
@@ -241,19 +242,21 @@
 <span class="sd">canot contain any other imports from this project.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-
-<span class="kn">from</span> <span class="nn">.jsonable</span> <span class="kn">import</span> <span class="n">Factory</span><span class="p">,</span> <span class="n">JSONable</span>
 
 <span class="n">_CONFIG_IMMUTABLE</span> <span class="o">=</span> <span class="kc">True</span>
 
 
 <div class="viewcode-block" id="BaseConfigJSONable">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.BaseConfigJSONable">[docs]</a>
-<span class="k">class</span> <span class="nc">BaseConfigJSONable</span><span class="p">(</span><span class="n">JSONable</span><span class="p">):</span>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">BaseConfigJSONable</span><span class="p">:</span>
+    <span class="n">_lock</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
 <div class="viewcode-block" id="BaseConfigJSONable.force_set">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.BaseConfigJSONable.force_set">[docs]</a>
     <span class="k">def</span> <span class="nf">force_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -264,7 +267,7 @@
 
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">_CONFIG_IMMUTABLE</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_CONFIG_IMMUTABLE</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="k">return</span>
 
@@ -277,6 +280,7 @@
 
 <div class="viewcode-block" id="Retry">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Retry">[docs]</a>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Retry</span><span class="p">(</span><span class="n">BaseConfigJSONable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Describes how to retry using the `tenacity` library</span>
@@ -296,6 +300,7 @@
 
 <div class="viewcode-block" id="Cluster">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Cluster">[docs]</a>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Cluster</span><span class="p">(</span><span class="n">BaseConfigJSONable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Describes a connection to distributed work via Dask</span>
@@ -332,7 +337,9 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_remote_vector_search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span></div>
+        <span class="n">split</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">)</span>
+        <span class="n">dialect</span> <span class="o">=</span> <span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dialect</span> <span class="o">!=</span> <span class="s1">&#39;mongodb+srv&#39;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span></div>
 
 
 
@@ -378,6 +385,7 @@
 
 <div class="viewcode-block" id="Config">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config">[docs]</a>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">BaseConfigJSONable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The data class containing all configurable superduperdb values</span>
@@ -400,10 +408,6 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">self_hosted_vector_search</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_backend</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span>
-
     <span class="n">data_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mongodb://superduper:superduper@localhost:27017/test_db&#39;</span>
 
     <span class="n">lance_home</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;.superduperdb&#39;</span><span class="p">,</span> <span class="s1">&#39;vector_indices&#39;</span><span class="p">)</span>
@@ -411,8 +415,8 @@
     <span class="n">artifact_store</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">metadata_store</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="n">cluster</span><span class="p">:</span> <span class="n">Cluster</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Cluster</span><span class="p">)</span>
-    <span class="n">retries</span><span class="p">:</span> <span class="n">Retry</span> <span class="o">=</span> <span class="n">Factory</span><span class="p">(</span><span class="n">Retry</span><span class="p">)</span>
+    <span class="n">cluster</span><span class="p">:</span> <span class="n">Cluster</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">Cluster</span><span class="p">)</span>
+    <span class="n">retries</span><span class="p">:</span> <span class="n">Retry</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">Retry</span><span class="p">)</span>
 
     <span class="n">downloads_folder</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">fold_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span>
@@ -424,17 +428,16 @@
 
     <span class="n">bytes_encoding</span><span class="p">:</span> <span class="n">BytesEncoding</span> <span class="o">=</span> <span class="n">BytesEncoding</span><span class="o">.</span><span class="n">BYTES</span>
 
-<div class="viewcode-block" id="Config.Config">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config.Config">[docs]</a>
-    <span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">JSONable</span><span class="o">.</span><span class="n">Config</span><span class="p">):</span>
-        <span class="n">protected_namespaces</span> <span class="o">=</span> <span class="p">()</span></div>
-
-
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot_env</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">dotenv</span>
 
             <span class="n">dotenv</span><span class="o">.</span><span class="n">load_dotenv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dot_env</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">self_hosted_vector_search</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_backend</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hybrid_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -445,13 +448,19 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A dict of `self` excluding some defined attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="n">_dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;cluster&#39;</span><span class="p">,</span> <span class="s1">&#39;retries&#39;</span><span class="p">,</span> <span class="s1">&#39;downloads_folder&#39;</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">_dict</span>
 
+<div class="viewcode-block" id="Config.dict">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config.dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dc</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Config.match">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config.match">[docs]</a>
-    <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Match the target cfg dict with `self` comparables dict.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
