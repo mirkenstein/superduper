@@ -238,6 +238,7 @@
           <h1>Source code for superduperdb.misc.files</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span>
 
@@ -271,8 +272,8 @@
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.files.load_uris">[docs]</a>
 <span class="k">def</span> <span class="nf">load_uris</span><span class="p">(</span>
     <span class="n">r</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
-    <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span>
+    <span class="n">root</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">raises</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -308,11 +309,13 @@
                 <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">raises</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="n">e</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">load_uris</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="n">encoders</span><span class="p">)</span>
+                <span class="n">load_uris</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="n">encoders</span><span class="p">,</span> <span class="n">raises</span><span class="o">=</span><span class="n">raises</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
-                <span class="n">load_uris</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="n">encoders</span><span class="p">)</span>
+                <span class="n">load_uris</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="n">encoders</span><span class="p">,</span> <span class="n">raises</span><span class="o">=</span><span class="n">raises</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">pass</span></div>
 

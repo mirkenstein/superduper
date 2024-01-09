@@ -474,7 +474,8 @@
 
 <div class="viewcode-block" id="IbisCompoundSelect.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.query.IbisCompoundSelect.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">load_hybrid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="c1"># TODO handle load_hybrid for `ibis`</span>
         <span class="n">output</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_all_fields</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
 
@@ -492,8 +493,11 @@
             <span class="n">output</span><span class="p">[</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">primary_id</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
 
         <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;records&#39;</span><span class="p">)</span>
+        <span class="n">primary_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">primary_id</span>
         <span class="k">return</span> <span class="n">SuperDuperIbisResult</span><span class="p">(</span>
-            <span class="n">output</span><span class="p">,</span> <span class="n">id_field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">primary_id</span><span class="p">,</span> <span class="n">scores</span><span class="o">=</span><span class="n">scores</span>
+            <span class="n">output</span><span class="p">,</span>
+            <span class="n">id_field</span><span class="o">=</span><span class="n">primary_id</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+            <span class="n">scores</span><span class="o">=</span><span class="n">scores</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 

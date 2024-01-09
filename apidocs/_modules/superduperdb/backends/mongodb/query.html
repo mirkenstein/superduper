@@ -245,6 +245,7 @@
 <span class="kn">from</span> <span class="nn">bson</span> <span class="kn">import</span> <span class="n">ObjectId</span>
 <span class="kn">from</span> <span class="nn">pymongo</span> <span class="kn">import</span> <span class="n">InsertOne</span> <span class="k">as</span> <span class="n">_InsertOne</span><span class="p">,</span> <span class="n">UpdateOne</span> <span class="k">as</span> <span class="n">_UpdateOne</span>
 
+<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.base.query</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">CompoundSelect</span><span class="p">,</span>
     <span class="n">Delete</span><span class="p">,</span>
@@ -260,6 +261,7 @@
 <span class="kn">from</span> <span class="nn">superduperdb.base.cursor</span> <span class="kn">import</span> <span class="n">SuperDuperCursor</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">Variable</span>
+<span class="kn">from</span> <span class="nn">superduperdb.misc.files</span> <span class="kn">import</span> <span class="n">load_uris</span>
 
 
 <div class="viewcode-block" id="FindOne">
@@ -567,7 +569,7 @@
 
 <div class="viewcode-block" id="Aggregate.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Aggregate.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">load_hybrid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">get_table_or_collection</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">)</span>
@@ -582,6 +584,7 @@
             <span class="n">raw_cursor</span><span class="o">=</span><span class="n">cursor</span><span class="p">,</span>
             <span class="n">id_field</span><span class="o">=</span><span class="s1">&#39;_id&#39;</span><span class="p">,</span>
             <span class="n">encoders</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">encoders</span><span class="p">,</span>
+            <span class="n">load_hybrid</span><span class="o">=</span><span class="n">load_hybrid</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -652,7 +655,7 @@
 
 <div class="viewcode-block" id="MongoCompoundSelect.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoCompoundSelect.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">load_hybrid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">output</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="n">pymongo</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">Cursor</span><span class="p">,</span> <span class="n">mongomock</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">Cursor</span><span class="p">)):</span>
             <span class="k">return</span> <span class="n">SuperDuperCursor</span><span class="p">(</span>
@@ -660,8 +663,11 @@
                 <span class="n">id_field</span><span class="o">=</span><span class="s1">&#39;_id&#39;</span><span class="p">,</span>
                 <span class="n">scores</span><span class="o">=</span><span class="n">scores</span><span class="p">,</span>
                 <span class="n">encoders</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">encoders</span><span class="p">,</span>
+                <span class="n">load_hybrid</span><span class="o">=</span><span class="n">load_hybrid</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">load_hybrid</span> <span class="ow">and</span> <span class="n">CFG</span><span class="o">.</span><span class="n">hybrid_storage</span><span class="p">:</span>
+                <span class="n">load_uris</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">encoders</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">encoders</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">output</span></div>
 
