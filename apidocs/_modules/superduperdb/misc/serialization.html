@@ -278,13 +278,29 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">dc</span><span class="o">.</span><span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;asdict() should be called on dataclass instances&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_asdict_inner</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">copy_method</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_asdict_inner</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">copy_method</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 
-<span class="k">def</span> <span class="nf">_asdict_inner</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">dict_factory</span><span class="p">,</span> <span class="n">copy_method</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_asdict_inner</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">dict_factory</span><span class="p">,</span> <span class="n">copy_method</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.base.leaf</span> <span class="kn">import</span> <span class="n">Leaf</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
+
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="ow">in</span> <span class="n">_ATOMIC_TYPES</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">top</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Leaf</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
+        <span class="c1"># TODO I don&#39;t think it&#39;s possible to reach this line since Serializable</span>
+        <span class="c1"># is a Leaf</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;cls&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span>
+            <span class="s1">&#39;dict&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">_asdict_inner</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">copy_method</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dc</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
     <span class="k">elif</span> <span class="n">dc</span><span class="o">.</span><span class="n">is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
         <span class="c1"># fast path for the common case</span>
         <span class="k">return</span> <span class="p">{</span>

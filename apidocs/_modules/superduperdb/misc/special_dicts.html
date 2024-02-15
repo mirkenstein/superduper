@@ -241,6 +241,7 @@
         <article role="main">
           <h1>Source code for superduperdb.misc.special_dicts</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 
 
 <div class="viewcode-block" id="MongoStyleDict">
@@ -290,6 +291,16 @@
                 <span class="n">parent_item</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">({})</span>
             <span class="n">parent_item</span><span class="p">[</span><span class="n">child</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
             <span class="bp">self</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent_item</span></div>
+
+
+
+<div class="viewcode-block" id="ArgumentDefaultDict">
+<a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.special_dicts.ArgumentDefaultDict">[docs]</a>
+<span class="k">class</span> <span class="nc">ArgumentDefaultDict</span><span class="p">(</span><span class="n">defaultdict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
 
 </pre></div>
         </article>

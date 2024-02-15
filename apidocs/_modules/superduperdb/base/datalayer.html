@@ -267,15 +267,14 @@
 <span class="kn">from</span> <span class="nn">superduperdb.base.superduper</span> <span class="kn">import</span> <span class="n">superduper</span>
 <span class="kn">from</span> <span class="nn">superduperdb.cdc.cdc</span> <span class="kn">import</span> <span class="n">DatabaseChangeDataCapture</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">Component</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.encoder</span> <span class="kn">import</span> <span class="n">Encodable</span><span class="p">,</span> <span class="n">Encoder</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">DataType</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">,</span> <span class="n">serializers</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">Model</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.serializer</span> <span class="kn">import</span> <span class="n">serializers</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.schema</span> <span class="kn">import</span> <span class="n">Schema</span>
 <span class="kn">from</span> <span class="nn">superduperdb.jobs.job</span> <span class="kn">import</span> <span class="n">ComponentJob</span><span class="p">,</span> <span class="n">FunctionJob</span><span class="p">,</span> <span class="n">Job</span>
 <span class="kn">from</span> <span class="nn">superduperdb.jobs.task_workflow</span> <span class="kn">import</span> <span class="n">TaskWorkflow</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.colors</span> <span class="kn">import</span> <span class="n">Colors</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.data</span> <span class="kn">import</span> <span class="n">ibatch</span>
-<span class="kn">from</span> <span class="nn">superduperdb.misc.download</span> <span class="kn">import</span> <span class="n">Downloader</span><span class="p">,</span> <span class="n">download_content</span><span class="p">,</span> <span class="n">gather_uris</span>
-<span class="kn">from</span> <span class="nn">superduperdb.misc.special_dicts</span> <span class="kn">import</span> <span class="n">MongoStyleDict</span>
+<span class="kn">from</span> <span class="nn">superduperdb.misc.download</span> <span class="kn">import</span> <span class="n">download_content</span><span class="p">,</span> <span class="n">download_from_one</span>
 <span class="kn">from</span> <span class="nn">superduperdb.vector_search.base</span> <span class="kn">import</span> <span class="n">BaseVectorSearcher</span><span class="p">,</span> <span class="n">VectorItem</span>
 <span class="kn">from</span> <span class="nn">superduperdb.vector_search.interface</span> <span class="kn">import</span> <span class="n">FastVectorSearcher</span>
 <span class="kn">from</span> <span class="nn">superduperdb.vector_search.update_tasks</span> <span class="kn">import</span> <span class="n">copy_vectors</span><span class="p">,</span> <span class="n">delete_vectors</span>
@@ -304,7 +303,7 @@
     <span class="n">type_id_to_cache_mapping</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="s1">&#39;models&#39;</span><span class="p">,</span>
         <span class="s1">&#39;metric&#39;</span><span class="p">:</span> <span class="s1">&#39;metrics&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;encoder&#39;</span><span class="p">:</span> <span class="s1">&#39;encoders&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;datatype&#39;</span><span class="p">:</span> <span class="s1">&#39;datatypes&#39;</span><span class="p">,</span>
         <span class="s1">&#39;vector_index&#39;</span><span class="p">:</span> <span class="s1">&#39;vector_indices&#39;</span><span class="p">,</span>
     <span class="p">}</span>
 
@@ -327,18 +326,16 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">LoadDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;metric&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="n">LoadDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span> <span class="o">=</span> <span class="n">LoadDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;encoder&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span> <span class="o">=</span> <span class="n">LoadDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;datatype&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vector_indices</span> <span class="o">=</span> <span class="n">LoadDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;vector_index&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">serializers</span> <span class="o">=</span> <span class="n">LoadDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;serializer&#39;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">ser</span> <span class="ow">in</span> <span class="n">serializers</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">serializers</span><span class="p">[</span><span class="n">ser</span><span class="p">]</span> <span class="o">=</span> <span class="n">serializers</span><span class="p">[</span><span class="n">ser</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">serializers</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fast_vector_searchers</span> <span class="o">=</span> <span class="n">LoadDict</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="nb">callable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initialize_vector_searcher</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span> <span class="o">=</span> <span class="n">artifact_store</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">serializers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serializers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">serializers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">databackend</span> <span class="o">=</span> <span class="n">databackend</span>
         <span class="c1"># TODO: force set config stores connection url</span>
@@ -394,8 +391,7 @@
 
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clt</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="s1">&#39;clt.identifier must be a string&#39;</span>
 
-        <span class="k">if</span> <span class="n">backfill</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">is_remote_vector_search</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">backfill_vector_search</span><span class="p">(</span><span class="n">vi</span><span class="p">,</span> <span class="n">vector_comparison</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backfill_vector_search</span><span class="p">(</span><span class="n">vi</span><span class="p">,</span> <span class="n">vector_comparison</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">FastVectorSearcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector_comparison</span><span class="p">,</span> <span class="n">vi</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span></div>
 
@@ -404,6 +400,9 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.backfill_vector_search">[docs]</a>
     <span class="k">def</span> <span class="nf">backfill_vector_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vi</span><span class="p">,</span> <span class="n">searcher</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">self_hosted_vector_search</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">is_remote_vector_search</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_mode</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;loading of vectors of vector-index: &#39;</span><span class="si">{</span><span class="n">vi</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
@@ -428,7 +427,7 @@
 
         <span class="n">progress</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Loading vectors into vector-table...&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">record_batch</span> <span class="ow">in</span> <span class="n">ibatch</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">load_hybrid</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
             <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">backfill_batch_size</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
@@ -538,7 +537,7 @@
 <span class="sd">        Show available functionality which has been added using ``self.add``.</span>
 <span class="sd">        If version is specified, then print full metadata</span>
 
-<span class="sd">        :param type_id: type_id of component to show [&#39;encoder&#39;, &#39;model&#39;, &#39;listener&#39;,</span>
+<span class="sd">        :param type_id: type_id of component to show [&#39;datatype&#39;, &#39;model&#39;, &#39;listener&#39;,</span>
 <span class="sd">                       &#39;learning_task&#39;, &#39;training_configuration&#39;, &#39;metric&#39;,</span>
 <span class="sd">                       &#39;vector_index&#39;, &#39;job&#39;]</span>
 <span class="sd">        :param identifier: identifying string to component</span>
@@ -571,10 +570,14 @@
         <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">takes_context</span><span class="p">,</span> <span class="s1">&#39;model does not take context&#39;</span>
         <span class="k">assert</span> <span class="n">context_select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">sources</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">context_select</span><span class="p">))</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">]</span>
-
+        <span class="n">context</span> <span class="o">=</span> <span class="n">sources</span><span class="p">[:]</span>
         <span class="k">if</span> <span class="n">context_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">context</span> <span class="o">=</span> <span class="p">[</span><span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="n">context_key</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">context</span><span class="p">]</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Document</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">context_key</span><span class="p">])</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">context_key</span><span class="p">],</span> <span class="nb">dict</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">Document</span><span class="p">({</span><span class="s1">&#39;_base&#39;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="n">context_key</span><span class="p">]})</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">context</span>
+            <span class="p">]</span>
         <span class="k">return</span> <span class="n">context</span><span class="p">,</span> <span class="n">sources</span>
 
 <div class="viewcode-block" id="Datalayer.apredict">
@@ -584,7 +587,7 @@
         <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="nb">input</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Document</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
         <span class="n">context_select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Select</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">context_key</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">context_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;_base&#39;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -592,7 +595,7 @@
 
 <span class="sd">        :param model_name: model identifier</span>
 <span class="sd">        :param input: input to be passed to the model.</span>
-<span class="sd">                      Must be possible to encode with registered encoders</span>
+<span class="sd">                      Must be possible to encode with registered datatypes</span>
 <span class="sd">        :param context_select: select query object to provide context</span>
 <span class="sd">        :param context_key: key to use to extract context from context_select</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -602,6 +605,7 @@
 
         <span class="k">if</span> <span class="n">context_select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">context</span><span class="p">,</span> <span class="n">sources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_context</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">context_select</span><span class="p">,</span> <span class="n">context_key</span><span class="p">)</span>
+
         <span class="n">out</span> <span class="o">=</span> <span class="k">await</span> <span class="n">model</span><span class="o">.</span><span class="n">apredict</span><span class="p">(</span>
             <span class="nb">input</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Document</span><span class="p">)</span> <span class="k">else</span> <span class="nb">input</span><span class="p">,</span>
             <span class="n">one</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -609,8 +613,8 @@
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">encoder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">datatype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="n">sources</span>
@@ -632,7 +636,7 @@
 
 <span class="sd">        :param model_name: model identifier</span>
 <span class="sd">        :param input: input to be passed to the model.</span>
-<span class="sd">                      Must be possible to encode with registered encoders</span>
+<span class="sd">                      Must be possible to encode with registered datatypes</span>
 <span class="sd">        :param context_select: select query object to provide context</span>
 <span class="sd">        :param context_key: key to use to extract context from context_select</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -651,12 +655,18 @@
         <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span>
             <span class="nb">input</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Document</span><span class="p">)</span> <span class="k">else</span> <span class="nb">input</span><span class="p">,</span>
             <span class="n">one</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">context</span><span class="p">]</span> <span class="k">if</span> <span class="n">context</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">encoder</span><span class="p">,</span> <span class="n">Encoder</span><span class="p">):</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span> <span class="n">DataType</span><span class="p">):</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">output_schema</span><span class="p">,</span> <span class="n">Schema</span><span class="p">):</span>
+            <span class="c1"># TODO make Schema callable</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">output_schema</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;_base&#39;</span><span class="p">:</span> <span class="n">out</span><span class="p">}</span>
 
         <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="n">sources</span>
@@ -709,19 +719,19 @@
 <div class="viewcode-block" id="Datalayer.insert">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.insert">[docs]</a>
     <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">insert</span><span class="p">:</span> <span class="n">Insert</span><span class="p">,</span> <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Encoder</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">insert</span><span class="p">:</span> <span class="n">Insert</span><span class="p">,</span> <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">datatypes</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">DataType</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InsertResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Insert data.</span>
 
 <span class="sd">        :param insert: insert query object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">encoders</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">datatypes</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">insert</span><span class="o">.</span><span class="n">documents</span><span class="p">:</span>
-            <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_fold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;train&#39;</span>  <span class="c1"># type: ignore[assignment]</span>
+            <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_fold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;train&#39;</span>
             <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">fold_probability</span><span class="p">:</span>
-                <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_fold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;valid&#39;</span>  <span class="c1"># type: ignore[assignment]</span>
+                <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_fold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;valid&#39;</span>
         <span class="n">inserted_ids</span> <span class="o">=</span> <span class="n">insert</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">refresh</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdc</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
@@ -740,7 +750,7 @@
 
 <div class="viewcode-block" id="Datalayer.select">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.select">[docs]</a>
-    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="p">:</span> <span class="n">Select</span><span class="p">,</span> <span class="n">load_hybrid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SelectResult</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="p">:</span> <span class="n">Select</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SelectResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Select data.</span>
 
@@ -748,7 +758,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">select</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
             <span class="n">select</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">set_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="c1"># type: ignore[assignment]</span>
-        <span class="k">return</span> <span class="n">select</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">load_hybrid</span><span class="o">=</span><span class="n">load_hybrid</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">select</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">reference</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Datalayer.refresh_after_delete">
@@ -860,7 +870,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove component (version: optional)</span>
 
-<span class="sd">        :param type_id: type_id of component to remove [&#39;encoder&#39;, &#39;model&#39;, &#39;listener&#39;,</span>
+<span class="sd">        :param type_id: type_id of component to remove [&#39;datatype&#39;, &#39;model&#39;, &#39;listener&#39;,</span>
 <span class="sd">                        &#39;training_configuration&#39;, &#39;vector_index&#39;]</span>
 <span class="sd">        :param identifier: identifier of component (see `container.base.Component`)</span>
 <span class="sd">        :param version: [optional] numerical version to remove</span>
@@ -924,19 +934,29 @@
 <span class="sd">        Load component using uniquely identifying information.</span>
 
 <span class="sd">        :param type_id: type_id of component to remove</span>
-<span class="sd">                        [&#39;encoder&#39;, &#39;model&#39;, &#39;listener&#39;, ...]</span>
+<span class="sd">                        [&#39;datatype&#39;, &#39;model&#39;, &#39;listener&#39;, ...]</span>
 <span class="sd">        :param identifier: identifier of component (see `container.base.Component`)</span>
 <span class="sd">        :param version: [optional] numerical version</span>
 <span class="sd">        :param allow_hidden: toggle to ``True`` to allow loading of deprecated</span>
 <span class="sd">                             components</span>
 <span class="sd">        :param info_only: toggle to ``True`` to return metadata only</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">type_id</span> <span class="o">==</span> <span class="s1">&#39;encoder&#39;</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s1">&#39;&quot;encoder&quot; has moved to &quot;datatype&quot; this functionality will not work&#39;</span>
+                <span class="s1">&#39; after version 0.2.0&#39;</span>
+            <span class="p">)</span>
+            <span class="n">type_id</span> <span class="o">=</span> <span class="s1">&#39;datatype&#39;</span>
+
         <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_component</span><span class="p">(</span>
             <span class="n">type_id</span><span class="o">=</span><span class="n">type_id</span><span class="p">,</span>
             <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span>
             <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>
             <span class="n">allow_hidden</span><span class="o">=</span><span class="n">allow_hidden</span><span class="p">,</span>
         <span class="p">)</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">MetadataException</span><span class="p">(</span>
@@ -947,32 +967,7 @@
         <span class="k">if</span> <span class="n">info_only</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">info</span>
 
-        <span class="k">def</span> <span class="nf">get_children</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">{</span>
-                <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
-                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">serializable</span><span class="o">.</span><span class="n">is_component_metadata</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-            <span class="p">}</span>
-
-        <span class="k">def</span> <span class="nf">replace_children</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">children</span> <span class="o">=</span> <span class="n">get_children</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">children</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">c</span> <span class="o">=</span> <span class="n">replace_children</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_component</span><span class="p">(</span><span class="o">**</span><span class="n">v</span><span class="p">,</span> <span class="n">allow_hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                    <span class="p">)</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">r</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span>
-                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">MetadataException</span><span class="p">(</span>
-                            <span class="s1">&#39;Children </span><span class="si">{k}</span><span class="s1"> not found in `dict`&#39;</span>
-                        <span class="p">)</span>
-            <span class="k">return</span> <span class="n">r</span>
-
-        <span class="n">info</span> <span class="o">=</span> <span class="n">replace_children</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
-        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="n">m</span> <span class="o">=</span> <span class="n">Component</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">serializable</span><span class="o">.</span><span class="n">Serializable</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
         <span class="n">m</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="n">m</span><span class="o">.</span><span class="n">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -1050,7 +1045,7 @@
                 <span class="n">args</span><span class="o">=</span><span class="p">[],</span>
                 <span class="n">kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
                     <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
-                    <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">serialize</span><span class="p">(),</span>
+                    <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span>
                 <span class="p">),</span>
             <span class="p">),</span>
         <span class="p">)</span>
@@ -1062,9 +1057,8 @@
 
         <span class="k">for</span> <span class="n">identifier</span> <span class="ow">in</span> <span class="n">listeners</span><span class="p">:</span>
             <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_component</span><span class="p">(</span><span class="s1">&#39;listener&#39;</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span>
-            <span class="n">listener_query</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="s1">&#39;select&#39;</span><span class="p">]</span>
-
-            <span class="n">listener_select</span> <span class="o">=</span> <span class="n">serializable</span><span class="o">.</span><span class="n">Serializable</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">listener_query</span><span class="p">)</span>
+            <span class="n">listener_query</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="s1">&#39;select&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">listener_select</span> <span class="o">=</span> <span class="n">serializable</span><span class="o">.</span><span class="n">Serializable</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">listener_query</span><span class="p">)</span>
             <span class="n">listener_selects</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">identifier</span><span class="p">:</span> <span class="n">listener_select</span><span class="p">})</span>
             <span class="k">if</span> <span class="n">listener_select</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">continue</span>
@@ -1082,7 +1076,7 @@
                     <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
                     <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
                         <span class="s1">&#39;ids&#39;</span><span class="p">:</span> <span class="n">ids</span><span class="p">,</span>
-                        <span class="s1">&#39;select&#39;</span><span class="p">:</span> <span class="n">listener_query</span><span class="p">,</span>
+                        <span class="s1">&#39;select&#39;</span><span class="p">:</span> <span class="n">listener_query</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span>
                         <span class="o">**</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="s1">&#39;predict_kwargs&#39;</span><span class="p">],</span>
                     <span class="p">},</span>
                     <span class="n">method_name</span><span class="o">=</span><span class="s1">&#39;predict&#39;</span><span class="p">,</span>
@@ -1141,7 +1135,7 @@
                     <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
                         <span class="s1">&#39;vector_index&#39;</span><span class="p">:</span> <span class="n">identifier</span><span class="p">,</span>
                         <span class="s1">&#39;ids&#39;</span><span class="p">:</span> <span class="n">ids</span><span class="p">,</span>
-                        <span class="s1">&#39;query&#39;</span><span class="p">:</span> <span class="n">vi</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">serialize</span><span class="p">(),</span>
+                        <span class="s1">&#39;query&#39;</span><span class="p">:</span> <span class="n">vi</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span>
                     <span class="p">},</span>
                 <span class="p">),</span>
             <span class="p">)</span>
@@ -1153,6 +1147,7 @@
 
         <span class="k">return</span> <span class="n">G</span>
 
+    <span class="c1"># TODO could be handled exclusively by `_Predictor.predict`</span>
     <span class="k">def</span> <span class="nf">_compute_model_outputs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">model_info</span><span class="p">,</span>
@@ -1174,9 +1169,7 @@
             <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_identifier</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">passed_docs</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">predict_kwargs</span> <span class="ow">or</span> <span class="p">{}))</span>
 
-    <span class="k">def</span> <span class="nf">_save_artifacts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifact_dictionary</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>  <span class="c1"># TODO use in the server code...</span>
-
+    <span class="c1"># TODO extra level not necessary</span>
     <span class="k">def</span> <span class="nf">_add</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="nb">object</span><span class="p">:</span> <span class="n">Component</span><span class="p">,</span>
@@ -1184,7 +1177,7 @@
         <span class="n">serialized</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">parent</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">jobs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dependencies</span><span class="p">)</span>
         <span class="nb">object</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="nb">object</span><span class="o">.</span><span class="n">pre_create</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="s1">&#39;identifier&#39;</span><span class="p">)</span>
@@ -1201,21 +1194,25 @@
             <span class="nb">object</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">if</span> <span class="n">serialized</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">serialized</span><span class="p">,</span> <span class="n">artifacts</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">serialized</span>
-            <span class="n">artifact_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span>
-            <span class="n">serialized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">serialized</span><span class="p">,</span> <span class="n">artifact_info</span><span class="p">)</span>
+            <span class="n">leaves</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">get_leaves</span><span class="p">()</span>
+            <span class="n">leaves</span> <span class="o">=</span> <span class="n">leaves</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[</span><span class="n">leaf</span> <span class="k">for</span> <span class="n">leaf</span> <span class="ow">in</span> <span class="n">leaves</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">leaf</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">)]</span>
+            <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">leaf</span> <span class="k">for</span> <span class="n">leaf</span> <span class="ow">in</span> <span class="n">leaves</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">leaf</span><span class="p">,</span> <span class="n">Component</span><span class="p">)]</span>
 
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">serialized</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">version</span>
-                <span class="n">serialized</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">version</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">MetadataException</span><span class="p">(</span>
-                    <span class="s1">&#39;`dict` or `version` not found in serialized dict.&#39;</span>
-                <span class="p">)</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+            <span class="n">sub_jobs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="nb">object</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span>
+            <span class="n">jobs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sub_jobs</span><span class="p">)</span>
 
-        <span class="n">jobs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_children</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">serialized</span><span class="p">))</span>
+        <span class="c1"># need to do this again to get the versions of the children</span>
+        <span class="k">if</span> <span class="n">serialized</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">serialized</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>  <span class="c1"># type: ignore[assignment]</span>
+
+        <span class="k">assert</span> <span class="n">serialized</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">artifacts</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">serialized</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_component</span><span class="p">(</span><span class="n">serialized</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_parent_child</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="nb">object</span><span class="o">.</span><span class="n">unique_id</span><span class="p">)</span>
         <span class="nb">object</span><span class="o">.</span><span class="n">post_create</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -1224,56 +1221,7 @@
         <span class="n">jobs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">these_jobs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">jobs</span>
 
-    <span class="k">def</span> <span class="nf">_create_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">:</span> <span class="n">Component</span><span class="p">,</span> <span class="n">serialized</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
-        <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">child_type_id</span> <span class="ow">in</span> <span class="n">component</span><span class="o">.</span><span class="n">child_components</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-            <span class="n">child</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="n">serialized_dict</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;type_id&#39;</span><span class="p">:</span> <span class="n">child_type_id</span><span class="p">,</span>
-                    <span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="n">child</span><span class="p">,</span>
-                    <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_latest_version</span><span class="p">(</span><span class="n">child_type_id</span><span class="p">,</span> <span class="n">child</span><span class="p">),</span>
-                <span class="p">}</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_parent_child</span><span class="p">(</span>
-                    <span class="n">component</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="n">Component</span><span class="o">.</span><span class="n">make_unique_id</span><span class="p">(</span><span class="o">**</span><span class="n">serialized_dict</span><span class="p">)</span>
-                <span class="p">)</span>
-                <span class="n">serialized</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">serialized_dict</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">Component</span><span class="p">):</span>
-                <span class="n">sub_jobs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span>
-                    <span class="n">child</span><span class="p">,</span>
-                    <span class="n">serialized</span><span class="o">=</span><span class="n">serialized</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">],</span>
-                    <span class="n">parent</span><span class="o">=</span><span class="n">component</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="n">jobs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sub_jobs</span><span class="p">)</span>
-                <span class="n">serialized_dict</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;type_id&#39;</span><span class="p">:</span> <span class="n">child</span><span class="o">.</span><span class="n">type_id</span><span class="p">,</span>
-                    <span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="n">child</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                    <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="n">child</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
-                <span class="p">}</span>
-                <span class="n">serialized</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">serialized_dict</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="n">serialized_list</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sub</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">child</span><span class="p">):</span>
-                    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">Component</span><span class="p">)</span>
-                    <span class="n">sub_jobs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span>
-                        <span class="n">sub</span><span class="p">,</span>
-                        <span class="n">serialized</span><span class="o">=</span><span class="n">serialized</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="n">i</span><span class="p">],</span>
-                        <span class="n">parent</span><span class="o">=</span><span class="n">component</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span>
-                    <span class="p">)</span>
-                    <span class="n">jobs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sub_jobs</span><span class="p">)</span>
-                    <span class="n">serialized_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="p">{</span>
-                            <span class="s1">&#39;type_id&#39;</span><span class="p">:</span> <span class="n">sub</span><span class="o">.</span><span class="n">type_id</span><span class="p">,</span>
-                            <span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="n">sub</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                            <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="n">sub</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
-                        <span class="p">}</span>
-                    <span class="p">)</span>
-                <span class="n">serialized</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">serialized_list</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown child type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">child</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">jobs</span>
-
+    <span class="c1"># TODO doesn&#39;t seem to be used anywhere</span>
     <span class="k">def</span> <span class="nf">_create_plan</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">networkx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">identifier</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">show_components</span><span class="p">(</span><span class="s1">&#39;listener&#39;</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -1308,7 +1256,9 @@
             <span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">type_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
             <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_component</span><span class="p">(</span><span class="n">type_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s1">&#39;cleanup&#39;</span><span class="p">):</span>
+                <span class="c1"># TODO - is there an abstract method thingy for this?</span>
                 <span class="n">component</span><span class="o">.</span><span class="n">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="n">type_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_id_to_cache_mapping</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">del</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_id_to_cache_mapping</span><span class="p">[</span><span class="n">type_id</span><span class="p">])[</span>
@@ -1317,101 +1267,17 @@
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s1">&#39;artifact_attributes&#39;</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">component</span><span class="o">.</span><span class="n">artifact_attributes</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="n">a</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="n">a</span><span class="p">][</span><span class="s1">&#39;file_id&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">delete_component_version</span><span class="p">(</span><span class="n">type_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_download_content</span><span class="p">(</span>  <span class="c1"># TODO: duplicated function</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">query</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Select</span><span class="p">,</span> <span class="n">Insert</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">documents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">raises</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">n_download_workers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">headers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="n">update_db</span> <span class="o">=</span> <span class="kc">False</span>
-
-        <span class="k">if</span> <span class="n">documents</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">Select</span><span class="p">):</span>
-            <span class="n">update_db</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">query</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">select</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">select_using_ids</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
-                <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">select</span><span class="p">)</span><span class="o">.</span><span class="n">raw_cursor</span>
-                <span class="n">documents</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">Insert</span><span class="p">):</span>
-            <span class="n">documents</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">documents</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-        <span class="n">documents</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">content</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">]</span>
-        <span class="n">uris</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">place_ids</span> <span class="o">=</span> <span class="n">gather_uris</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
-        <span class="n">s</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">uris</span><span class="p">)</span><span class="si">}</span><span class="s1"> uris&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">uris</span><span class="p">:</span>
-            <span class="k">return</span>
-
-        <span class="k">if</span> <span class="n">n_download_workers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">n_download_workers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span>
-                    <span class="n">key</span><span class="o">=</span><span class="s1">&#39;n_download_workers&#39;</span>
-                <span class="p">)</span>
-            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">MetadatastoreException</span><span class="p">:</span>
-                <span class="n">n_download_workers</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="k">if</span> <span class="n">headers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;headers&#39;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">MetadatastoreException</span><span class="p">:</span>
-                <span class="n">headers</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">timeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;download_timeout&#39;</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">MetadatastoreException</span><span class="p">:</span>
-                <span class="n">timeout</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">def</span> <span class="nf">download_update</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">query</span><span class="o">.</span><span class="n">download_update</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span> <span class="nb">bytes</span><span class="o">=</span><span class="nb">bytes</span><span class="p">)</span>
-
-        <span class="n">downloader</span> <span class="o">=</span> <span class="n">Downloader</span><span class="p">(</span>
-            <span class="n">uris</span><span class="o">=</span><span class="n">uris</span><span class="p">,</span>
-            <span class="n">ids</span><span class="o">=</span><span class="n">place_ids</span><span class="p">,</span>
-            <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span>
-            <span class="n">update_one</span><span class="o">=</span><span class="n">download_update</span><span class="p">,</span>
-            <span class="n">n_workers</span><span class="o">=</span><span class="n">n_download_workers</span><span class="p">,</span>
-            <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
-            <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
-            <span class="n">raises</span><span class="o">=</span><span class="n">raises</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">downloader</span><span class="o">.</span><span class="n">go</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">update_db</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="k">for</span> <span class="n">id_</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">place_ids</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
-            <span class="n">documents</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">set_content_bytes</span><span class="p">(</span>
-                <span class="n">documents</span><span class="p">[</span><span class="n">id_</span><span class="p">],</span> <span class="n">key</span><span class="p">,</span> <span class="n">downloader</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span>  <span class="c1"># type: ignore[index]</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">documents</span>
 
     <span class="k">def</span> <span class="nf">_get_content_for_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">filter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Document</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="nb">filter</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="nb">filter</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;_id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">filter</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+            <span class="nb">filter</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="nb">filter</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;_id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">:</span>
             <span class="nb">filter</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">uris</span> <span class="o">=</span> <span class="n">gather_uris</span><span class="p">([</span><span class="nb">filter</span><span class="o">.</span><span class="n">content</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">uris</span><span class="p">:</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_download_content</span><span class="p">(</span>
-                <span class="n">query</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">documents</span><span class="o">=</span><span class="p">[</span><span class="nb">filter</span><span class="o">.</span><span class="n">content</span><span class="p">],</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">raises</span><span class="o">=</span><span class="kc">True</span>
-            <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="nb">filter</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">))</span>
+        <span class="n">download_from_one</span><span class="p">(</span><span class="nb">filter</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">filter</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">]:</span>
-            <span class="k">del</span> <span class="nb">filter</span><span class="o">.</span><span class="n">content</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="nb">filter</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="nb">filter</span>
 
     <span class="k">def</span> <span class="nf">_get_dependencies_for_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">):</span>
@@ -1424,15 +1290,18 @@
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">out</span>
 
+    <span class="c1"># TODO should create file handler separately</span>
     <span class="k">def</span> <span class="nf">_get_file_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_file_content</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">r</span>
 
+    <span class="c1"># TODO should be confined to metadata implementation</span>
     <span class="k">def</span> <span class="nf">_get_object_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">type_id</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_component</span><span class="p">(</span><span class="n">type_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
 
+    <span class="c1"># TODO remove</span>
     <span class="k">def</span> <span class="nf">_apply_listener</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">identifier</span><span class="p">,</span>
@@ -1448,7 +1317,7 @@
         <span class="k">if</span> <span class="n">listener_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">listener_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_component</span><span class="p">(</span><span class="s1">&#39;listener&#39;</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span>
 
-        <span class="n">select</span> <span class="o">=</span> <span class="n">serializable</span><span class="o">.</span><span class="n">Serializable</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">listener_info</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">])</span>
+        <span class="n">select</span> <span class="o">=</span> <span class="n">serializable</span><span class="o">.</span><span class="n">Serializable</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">listener_info</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ids</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">get_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1486,7 +1355,7 @@
         <span class="p">)</span>
         <span class="nb">type</span> <span class="o">=</span> <span class="n">model_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoders</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span>
+            <span class="nb">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span>
             <span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outputs</span><span class="p">]</span>
 
         <span class="n">select</span><span class="o">.</span><span class="n">model_update</span><span class="p">(</span>
@@ -1524,7 +1393,8 @@
 
         <span class="c1"># If object has no version, update the last version</span>
         <span class="nb">object</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
-        <span class="n">new_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metadata_info</span><span class="o">=</span><span class="n">info</span><span class="p">)</span>
+        <span class="n">new_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">replace_object</span><span class="p">(</span>
             <span class="n">new_info</span><span class="p">,</span>
             <span class="n">identifier</span><span class="o">=</span><span class="nb">object</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
@@ -1543,17 +1413,19 @@
         <span class="n">outputs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Document</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+        <span class="c1"># TODO - make this un-ambiguous</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">like</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">like</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
             <span class="n">like</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">like</span><span class="p">)</span>
         <span class="n">like</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_content_for_filter</span><span class="p">(</span><span class="n">like</span><span class="p">)</span>
         <span class="n">vi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_indices</span><span class="p">[</span><span class="n">vector_index</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">outputs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">outs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">outs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">outs</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+            <span class="n">outs</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>  <span class="c1"># type: ignore[assignment]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected dict, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">outs</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">vi</span><span class="o">.</span><span class="n">get_nearest</span><span class="p">(</span><span class="n">like</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outs</span><span class="p">)</span></div>
 
 

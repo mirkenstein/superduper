@@ -316,11 +316,11 @@
             <span class="s2">&quot;Model must have an encoder to create with the&quot;</span>
             <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> backend.&quot;</span>
         <span class="p">)</span>
-        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">encoder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">msg</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">encoder</span><span class="p">,</span> <span class="n">FieldType</span><span class="p">):</span>
-            <span class="n">output_type</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">datatype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">msg</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span> <span class="n">FieldType</span><span class="p">):</span>
+            <span class="n">output_type</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">output_type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encoder</span>
+            <span class="n">output_type</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">datatype</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">INPUT_KEY</span><span class="p">:</span> <span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">),</span>
             <span class="s1">&#39;query_id&#39;</span><span class="p">:</span> <span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">),</span>

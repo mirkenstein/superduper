@@ -255,14 +255,14 @@
 <span class="n">_CONFIG_IMMUTABLE</span> <span class="o">=</span> <span class="kc">True</span>
 
 
-<div class="viewcode-block" id="BaseConfigJSONable">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.BaseConfigJSONable">[docs]</a>
+<div class="viewcode-block" id="BaseConfig">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.BaseConfig">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">BaseConfigJSONable</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">BaseConfig</span><span class="p">:</span>
     <span class="n">_lock</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 
-<div class="viewcode-block" id="BaseConfigJSONable.force_set">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.BaseConfigJSONable.force_set">[docs]</a>
+<div class="viewcode-block" id="BaseConfig.force_set">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.BaseConfig.force_set">[docs]</a>
     <span class="k">def</span> <span class="nf">force_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Forcefully setattr of BaseConfigJSONable instance</span>
@@ -285,7 +285,7 @@
 <div class="viewcode-block" id="Retry">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Retry">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">Retry</span><span class="p">(</span><span class="n">BaseConfigJSONable</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Retry</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Describes how to retry using the `tenacity` library</span>
 
@@ -334,7 +334,7 @@
 <div class="viewcode-block" id="CDCConfig">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.CDCConfig">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">CDCConfig</span><span class="p">(</span><span class="n">BaseConfigJSONable</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">CDCConfig</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
     <span class="n">uri</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># None implies local mode</span>
     <span class="n">strategy</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">PollingStrategy</span><span class="p">,</span> <span class="n">LogBasedStrategy</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
@@ -343,7 +343,7 @@
 <div class="viewcode-block" id="Cluster">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Cluster">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">Cluster</span><span class="p">(</span><span class="n">BaseConfigJSONable</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Cluster</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Describes a connection to distributed work via Dask</span>
 
@@ -429,7 +429,7 @@
 <div class="viewcode-block" id="Downloads">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Downloads">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">Downloads</span><span class="p">(</span><span class="n">BaseConfigJSONable</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Downloads</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
     <span class="n">folder</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">headers</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s1">&#39;me&#39;</span><span class="p">})</span>
@@ -440,7 +440,7 @@
 <div class="viewcode-block" id="Config">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">BaseConfigJSONable</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The data class containing all configurable superduperdb values</span>
 

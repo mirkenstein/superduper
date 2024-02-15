@@ -242,101 +242,36 @@
           <h1>Source code for superduperdb.base.serializable</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
+<span class="kn">from</span> <span class="nn">superduperdb.base.config</span> <span class="kn">import</span> <span class="n">BytesEncoding</span>
+<span class="kn">from</span> <span class="nn">superduperdb.base.leaf</span> <span class="kn">import</span> <span class="n">Leaf</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.serialization</span> <span class="kn">import</span> <span class="n">asdict</span>
 
 
-<div class="viewcode-block" id="is_component_metadata">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.is_component_metadata">[docs]</a>
-<span class="k">def</span> <span class="nf">is_component_metadata</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="n">COMPONENT_KEYS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type_id&#39;</span><span class="p">,</span> <span class="s1">&#39;identifier&#39;</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">}</span>
-    <span class="k">if</span> <span class="n">COMPONENT_KEYS</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="kc">False</span></div>
+<span class="k">def</span> <span class="nf">_from_dict</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">Document</span>
 
-
-
-<div class="viewcode-block" id="is_component">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.is_component">[docs]</a>
-<span class="k">def</span> <span class="nf">is_component</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="n">COMPONENT_KEYS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;cls&#39;</span><span class="p">,</span> <span class="s1">&#39;dict&#39;</span><span class="p">,</span> <span class="s1">&#39;module&#39;</span><span class="p">}</span>
-    <span class="k">if</span> <span class="n">COMPONENT_KEYS</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">return</span> <span class="kc">False</span></div>
-
-
-
-<span class="k">def</span> <span class="nf">_deserialize</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">_deserialize</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
-
+        <span class="k">return</span> <span class="p">[</span><span class="n">_from_dict</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">r</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_component</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_deserialize</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
-    <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;module&#39;</span><span class="p">])</span>
-    <span class="n">component_cls</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;cls&#39;</span><span class="p">])</span>
-
-    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">_deserialize</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="s1">&#39;db&#39;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">component_cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
-
-    <span class="n">instance</span> <span class="o">=</span> <span class="n">component_cls</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">&#39;version&#39;</span><span class="p">})</span>
-
-    <span class="c1"># special handling of Component.version</span>
-    <span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">Component</span>
-
-    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">component_cls</span><span class="p">,</span> <span class="n">Component</span><span class="p">):</span>
-        <span class="n">instance</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">instance</span>
-
-
-<span class="k">def</span> <span class="nf">_serialize</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">serialize_variables</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">):</span>
-        <span class="n">sub_dict</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">k</span><span class="p">:</span> <span class="n">_serialize</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span> <span class="n">serialize_variables</span><span class="o">=</span><span class="n">serialize_variables</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
-        <span class="p">}</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;cls&#39;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-            <span class="s1">&#39;dict&#39;</span><span class="p">:</span> <span class="n">sub_dict</span><span class="p">,</span>
-            <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">Component</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Component</span><span class="p">):</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="p">{</span>
-                    <span class="s1">&#39;type_id&#39;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">type_id</span><span class="p">,</span>
-                    <span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                    <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span>
-                        <span class="n">item</span><span class="p">,</span>
-                        <span class="s1">&#39;version&#39;</span><span class="p">,</span>
-                        <span class="kc">None</span><span class="p">,</span>
-                    <span class="p">),</span>  <span class="c1"># type: ignore[dict-item]</span>
-                <span class="p">}</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">out</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="n">k</span><span class="p">:</span> <span class="n">_serialize</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">serialize_variables</span><span class="o">=</span><span class="n">serialize_variables</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="p">}</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">_serialize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">serialize_variables</span><span class="o">=</span><span class="n">serialize_variables</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">item</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">serialize_variables</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Variable</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">{</span>
-                <span class="s1">&#39;cls&#39;</span><span class="p">:</span> <span class="s1">&#39;Variable&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;dict&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;setter_callback&#39;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">setter_callback</span><span class="p">},</span>
-                <span class="s1">&#39;module&#39;</span><span class="p">:</span> <span class="s1">&#39;superduperdb.base.serializable&#39;</span><span class="p">,</span>
-            <span class="p">}</span>
-    <span class="k">return</span> <span class="n">item</span>
+    <span class="k">if</span> <span class="s1">&#39;_content&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;cls&#39;</span> <span class="ow">in</span> <span class="n">r</span> <span class="ow">and</span> <span class="s1">&#39;module&#39;</span> <span class="ow">in</span> <span class="n">r</span> <span class="ow">and</span> <span class="s1">&#39;dict&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;module&#39;</span><span class="p">])</span>
+        <span class="n">cls_</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;cls&#39;</span><span class="p">])</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">_from_dict</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">])</span>
+        <span class="n">kwargs_init</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cls_</span><span class="o">.</span><span class="n">set_post_init</span><span class="p">}</span>
+        <span class="n">kwargs_post_init</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cls_</span><span class="o">.</span><span class="n">set_post_init</span><span class="p">}</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="n">cls_</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_init</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs_post_init</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">instance</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_from_dict</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
 
 <div class="viewcode-block" id="VariableError">
@@ -347,16 +282,12 @@
 
 
 <span class="k">def</span> <span class="nf">_find_variables</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">.document</span> <span class="kn">import</span> <span class="n">Document</span>
-
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">_find_variables</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="p">[])</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">_find_variables</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="p">],</span> <span class="p">[])</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Variable</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">r</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">variables</span>
     <span class="k">return</span> <span class="p">[]</span>
 
 
@@ -380,19 +311,23 @@
 <div class="viewcode-block" id="Serializable">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Serializable">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">Serializable</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">Serializable</span><span class="p">(</span><span class="n">Leaf</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for serializable objects. This class is used to serialize and</span>
 <span class="sd">    deserialize objects to and from JSON + Artifact instances.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">deserialize</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">_deserialize</span><span class="p">)</span>
-    <span class="n">serialize</span> <span class="o">=</span> <span class="n">_serialize</span>
+    <span class="n">set_post_init</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">()))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="s1">&#39;Variable&#39;</span><span class="p">]:</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">leaf_types_to_keep</span><span class="o">=</span><span class="p">(</span><span class="n">Variable</span><span class="p">,))</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">_find_variables</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
             <span class="n">out</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span>
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
@@ -400,24 +335,44 @@
 <div class="viewcode-block" id="Serializable.set_variables">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Serializable.set_variables">[docs]</a>
     <span class="k">def</span> <span class="nf">set_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Serializable&#39;</span><span class="p">:</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span>
-            <span class="n">serialize_variables</span><span class="o">=</span><span class="kc">False</span>
-        <span class="p">)</span>  <span class="c1"># get serialized version of class instance</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">_replace_variables</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># replace variables with values</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>  <span class="c1"># rebuild new class instance</span></div>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">leaf_types_to_keep</span><span class="o">=</span><span class="p">(</span><span class="n">Variable</span><span class="p">,))</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">_replace_variables</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Serializable.encode">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Serializable.encode">[docs]</a>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">bytes_encoding</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">BytesEncoding</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">(),</span>
+    <span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">leaf_types_to_keep</span><span class="o">=</span><span class="n">leaf_types_to_keep</span><span class="p">))</span>
+        <span class="n">r</span><span class="p">[</span><span class="s1">&#39;leaf_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;serializable&#39;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;_content&#39;</span><span class="p">:</span> <span class="n">r</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Serializable.decode">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Serializable.decode">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_from_dict</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Serializable.dict">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Serializable.dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">Document</span>
+
+        <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
 </div>
 
 
 
 <div class="viewcode-block" id="Variable">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Variable">[docs]</a>
-<span class="k">class</span> <span class="nc">Variable</span><span class="p">:</span>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">Variable</span><span class="p">(</span><span class="n">Serializable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Mechanism for allowing &quot;free variables&quot; in a serializable object.</span>
 <span class="sd">    The idea is to allow a variable to be set at runtime, rather than</span>
@@ -429,10 +384,10 @@
 <span class="sd">                            variable.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span> <span class="n">setter_callback</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span>
+    <span class="n">setter_callback</span><span class="p">:</span> <span class="n">dc</span><span class="o">.</span><span class="n">InitVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">setter_callback</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setter_callback</span> <span class="o">=</span> <span class="n">setter_callback</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

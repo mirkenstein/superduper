@@ -578,7 +578,7 @@
 
 <div class="viewcode-block" id="Aggregate.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Aggregate.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">load_hybrid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">get_table_or_collection</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">)</span>
@@ -592,8 +592,8 @@
         <span class="k">return</span> <span class="n">SuperDuperCursor</span><span class="p">(</span>
             <span class="n">raw_cursor</span><span class="o">=</span><span class="n">cursor</span><span class="p">,</span>
             <span class="n">id_field</span><span class="o">=</span><span class="s1">&#39;_id&#39;</span><span class="p">,</span>
-            <span class="n">encoders</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">encoders</span><span class="p">,</span>
-            <span class="n">load_hybrid</span><span class="o">=</span><span class="n">load_hybrid</span><span class="p">,</span>
+            <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+            <span class="n">reference</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -664,20 +664,20 @@
 
 <div class="viewcode-block" id="MongoCompoundSelect.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoCompoundSelect.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">load_hybrid</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">output</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="n">pymongo</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">Cursor</span><span class="p">,</span> <span class="n">mongomock</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">Cursor</span><span class="p">)):</span>
             <span class="k">return</span> <span class="n">SuperDuperCursor</span><span class="p">(</span>
                 <span class="n">raw_cursor</span><span class="o">=</span><span class="n">output</span><span class="p">,</span>
                 <span class="n">id_field</span><span class="o">=</span><span class="s1">&#39;_id&#39;</span><span class="p">,</span>
                 <span class="n">scores</span><span class="o">=</span><span class="n">scores</span><span class="p">,</span>
-                <span class="n">encoders</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">encoders</span><span class="p">,</span>
-                <span class="n">load_hybrid</span><span class="o">=</span><span class="n">load_hybrid</span><span class="p">,</span>
+                <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+                <span class="n">reference</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">load_hybrid</span> <span class="ow">and</span> <span class="n">CFG</span><span class="o">.</span><span class="n">hybrid_storage</span><span class="p">:</span>
-                <span class="n">load_uris</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">encoders</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">encoders</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">reference</span> <span class="ow">and</span> <span class="n">CFG</span><span class="o">.</span><span class="n">hybrid_storage</span><span class="p">:</span>
+                <span class="n">load_uris</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">datatypes</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">datatypes</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span></div>
 
 
@@ -699,6 +699,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">collection</span><span class="o">.</span><span class="n">update_one</span><span class="p">({</span><span class="s1">&#39;_id&#39;</span><span class="p">:</span> <span class="nb">id</span><span class="p">},</span> <span class="n">update</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MongoCompoundSelect.check_exists">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoCompoundSelect.check_exists">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="o">...</span></div>
 
 
     <span class="nd">@property</span>

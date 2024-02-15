@@ -262,8 +262,8 @@
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.backends.local.artifacts.FileSystemArtifactStore.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/local/artifacts.html#FileSystemArtifactStore.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore.delete" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="superduperdb.backends.local.artifacts.FileSystemArtifactStore._delete_bytes">
+<span class="sig-name descname"><span class="pre">_delete_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/local/artifacts.html#FileSystemArtifactStore._delete_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore._delete_bytes" title="Link to this definition">#</a></dt>
 <dd><p>Delete artifact from artifact store
 :param file_id: File id uses to identify artifact in store</p>
 </dd></dl>
@@ -278,28 +278,6 @@
 <dt class="sig sig-object py" id="superduperdb.backends.local.artifacts.FileSystemArtifactStore.drop">
 <span class="sig-name descname"><span class="pre">drop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/local/artifacts.html#FileSystemArtifactStore.drop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore.drop" title="Link to this definition">#</a></dt>
 <dd><p>Drop the artifact store.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.backends.local.artifacts.FileSystemArtifactStore.load_bytes">
-<span class="sig-name descname"><span class="pre">load_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/local/artifacts.html#FileSystemArtifactStore.load_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore.load_bytes" title="Link to this definition">#</a></dt>
-<dd><p>Load bytes from artifact store.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>file_id</strong> – Identifier of artifact in the store</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.backends.local.artifacts.FileSystemArtifactStore.save_artifact">
-<span class="sig-name descname"><span class="pre">save_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serialized</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/local/artifacts.html#FileSystemArtifactStore.save_artifact"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore.save_artifact" title="Link to this definition">#</a></dt>
-<dd><p>Save serialized object in the artifact store.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>serialized</strong> – Serialized object</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -444,11 +422,9 @@ Note: This will block until the future is completed.</p>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-superduperdb.backends.local.artifacts">superduperdb.backends.local.artifacts module</a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore</span></code></a><ul>
-<li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore.delete"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore.delete()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore._delete_bytes"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore._delete_bytes()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore.disconnect"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore.disconnect()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore.drop"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore.drop()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore.load_bytes"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore.load_bytes()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore.save_artifact"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore.save_artifact()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore.url"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore.url()</span></code></a></li>
 </ul>
 </li>

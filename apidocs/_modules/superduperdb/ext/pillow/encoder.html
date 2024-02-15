@@ -241,19 +241,20 @@
         <article role="main">
           <h1>Source code for superduperdb.ext.pillow.encoder</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="kn">import</span> <span class="nn">PIL.Image</span>
 <span class="kn">import</span> <span class="nn">PIL.JpegImagePlugin</span>
 <span class="kn">import</span> <span class="nn">PIL.PngImagePlugin</span>
 
-<span class="kn">from</span> <span class="nn">superduperdb.components.encoder</span> <span class="kn">import</span> <span class="n">Encoder</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">DataType</span>
 
 <span class="n">BLANK_IMAGE</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">600</span><span class="p">,</span> <span class="mi">600</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="encode_pil_image">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.pillow.html#superduperdb.ext.pillow.encoder.encode_pil_image">[docs]</a>
-<span class="k">def</span> <span class="nf">encode_pil_image</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">encode_pil_image</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="n">buffer</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
     <span class="n">x</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="s1">&#39;png&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
@@ -266,7 +267,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle_exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_exceptions</span> <span class="o">=</span> <span class="n">handle_exceptions</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="nb">bytes</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -280,10 +281,17 @@
 <span class="n">decode_pil_image</span> <span class="o">=</span> <span class="n">DecoderPILImage</span><span class="p">()</span>
 
 
-<span class="n">pil_image</span> <span class="o">=</span> <span class="n">Encoder</span><span class="p">(</span>
+<span class="n">pil_image</span> <span class="o">=</span> <span class="n">DataType</span><span class="p">(</span>
     <span class="s1">&#39;pil_image&#39;</span><span class="p">,</span>
     <span class="n">encoder</span><span class="o">=</span><span class="n">encode_pil_image</span><span class="p">,</span>
     <span class="n">decoder</span><span class="o">=</span><span class="n">decode_pil_image</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">pil_image_hybrid</span> <span class="o">=</span> <span class="n">DataType</span><span class="p">(</span>
+    <span class="s1">&#39;pil_image_hybrid&#39;</span><span class="p">,</span>
+    <span class="n">encoder</span><span class="o">=</span><span class="n">encode_pil_image</span><span class="p">,</span>
+    <span class="n">decoder</span><span class="o">=</span><span class="n">decode_pil_image</span><span class="p">,</span>
+    <span class="n">artifact</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
         </article>

@@ -249,7 +249,7 @@
 <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">Component</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.encoder</span> <span class="kn">import</span> <span class="n">Encoder</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">DataType</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.listener</span> <span class="kn">import</span> <span class="n">Listener</span>
 <span class="kn">from</span> <span class="nn">superduperdb.ext.utils</span> <span class="kn">import</span> <span class="n">str_shape</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.annotations</span> <span class="kn">import</span> <span class="n">public_api</span>
@@ -297,13 +297,6 @@
                 <span class="n">Listener</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;listener&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compatible_listener</span><span class="p">)</span>
             <span class="p">)</span></div>
 
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">child_components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;indexing_listener&#39;</span><span class="p">,</span> <span class="s1">&#39;listener&#39;</span><span class="p">)]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compatible_listener</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;compatible_listener&#39;</span><span class="p">,</span> <span class="s1">&#39;listener&#39;</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">out</span>
 
 <div class="viewcode-block" id="VectorIndex.get_vector">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.VectorIndex.get_vector">[docs]</a>
@@ -374,7 +367,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;len(model=</span><span class="si">{</span><span class="n">models</span><span class="si">}</span><span class="s1">) != len(keys=</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
         <span class="n">within_ids</span> <span class="o">=</span> <span class="n">ids</span> <span class="ow">or</span> <span class="p">()</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">like</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">id_field</span> <span class="ow">in</span> <span class="n">like</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">like</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">id_field</span> <span class="ow">in</span> <span class="n">like</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">fast_vector_searchers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span><span class="o">.</span><span class="n">find_nearest_from_id</span><span class="p">(</span>
                 <span class="nb">str</span><span class="p">(</span><span class="n">like</span><span class="p">[</span><span class="n">id_field</span><span class="p">]),</span> <span class="n">within_ids</span><span class="o">=</span><span class="n">within_ids</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">n</span>
             <span class="p">)</span>
@@ -412,7 +405,7 @@
     <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">shape</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">encoder</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">shape</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Couldn</span><span class="se">\&#39;</span><span class="s1">t get shape of model outputs from model encoder&#39;</span><span class="p">)</span></div>
 
@@ -451,7 +444,7 @@
 
 <span class="sd">    :param shape: The shape of the vector</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">Encoder</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">DataType</span><span class="p">(</span>
         <span class="n">identifier</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;vector[</span><span class="si">{</span><span class="n">str_shape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">,</span>
         <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
         <span class="n">encoder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -469,7 +462,7 @@
 
 <span class="sd">    :param shape: The shape of the vector</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">Encoder</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">DataType</span><span class="p">(</span>
         <span class="n">identifier</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;sqlvector[</span><span class="si">{</span><span class="n">str_shape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">,</span>
         <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
         <span class="n">encoder</span><span class="o">=</span><span class="n">EncodeArray</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float64&#39;</span><span class="p">),</span>
