@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -240,10 +242,15 @@
         </div>
         <article role="main">
           <h1>Source code for superduperdb.backends.mongodb.artifacts</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">click</span>
-<span class="kn">import</span> <span class="nn">gridfs</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">import</span> <span class="nn">gridfs</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span><span class="p">,</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.base.artifact</span> <span class="kn">import</span> <span class="n">ArtifactStore</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.colors</span> <span class="kn">import</span> <span class="n">Colors</span>
 
@@ -296,7 +303,29 @@
         <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filesystem</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">file_id</span><span class="p">})</span>
         <span class="k">if</span> <span class="n">cur</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File not found in </span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cur</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MongoArtifactStore._save_file">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.artifacts.MongoArtifactStore._save_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">_save_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save file to GridFS&quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">upload_folder</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filesystem</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">upload_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filesystem</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">file_id</span></div>
+
+
+<div class="viewcode-block" id="MongoArtifactStore._load_file">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.artifacts.MongoArtifactStore._load_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">_load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Download file from GridFS and return the path</span>
+<span class="sd">        The path is a temporary directory, {tmp_prefix}/{file_id}/{filename or folder}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">download</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filesystem</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="nf">_save_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serialized</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filesystem</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">serialized</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">file_id</span><span class="p">)</span>
@@ -311,6 +340,107 @@
 
 
         <span class="c1"># TODO: implement me</span>
+
+
+<div class="viewcode-block" id="upload_file">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.artifacts.upload_file">[docs]</a>
+<span class="k">def</span> <span class="nf">upload_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">fs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Upload file to GridFS&quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uploading file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> to GridFS with file_id </span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_to_upload</span><span class="p">:</span>
+        <span class="n">fs</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+            <span class="n">file_to_upload</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;file_id&quot;</span><span class="p">:</span> <span class="n">file_id</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;file&quot;</span><span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="upload_folder">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.artifacts.upload_folder">[docs]</a>
+<span class="k">def</span> <span class="nf">upload_folder</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">parent_path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Upload folder to GridFS&quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">parent_path</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uploading folder </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> to GridFS with file_id </span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">parent_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="c1"># if the folder is empty, create an empty file</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">fs</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+            <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_path</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)),</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;file_id&quot;</span><span class="p">:</span> <span class="n">file_id</span><span class="p">,</span> <span class="s2">&quot;is_empty_dir&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;dir&#39;</span><span class="p">},</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="n">item_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">item_path</span><span class="p">):</span>
+                <span class="n">upload_folder</span><span class="p">(</span><span class="n">item_path</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_path</span><span class="p">,</span> <span class="n">item</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">item_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_to_upload</span><span class="p">:</span>
+                    <span class="n">fs</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+                        <span class="n">file_to_upload</span><span class="p">,</span>
+                        <span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parent_path</span><span class="p">,</span> <span class="n">item</span><span class="p">),</span>
+                        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;file_id&quot;</span><span class="p">:</span> <span class="n">file_id</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;dir&quot;</span><span class="p">},</span>
+                    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="download">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.artifacts.download">[docs]</a>
+<span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">fs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download file or folder from GridFS and return the path&quot;&quot;&quot;</span>
+
+    <span class="n">download_folder</span> <span class="o">=</span> <span class="n">CFG</span><span class="o">.</span><span class="n">downloads</span><span class="o">.</span><span class="n">folder</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">download_folder</span><span class="p">:</span>
+        <span class="n">download_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">tempfile</span><span class="o">.</span><span class="n">gettempdir</span><span class="p">(),</span> <span class="s2">&quot;superduperdb&quot;</span><span class="p">,</span> <span class="s2">&quot;ArtifactStore&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">save_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">download_folder</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">save_folder</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">file</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s2">&quot;metadata.file_id&quot;</span><span class="p">:</span> <span class="n">file_id</span><span class="p">})</span>
+    <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found in </span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">type_</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">type_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="s2">&quot;dir&quot;</span><span class="p">}:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown type &#39;</span><span class="si">{</span><span class="n">type_</span><span class="si">}</span><span class="s2">&#39; for file_id </span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">, expected file or dir&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
+        <span class="n">save_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_folder</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">filename</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloading file_id </span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">save_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">save_path</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloading folder with file_id </span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">save_folder</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">grid_out</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span>
+        <span class="n">fs</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s2">&quot;metadata.file_id&quot;</span><span class="p">:</span> <span class="n">file_id</span><span class="p">,</span> <span class="s2">&quot;metadata.type&quot;</span><span class="p">:</span> <span class="s2">&quot;dir&quot;</span><span class="p">})</span>
+    <span class="p">):</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_folder</span><span class="p">,</span> <span class="n">grid_out</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">grid_out</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_empty_dir&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_to_write</span><span class="p">:</span>
+                <span class="n">file_to_write</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">grid_out</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+    <span class="n">folders</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">save_folder</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">folders</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Expected only one folder, got </span><span class="si">{</span><span class="n">folders</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">save_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_folder</span><span class="p">,</span> <span class="n">folders</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloaded folder with file_id </span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">save_folder</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">save_folder</span></div>
+
 </pre></div>
         </article>
       </div>

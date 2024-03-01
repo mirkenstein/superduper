@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -244,13 +246,21 @@
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb.backends.base.query</span> <span class="kn">import</span> <span class="n">Select</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.query_dataset</span> <span class="kn">import</span> <span class="n">QueryDataset</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">DataType</span><span class="p">,</span> <span class="n">pickle_serializer</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.metric</span> <span class="kn">import</span> <span class="n">Metric</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">_TrainingConfiguration</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Mapping</span><span class="p">,</span>
+    <span class="n">_Fittable</span><span class="p">,</span>
+    <span class="n">_Predictor</span><span class="p">,</span>
+    <span class="n">_TrainingConfiguration</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">superduperdb.jobs.job</span> <span class="kn">import</span> <span class="n">Job</span>
 
 
 <span class="k">def</span> <span class="nf">_get_data_from_query</span><span class="p">(</span>
@@ -261,34 +271,40 @@
     <span class="n">y_preprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">preprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">X</span> <span class="o">==</span> <span class="s1">&#39;_base&#39;</span><span class="p">:</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">preprocess</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">out</span><span class="p">[</span><span class="n">X</span><span class="p">]</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">X</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">out</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_preprocess</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">y</span><span class="p">])</span> <span class="k">if</span> <span class="n">y_preprocess</span> <span class="k">else</span> <span class="n">r</span><span class="p">[</span><span class="n">y</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">out</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">QueryDataset</span><span class="p">(</span>
+            <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+            <span class="n">mapping</span><span class="o">=</span><span class="n">Mapping</span><span class="p">([</span><span class="n">X</span><span class="p">],</span> <span class="n">signature</span><span class="o">=</span><span class="s1">&#39;singleton&#39;</span><span class="p">),</span>
+            <span class="n">transform</span><span class="o">=</span><span class="n">preprocess</span><span class="p">,</span>
+            <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">y_preprocess</span> <span class="o">=</span> <span class="n">y_preprocess</span> <span class="ow">or</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">preprocess</span> <span class="o">=</span> <span class="n">preprocess</span> <span class="ow">or</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">QueryDataset</span><span class="p">(</span>
+            <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+            <span class="n">mapping</span><span class="o">=</span><span class="n">Mapping</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">signature</span><span class="o">=</span><span class="s1">&#39;*args&#39;</span><span class="p">),</span>
+            <span class="n">transform</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="n">preprocess</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">y_preprocess</span><span class="p">(</span><span class="n">y</span><span class="p">)),</span>
+            <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
+        <span class="p">)</span>
 
-    <span class="n">data</span> <span class="o">=</span> <span class="n">QueryDataset</span><span class="p">(</span>
-        <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
-        <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="n">X</span><span class="p">]</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span>
-        <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">,</span>
-        <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">documents</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))):</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">documents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-    <span class="n">X_arr</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="n">X</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">]</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">X_arr</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+        <span class="n">y_arr</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">X_arr</span> <span class="o">=</span> <span class="n">rows</span>
+
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="n">X_arr</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">X_arr</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">y_arr</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">y_arr</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_arr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">y_arr</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">y_arr</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">X_arr</span><span class="p">,</span> <span class="n">y_arr</span>
+        <span class="k">return</span> <span class="n">X_arr</span><span class="p">,</span> <span class="n">y_arr</span>
+    <span class="k">return</span> <span class="n">X_arr</span><span class="p">,</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="SklearnTrainingConfiguration">
@@ -303,13 +319,30 @@
 
 <div class="viewcode-block" id="Estimator">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.sklearn.html#superduperdb.ext.sklearn.model.Estimator">[docs]</a>
-<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">Estimator</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_method</span> <span class="o">==</span> <span class="s1">&#39;predict&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">predict_method</span> <span class="o">=</span> <span class="s1">&#39;predict&#39;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Estimator</span><span class="p">(</span><span class="n">_Predictor</span><span class="p">,</span> <span class="n">_Fittable</span><span class="p">):</span>
+    <span class="n">_artifacts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DataType</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;object&#39;</span><span class="p">,</span> <span class="n">pickle_serializer</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">signature</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;singleton&#39;</span>
+    <span class="nb">object</span><span class="p">:</span> <span class="n">BaseEstimator</span>
+    <span class="n">preprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">postprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Estimator.schedule_jobs">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.sklearn.html#superduperdb.ext.sklearn.model.Estimator.schedule_jobs">[docs]</a>
+    <span class="k">def</span> <span class="nf">schedule_jobs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">,</span>
+        <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="n">jobs</span> <span class="o">=</span> <span class="n">_Fittable</span><span class="o">.</span><span class="n">schedule_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
+        <span class="n">jobs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="n">_Predictor</span><span class="o">.</span><span class="n">schedule_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">dependencies</span><span class="p">,</span> <span class="o">*</span><span class="n">jobs</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">jobs</span></div>
+
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">,</span> <span class="s1">&#39;predict_proba&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">]:</span>
@@ -317,8 +350,35 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="viewcode-block" id="Estimator.predict_one">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.sklearn.html#superduperdb.ext.sklearn.model.Estimator.predict_one">[docs]</a>
+    <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">postprocess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+
+<div class="viewcode-block" id="Estimator.predict">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.sklearn.html#superduperdb.ext.sklearn.model.Estimator.predict">[docs]</a>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">QueryDataset</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)):</span>
+                <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="n">inputs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dataset</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">))]</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">postprocess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">postprocess</span><span class="p">,</span> <span class="n">out</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+
 
     <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span>  <span class="c1"># type: ignore[override]</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -347,14 +407,12 @@
             <span class="k">if</span> <span class="n">select</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Neither select nor db can be None&#39;</span><span class="p">)</span>
 
-            <span class="n">preprocess</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="ow">or</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
-
             <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">_get_data_from_query</span><span class="p">(</span>
                 <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
                 <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
                 <span class="n">X</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
                 <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
-                <span class="n">preprocess</span><span class="o">=</span><span class="n">preprocess</span><span class="p">,</span>
+                <span class="n">preprocess</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">,</span>
                 <span class="n">y_preprocess</span><span class="o">=</span><span class="n">y_preprocess</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_configuration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -381,6 +439,7 @@
                     <span class="p">)</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">append_metrics</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">db</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">upsert</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">to_return</span></div>

@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -341,9 +343,21 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exists</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="ArtifactStore._save_bytes">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifact.ArtifactStore._save_bytes">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">_save_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serialized</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">pass</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save bytes in artifact store&quot;&quot;&quot;</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ArtifactStore._save_file">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifact.ArtifactStore._save_file">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_save_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save file in artifact store and return file_id&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
 
 <div class="viewcode-block" id="ArtifactStore.save_artifact">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifact.ArtifactStore.save_artifact">[docs]</a>
@@ -356,18 +370,23 @@
 <span class="sd">                  and optional fields</span>
 <span class="sd">                  {&#39;file_id&#39;, &#39;uri&#39;}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">assert</span> <span class="s1">&#39;bytes&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">,</span> <span class="s1">&#39;serialized bytes are missing!&#39;</span>
-        <span class="k">assert</span> <span class="s1">&#39;datatype&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">,</span> <span class="s1">&#39;no datatype specified!&#39;</span>
-        <span class="n">datatype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serializers</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]]</span>
-        <span class="n">uri</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;uri&#39;</span><span class="p">)</span>
-        <span class="n">file_id</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">file_id</span> <span class="o">=</span> <span class="n">_construct_file_id_from_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;leaf_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="s1">&#39;file_id&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">,</span> <span class="s1">&#39;file_id is missing!&#39;</span>
+            <span class="n">file_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_file</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;uri&#39;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;file_id&#39;</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">file_id</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;directory&#39;</span><span class="p">):</span>
-            <span class="n">file_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datatype</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_save_bytes</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">],</span> <span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="s1">&#39;bytes&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">,</span> <span class="s1">&#39;serialized bytes are missing!&#39;</span>
+            <span class="k">assert</span> <span class="s1">&#39;datatype&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">,</span> <span class="s1">&#39;no datatype specified!&#39;</span>
+            <span class="n">datatype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serializers</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]]</span>
+            <span class="n">uri</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;uri&#39;</span><span class="p">)</span>
+            <span class="n">file_id</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_id&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">file_id</span> <span class="o">=</span> <span class="n">_construct_file_id_from_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">file_id</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;directory&#39;</span><span class="p">):</span>
+                <span class="n">file_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datatype</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_bytes</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">],</span> <span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">]</span>
         <span class="n">r</span><span class="p">[</span><span class="s1">&#39;file_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_id</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
@@ -378,6 +397,18 @@
     <span class="k">def</span> <span class="nf">_load_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load bytes from artifact store.</span>
+
+<span class="sd">        :param file_id: Identifier of artifact in the store</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="ArtifactStore._load_file">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifact.ArtifactStore._load_file">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load file from artifact store and return path</span>
 
 <span class="sd">        :param file_id: Identifier of artifact in the store</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -396,12 +427,16 @@
 
         <span class="n">datatype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serializers</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]]</span>
         <span class="n">file_id</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_id&#39;</span><span class="p">)</span>
-        <span class="n">uri</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;uri&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">file_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&quot;uri&quot; and &quot;file_id&quot; can</span><span class="se">\&#39;</span><span class="s1">t both be None&#39;</span>
-            <span class="n">file_id</span> <span class="o">=</span> <span class="n">_construct_file_id_from_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-        <span class="nb">bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_bytes</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">datatype</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="nb">bytes</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;encodable&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_file</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># We should always have file_id available at load time (because saved)</span>
+            <span class="n">uri</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;uri&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">file_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&quot;uri&quot; and &quot;file_id&quot; can</span><span class="se">\&#39;</span><span class="s1">t both be None&#39;</span>
+                <span class="n">file_id</span> <span class="o">=</span> <span class="n">_construct_file_id_from_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_bytes</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">datatype</span><span class="o">.</span><span class="n">decode_data</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ArtifactStore.save">
@@ -412,13 +447,12 @@
 <span class="sd">        :param artifacts: List of ``Artifact`` instances</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="s1">&#39;_content&#39;</span> <span class="ow">in</span> <span class="n">r</span>
-                <span class="ow">and</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;leaf_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;encodable&#39;</span>
-                <span class="ow">and</span> <span class="s1">&#39;bytes&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">]</span>
-            <span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;_content&#39;</span> <span class="ow">in</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;leaf_type&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span>
+                <span class="s1">&#39;artifact&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;file&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;lazy_artifact&#39;</span><span class="p">,</span>
+            <span class="p">}:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">])</span>
-                <span class="k">del</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;bytes&#39;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>

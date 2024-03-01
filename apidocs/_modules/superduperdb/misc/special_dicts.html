@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -267,6 +269,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;_base&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

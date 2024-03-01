@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -356,12 +358,15 @@
             <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span>
 
             <span class="n">cfg_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">cfg_dict</span><span class="p">):</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">CFG</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">cfg_dict</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;matched&#39;</span><span class="p">}</span>
+
+            <span class="n">diff</span> <span class="o">=</span> <span class="n">CFG</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">cfg_dict</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span>
                 <span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
-                <span class="n">content</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="s1">&#39;Config is not match&#39;</span><span class="p">},</span>
+                <span class="n">content</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Config doesn</span><span class="se">\&#39;</span><span class="s1">t match based on this diff: </span><span class="si">{</span><span class="n">diff</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">},</span>
             <span class="p">)</span></div>
 
 

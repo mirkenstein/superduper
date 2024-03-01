@@ -181,8 +181,10 @@
 <li class="toctree-l3"><a class="reference internal" href="superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 current has-children"><a class="reference internal" href="superduperdb.ext.html">superduperdb.ext package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -279,7 +281,7 @@
 <span id="superduperdb-ext-torch-model-module"></span><h2>superduperdb.ext.torch.model module<a class="headerlink" href="#module-superduperdb.ext.torch.model" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.model.BasicDataset">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.torch.model.</span></span><span class="sig-name descname"><span class="pre">BasicDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">documents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#BasicDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.BasicDataset" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.torch.model.</span></span><span class="sig-name descname"><span class="pre">BasicDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signature</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#BasicDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.BasicDataset" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></p>
 <p>Basic database iterating over a list of documents and applying a transformation</p>
 <dl class="field-list simple">
@@ -294,8 +296,13 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.torch.model.</span></span><span class="sig-name descname"><span class="pre">TorchModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">'str'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts:</span> <span class="pre">'dc.InitVar[t.Optional[t.Dict]]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype:</span> <span class="pre">'EncoderArg'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">'t.Optional[Schema]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">'bool'</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">'t.Optional[t.Callable]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">'t.Optional[t.Callable]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">'t.Optional[t.Callable]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">'bool'</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">'bool'</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">'t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]'</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">'dict'</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">'t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">'t.Optional[CompoundSelect]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">'t.Optional[int]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">'t.Optional[t.Dict]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object:</span> <span class="pre">'t.Any'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_to_device_method:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_values:</span> <span class="pre">'t.Optional[t.Dict]'</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_method:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preferred_devices:</span> <span class="pre">'t.Union[None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t.Sequence[str]]'</span> <span class="pre">=</span> <span class="pre">('cuda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'mps'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'cpu')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_configuration:</span> <span class="pre">'t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_TrainingConfiguration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_X:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_y:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_select:</span> <span class="pre">'t.Optional[CompoundSelect]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_directions:</span> <span class="pre">'int'</span> <span class="pre">=</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_state:</span> <span class="pre">'t.Optional[t.Any]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forward_method:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'__call__'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_forward_method:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'__call__'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.Model" title="superduperdb.components.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.torch.model.</span></span><span class="sig-name descname"><span class="pre">TorchModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">'str'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts:</span> <span class="pre">'dc.InitVar[t.Optional[t.Dict]]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preferred_devices:</span> <span class="pre">'t.Sequence[str]'</span> <span class="pre">=</span> <span class="pre">('cuda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'mps'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'cpu')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_configuration:</span> <span class="pre">'t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_TrainingConfiguration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_X:</span> <span class="pre">'t.Optional[ModelInputType]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_y:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_select:</span> <span class="pre">'t.Optional[CompoundSelect]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_values:</span> <span class="pre">'t.Dict'</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype:</span> <span class="pre">'EncoderArg'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">'t.Optional[Schema]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">'bool'</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">'t.Dict'</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">'t.Sequence[Metric]'</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">'t.Optional[t.Sequence[Dataset]]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">'t.Dict'</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object:</span> <span class="pre">'torch.nn.Module'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">'t.Optional[t.Callable]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">'t.Optional[t.Callable]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">'t.Optional[t.Callable]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_state:</span> <span class="pre">'t.Optional[t.Any]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forward_method:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'__call__'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_forward_method:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'__call__'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_kwargs:</span> <span class="pre">'t.Dict'</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess_signature:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'singleton'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forward_signature:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'singleton'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess_signature:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'singleton'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model._Predictor" title="superduperdb.components.model._Predictor"><code class="xref py py-class docutils literal notranslate"><span class="pre">_Predictor</span></code></a>, <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model._Fittable" title="superduperdb.components.model._Fittable"><code class="xref py py-class docutils literal notranslate"><span class="pre">_Fittable</span></code></a>, <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model._DeviceManaged" title="superduperdb.components.model._DeviceManaged"><code class="xref py py-class docutils literal notranslate"><span class="pre">_DeviceManaged</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.collate_fn">
+<span class="sig-name descname"><span class="pre">collate_fn</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">t.Callable</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.collate_fn" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.compute_validation_objective">
 <span class="sig-name descname"><span class="pre">compute_validation_objective</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valid_dataloader</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.compute_validation_objective"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.compute_validation_objective" title="Link to this definition">#</a></dt>
@@ -309,11 +316,6 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.evaluating">
 <span class="sig-name descname"><span class="pre">evaluating</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.evaluating"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.evaluating" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.extract_batch">
-<span class="sig-name descname"><span class="pre">extract_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.extract_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.extract_batch" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -331,14 +333,34 @@
 <span class="sig-name descname"><span class="pre">forward_method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'__call__'</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.forward_method" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.forward_signature">
+<span class="sig-name descname"><span class="pre">forward_signature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'singleton'</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.forward_signature" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.ext.torch.model.TorchModel'</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.inputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.CallableInputs" title="superduperdb.components.model.CallableInputs"><span class="pre">CallableInputs</span></a></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.inputs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.loader_kwargs">
+<span class="sig-name descname"><span class="pre">loader_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.loader_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.log">
 <span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.log" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.num_directions">
-<span class="sig-name descname"><span class="pre">num_directions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.num_directions" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.object">
+<span class="sig-name descname"><span class="pre">object</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">torch.nn.Module</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.object" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -361,6 +383,56 @@
 <span class="sig-name descname"><span class="pre">parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.parameters" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.postprocess">
+<span class="sig-name descname"><span class="pre">postprocess</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">t.Callable</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.postprocess" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.postprocess_signature">
+<span class="sig-name descname"><span class="pre">postprocess_signature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'singleton'</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.postprocess_signature" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.backends.html#superduperdb.backends.query_dataset.QueryDataset" title="superduperdb.backends.query_dataset.QueryDataset"><span class="pre">QueryDataset</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.predict" title="Link to this definition">#</a></dt>
+<dd><p>Execute a single prediction on a datapoint
+given by positional and keyword arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – arguments handled by model</p></li>
+<li><p><strong>kwargs</strong> – key-word arguments handled by model</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.predict_one">
+<span class="sig-name descname"><span class="pre">predict_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.predict_one"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.predict_one" title="Link to this definition">#</a></dt>
+<dd><p>Execute a single prediction on a datapoint
+given by positional and keyword arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – arguments handled by model</p></li>
+<li><p><strong>kwargs</strong> – key-word arguments handled by model</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">t.Callable</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.preprocess" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.preprocess_signature">
+<span class="sig-name descname"><span class="pre">preprocess_signature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'singleton'</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.preprocess_signature" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.save">
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.save" title="Link to this definition">#</a></dt>
@@ -375,6 +447,35 @@
 <dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.saving_criterion">
 <span class="sig-name descname"><span class="pre">saving_criterion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.saving_criterion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.saving_criterion" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.schedule_jobs">
+<span class="sig-name descname"><span class="pre">schedule_jobs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Job</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.schedule_jobs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.schedule_jobs" title="Link to this definition">#</a></dt>
+<dd><p>Run the job for this listener</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>database</strong> – The db to process</p></li>
+<li><p><strong>dependencies</strong> – A sequence of dependencies,</p></li>
+<li><p><strong>verbose</strong> – If true, print more information</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.signature">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signature</span></span><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.signature" title="Link to this definition">#</a></dt>
+<dd><p>str(object=’’) -&gt; str
+str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
+<p>Create a new string object from the given object. If encoding or
+errors is specified, then the object must expose a data buffer
+that will be decoded using the given encoding and error handler.
+Otherwise, returns the result of object.__str__() (if defined)
+or repr(object).
+encoding defaults to sys.getdefaultencoding().
+errors defaults to ‘strict’.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.state_dict">
@@ -411,16 +512,11 @@
 <span class="sig-name descname"><span class="pre">train_forward_method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'__call__'</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.train_forward_method" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchModel.train_preprocess">
-<span class="sig-name descname"><span class="pre">train_preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.train_preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchModel.train_preprocess" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchTrainerConfiguration">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.torch.model.</span></span><span class="sig-name descname"><span class="pre">TorchTrainerConfiguration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts:</span> <span class="pre">dataclasses.InitVar[typing.Optional[typing.Dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_kwargs:</span> <span class="pre">~typing.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_improve_then_stop:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splitter:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_interval:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listen:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'objective'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_cls:</span> <span class="pre">~typing.Any</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_kwargs:</span> <span class="pre">~typing.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_preprocessors:</span> <span class="pre">~typing.Dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs:</span> <span class="pre">~typing.Dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchTrainerConfiguration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.torch.model.</span></span><span class="sig-name descname"><span class="pre">TorchTrainerConfiguration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts:</span> <span class="pre">dataclasses.InitVar[typing.Optional[typing.Dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_kwargs:</span> <span class="pre">~typing.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_improve_then_stop:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splitter:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_interval:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listen:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'objective'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_cls:</span> <span class="pre">~typing.Any</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_kwargs:</span> <span class="pre">~typing.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_preprocessors:</span> <span class="pre">~typing.Dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pass_kwargs:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs:</span> <span class="pre">~typing.Dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchTrainerConfiguration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model._TrainingConfiguration" title="superduperdb.components.model._TrainingConfiguration"><code class="xref py py-class docutils literal notranslate"><span class="pre">_TrainingConfiguration</span></code></a></p>
 <p>Configuration for the PyTorch trainer.</p>
 <dl class="field-list simple">
@@ -444,6 +540,11 @@ before stopping</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchTrainerConfiguration.download">
 <span class="sig-name descname"><span class="pre">download</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.download" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchTrainerConfiguration.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.ext.torch.model.TorchTrainerConfiguration'</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.full_import_path" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -479,6 +580,11 @@ before stopping</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchTrainerConfiguration.optimizer_kwargs">
 <span class="sig-name descname"><span class="pre">optimizer_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.optimizer_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.TorchTrainerConfiguration.pass_kwargs">
+<span class="sig-name descname"><span class="pre">pass_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.pass_kwargs" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -519,6 +625,18 @@ before stopping</p></li>
 <span class="go">torch.Size([1, 4])</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.model.torchmodel">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.ext.torch.model.</span></span><span class="sig-name descname"><span class="pre">torchmodel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#torchmodel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.model.torchmodel" title="Link to this definition">#</a></dt>
+<dd><p>Decorate a <cite>torch.nn.Module</cite> so that when it is invoked,
+the result is a <cite>TorchModel</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cls</strong> – Class to decorate</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -611,8 +729,13 @@ before stopping</p></li>
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-superduperdb.ext.torch" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.torch.</span></span><span class="sig-name descname"><span class="pre">TorchModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">'str'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts:</span> <span class="pre">'dc.InitVar[t.Optional[t.Dict]]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype:</span> <span class="pre">'EncoderArg'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">'t.Optional[Schema]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">'bool'</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">'t.Optional[t.Callable]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">'t.Optional[t.Callable]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">'t.Optional[t.Callable]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_predict:</span> <span class="pre">'bool'</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">takes_context:</span> <span class="pre">'bool'</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">'t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Metric</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]]'</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">'dict'</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">'t.Optional[t.Sequence[t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dataset]]]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_X:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_select:</span> <span class="pre">'t.Optional[CompoundSelect]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_max_chunk_size:</span> <span class="pre">'t.Optional[int]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">'t.Optional[t.Dict]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object:</span> <span class="pre">'t.Any'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_to_device_method:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_values:</span> <span class="pre">'t.Optional[t.Dict]'</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_method:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preferred_devices:</span> <span class="pre">'t.Union[None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t.Sequence[str]]'</span> <span class="pre">=</span> <span class="pre">('cuda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'mps'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'cpu')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_configuration:</span> <span class="pre">'t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_TrainingConfiguration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_X:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_y:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_select:</span> <span class="pre">'t.Optional[CompoundSelect]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_directions:</span> <span class="pre">'int'</span> <span class="pre">=</span> <span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_state:</span> <span class="pre">'t.Optional[t.Any]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forward_method:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'__call__'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_forward_method:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'__call__'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchModel" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.Model" title="superduperdb.components.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.torch.</span></span><span class="sig-name descname"><span class="pre">TorchModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">'str'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts:</span> <span class="pre">'dc.InitVar[t.Optional[t.Dict]]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preferred_devices:</span> <span class="pre">'t.Sequence[str]'</span> <span class="pre">=</span> <span class="pre">('cuda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'mps'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'cpu')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training_configuration:</span> <span class="pre">'t.Union[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_TrainingConfiguration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">None]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_X:</span> <span class="pre">'t.Optional[ModelInputType]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_y:</span> <span class="pre">'t.Optional[str]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_select:</span> <span class="pre">'t.Optional[CompoundSelect]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_values:</span> <span class="pre">'t.Dict'</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype:</span> <span class="pre">'EncoderArg'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">'t.Optional[Schema]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">'bool'</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">'t.Dict'</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics:</span> <span class="pre">'t.Sequence[Metric]'</span> <span class="pre">=</span> <span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_sets:</span> <span class="pre">'t.Optional[t.Sequence[Dataset]]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">'t.Dict'</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object:</span> <span class="pre">'torch.nn.Module'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess:</span> <span class="pre">'t.Optional[t.Callable]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess:</span> <span class="pre">'t.Optional[t.Callable]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn:</span> <span class="pre">'t.Optional[t.Callable]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_state:</span> <span class="pre">'t.Optional[t.Any]'</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forward_method:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'__call__'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_forward_method:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'__call__'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_kwargs:</span> <span class="pre">'t.Dict'</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preprocess_signature:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'singleton'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forward_signature:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'singleton'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">postprocess_signature:</span> <span class="pre">'str'</span> <span class="pre">=</span> <span class="pre">'singleton'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchModel" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model._Predictor" title="superduperdb.components.model._Predictor"><code class="xref py py-class docutils literal notranslate"><span class="pre">_Predictor</span></code></a>, <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model._Fittable" title="superduperdb.components.model._Fittable"><code class="xref py py-class docutils literal notranslate"><span class="pre">_Fittable</span></code></a>, <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model._DeviceManaged" title="superduperdb.components.model._DeviceManaged"><code class="xref py py-class docutils literal notranslate"><span class="pre">_DeviceManaged</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.collate_fn">
+<span class="sig-name descname"><span class="pre">collate_fn</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">t.Callable</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.collate_fn" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.compute_validation_objective">
 <span class="sig-name descname"><span class="pre">compute_validation_objective</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valid_dataloader</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.compute_validation_objective"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.compute_validation_objective" title="Link to this definition">#</a></dt>
@@ -626,11 +749,6 @@ before stopping</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.evaluating">
 <span class="sig-name descname"><span class="pre">evaluating</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.evaluating"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.evaluating" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.extract_batch">
-<span class="sig-name descname"><span class="pre">extract_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.extract_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.extract_batch" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -649,8 +767,28 @@ before stopping</p></li>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.forward_signature">
+<span class="sig-name descname"><span class="pre">forward_signature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'singleton'</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.forward_signature" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.ext.torch.model.TorchModel'</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.identifier">
 <span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.identifier" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.inputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inputs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.CallableInputs" title="superduperdb.components.model.CallableInputs"><span class="pre">CallableInputs</span></a></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.inputs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.loader_kwargs">
+<span class="sig-name descname"><span class="pre">loader_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.loader_kwargs" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -660,22 +798,17 @@ before stopping</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.metric_values">
-<span class="sig-name descname"><span class="pre">metric_values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">t.Dict</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.metric_values" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">metric_values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.metric_values" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.model_update_kwargs">
-<span class="sig-name descname"><span class="pre">model_update_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.model_update_kwargs" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.num_directions">
-<span class="sig-name descname"><span class="pre">num_directions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.num_directions" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">model_update_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.model_update_kwargs" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.object">
-<span class="sig-name descname"><span class="pre">object</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Any</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.object" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">object</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">torch.nn.Module</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.object" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -698,6 +831,61 @@ before stopping</p></li>
 <span class="sig-name descname"><span class="pre">parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.parameters" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.postprocess">
+<span class="sig-name descname"><span class="pre">postprocess</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">t.Callable</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.postprocess" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.postprocess_signature">
+<span class="sig-name descname"><span class="pre">postprocess_signature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'singleton'</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.postprocess_signature" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.backends.html#superduperdb.backends.query_dataset.QueryDataset" title="superduperdb.backends.query_dataset.QueryDataset"><span class="pre">QueryDataset</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.predict" title="Link to this definition">#</a></dt>
+<dd><p>Execute a single prediction on a datapoint
+given by positional and keyword arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – arguments handled by model</p></li>
+<li><p><strong>kwargs</strong> – key-word arguments handled by model</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.predict_kwargs">
+<span class="sig-name descname"><span class="pre">predict_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Dict</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.predict_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.predict_one">
+<span class="sig-name descname"><span class="pre">predict_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.predict_one"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.predict_one" title="Link to this definition">#</a></dt>
+<dd><p>Execute a single prediction on a datapoint
+given by positional and keyword arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – arguments handled by model</p></li>
+<li><p><strong>kwargs</strong> – key-word arguments handled by model</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.preprocess">
+<span class="sig-name descname"><span class="pre">preprocess</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">t.Callable</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.preprocess" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.preprocess_signature">
+<span class="sig-name descname"><span class="pre">preprocess_signature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'singleton'</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.preprocess_signature" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.save">
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.save" title="Link to this definition">#</a></dt>
@@ -712,6 +900,35 @@ before stopping</p></li>
 <dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.saving_criterion">
 <span class="sig-name descname"><span class="pre">saving_criterion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.saving_criterion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.saving_criterion" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.schedule_jobs">
+<span class="sig-name descname"><span class="pre">schedule_jobs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Job</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.schedule_jobs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.schedule_jobs" title="Link to this definition">#</a></dt>
+<dd><p>Run the job for this listener</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>database</strong> – The db to process</p></li>
+<li><p><strong>dependencies</strong> – A sequence of dependencies,</p></li>
+<li><p><strong>verbose</strong> – If true, print more information</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.signature">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signature</span></span><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.signature" title="Link to this definition">#</a></dt>
+<dd><p>str(object=’’) -&gt; str
+str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
+<p>Create a new string object from the given object. If encoding or
+errors is specified, then the object must expose a data buffer
+that will be decoded using the given encoding and error handler.
+Otherwise, returns the result of object.__str__() (if defined)
+or repr(object).
+encoding defaults to sys.getdefaultencoding().
+errors defaults to ‘strict’.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.state_dict">
@@ -748,16 +965,11 @@ before stopping</p></li>
 <span class="sig-name descname"><span class="pre">train_forward_method</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'__call__'</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.train_forward_method" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchModel.train_preprocess">
-<span class="sig-name descname"><span class="pre">train_preprocess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchModel.train_preprocess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchModel.train_preprocess" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.TorchTrainerConfiguration">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.torch.</span></span><span class="sig-name descname"><span class="pre">TorchTrainerConfiguration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts:</span> <span class="pre">dataclasses.InitVar[typing.Optional[typing.Dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_kwargs:</span> <span class="pre">~typing.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_improve_then_stop:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splitter:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_interval:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listen:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'objective'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_cls:</span> <span class="pre">~typing.Any</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_kwargs:</span> <span class="pre">~typing.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_preprocessors:</span> <span class="pre">~typing.Dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs:</span> <span class="pre">~typing.Dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchTrainerConfiguration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchTrainerConfiguration" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.torch.</span></span><span class="sig-name descname"><span class="pre">TorchTrainerConfiguration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts:</span> <span class="pre">dataclasses.InitVar[typing.Optional[typing.Dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader_kwargs:</span> <span class="pre">~typing.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_improve_then_stop:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splitter:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_interval:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listen:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'objective'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_cls:</span> <span class="pre">~typing.Any</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_kwargs:</span> <span class="pre">~typing.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_preprocessors:</span> <span class="pre">~typing.Dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pass_kwargs:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs:</span> <span class="pre">~typing.Dict</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#TorchTrainerConfiguration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.TorchTrainerConfiguration" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model._TrainingConfiguration" title="superduperdb.components.model._TrainingConfiguration"><code class="xref py py-class docutils literal notranslate"><span class="pre">_TrainingConfiguration</span></code></a></p>
 <p>Configuration for the PyTorch trainer.</p>
 <dl class="field-list simple">
@@ -781,6 +993,11 @@ before stopping</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.TorchTrainerConfiguration.download">
 <span class="sig-name descname"><span class="pre">download</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchTrainerConfiguration.download" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchTrainerConfiguration.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.ext.torch.model.TorchTrainerConfiguration'</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchTrainerConfiguration.full_import_path" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -824,6 +1041,11 @@ before stopping</p></li>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.TorchTrainerConfiguration.pass_kwargs">
+<span class="sig-name descname"><span class="pre">pass_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchTrainerConfiguration.pass_kwargs" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.ext.torch.TorchTrainerConfiguration.splitter">
 <span class="sig-name descname"><span class="pre">splitter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">t.Callable</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.torch.TorchTrainerConfiguration.splitter" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -850,6 +1072,18 @@ before stopping</p></li>
 <li><p><strong>dtype</strong> – The dtype of the tensor.</p></li>
 <li><p><strong>shape</strong> – The shape of the tensor.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.ext.torch.torchmodel">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.ext.torch.</span></span><span class="sig-name descname"><span class="pre">torchmodel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/torch/model.html#torchmodel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.torch.torchmodel" title="Link to this definition">#</a></dt>
+<dd><p>Decorate a <cite>torch.nn.Module</cite> so that when it is invoked,
+the result is a <cite>TorchModel</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cls</strong> – Class to decorate</p>
 </dd>
 </dl>
 </dd></dl>
@@ -923,22 +1157,34 @@ before stopping</p></li>
 <li><a class="reference internal" href="#module-superduperdb.ext.torch.model">superduperdb.ext.torch.model module</a><ul>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.BasicDataset"><code class="docutils literal notranslate"><span class="pre">BasicDataset</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel"><code class="docutils literal notranslate"><span class="pre">TorchModel</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.collate_fn"><code class="docutils literal notranslate"><span class="pre">TorchModel.collate_fn</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.compute_validation_objective"><code class="docutils literal notranslate"><span class="pre">TorchModel.compute_validation_objective()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.eval"><code class="docutils literal notranslate"><span class="pre">TorchModel.eval()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.evaluating"><code class="docutils literal notranslate"><span class="pre">TorchModel.evaluating()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.extract_batch"><code class="docutils literal notranslate"><span class="pre">TorchModel.extract_batch()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.extract_batch_key"><code class="docutils literal notranslate"><span class="pre">TorchModel.extract_batch_key()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.forward"><code class="docutils literal notranslate"><span class="pre">TorchModel.forward()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.forward_method"><code class="docutils literal notranslate"><span class="pre">TorchModel.forward_method</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.forward_signature"><code class="docutils literal notranslate"><span class="pre">TorchModel.forward_signature</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.full_import_path"><code class="docutils literal notranslate"><span class="pre">TorchModel.full_import_path</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.inputs"><code class="docutils literal notranslate"><span class="pre">TorchModel.inputs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.loader_kwargs"><code class="docutils literal notranslate"><span class="pre">TorchModel.loader_kwargs</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.log"><code class="docutils literal notranslate"><span class="pre">TorchModel.log()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.num_directions"><code class="docutils literal notranslate"><span class="pre">TorchModel.num_directions</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.object"><code class="docutils literal notranslate"><span class="pre">TorchModel.object</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.optimizer"><code class="docutils literal notranslate"><span class="pre">TorchModel.optimizer</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.optimizer_state"><code class="docutils literal notranslate"><span class="pre">TorchModel.optimizer_state</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.optimizers"><code class="docutils literal notranslate"><span class="pre">TorchModel.optimizers</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.parameters"><code class="docutils literal notranslate"><span class="pre">TorchModel.parameters()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.postprocess"><code class="docutils literal notranslate"><span class="pre">TorchModel.postprocess</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.postprocess_signature"><code class="docutils literal notranslate"><span class="pre">TorchModel.postprocess_signature</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.predict"><code class="docutils literal notranslate"><span class="pre">TorchModel.predict()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.predict_one"><code class="docutils literal notranslate"><span class="pre">TorchModel.predict_one()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.preprocess"><code class="docutils literal notranslate"><span class="pre">TorchModel.preprocess</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.preprocess_signature"><code class="docutils literal notranslate"><span class="pre">TorchModel.preprocess_signature</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.save"><code class="docutils literal notranslate"><span class="pre">TorchModel.save()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.saving"><code class="docutils literal notranslate"><span class="pre">TorchModel.saving()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.saving_criterion"><code class="docutils literal notranslate"><span class="pre">TorchModel.saving_criterion()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.schedule_jobs"><code class="docutils literal notranslate"><span class="pre">TorchModel.schedule_jobs()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.signature"><code class="docutils literal notranslate"><span class="pre">TorchModel.signature</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.state_dict"><code class="docutils literal notranslate"><span class="pre">TorchModel.state_dict()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.stopping_criterion"><code class="docutils literal notranslate"><span class="pre">TorchModel.stopping_criterion()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.take_step"><code class="docutils literal notranslate"><span class="pre">TorchModel.take_step()</span></code></a></li>
@@ -946,11 +1192,11 @@ before stopping</p></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.train"><code class="docutils literal notranslate"><span class="pre">TorchModel.train()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.train_forward"><code class="docutils literal notranslate"><span class="pre">TorchModel.train_forward()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.train_forward_method"><code class="docutils literal notranslate"><span class="pre">TorchModel.train_forward_method</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchModel.train_preprocess"><code class="docutils literal notranslate"><span class="pre">TorchModel.train_preprocess()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.download"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.download</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.full_import_path"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.listen"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.listen</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.loader_kwargs"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.loader_kwargs</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.max_iterations"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.max_iterations</span></code></a></li>
@@ -958,12 +1204,14 @@ before stopping</p></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.objective"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.objective</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.optimizer_cls"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.optimizer_cls</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.optimizer_kwargs"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.optimizer_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.pass_kwargs"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.pass_kwargs</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.splitter"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.splitter</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.target_preprocessors"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.target_preprocessors</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.TorchTrainerConfiguration.validation_interval"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.validation_interval</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.create_batch"><code class="docutils literal notranslate"><span class="pre">create_batch()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.model.torchmodel"><code class="docutils literal notranslate"><span class="pre">torchmodel()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.model.unpack_batch"><code class="docutils literal notranslate"><span class="pre">unpack_batch()</span></code></a></li>
 </ul>
 </li>
@@ -976,26 +1224,38 @@ before stopping</p></li>
 </li>
 <li><a class="reference internal" href="#module-superduperdb.ext.torch">Module contents</a><ul>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel"><code class="docutils literal notranslate"><span class="pre">TorchModel</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.collate_fn"><code class="docutils literal notranslate"><span class="pre">TorchModel.collate_fn</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.compute_validation_objective"><code class="docutils literal notranslate"><span class="pre">TorchModel.compute_validation_objective()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.eval"><code class="docutils literal notranslate"><span class="pre">TorchModel.eval()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.evaluating"><code class="docutils literal notranslate"><span class="pre">TorchModel.evaluating()</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.extract_batch"><code class="docutils literal notranslate"><span class="pre">TorchModel.extract_batch()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.extract_batch_key"><code class="docutils literal notranslate"><span class="pre">TorchModel.extract_batch_key()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.forward"><code class="docutils literal notranslate"><span class="pre">TorchModel.forward()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.forward_method"><code class="docutils literal notranslate"><span class="pre">TorchModel.forward_method</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.forward_signature"><code class="docutils literal notranslate"><span class="pre">TorchModel.forward_signature</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.full_import_path"><code class="docutils literal notranslate"><span class="pre">TorchModel.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.identifier"><code class="docutils literal notranslate"><span class="pre">TorchModel.identifier</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.inputs"><code class="docutils literal notranslate"><span class="pre">TorchModel.inputs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.loader_kwargs"><code class="docutils literal notranslate"><span class="pre">TorchModel.loader_kwargs</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.log"><code class="docutils literal notranslate"><span class="pre">TorchModel.log()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.metric_values"><code class="docutils literal notranslate"><span class="pre">TorchModel.metric_values</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.model_update_kwargs"><code class="docutils literal notranslate"><span class="pre">TorchModel.model_update_kwargs</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.num_directions"><code class="docutils literal notranslate"><span class="pre">TorchModel.num_directions</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.object"><code class="docutils literal notranslate"><span class="pre">TorchModel.object</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.optimizer"><code class="docutils literal notranslate"><span class="pre">TorchModel.optimizer</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.optimizer_state"><code class="docutils literal notranslate"><span class="pre">TorchModel.optimizer_state</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.optimizers"><code class="docutils literal notranslate"><span class="pre">TorchModel.optimizers</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.parameters"><code class="docutils literal notranslate"><span class="pre">TorchModel.parameters()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.postprocess"><code class="docutils literal notranslate"><span class="pre">TorchModel.postprocess</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.postprocess_signature"><code class="docutils literal notranslate"><span class="pre">TorchModel.postprocess_signature</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.predict"><code class="docutils literal notranslate"><span class="pre">TorchModel.predict()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.predict_kwargs"><code class="docutils literal notranslate"><span class="pre">TorchModel.predict_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.predict_one"><code class="docutils literal notranslate"><span class="pre">TorchModel.predict_one()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.preprocess"><code class="docutils literal notranslate"><span class="pre">TorchModel.preprocess</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.preprocess_signature"><code class="docutils literal notranslate"><span class="pre">TorchModel.preprocess_signature</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.save"><code class="docutils literal notranslate"><span class="pre">TorchModel.save()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.saving"><code class="docutils literal notranslate"><span class="pre">TorchModel.saving()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.saving_criterion"><code class="docutils literal notranslate"><span class="pre">TorchModel.saving_criterion()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.schedule_jobs"><code class="docutils literal notranslate"><span class="pre">TorchModel.schedule_jobs()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.signature"><code class="docutils literal notranslate"><span class="pre">TorchModel.signature</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.state_dict"><code class="docutils literal notranslate"><span class="pre">TorchModel.state_dict()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.stopping_criterion"><code class="docutils literal notranslate"><span class="pre">TorchModel.stopping_criterion()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.take_step"><code class="docutils literal notranslate"><span class="pre">TorchModel.take_step()</span></code></a></li>
@@ -1003,11 +1263,11 @@ before stopping</p></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.train"><code class="docutils literal notranslate"><span class="pre">TorchModel.train()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.train_forward"><code class="docutils literal notranslate"><span class="pre">TorchModel.train_forward()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.train_forward_method"><code class="docutils literal notranslate"><span class="pre">TorchModel.train_forward_method</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.ext.torch.TorchModel.train_preprocess"><code class="docutils literal notranslate"><span class="pre">TorchModel.train_preprocess()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchTrainerConfiguration"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchTrainerConfiguration.download"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.download</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchTrainerConfiguration.full_import_path"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchTrainerConfiguration.identifier"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.identifier</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchTrainerConfiguration.listen"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.listen</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchTrainerConfiguration.loader_kwargs"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.loader_kwargs</span></code></a></li>
@@ -1016,12 +1276,14 @@ before stopping</p></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchTrainerConfiguration.objective"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.objective</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchTrainerConfiguration.optimizer_cls"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.optimizer_cls</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchTrainerConfiguration.optimizer_kwargs"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.optimizer_kwargs</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.TorchTrainerConfiguration.pass_kwargs"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.pass_kwargs</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchTrainerConfiguration.splitter"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.splitter</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchTrainerConfiguration.target_preprocessors"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.target_preprocessors</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.TorchTrainerConfiguration.validation_interval"><code class="docutils literal notranslate"><span class="pre">TorchTrainerConfiguration.validation_interval</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#superduperdb.ext.torch.tensor"><code class="docutils literal notranslate"><span class="pre">tensor()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.torch.torchmodel"><code class="docutils literal notranslate"><span class="pre">torchmodel()</span></code></a></li>
 </ul>
 </li>
 </ul>

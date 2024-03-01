@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -242,7 +244,24 @@
           <h1>Source code for superduperdb.ext.llm.openai</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
 
+<span class="kn">from</span> <span class="nn">httpx</span> <span class="kn">import</span> <span class="n">ResponseNotRead</span>
+<span class="kn">from</span> <span class="nn">openai</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">APITimeoutError</span><span class="p">,</span>
+    <span class="n">InternalServerError</span><span class="p">,</span>
+    <span class="n">RateLimitError</span><span class="p">,</span>
+<span class="p">)</span>
+
 <span class="kn">from</span> <span class="nn">superduperdb.ext.llm.base</span> <span class="kn">import</span> <span class="n">BaseOpenAI</span>
+<span class="kn">from</span> <span class="nn">superduperdb.misc.retry</span> <span class="kn">import</span> <span class="n">Retry</span>
+
+<span class="n">retry</span> <span class="o">=</span> <span class="n">Retry</span><span class="p">(</span>
+    <span class="n">exception_types</span><span class="o">=</span><span class="p">(</span>
+        <span class="n">APITimeoutError</span><span class="p">,</span>
+        <span class="n">RateLimitError</span><span class="p">,</span>
+        <span class="n">InternalServerError</span><span class="p">,</span>
+        <span class="n">ResponseNotRead</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="OpenAI">
@@ -263,7 +282,18 @@
         <span class="c1"># only support chat mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chat</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span></div>
-</div>
+
+
+<div class="viewcode-block" id="OpenAI.get_model_set">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.openai.OpenAI.get_model_set">[docs]</a>
+    <span class="nd">@retry</span>
+    <span class="k">def</span> <span class="nf">get_model_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_model_set</span><span class="p">()</span></div>
+
+
+    <span class="nd">@retry</span>
+    <span class="k">def</span> <span class="nf">_generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_generate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 </pre></div>
         </article>

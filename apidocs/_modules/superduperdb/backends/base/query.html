@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -265,6 +267,13 @@
             <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="sa">f</span><span class="s1">&#39;[</span><span class="se">\n</span><span class="s1">    </span><span class="si">{</span><span class="n">GREEN</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">BOLD</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">repr_</span><span class="p">()</span><span class="si">}{</span><span class="n">END</span><span class="si">}</span><span class="se">\n</span><span class="s1">] object at </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span><span class="si">}</span><span class="s1">&gt;&#39;</span>
         <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_check_illegal_attribute</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="c1"># Disable Query class objects from using access special methods</span>
+    <span class="c1"># Otherwise it will conflict with some python built-in methods, like copy</span>
+    <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempt to access illegal attribute &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Select">
@@ -582,6 +591,7 @@
         <span class="k">pass</span>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">_check_illegal_attribute</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_like</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">query_linker</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
@@ -836,6 +846,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="n">_check_illegal_attribute</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_query_linker</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="p">,</span>
             <span class="n">members</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_query_component</span><span class="p">(</span><span class="n">k</span><span class="p">)],</span>
@@ -964,6 +975,7 @@
         <span class="c1"># QueryLinker object, which is a representation of a query chain.</span>
         <span class="c1"># Under the hood, this is done by creating a QueryChain object, which</span>
         <span class="c1"># is a representation of a query chain.</span>
+        <span class="n">_check_illegal_attribute</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="n">query_linker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_query_linker</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_query_component</span><span class="p">(</span><span class="n">k</span><span class="p">)])</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_query</span><span class="p">(</span><span class="n">query_linker</span><span class="o">=</span><span class="n">query_linker</span><span class="p">)</span>
 

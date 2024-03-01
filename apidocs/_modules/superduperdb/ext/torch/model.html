@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -253,23 +255,74 @@
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
-<span class="kn">import</span> <span class="nn">superduperdb</span> <span class="k">as</span> <span class="nn">s</span>
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.base.query</span> <span class="kn">import</span> <span class="n">Select</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.query_dataset</span> <span class="kn">import</span> <span class="n">QueryDataset</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
-<span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">ensure_initialized</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">DataType</span><span class="p">,</span>
-    <span class="n">Encodable</span><span class="p">,</span>
     <span class="n">dill_serializer</span><span class="p">,</span>
     <span class="n">torch_serializer</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.metric</span> <span class="kn">import</span> <span class="n">Metric</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">_TrainingConfiguration</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CallableInputs</span><span class="p">,</span>
+    <span class="n">Mapping</span><span class="p">,</span>
+    <span class="n">Signature</span><span class="p">,</span>
+    <span class="n">_DeviceManaged</span><span class="p">,</span>
+    <span class="n">_Fittable</span><span class="p">,</span>
+    <span class="n">_Predictor</span><span class="p">,</span>
+    <span class="n">_TrainingConfiguration</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">superduperdb.ext.torch.utils</span> <span class="kn">import</span> <span class="n">device_of</span><span class="p">,</span> <span class="nb">eval</span><span class="p">,</span> <span class="n">to_device</span>
+<span class="kn">from</span> <span class="nn">superduperdb.jobs.job</span> <span class="kn">import</span> <span class="n">Job</span>
+
+
+<div class="viewcode-block" id="torchmodel">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.torch.html#superduperdb.ext.torch.model.torchmodel">[docs]</a>
+<span class="k">def</span> <span class="nf">torchmodel</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorate a `torch.nn.Module` so that when it is invoked,</span>
+<span class="sd">    the result is a `TorchModel`.</span>
+
+<span class="sd">    :param cls: Class to decorate</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">factory</span><span class="p">(</span>
+        <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="n">preprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">postprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">optimizer_state</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">forward_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;__call__&#39;</span><span class="p">,</span>
+        <span class="n">train_forward_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;__call__&#39;</span><span class="p">,</span>
+        <span class="n">loader_kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{}),</span>
+        <span class="n">preprocess_signature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Signature</span><span class="o">.</span><span class="n">singleton</span><span class="p">,</span>
+        <span class="n">forward_signature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Signature</span><span class="o">.</span><span class="n">singleton</span><span class="p">,</span>
+        <span class="n">postprocess_signature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Signature</span><span class="o">.</span><span class="n">singleton</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="n">TorchModel</span><span class="p">(</span>
+            <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span>
+            <span class="nb">object</span><span class="o">=</span><span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span>
+            <span class="n">preprocess</span><span class="o">=</span><span class="n">preprocess</span><span class="p">,</span>
+            <span class="n">postprocess</span><span class="o">=</span><span class="n">postprocess</span><span class="p">,</span>
+            <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">,</span>
+            <span class="n">optimizer_state</span><span class="o">=</span><span class="n">optimizer_state</span><span class="p">,</span>
+            <span class="n">forward_method</span><span class="o">=</span><span class="n">forward_method</span><span class="p">,</span>
+            <span class="n">train_forward_method</span><span class="o">=</span><span class="n">train_forward_method</span><span class="p">,</span>
+            <span class="n">loader_kwargs</span><span class="o">=</span><span class="n">loader_kwargs</span><span class="p">,</span>
+            <span class="n">preprocess_signature</span><span class="o">=</span><span class="n">preprocess_signature</span><span class="p">,</span>
+            <span class="n">forward_signature</span><span class="o">=</span><span class="n">forward_signature</span><span class="p">,</span>
+            <span class="n">postprocess_signature</span><span class="o">=</span><span class="n">postprocess_signature</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">factory</span></div>
+
 
 
 <div class="viewcode-block" id="BasicDataset">
@@ -282,21 +335,23 @@
 <span class="sd">    :param transform: function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">documents</span><span class="p">,</span> <span class="n">transform</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">signature</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">documents</span> <span class="o">=</span> <span class="n">documents</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="n">items</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signature</span> <span class="o">=</span> <span class="n">signature</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">documents</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="n">document</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">documents</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
-            <span class="n">document</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">):</span>
-            <span class="n">document</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">x</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">document</span><span class="p">)</span></div>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">Model</span>
+
+            <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">Model</span><span class="o">.</span><span class="n">handle_input_type</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signature</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span></div>
 
 
 
@@ -333,39 +388,72 @@
     <span class="n">listen</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;objective&#39;</span>
     <span class="n">optimizer_cls</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">)</span>
     <span class="n">optimizer_kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
-    <span class="n">target_preprocessors</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+    <span class="n">target_preprocessors</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pass_kwargs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
 
 <div class="viewcode-block" id="TorchModel">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.torch.html#superduperdb.ext.torch.model.TorchModel">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">TorchModel</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">TorchModel</span><span class="p">(</span><span class="n">_Predictor</span><span class="p">,</span> <span class="n">_Fittable</span><span class="p">,</span> <span class="n">_DeviceManaged</span><span class="p">):</span>
     <span class="n">_artifacts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DataType</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">(</span>
         <span class="p">(</span><span class="s1">&#39;object&#39;</span><span class="p">,</span> <span class="n">dill_serializer</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;optimizer_state&#39;</span><span class="p">,</span> <span class="n">torch_serializer</span><span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="n">num_directions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="nb">object</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span>
+    <span class="n">preprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">postprocess</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">collate_fn</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">optimizer_state</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">forward_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;__call__&#39;</span>
     <span class="n">train_forward_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;__call__&#39;</span>
+    <span class="n">loader_kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{})</span>
+    <span class="n">preprocess_signature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Signature</span><span class="o">.</span><span class="n">singleton</span>
+    <span class="n">forward_signature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Signature</span><span class="o">.</span><span class="n">singleton</span>
+    <span class="n">postprocess_signature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Signature</span><span class="o">.</span><span class="n">singleton</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">(</span><span class="n">artifacts</span><span class="o">=</span><span class="n">artifacts</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_to_device_method</span><span class="p">:</span>
-            <span class="n">s</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_to_device_method</span><span class="si">}</span><span class="s1"> will be overriden with `to`&#39;</span>
-            <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">model_to_device_method</span> <span class="o">=</span> <span class="s1">&#39;to&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">serializer</span> <span class="o">=</span> <span class="s1">&#39;torch&#39;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer_state</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_validation_set_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">signature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess_signature</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_signature</span>
+
+    <span class="nd">@signature</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">signature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signature</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">preprocess_signature</span> <span class="o">=</span> <span class="n">signature</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">forward_signature</span> <span class="o">=</span> <span class="n">signature</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CallableInputs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CallableInputs</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">forward</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">,</span> <span class="p">{}</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="TorchModel.schedule_jobs">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.torch.html#superduperdb.ext.torch.model.TorchModel.schedule_jobs">[docs]</a>
+    <span class="k">def</span> <span class="nf">schedule_jobs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">,</span>
+        <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="n">jobs</span> <span class="o">=</span> <span class="n">_Fittable</span><span class="o">.</span><span class="n">schedule_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
+        <span class="n">jobs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="n">_Predictor</span><span class="o">.</span><span class="n">schedule_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">dependencies</span><span class="p">,</span> <span class="o">*</span><span class="n">jobs</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">jobs</span></div>
+
 
 <div class="viewcode-block" id="TorchModel.to">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.torch.html#superduperdb.ext.torch.model.TorchModel.to">[docs]</a>
@@ -455,38 +543,57 @@
                     <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;object_bytes&#39;</span><span class="p">))</span>
                 <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="TorchModel.predict_one">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.torch.html#superduperdb.ext.torch.model.TorchModel.predict_one">[docs]</a>
+    <span class="nd">@ensure_initialized</span>
+    <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">(),</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">device_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">))</span>
-            <span class="n">singleton_batch</span> <span class="o">=</span> <span class="n">create_batch</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_input_type</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signature</span><span class="p">)</span>
+
+            <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">((</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">create_batch</span><span class="p">((</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">))</span>
+
             <span class="n">method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_method</span><span class="p">)</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="n">singleton_batch</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">output</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
             <span class="n">args</span> <span class="o">=</span> <span class="n">unpack_batch</span><span class="p">(</span><span class="n">output</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">postprocess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">args</span>
+            <span class="k">return</span> <span class="n">args</span></div>
 
-    <span class="k">def</span> <span class="nf">_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># type: ignore[override]</span>
+
+<div class="viewcode-block" id="TorchModel.predict">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.torch.html#superduperdb.ext.torch.model.TorchModel.predict">[docs]</a>
+    <span class="nd">@ensure_initialized</span>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">QueryDataset</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">(),</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_one</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="n">inputs</span> <span class="o">=</span> <span class="n">BasicDataset</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="ow">or</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">))</span>
-            <span class="n">loader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">BasicDataset</span><span class="p">(</span>
+                <span class="n">items</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
+                <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">,</span>
+                <span class="n">signature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signature</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">loader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
+                <span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">loader_kwargs</span><span class="p">,</span> <span class="n">collate_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collate_fn</span>
+            <span class="p">)</span>
             <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="p">)):</span>
                 <span class="n">batch</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">device_of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">))</span>
-
+                <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_input_type</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signature</span><span class="p">)</span>
                 <span class="n">method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_method</span><span class="p">)</span>
-                <span class="n">tmp</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">)</span>
                 <span class="n">tmp</span> <span class="o">=</span> <span class="n">to_device</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
                 <span class="n">tmp</span> <span class="o">=</span> <span class="n">unpack_batch</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">postprocess</span><span class="p">:</span>
-                    <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">]</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">handle_input_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">postprocess_signature</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tmp</span>
+                    <span class="p">]</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">postprocess</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">]</span>
                 <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">out</span>
+            <span class="k">return</span> <span class="n">out</span></div>
+
 
 <div class="viewcode-block" id="TorchModel.train_forward">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.torch.html#superduperdb.ext.torch.model.TorchModel.train_forward">[docs]</a>
@@ -539,17 +646,18 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
+    <span class="nd">@ensure_initialized</span>
     <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">X</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">y</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">configuration</span><span class="p">:</span> <span class="n">TorchTrainerConfiguration</span><span class="p">,</span>  <span class="c1"># type: ignore[override]</span>
+        <span class="n">configuration</span><span class="p">:</span> <span class="n">TorchTrainerConfiguration</span><span class="p">,</span>
         <span class="n">data_prefetch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Datalayer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">metrics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Metric</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Select</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">validation_sets</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">validation_sets</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Dataset</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">configuration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">training_configuration</span> <span class="o">=</span> <span class="n">configuration</span>
@@ -602,26 +710,12 @@
 <div class="viewcode-block" id="TorchModel.extract_batch_key">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.torch.html#superduperdb.ext.torch.model.TorchModel.extract_batch_key">[docs]</a>
     <span class="k">def</span> <span class="nf">extract_batch_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">batch</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">batch</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">key</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="TorchModel.extract_batch">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.torch.html#superduperdb.ext.torch.model.TorchModel.extract_batch">[docs]</a>
-    <span class="k">def</span> <span class="nf">extract_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">extract_batch_key</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">extract_batch_key</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">),</span>
-            <span class="p">]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">extract_batch_key</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">)]</span></div>
 
 
 <div class="viewcode-block" id="TorchModel.take_step">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.torch.html#superduperdb.ext.torch.model.TorchModel.take_step">[docs]</a>
     <span class="k">def</span> <span class="nf">take_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">optimizers</span><span class="p">):</span>
-        <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_batch</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
         <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_forward</span><span class="p">(</span><span class="o">*</span><span class="n">batch</span><span class="p">)</span>
         <span class="n">objective_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_configuration</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span><span class="o">*</span><span class="n">outputs</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">optimizers</span><span class="p">:</span>
@@ -638,7 +732,6 @@
         <span class="n">objective_values</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluating</span><span class="p">(),</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">valid_dataloader</span><span class="p">:</span>
-                <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_batch</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
                 <span class="n">objective_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">training_configuration</span><span class="o">.</span><span class="n">objective</span><span class="p">(</span>
                         <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">train_forward</span><span class="p">(</span><span class="o">*</span><span class="n">batch</span><span class="p">)</span>
@@ -690,59 +783,40 @@
                         <span class="k">return</span>
                 <span class="n">iteration</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="TorchModel.train_preprocess">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.torch.html#superduperdb.ext.torch.model.TorchModel.train_preprocess">[docs]</a>
-    <span class="k">def</span> <span class="nf">train_preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">preprocessors</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">preprocessors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="k">else</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">model</span><span class="p">,</span> <span class="n">X</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">):</span>
-                <span class="n">preprocessors</span><span class="p">[</span><span class="n">X</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">model</span><span class="o">.</span><span class="n">preprocess</span> <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">preprocess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
-                <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_configuration</span><span class="o">.</span><span class="n">target_preprocessors</span>
-            <span class="p">):</span>
-                <span class="n">preprocessors</span><span class="p">[</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">train_y</span>
-                <span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_configuration</span><span class="o">.</span><span class="n">target_preprocessors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
-                <span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="n">preprocessors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
-            <span class="k">elif</span> <span class="p">(</span>
-                <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_configuration</span><span class="o">.</span><span class="n">target_preprocessors</span>
-            <span class="p">):</span>
-                <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">:</span>
-                    <span class="n">preprocessors</span><span class="p">[</span>
-                        <span class="n">y</span>
-                    <span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_configuration</span><span class="o">.</span><span class="n">target_preprocessors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                        <span class="n">y</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
-                    <span class="p">)</span>
-        <span class="k">return</span> <span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">preprocessors</span><span class="p">[</span><span class="n">k</span><span class="p">](</span><span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">preprocessors</span><span class="p">}</span></div>
-
-
     <span class="k">def</span> <span class="nf">_get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Datalayer</span><span class="p">]):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_select</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;self.training_select cannot be None&#39;</span><span class="p">)</span>
+        <span class="n">preprocess</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span> <span class="ow">or</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
         <span class="n">train_data</span> <span class="o">=</span> <span class="n">QueryDataset</span><span class="p">(</span>
             <span class="n">select</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training_select</span><span class="p">,</span>
-            <span class="n">keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training_keys</span><span class="p">,</span>
+            <span class="n">mapping</span><span class="o">=</span><span class="n">Mapping</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">]</span>  <span class="c1"># type: ignore[list-item]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_y</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+                <span class="n">signature</span><span class="o">=</span><span class="s1">&#39;*args&#39;</span><span class="p">,</span>
+            <span class="p">),</span>
             <span class="n">fold</span><span class="o">=</span><span class="s1">&#39;train&#39;</span><span class="p">,</span>
-            <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_preprocess</span><span class="p">(),</span>
+            <span class="n">transform</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">preprocess</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_y</span>
+                <span class="k">else</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="n">preprocess</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>  <span class="c1"># type: ignore[misc]</span>
+            <span class="p">),</span>
             <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">valid_data</span> <span class="o">=</span> <span class="n">QueryDataset</span><span class="p">(</span>
             <span class="n">select</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training_select</span><span class="p">,</span>
-            <span class="n">keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training_keys</span><span class="p">,</span>
+            <span class="n">mapping</span><span class="o">=</span><span class="n">Mapping</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_y</span><span class="p">]</span>  <span class="c1"># type: ignore[list-item]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_y</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_X</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+                <span class="n">signature</span><span class="o">=</span><span class="s1">&#39;*args&#39;</span><span class="p">,</span>
+            <span class="p">),</span>
             <span class="n">fold</span><span class="o">=</span><span class="s1">&#39;valid&#39;</span><span class="p">,</span>
-            <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">train_preprocess</span><span class="p">(),</span>
+            <span class="n">transform</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">preprocess</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_y</span>
+                <span class="k">else</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="n">preprocess</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>  <span class="c1"># type: ignore[misc]</span>
+            <span class="p">),</span>
             <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">valid_data</span></div>

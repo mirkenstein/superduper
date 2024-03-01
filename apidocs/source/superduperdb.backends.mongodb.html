@@ -181,8 +181,10 @@
 <li class="toctree-l3"><a class="reference internal" href="superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -334,6 +336,19 @@
 </dd>
 </dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.artifacts.MongoArtifactStore._load_file">
+<span class="sig-name descname"><span class="pre">_load_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/artifacts.html#MongoArtifactStore._load_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.artifacts.MongoArtifactStore._load_file" title="Link to this definition">#</a></dt>
+<dd><p>Download file from GridFS and return the path
+The path is a temporary directory, {tmp_prefix}/{file_id}/{filename or folder}</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.artifacts.MongoArtifactStore._save_file">
+<span class="sig-name descname"><span class="pre">_save_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/artifacts.html#MongoArtifactStore._save_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.artifacts.MongoArtifactStore._save_file" title="Link to this definition">#</a></dt>
+<dd><p>Save file to GridFS</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.artifacts.MongoArtifactStore.disconnect">
 <span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/artifacts.html#MongoArtifactStore.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.artifacts.MongoArtifactStore.disconnect" title="Link to this definition">#</a></dt>
 <dd><p>Disconnect the client</p>
@@ -356,6 +371,24 @@
 <dd><p>Artifact store connection url</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.artifacts.download">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.backends.mongodb.artifacts.</span></span><span class="sig-name descname"><span class="pre">download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/artifacts.html#download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.artifacts.download" title="Link to this definition">#</a></dt>
+<dd><p>Download file or folder from GridFS and return the path</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.artifacts.upload_file">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.backends.mongodb.artifacts.</span></span><span class="sig-name descname"><span class="pre">upload_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/artifacts.html#upload_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.artifacts.upload_file" title="Link to this definition">#</a></dt>
+<dd><p>Upload file to GridFS</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.artifacts.upload_folder">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.backends.mongodb.artifacts.</span></span><span class="sig-name descname"><span class="pre">upload_folder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/artifacts.html#upload_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.artifacts.upload_folder" title="Link to this definition">#</a></dt>
+<dd><p>Upload folder to GridFS</p>
 </dd></dl>
 
 </section>
@@ -761,6 +794,11 @@
 <dd><p>Execute the query on the DB instance.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.Aggregate.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.mongodb.query.Aggregate'</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.Aggregate.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.Aggregate.id_field">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id_field</span></span><a class="headerlink" href="#superduperdb.backends.mongodb.query.Aggregate.id_field" title="Link to this definition">#</a></dt>
@@ -858,6 +896,11 @@
 <span class="sig-name descname"><span class="pre">delete_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/query.html#Collection.delete_one"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.query.Collection.delete_one" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.Collection.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.mongodb.query.Collection'</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.Collection.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.Collection.get_table">
 <span class="sig-name descname"><span class="pre">get_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/query.html#Collection.get_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.query.Collection.get_table" title="Link to this definition">#</a></dt>
@@ -934,6 +977,11 @@
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.Find.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.mongodb.query.Find'</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.Find.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.Find.output_fields">
 <span class="sig-name descname"><span class="pre">output_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.Find.output_fields" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -996,6 +1044,11 @@
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.FindOne.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.mongodb.query.FindOne'</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.FindOne.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.FindOne.select_using_ids">
 <span class="sig-name descname"><span class="pre">select_using_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/query.html#FindOne.select_using_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.query.FindOne.select_using_ids" title="Link to this definition">#</a></dt>
@@ -1044,6 +1097,11 @@
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.MongoCompoundSelect.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.mongodb.query.MongoCompoundSelect'</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.MongoCompoundSelect.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.MongoCompoundSelect.output_fields">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">output_fields</span></span><a class="headerlink" href="#superduperdb.backends.mongodb.query.MongoCompoundSelect.output_fields" title="Link to this definition">#</a></dt>
@@ -1086,6 +1144,11 @@ for a table.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.MongoDelete.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.mongodb.query.MongoDelete'</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.MongoDelete.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.MongoDelete.one">
 <span class="sig-name descname"><span class="pre">one</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.MongoDelete.one" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -1106,6 +1169,11 @@ for a table.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.MongoInsert.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.mongodb.query.MongoInsert'</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.MongoInsert.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.MongoInsert.one">
@@ -1131,6 +1199,11 @@ for a table.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.MongoQueryLinker.execute">
 <span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/query.html#MongoQueryLinker.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.query.MongoQueryLinker.execute" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.MongoQueryLinker.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.mongodb.query.MongoQueryLinker'</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.MongoQueryLinker.full_import_path" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -1190,6 +1263,11 @@ for a table.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.MongoReplaceOne.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.mongodb.query.MongoReplaceOne'</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.MongoReplaceOne.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.MongoReplaceOne.kwargs">
 <span class="sig-name descname"><span class="pre">kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.MongoReplaceOne.kwargs" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -1223,6 +1301,11 @@ for a table.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.MongoUpdate.filter">
 <span class="sig-name descname"><span class="pre">filter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.MongoUpdate.filter" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.query.MongoUpdate.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.mongodb.query.MongoUpdate'</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.query.MongoUpdate.full_import_path" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1267,6 +1350,11 @@ for a table.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.Collection.delete_one">
 <span class="sig-name descname"><span class="pre">delete_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/query.html#Collection.delete_one"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.Collection.delete_one" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.mongodb.Collection.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.mongodb.query.Collection'</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.Collection.full_import_path" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1394,11 +1482,16 @@ for a table.</p>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-superduperdb.backends.mongodb.artifacts">superduperdb.backends.mongodb.artifacts module</a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.artifacts.MongoArtifactStore"><code class="docutils literal notranslate"><span class="pre">MongoArtifactStore</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.artifacts.MongoArtifactStore._load_file"><code class="docutils literal notranslate"><span class="pre">MongoArtifactStore._load_file()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.artifacts.MongoArtifactStore._save_file"><code class="docutils literal notranslate"><span class="pre">MongoArtifactStore._save_file()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.artifacts.MongoArtifactStore.disconnect"><code class="docutils literal notranslate"><span class="pre">MongoArtifactStore.disconnect()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.artifacts.MongoArtifactStore.drop"><code class="docutils literal notranslate"><span class="pre">MongoArtifactStore.drop()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.artifacts.MongoArtifactStore.url"><code class="docutils literal notranslate"><span class="pre">MongoArtifactStore.url()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.artifacts.download"><code class="docutils literal notranslate"><span class="pre">download()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.artifacts.upload_file"><code class="docutils literal notranslate"><span class="pre">upload_file()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.artifacts.upload_folder"><code class="docutils literal notranslate"><span class="pre">upload_folder()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-superduperdb.backends.mongodb.data_backend">superduperdb.backends.mongodb.data_backend module</a><ul>
@@ -1456,6 +1549,7 @@ for a table.</p>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Aggregate.add_fold"><code class="docutils literal notranslate"><span class="pre">Aggregate.add_fold()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Aggregate.args"><code class="docutils literal notranslate"><span class="pre">Aggregate.args</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Aggregate.execute"><code class="docutils literal notranslate"><span class="pre">Aggregate.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Aggregate.full_import_path"><code class="docutils literal notranslate"><span class="pre">Aggregate.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Aggregate.id_field"><code class="docutils literal notranslate"><span class="pre">Aggregate.id_field</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Aggregate.kwargs"><code class="docutils literal notranslate"><span class="pre">Aggregate.kwargs</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Aggregate.select_ids"><code class="docutils literal notranslate"><span class="pre">Aggregate.select_ids</span></code></a></li>
@@ -1477,6 +1571,7 @@ for a table.</p>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Collection.aggregate"><code class="docutils literal notranslate"><span class="pre">Collection.aggregate()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Collection.change_stream"><code class="docutils literal notranslate"><span class="pre">Collection.change_stream()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Collection.delete_one"><code class="docutils literal notranslate"><span class="pre">Collection.delete_one()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Collection.full_import_path"><code class="docutils literal notranslate"><span class="pre">Collection.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Collection.get_table"><code class="docutils literal notranslate"><span class="pre">Collection.get_table()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Collection.insert"><code class="docutils literal notranslate"><span class="pre">Collection.insert()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Collection.insert_many"><code class="docutils literal notranslate"><span class="pre">Collection.insert_many()</span></code></a></li>
@@ -1492,6 +1587,7 @@ for a table.</p>
 </li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Find"><code class="docutils literal notranslate"><span class="pre">Find</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Find.add_fold"><code class="docutils literal notranslate"><span class="pre">Find.add_fold()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Find.full_import_path"><code class="docutils literal notranslate"><span class="pre">Find.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Find.output_fields"><code class="docutils literal notranslate"><span class="pre">Find.output_fields</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Find.outputs"><code class="docutils literal notranslate"><span class="pre">Find.outputs()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.Find.select_ids"><code class="docutils literal notranslate"><span class="pre">Find.select_ids</span></code></a></li>
@@ -1502,6 +1598,7 @@ for a table.</p>
 </li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.FindOne"><code class="docutils literal notranslate"><span class="pre">FindOne</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.FindOne.add_fold"><code class="docutils literal notranslate"><span class="pre">FindOne.add_fold()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.query.FindOne.full_import_path"><code class="docutils literal notranslate"><span class="pre">FindOne.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.FindOne.select_using_ids"><code class="docutils literal notranslate"><span class="pre">FindOne.select_using_ids()</span></code></a></li>
 </ul>
 </li>
@@ -1510,6 +1607,7 @@ for a table.</p>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoCompoundSelect.check_exists"><code class="docutils literal notranslate"><span class="pre">MongoCompoundSelect.check_exists()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoCompoundSelect.download_update"><code class="docutils literal notranslate"><span class="pre">MongoCompoundSelect.download_update()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoCompoundSelect.execute"><code class="docutils literal notranslate"><span class="pre">MongoCompoundSelect.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoCompoundSelect.full_import_path"><code class="docutils literal notranslate"><span class="pre">MongoCompoundSelect.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoCompoundSelect.output_fields"><code class="docutils literal notranslate"><span class="pre">MongoCompoundSelect.output_fields</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoCompoundSelect.outputs"><code class="docutils literal notranslate"><span class="pre">MongoCompoundSelect.outputs()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoCompoundSelect.select_table"><code class="docutils literal notranslate"><span class="pre">MongoCompoundSelect.select_table</span></code></a></li>
@@ -1518,11 +1616,13 @@ for a table.</p>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoDelete"><code class="docutils literal notranslate"><span class="pre">MongoDelete</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoDelete.collection"><code class="docutils literal notranslate"><span class="pre">MongoDelete.collection</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoDelete.execute"><code class="docutils literal notranslate"><span class="pre">MongoDelete.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoDelete.full_import_path"><code class="docutils literal notranslate"><span class="pre">MongoDelete.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoDelete.one"><code class="docutils literal notranslate"><span class="pre">MongoDelete.one</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoInsert"><code class="docutils literal notranslate"><span class="pre">MongoInsert</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoInsert.execute"><code class="docutils literal notranslate"><span class="pre">MongoInsert.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoInsert.full_import_path"><code class="docutils literal notranslate"><span class="pre">MongoInsert.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoInsert.one"><code class="docutils literal notranslate"><span class="pre">MongoInsert.one</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoInsert.select_table"><code class="docutils literal notranslate"><span class="pre">MongoInsert.select_table</span></code></a></li>
 </ul>
@@ -1530,6 +1630,7 @@ for a table.</p>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoQueryLinker"><code class="docutils literal notranslate"><span class="pre">MongoQueryLinker</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoQueryLinker.add_fold"><code class="docutils literal notranslate"><span class="pre">MongoQueryLinker.add_fold()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoQueryLinker.execute"><code class="docutils literal notranslate"><span class="pre">MongoQueryLinker.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoQueryLinker.full_import_path"><code class="docutils literal notranslate"><span class="pre">MongoQueryLinker.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoQueryLinker.output_fields"><code class="docutils literal notranslate"><span class="pre">MongoQueryLinker.output_fields</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoQueryLinker.outputs"><code class="docutils literal notranslate"><span class="pre">MongoQueryLinker.outputs()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoQueryLinker.query_components"><code class="docutils literal notranslate"><span class="pre">MongoQueryLinker.query_components</span></code></a></li>
@@ -1543,6 +1644,7 @@ for a table.</p>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoReplaceOne.collection"><code class="docutils literal notranslate"><span class="pre">MongoReplaceOne.collection</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoReplaceOne.execute"><code class="docutils literal notranslate"><span class="pre">MongoReplaceOne.execute()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoReplaceOne.filter"><code class="docutils literal notranslate"><span class="pre">MongoReplaceOne.filter</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoReplaceOne.full_import_path"><code class="docutils literal notranslate"><span class="pre">MongoReplaceOne.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoReplaceOne.kwargs"><code class="docutils literal notranslate"><span class="pre">MongoReplaceOne.kwargs</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoReplaceOne.replacement"><code class="docutils literal notranslate"><span class="pre">MongoReplaceOne.replacement</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoReplaceOne.select_table"><code class="docutils literal notranslate"><span class="pre">MongoReplaceOne.select_table</span></code></a></li>
@@ -1552,6 +1654,7 @@ for a table.</p>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoUpdate.args"><code class="docutils literal notranslate"><span class="pre">MongoUpdate.args</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoUpdate.execute"><code class="docutils literal notranslate"><span class="pre">MongoUpdate.execute()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoUpdate.filter"><code class="docutils literal notranslate"><span class="pre">MongoUpdate.filter</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoUpdate.full_import_path"><code class="docutils literal notranslate"><span class="pre">MongoUpdate.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoUpdate.kwargs"><code class="docutils literal notranslate"><span class="pre">MongoUpdate.kwargs</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoUpdate.one"><code class="docutils literal notranslate"><span class="pre">MongoUpdate.one</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.query.MongoUpdate.select_table"><code class="docutils literal notranslate"><span class="pre">MongoUpdate.select_table</span></code></a></li>
@@ -1565,6 +1668,7 @@ for a table.</p>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.Collection.aggregate"><code class="docutils literal notranslate"><span class="pre">Collection.aggregate()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.Collection.change_stream"><code class="docutils literal notranslate"><span class="pre">Collection.change_stream()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.Collection.delete_one"><code class="docutils literal notranslate"><span class="pre">Collection.delete_one()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.mongodb.Collection.full_import_path"><code class="docutils literal notranslate"><span class="pre">Collection.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.Collection.get_table"><code class="docutils literal notranslate"><span class="pre">Collection.get_table()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.Collection.identifier"><code class="docutils literal notranslate"><span class="pre">Collection.identifier</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.mongodb.Collection.insert"><code class="docutils literal notranslate"><span class="pre">Collection.insert()</span></code></a></li>

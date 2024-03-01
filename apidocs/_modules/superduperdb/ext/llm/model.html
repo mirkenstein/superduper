@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -252,15 +254,16 @@
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
-<span class="kn">from</span> <span class="nn">superduperdb.backends.query_dataset</span> <span class="kn">import</span> <span class="n">query_dataset_factory</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.query_dataset</span> <span class="kn">import</span> <span class="n">QueryDataset</span><span class="p">,</span> <span class="n">query_dataset_factory</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">ensure_initialized</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span> <span class="k">as</span> <span class="n">_Dataset</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Model</span><span class="p">,</span>
+    <span class="n">_Fittable</span><span class="p">,</span>
+    <span class="n">_Predictor</span><span class="p">,</span>
     <span class="n">_TrainingConfiguration</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">superduperdb.ext.llm</span> <span class="kn">import</span> <span class="n">training</span>
 <span class="kn">from</span> <span class="nn">superduperdb.ext.llm.utils</span> <span class="kn">import</span> <span class="n">Prompter</span>
-<span class="kn">from</span> <span class="nn">superduperdb.ext.utils</span> <span class="kn">import</span> <span class="n">ensure_initialized</span>
 
 <span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">superduperdb.backends.base.query</span> <span class="kn">import</span> <span class="n">Select</span>
@@ -279,7 +282,7 @@
 <div class="viewcode-block" id="LLM">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.LLM">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">LLM</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">LLM</span><span class="p">(</span><span class="n">_Predictor</span><span class="p">,</span> <span class="n">_Fittable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    LLM model based on `transformers` library.</span>
 <span class="sd">    Parameters:</span>
@@ -309,6 +312,7 @@
     <span class="n">tokenizer_kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">prompt_template</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{input}</span><span class="s2">&quot;</span>
     <span class="n">prompt_func</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">signature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;singleton&#39;</span>  <span class="c1"># type: ignore[misc]</span>
 
     <span class="c1"># Save models and tokenizers cache for sharing when using multiple models</span>
     <span class="n">_model_cache</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -371,7 +375,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">prompter</span> <span class="o">=</span> <span class="n">Prompter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_template</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_func</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_model_and_tokenizer</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_adapter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter_id</span><span class="o">.</span><span class="n">artifact</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter_id</span><span class="o">.</span><span class="n">artifact</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_adapter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adapter_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter_id</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span>
@@ -437,22 +441,22 @@
         <span class="k">return</span> <span class="n">compute_metrics</span></div>
 
 
+<div class="viewcode-block" id="LLM.predict_one">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.LLM.predict_one">[docs]</a>
     <span class="nd">@ensure_initialized</span>
-    <span class="k">def</span> <span class="nf">_predict</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">X</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]],</span>
-        <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="c1"># support string and dialog format</span>
-        <span class="n">one</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">one</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">one</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">dict</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompter</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate</span><span class="p">([</span><span class="n">X</span><span class="p">],</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
-        <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="n">X</span><span class="p">]</span> <span class="k">if</span> <span class="n">one</span> <span class="k">else</span> <span class="n">X</span>
-        <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prompter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">]</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">one</span> <span class="k">else</span> <span class="n">results</span>
+
+<div class="viewcode-block" id="LLM.predict">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.LLM.predict">[docs]</a>
+    <span class="nd">@ensure_initialized</span>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">QueryDataset</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">:</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prompter</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">))]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="LLM._generate">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.LLM._generate">[docs]</a>
@@ -523,6 +527,7 @@
             <span class="c1"># Update cache model</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_model_cache</span><span class="p">[</span><span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_kwargs</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># TODO where does this come from?</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load_adapter</span><span class="p">(</span><span class="n">model_id</span><span class="p">,</span> <span class="n">adapter_name</span><span class="p">)</span></div>
 
 

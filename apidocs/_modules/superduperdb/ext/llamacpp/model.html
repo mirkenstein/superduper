@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>superduperdb.ext.sentence_transformers.model - Python documentation</title>
+        <title>superduperdb.ext.llamacpp.model - Python documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -239,41 +241,97 @@
           </label>
         </div>
         <article role="main">
-          <h1>Source code for superduperdb.ext.sentence_transformers.model</h1><div class="highlight"><pre>
+          <h1>Source code for superduperdb.ext.llamacpp.model</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
-<span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">llama_cpp</span> <span class="kn">import</span> <span class="n">Llama</span>
+
+<span class="kn">from</span> <span class="nn">superduperdb.ext.llm.base</span> <span class="kn">import</span> <span class="n">_BaseLLM</span>
 
 
-<div class="viewcode-block" id="SentenceTransformer">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.sentence_transformers.html#superduperdb.ext.sentence_transformers.model.SentenceTransformer">[docs]</a>
-<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">SentenceTransformer</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-    <span class="n">_encodables</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;object&#39;</span><span class="p">,)</span>
+<span class="c1"># TODO use core downloader already implemented</span>
+<div class="viewcode-block" id="download_uri">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.llamacpp.html#superduperdb.ext.llamacpp.model.download_uri">[docs]</a>
+<span class="k">def</span> <span class="nf">download_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">save_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Download file</span>
 
-    <span class="nb">object</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">model</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="sd">    :param uri: URI to download</span>
+<span class="sd">    :param save_path: place to save</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error while downloading uri </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">sentence_transformers</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="n">sentence_transformers</span><span class="o">.</span><span class="n">SentenceTransformer</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
-            <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model_to_device_method</span> <span class="o">=</span> <span class="s1">&#39;_to&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">predict_method</span> <span class="o">=</span> <span class="s1">&#39;encode&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">batch_predict</span> <span class="o">=</span> <span class="kc">True</span>
+<div class="viewcode-block" id="LlamaCpp">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.llamacpp.html#superduperdb.ext.llamacpp.model.LlamaCpp">[docs]</a>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">LlamaCpp</span><span class="p">(</span><span class="n">_BaseLLM</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Llama.cpp connector</span>
 
-    <span class="k">def</span> <span class="nf">_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">_target_device</span> <span class="o">=</span> <span class="n">device</span></div>
+<span class="sd">    :param model_name_or_path: path or name of model</span>
+<span class="sd">    :param model_kwargs: dictionary of init-kwargs</span>
+<span class="sd">    :param download_dir: local caching directory</span>
+<span class="sd">    :param signature: s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">signature</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;singleton&#39;</span>
+
+    <span class="n">model_name_or_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;facebook/opt-125m&quot;</span>
+    <span class="n">model_kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">download_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;.llama_cpp&#39;</span>
+
+<div class="viewcode-block" id="LlamaCpp.init">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.llamacpp.html#superduperdb.ext.llamacpp.model.LlamaCpp.init">[docs]</a>
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">):</span>
+            <span class="c1"># Download the uri</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">saved_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">download_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">.gguf&#39;</span><span class="p">)</span>
+
+            <span class="n">download_uri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">,</span> <span class="n">saved_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_name_or_path</span> <span class="o">=</span> <span class="n">saved_path</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">Llama</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name_or_path</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">model_kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LlamaCpp._generate">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.llamacpp.html#superduperdb.ext.llamacpp.model.LlamaCpp._generate">[docs]</a>
+    <span class="k">def</span> <span class="nf">_generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate text from a prompt.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">create_completion</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="LlamaCppEmbedding">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.llamacpp.html#superduperdb.ext.llamacpp.model.LlamaCppEmbedding">[docs]</a>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">LlamaCppEmbedding</span><span class="p">(</span><span class="n">LlamaCpp</span><span class="p">):</span>
+<div class="viewcode-block" id="LlamaCppEmbedding._generate">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.llamacpp.html#superduperdb.ext.llamacpp.model.LlamaCppEmbedding._generate">[docs]</a>
+    <span class="k">def</span> <span class="nf">_generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate embedding from a prompt.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">create_embedding</span><span class="p">(</span>
+            <span class="n">prompt</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
+</div>
 
 </pre></div>
         </article>

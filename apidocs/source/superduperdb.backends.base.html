@@ -181,8 +181,10 @@
 <li class="toctree-l3"><a class="reference internal" href="superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -283,6 +285,29 @@
 <dd class="field-odd"><p><strong>file_id</strong> – Identifier of artifact in the store</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.base.artifact.ArtifactStore._load_file">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_load_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/base/artifact.html#ArtifactStore._load_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.artifact.ArtifactStore._load_file" title="Link to this definition">#</a></dt>
+<dd><p>Load file from artifact store and return path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_id</strong> – Identifier of artifact in the store</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.base.artifact.ArtifactStore._save_bytes">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_save_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serialized</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/base/artifact.html#ArtifactStore._save_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.artifact.ArtifactStore._save_bytes" title="Link to this definition">#</a></dt>
+<dd><p>Save bytes in artifact store</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.base.artifact.ArtifactStore._save_file">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_save_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/base/artifact.html#ArtifactStore._save_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.artifact.ArtifactStore._save_file" title="Link to this definition">#</a></dt>
+<dd><p>Save file in artifact store and return file_id</p>
 </dd></dl>
 
 <dl class="py method">
@@ -462,7 +487,7 @@ Note: This will block until the future is completed.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.base.data_backend.BaseDataBackend.create_model_table_or_collection">
-<span class="sig-name descname"><span class="pre">create_model_table_or_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.Model" title="superduperdb.components.model.Model"><span class="pre">Model</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.APIModel" title="superduperdb.components.model.APIModel"><span class="pre">APIModel</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/base/data_backend.html#BaseDataBackend.create_model_table_or_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.data_backend.BaseDataBackend.create_model_table_or_collection" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">create_model_table_or_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.ObjectModel" title="superduperdb.components.model.ObjectModel"><span class="pre">ObjectModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.APIModel" title="superduperdb.components.model.APIModel"><span class="pre">APIModel</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/base/data_backend.html#BaseDataBackend.create_model_table_or_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.data_backend.BaseDataBackend.create_model_table_or_collection" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -867,6 +892,11 @@ query chain. E.g. <code class="docutils literal notranslate"><span class="pre">t
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.base.query.CompoundSelect.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.base.query.CompoundSelect'</span></em><a class="headerlink" href="#superduperdb.backends.base.query.CompoundSelect.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="superduperdb.backends.base.query.CompoundSelect.id_field">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id_field</span></span><a class="headerlink" href="#superduperdb.backends.base.query.CompoundSelect.id_field" title="Link to this definition">#</a></dt>
@@ -970,6 +1000,11 @@ query chain. E.g. <code class="docutils literal notranslate"><span class="pre">t
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.base.query.Delete.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.base.query.Delete'</span></em><a class="headerlink" href="#superduperdb.backends.base.query.Delete.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.backends.base.query.Delete.kwargs">
 <span class="sig-name descname"><span class="pre">kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#superduperdb.backends.base.query.Delete.kwargs" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -1013,6 +1048,11 @@ query chain. E.g. <code class="docutils literal notranslate"><span class="pre">t
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.base.query.Insert.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.base.query.Insert'</span></em><a class="headerlink" href="#superduperdb.backends.base.query.Insert.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.backends.base.query.Insert.kwargs">
@@ -1066,6 +1106,11 @@ query chain. E.g. <code class="docutils literal notranslate"><span class="pre">t
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.base.query.Like.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.base.query.Like'</span></em><a class="headerlink" href="#superduperdb.backends.base.query.Like.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.backends.base.query.Like.n">
 <span class="sig-name descname"><span class="pre">n</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#superduperdb.backends.base.query.Like.n" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -1113,6 +1158,11 @@ Query will be executed in the order they are added to the chain.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.base.query.QueryComponent.execute">
 <span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/base/query.html#QueryComponent.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.query.QueryComponent.execute" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.base.query.QueryComponent.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.base.query.QueryComponent'</span></em><a class="headerlink" href="#superduperdb.backends.base.query.QueryComponent.full_import_path" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1167,6 +1217,11 @@ Intuitively this allows us to do something like this:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.base.query.QueryLinker.execute">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/base/query.html#QueryLinker.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.query.QueryLinker.execute" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.base.query.QueryLinker.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.base.query.QueryLinker'</span></em><a class="headerlink" href="#superduperdb.backends.base.query.QueryLinker.full_import_path" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1266,6 +1321,11 @@ last_values: the list of values assigned</p>
 <dd><p>Execute the query on the DB instance.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.base.query.Select.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.base.query.Select'</span></em><a class="headerlink" href="#superduperdb.backends.base.query.Select.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="superduperdb.backends.base.query.Select.id_field">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id_field</span></span><a class="headerlink" href="#superduperdb.backends.base.query.Select.id_field" title="Link to this definition">#</a></dt>
@@ -1331,6 +1391,11 @@ last_values: the list of values assigned</p>
 </dd>
 </dl>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.base.query.TableOrCollection.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.base.query.TableOrCollection'</span></em><a class="headerlink" href="#superduperdb.backends.base.query.TableOrCollection.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.backends.base.query.TableOrCollection.identifier">
 <span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.base.html#superduperdb.base.serializable.Variable" title="superduperdb.base.serializable.Variable"><span class="pre">Variable</span></a></em><a class="headerlink" href="#superduperdb.backends.base.query.TableOrCollection.identifier" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -1386,6 +1451,11 @@ for performing a vector search on the parent query chain inputs.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.base.query.Update.execute">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/base/query.html#Update.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.base.query.Update.execute" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.base.query.Update.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.base.query.Update'</span></em><a class="headerlink" href="#superduperdb.backends.base.query.Update.full_import_path" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1468,6 +1538,9 @@ for performing a vector search on the parent query chain inputs.</p>
 <li><a class="reference internal" href="#superduperdb.backends.base.artifact.ArtifactStore"><code class="docutils literal notranslate"><span class="pre">ArtifactStore</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.base.artifact.ArtifactStore._delete_bytes"><code class="docutils literal notranslate"><span class="pre">ArtifactStore._delete_bytes()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.artifact.ArtifactStore._load_bytes"><code class="docutils literal notranslate"><span class="pre">ArtifactStore._load_bytes()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.artifact.ArtifactStore._load_file"><code class="docutils literal notranslate"><span class="pre">ArtifactStore._load_file()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.artifact.ArtifactStore._save_bytes"><code class="docutils literal notranslate"><span class="pre">ArtifactStore._save_bytes()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.artifact.ArtifactStore._save_file"><code class="docutils literal notranslate"><span class="pre">ArtifactStore._save_file()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.artifact.ArtifactStore.delete"><code class="docutils literal notranslate"><span class="pre">ArtifactStore.delete()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.artifact.ArtifactStore.disconnect"><code class="docutils literal notranslate"><span class="pre">ArtifactStore.disconnect()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.artifact.ArtifactStore.drop"><code class="docutils literal notranslate"><span class="pre">ArtifactStore.drop()</span></code></a></li>
@@ -1549,6 +1622,7 @@ for performing a vector search on the parent query chain inputs.</p>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.CompoundSelect"><code class="docutils literal notranslate"><span class="pre">CompoundSelect</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.CompoundSelect.add_fold"><code class="docutils literal notranslate"><span class="pre">CompoundSelect.add_fold()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.CompoundSelect.execute"><code class="docutils literal notranslate"><span class="pre">CompoundSelect.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.query.CompoundSelect.full_import_path"><code class="docutils literal notranslate"><span class="pre">CompoundSelect.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.CompoundSelect.id_field"><code class="docutils literal notranslate"><span class="pre">CompoundSelect.id_field</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.CompoundSelect.like"><code class="docutils literal notranslate"><span class="pre">CompoundSelect.like()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.CompoundSelect.output_fields"><code class="docutils literal notranslate"><span class="pre">CompoundSelect.output_fields</span></code></a></li>
@@ -1567,6 +1641,7 @@ for performing a vector search on the parent query chain inputs.</p>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Delete"><code class="docutils literal notranslate"><span class="pre">Delete</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Delete.args"><code class="docutils literal notranslate"><span class="pre">Delete.args</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Delete.execute"><code class="docutils literal notranslate"><span class="pre">Delete.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.query.Delete.full_import_path"><code class="docutils literal notranslate"><span class="pre">Delete.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Delete.kwargs"><code class="docutils literal notranslate"><span class="pre">Delete.kwargs</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Delete.table_or_collection"><code class="docutils literal notranslate"><span class="pre">Delete.table_or_collection</span></code></a></li>
 </ul>
@@ -1574,6 +1649,7 @@ for performing a vector search on the parent query chain inputs.</p>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Insert"><code class="docutils literal notranslate"><span class="pre">Insert</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Insert.documents"><code class="docutils literal notranslate"><span class="pre">Insert.documents</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Insert.execute"><code class="docutils literal notranslate"><span class="pre">Insert.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.query.Insert.full_import_path"><code class="docutils literal notranslate"><span class="pre">Insert.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Insert.kwargs"><code class="docutils literal notranslate"><span class="pre">Insert.kwargs</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Insert.repr_"><code class="docutils literal notranslate"><span class="pre">Insert.repr_()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Insert.select_table"><code class="docutils literal notranslate"><span class="pre">Insert.select_table()</span></code></a></li>
@@ -1584,6 +1660,7 @@ for performing a vector search on the parent query chain inputs.</p>
 </li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Like"><code class="docutils literal notranslate"><span class="pre">Like</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Like.execute"><code class="docutils literal notranslate"><span class="pre">Like.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.query.Like.full_import_path"><code class="docutils literal notranslate"><span class="pre">Like.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Like.n"><code class="docutils literal notranslate"><span class="pre">Like.n</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Like.r"><code class="docutils literal notranslate"><span class="pre">Like.r</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Like.vector_index"><code class="docutils literal notranslate"><span class="pre">Like.vector_index</span></code></a></li>
@@ -1592,6 +1669,7 @@ for performing a vector search on the parent query chain inputs.</p>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.QueryComponent"><code class="docutils literal notranslate"><span class="pre">QueryComponent</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.QueryComponent.args"><code class="docutils literal notranslate"><span class="pre">QueryComponent.args</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.QueryComponent.execute"><code class="docutils literal notranslate"><span class="pre">QueryComponent.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.query.QueryComponent.full_import_path"><code class="docutils literal notranslate"><span class="pre">QueryComponent.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.QueryComponent.kwargs"><code class="docutils literal notranslate"><span class="pre">QueryComponent.kwargs</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.QueryComponent.name"><code class="docutils literal notranslate"><span class="pre">QueryComponent.name</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.QueryComponent.repr_"><code class="docutils literal notranslate"><span class="pre">QueryComponent.repr_()</span></code></a></li>
@@ -1600,6 +1678,7 @@ for performing a vector search on the parent query chain inputs.</p>
 </li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.QueryLinker"><code class="docutils literal notranslate"><span class="pre">QueryLinker</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.QueryLinker.execute"><code class="docutils literal notranslate"><span class="pre">QueryLinker.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.query.QueryLinker.full_import_path"><code class="docutils literal notranslate"><span class="pre">QueryLinker.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.QueryLinker.members"><code class="docutils literal notranslate"><span class="pre">QueryLinker.members</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.QueryLinker.query_components"><code class="docutils literal notranslate"><span class="pre">QueryLinker.query_components</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.QueryLinker.repr_"><code class="docutils literal notranslate"><span class="pre">QueryLinker.repr_()</span></code></a></li>
@@ -1623,6 +1702,7 @@ for performing a vector search on the parent query chain inputs.</p>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Select"><code class="docutils literal notranslate"><span class="pre">Select</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Select.add_fold"><code class="docutils literal notranslate"><span class="pre">Select.add_fold()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Select.execute"><code class="docutils literal notranslate"><span class="pre">Select.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.query.Select.full_import_path"><code class="docutils literal notranslate"><span class="pre">Select.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Select.id_field"><code class="docutils literal notranslate"><span class="pre">Select.id_field</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Select.model_update"><code class="docutils literal notranslate"><span class="pre">Select.model_update()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Select.query_components"><code class="docutils literal notranslate"><span class="pre">Select.query_components</span></code></a></li>
@@ -1634,6 +1714,7 @@ for performing a vector search on the parent query chain inputs.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.TableOrCollection"><code class="docutils literal notranslate"><span class="pre">TableOrCollection</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.backends.base.query.TableOrCollection.full_import_path"><code class="docutils literal notranslate"><span class="pre">TableOrCollection.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.TableOrCollection.identifier"><code class="docutils literal notranslate"><span class="pre">TableOrCollection.identifier</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.TableOrCollection.insert"><code class="docutils literal notranslate"><span class="pre">TableOrCollection.insert()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.TableOrCollection.like"><code class="docutils literal notranslate"><span class="pre">TableOrCollection.like()</span></code></a></li>
@@ -1644,6 +1725,7 @@ for performing a vector search on the parent query chain inputs.</p>
 </li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Update"><code class="docutils literal notranslate"><span class="pre">Update</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Update.execute"><code class="docutils literal notranslate"><span class="pre">Update.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.base.query.Update.full_import_path"><code class="docutils literal notranslate"><span class="pre">Update.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Update.select_table"><code class="docutils literal notranslate"><span class="pre">Update.select_table()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.base.query.Update.table_or_collection"><code class="docutils literal notranslate"><span class="pre">Update.table_or_collection</span></code></a></li>
 </ul>

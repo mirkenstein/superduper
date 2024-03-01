@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -252,9 +254,10 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span><span class="p">,</span> <span class="n">wraps</span>
 
-<span class="kn">from</span> <span class="nn">superduperdb.base.config</span> <span class="kn">import</span> <span class="n">BytesEncoding</span>
+<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.leaf</span> <span class="kn">import</span> <span class="n">Leaf</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
 <span class="kn">from</span> <span class="nn">superduperdb.jobs.job</span> <span class="kn">import</span> <span class="n">ComponentJob</span><span class="p">,</span> <span class="n">Job</span>
@@ -278,7 +281,6 @@
     <span class="n">leaf_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;component&#39;</span>
     <span class="n">_artifacts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;DataType&#39;</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">()</span>
     <span class="n">set_post_init</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,)</span>
-
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">artifacts</span><span class="p">:</span> <span class="n">dc</span><span class="o">.</span><span class="n">InitVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -289,12 +291,31 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;identifier cannot be empty or None&#39;</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Component.init">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.init">[docs]</a>
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">Document</span>
+        <span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">_BaseEncodable</span>
+
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dc</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Component</span><span class="p">):</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">Document</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">unpacked</span> <span class="o">=</span> <span class="n">Document</span><span class="p">({</span><span class="s1">&#39;_base&#39;</span><span class="p">:</span> <span class="n">item</span><span class="p">})</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">unpacked</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">_BaseEncodable</span><span class="p">):</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">)</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span></div>
+
+
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">artifact_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">Schema</span>
         <span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">dill_serializer</span>
 
-        <span class="n">e</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">schema</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">lookup</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_artifacts</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">artifacts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -304,7 +325,6 @@
             <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">lookup</span><span class="p">:</span>
-                <span class="n">e</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                 <span class="n">schema</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">lookup</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
             <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">))</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
                 <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">Serializable</span>
@@ -355,11 +375,19 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.dict">[docs]</a>
     <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">Document</span>
+        <span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">Artifact</span><span class="p">,</span> <span class="n">File</span>
 
         <span class="n">r</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
         <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">artifact_schema</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
-            <span class="n">r</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;dict.</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">](</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>  <span class="c1"># artifact</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="p">(</span><span class="n">Artifact</span><span class="p">,</span> <span class="n">File</span><span class="p">)):</span>
+                <span class="n">r</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;dict.</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">encodable</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
+                    <span class="n">r</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;dict.</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">](</span><span class="n">uri</span><span class="o">=</span><span class="n">attr</span><span class="p">)</span>  <span class="c1"># artifact or file</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">r</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;dict.</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">](</span><span class="n">x</span><span class="o">=</span><span class="n">attr</span><span class="p">)</span>  <span class="c1"># artifact or file</span>
         <span class="n">r</span><span class="p">[</span><span class="s1">&#39;type_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_id</span>
         <span class="n">r</span><span class="p">[</span><span class="s1">&#39;identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span>
         <span class="n">r</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span>
@@ -372,10 +400,9 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.encode">[docs]</a>
     <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">bytes_encoding</span><span class="p">:</span> <span class="n">BytesEncoding</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">):</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">bytes_encoding</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="o">=</span><span class="n">leaf_types_to_keep</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">leaf_types_to_keep</span><span class="o">=</span><span class="n">leaf_types_to_keep</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;dict&#39;</span><span class="p">]</span>
         <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;leaf_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;component&#39;</span>
         <span class="k">return</span> <span class="n">r</span></div>
@@ -422,7 +449,6 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">,</span>
         <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
-        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the job for this listener</span>
 
@@ -456,14 +482,14 @@
         <span class="n">extracted_path</span> <span class="o">=</span> <span class="n">from_tarball</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">extracted_path</span><span class="p">,</span> <span class="s1">&#39;compiled.json&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">references</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="n">encodables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">extracted_path</span><span class="p">))</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;compiled.json&#39;</span><span class="p">})</span>
 
-        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">encodables</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">extracted_path</span><span class="p">,</span> <span class="n">e</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="n">references</span><span class="p">[</span><span class="s1">&#39;encodable&#39;</span><span class="p">][</span><span class="n">e</span><span class="p">]</span>
-                <span class="n">references</span><span class="p">[</span><span class="s1">&#39;encodable&#39;</span><span class="p">][</span><span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">serializers</span><span class="p">[</span>
-                    <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span>
-                <span class="p">]</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;artifact&#39;</span><span class="p">,</span> <span class="s1">&#39;lazy_artifact&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">references</span><span class="p">[</span><span class="n">at</span><span class="p">]:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">extracted_path</span><span class="p">,</span> <span class="n">e</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="n">references</span><span class="p">[</span><span class="n">at</span><span class="p">][</span><span class="n">e</span><span class="p">]</span>
+                    <span class="n">references</span><span class="p">[</span><span class="n">at</span><span class="p">][</span><span class="n">e</span><span class="p">]</span> <span class="o">=</span> <span class="n">serializers</span><span class="p">[</span>
+                        <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span>
+                    <span class="p">]</span><span class="o">.</span><span class="n">decode_data</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
         <span class="c1"># This may get deprecated in favour of inline definitions (inside components)</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">references</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;serializable&#39;</span><span class="p">,</span> <span class="p">{}):</span>
@@ -517,9 +543,8 @@
     <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">_encode_with_references</span>
 
-        <span class="n">references</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">references</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
         <span class="n">references</span><span class="p">[</span><span class="s1">&#39;component&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_id</span><span class="p">:</span> <span class="bp">self</span><span class="p">}</span>
-        <span class="n">references</span><span class="p">[</span><span class="s1">&#39;encodable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">references</span><span class="p">[</span><span class="s1">&#39;component&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">[:]:</span>
@@ -531,12 +556,13 @@
             <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">references</span><span class="p">[</span><span class="s1">&#39;component&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
                 <span class="k">break</span>
         <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">td</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">references</span><span class="p">[</span><span class="s1">&#39;encodable&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">td</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;bytes&#39;</span><span class="p">])</span>
-                <span class="k">del</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;bytes&#39;</span><span class="p">]</span>
-                <span class="n">references</span><span class="p">[</span><span class="s1">&#39;encodable&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+            <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;artifact&#39;</span><span class="p">,</span> <span class="s1">&#39;lazy_artifact&#39;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">references</span><span class="p">[</span><span class="n">at</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">td</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;bytes&#39;</span><span class="p">])</span>
+                    <span class="k">del</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;bytes&#39;</span><span class="p">]</span>
+                    <span class="n">references</span><span class="p">[</span><span class="n">at</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">td</span><span class="si">}</span><span class="s1">/compiled.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">references</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
             <span class="n">to_tarball</span><span class="p">(</span><span class="n">td</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
@@ -578,6 +604,25 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
             <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_replace_references</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lookup</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">r</span>
+
+
+<div class="viewcode-block" id="ensure_initialized">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.ensure_initialized">[docs]</a>
+<span class="k">def</span> <span class="nf">ensure_initialized</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator to ensure that the model is initialized before calling the function&quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_is_initialized&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_initialized</span><span class="p">:</span>
+            <span class="n">model_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initializing </span><span class="si">{</span><span class="n">model_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_is_initialized</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initialized  </span><span class="si">{</span><span class="n">model_message</span><span class="si">}</span><span class="s2"> successfully&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span></div>
+
 </pre></div>
         </article>
       </div>

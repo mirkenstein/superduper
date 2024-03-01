@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -261,9 +263,7 @@
 <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
 
 
-<div class="viewcode-block" id="build_metadata">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.build_metadata">[docs]</a>
-<span class="k">def</span> <span class="nf">build_metadata</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">databackend</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;BaseDataBackend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_build_metadata</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">databackend</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;BaseDataBackend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
     <span class="c1"># Connect to metadata store.</span>
     <span class="c1"># ------------------------------</span>
     <span class="c1"># 1. try to connect to the metadata store specified in the configuration.</span>
@@ -272,7 +272,9 @@
     <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">metadata_store</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># try to connect to the metadata store specified in the configuration.</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Connecting to Metadata Client:&quot;</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">metadata_store</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">build</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">metadata_store</span><span class="p">,</span> <span class="n">metadata_stores</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;metadata&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_build_databackend_impl</span><span class="p">(</span>
+            <span class="n">cfg</span><span class="o">.</span><span class="n">metadata_store</span><span class="p">,</span> <span class="n">metadata_stores</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;metadata&#39;</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># try to connect to the data backend engine.</span>
@@ -289,34 +291,30 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># try to connect to the data backend uri.</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Connecting to Metadata Client with URI: &quot;</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">data_backend</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">build</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">data_backend</span><span class="p">,</span> <span class="n">metadata_stores</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;metadata&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_build_databackend_impl</span><span class="p">(</span>
+                <span class="n">cfg</span><span class="o">.</span><span class="n">data_backend</span><span class="p">,</span> <span class="n">metadata_stores</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;metadata&#39;</span>
+            <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="c1"># Exit quickly if a connection fails.</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error initializing to Metadata Client:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="build_databackend">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.build_databackend">[docs]</a>
-<span class="k">def</span> <span class="nf">build_databackend</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">databackend</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_build_databackend</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">databackend</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="c1"># Connect to data backend.</span>
     <span class="c1"># ------------------------------</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">databackend</span><span class="p">:</span>
-            <span class="n">databackend</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">data_backend</span><span class="p">,</span> <span class="n">data_backends</span><span class="p">)</span>
+            <span class="n">databackend</span> <span class="o">=</span> <span class="n">_build_databackend_impl</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">data_backend</span><span class="p">,</span> <span class="n">data_backends</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Data Client is ready.&quot;</span><span class="p">,</span> <span class="n">databackend</span><span class="o">.</span><span class="n">conn</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># Exit quickly if a connection fails.</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error initializing to DataBackend Client:&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">databackend</span></div>
+    <span class="k">return</span> <span class="n">databackend</span>
 
 
-
-<div class="viewcode-block" id="build_artifact_store">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.build_artifact_store">[docs]</a>
-<span class="k">def</span> <span class="nf">build_artifact_store</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">_build_artifact_store</span><span class="p">(</span>
     <span class="n">artifact_store</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">databackend</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;BaseDataBackend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
@@ -336,14 +334,11 @@
         <span class="n">directory</span> <span class="o">=</span> <span class="n">artifact_store</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">FileSystemArtifactStore</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown artifact store: </span><span class="si">{</span><span class="n">artifact_store</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
-
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown artifact store: </span><span class="si">{</span><span class="n">artifact_store</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
 
 <span class="c1"># Helper function to build a data backend based on the URI.</span>
-<div class="viewcode-block" id="build">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.build">[docs]</a>
-<span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;data_backend&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_build_databackend_impl</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;data_backend&#39;</span><span class="p">):</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsing data connection URI:</span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^mongodb:\/\/&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -390,13 +385,10 @@
             <span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
 
             <span class="n">sql_conn</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;sqlalchemy&#39;</span><span class="p">](</span><span class="n">sql_conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;sqlalchemy&#39;</span><span class="p">](</span><span class="n">sql_conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="build_compute">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.build_compute">[docs]</a>
-<span class="k">def</span> <span class="nf">build_compute</span><span class="p">(</span><span class="n">compute</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_build_compute</span><span class="p">(</span><span class="n">compute</span><span class="p">):</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Connecting to compute client:&quot;</span><span class="p">,</span> <span class="n">compute</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">compute</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span> <span class="ow">or</span> <span class="n">compute</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -416,8 +408,7 @@
     <span class="k">if</span> <span class="n">compute</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ray&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">RayComputeBackend</span><span class="p">(</span><span class="n">compute</span><span class="p">)</span>
 
-    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Compute </span><span class="si">{compute}</span><span class="s1"> is not a valid compute configuration.&#39;</span><span class="p">)</span></div>
-
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Compute </span><span class="si">{compute}</span><span class="s1"> is not a valid compute configuration.&#39;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="build_datalayer">
@@ -429,6 +420,7 @@
 <span class="sd">    :param cfg: Configuration to use. If None, use ``superduperdb.CFG``.</span>
 <span class="sd">    :param databackend: Databacked to use.</span>
 <span class="sd">                        If None, use ``superduperdb.CFG.data_backend``.</span>
+<span class="sd">    :pararm kwargs: keyword arguments to be adopted by the `CFG`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Configuration</span>
@@ -444,17 +436,17 @@
             <span class="n">cfg</span><span class="o">.</span><span class="n">force_set</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
     <span class="c1"># Build databackend</span>
-    <span class="n">databackend</span> <span class="o">=</span> <span class="n">build_databackend</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">databackend</span><span class="p">)</span>
+    <span class="n">databackend</span> <span class="o">=</span> <span class="n">_build_databackend</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">databackend</span><span class="p">)</span>
 
     <span class="c1"># Build metadata store</span>
-    <span class="n">metadata</span> <span class="o">=</span> <span class="n">build_metadata</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">databackend</span><span class="p">)</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">_build_metadata</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">databackend</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">metadata</span>
 
     <span class="c1"># Build artifact store</span>
-    <span class="n">artifact_store</span> <span class="o">=</span> <span class="n">build_artifact_store</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span><span class="p">,</span> <span class="n">databackend</span><span class="p">)</span>
+    <span class="n">artifact_store</span> <span class="o">=</span> <span class="n">_build_artifact_store</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span><span class="p">,</span> <span class="n">databackend</span><span class="p">)</span>
 
     <span class="c1"># Build compute</span>
-    <span class="n">compute</span> <span class="o">=</span> <span class="n">build_compute</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">compute</span><span class="p">)</span>
+    <span class="n">compute</span> <span class="o">=</span> <span class="n">_build_compute</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">compute</span><span class="p">)</span>
 
     <span class="c1"># Build DataLayer</span>
     <span class="c1"># ------------------------------</span>

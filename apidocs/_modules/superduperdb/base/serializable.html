@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -243,17 +245,18 @@
 <span></span><span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 
-<span class="kn">from</span> <span class="nn">superduperdb.base.config</span> <span class="kn">import</span> <span class="n">BytesEncoding</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.leaf</span> <span class="kn">import</span> <span class="n">Leaf</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.serialization</span> <span class="kn">import</span> <span class="n">asdict</span>
 
 
 <span class="k">def</span> <span class="nf">_from_dict</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">Document</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">File</span><span class="p">,</span> <span class="n">LazyArtifact</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">leaves_to_keep</span><span class="o">=</span><span class="p">(</span><span class="n">LazyArtifact</span><span class="p">,</span> <span class="n">File</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">_from_dict</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -335,6 +338,11 @@
 <div class="viewcode-block" id="Serializable.set_variables">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Serializable.set_variables">[docs]</a>
     <span class="k">def</span> <span class="nf">set_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Serializable&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set free variables of self.</span>
+
+<span class="sd">        :param db:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">leaf_types_to_keep</span><span class="o">=</span><span class="p">(</span><span class="n">Variable</span><span class="p">,))</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">_replace_variables</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
@@ -344,7 +352,6 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Serializable.encode">[docs]</a>
     <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">bytes_encoding</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">BytesEncoding</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">):</span>
         <span class="n">r</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">leaf_types_to_keep</span><span class="o">=</span><span class="n">leaf_types_to_keep</span><span class="p">))</span>
@@ -355,8 +362,8 @@
 <div class="viewcode-block" id="Serializable.decode">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Serializable.decode">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">_from_dict</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_from_dict</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Serializable.dict">
@@ -365,6 +372,12 @@
         <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">Document</span>
 
         <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Serializable.copy">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.serializable.Serializable.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 </div>
 
 

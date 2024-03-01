@@ -181,8 +181,10 @@
 <li class="toctree-l3"><a class="reference internal" href="superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -266,6 +268,19 @@
 <span class="sig-name descname"><span class="pre">_delete_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/local/artifacts.html#FileSystemArtifactStore._delete_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore._delete_bytes" title="Link to this definition">#</a></dt>
 <dd><p>Delete artifact from artifact store
 :param file_id: File id uses to identify artifact in store</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.local.artifacts.FileSystemArtifactStore._load_file">
+<span class="sig-name descname"><span class="pre">_load_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/local/artifacts.html#FileSystemArtifactStore._load_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore._load_file" title="Link to this definition">#</a></dt>
+<dd><p>Return the path to the file in the artifact store</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.backends.local.artifacts.FileSystemArtifactStore._save_file">
+<span class="sig-name descname"><span class="pre">_save_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/local/artifacts.html#FileSystemArtifactStore._save_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore._save_file" title="Link to this definition">#</a></dt>
+<dd><p>Save file in artifact store and return the relative path
+return the relative path {file_id}/{name}</p>
 </dd></dl>
 
 <dl class="py method">
@@ -423,6 +438,8 @@ Note: This will block until the future is completed.</p>
 <li><a class="reference internal" href="#module-superduperdb.backends.local.artifacts">superduperdb.backends.local.artifacts module</a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore._delete_bytes"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore._delete_bytes()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore._load_file"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore._load_file()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore._save_file"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore._save_file()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore.disconnect"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore.disconnect()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore.drop"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore.drop()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.local.artifacts.FileSystemArtifactStore.url"><code class="docutils literal notranslate"><span class="pre">FileSystemArtifactStore.url()</span></code></a></li>

@@ -181,8 +181,10 @@
 <li class="toctree-l3"><a class="reference internal" href="superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -300,7 +302,7 @@
 <span id="superduperdb-backends-ibis-cursor-module"></span><h2>superduperdb.backends.ibis.cursor module<a class="headerlink" href="#module-superduperdb.backends.ibis.cursor" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="superduperdb.backends.ibis.cursor.SuperDuperIbisResult">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.backends.ibis.cursor.</span></span><span class="sig-name descname"><span class="pre">SuperDuperIbisResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_cursor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_it</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/cursor.html#SuperDuperIbisResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.cursor.SuperDuperIbisResult" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.backends.ibis.cursor.</span></span><span class="sig-name descname"><span class="pre">SuperDuperIbisResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_cursor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_it</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/cursor.html#SuperDuperIbisResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.cursor.SuperDuperIbisResult" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="superduperdb.base.html#superduperdb.base.cursor.SuperDuperCursor" title="superduperdb.base.cursor.SuperDuperCursor"><code class="xref py py-class docutils literal notranslate"><span class="pre">SuperDuperCursor</span></code></a></p>
 <p>SuperDuperIbisResult represents ibis query results with options
 to unroll results as i.e pandas</p>
@@ -337,7 +339,7 @@ to unroll results as i.e pandas</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.ibis.data_backend.IbisDataBackend.create_model_table_or_collection">
-<span class="sig-name descname"><span class="pre">create_model_table_or_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.Model" title="superduperdb.components.model.Model"><span class="pre">Model</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.APIModel" title="superduperdb.components.model.APIModel"><span class="pre">APIModel</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/data_backend.html#IbisDataBackend.create_model_table_or_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.data_backend.IbisDataBackend.create_model_table_or_collection" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">create_model_table_or_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.ObjectModel" title="superduperdb.components.model.ObjectModel"><span class="pre">ObjectModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.APIModel" title="superduperdb.components.model.APIModel"><span class="pre">APIModel</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/data_backend.html#IbisDataBackend.create_model_table_or_collection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.data_backend.IbisDataBackend.create_model_table_or_collection" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -464,6 +466,11 @@ to unroll results as i.e pandas</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.backends.ibis.field_types.</span></span><span class="sig-name descname"><span class="pre">FieldType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ibis.expr.datatypes.core.DataType</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/field_types.html#FieldType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.field_types.FieldType" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="superduperdb.base.html#superduperdb.base.serializable.Serializable" title="superduperdb.base.serializable.Serializable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Serializable</span></code></a></p>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.field_types.FieldType.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.ibis.field_types.FieldType'</span></em><a class="headerlink" href="#superduperdb.backends.ibis.field_types.FieldType.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.backends.ibis.field_types.FieldType.identifier">
 <span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DataType</span></em><a class="headerlink" href="#superduperdb.backends.ibis.field_types.FieldType.identifier" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -538,6 +545,11 @@ query chain. E.g. <code class="docutils literal notranslate"><span class="pre">t
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.query.IbisCompoundSelect.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.ibis.query.IbisCompoundSelect'</span></em><a class="headerlink" href="#superduperdb.backends.ibis.query.IbisCompoundSelect.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.ibis.query.IbisCompoundSelect.get_all_tables">
@@ -623,6 +635,11 @@ for a table.</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.query.IbisInsert.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.ibis.query.IbisInsert'</span></em><a class="headerlink" href="#superduperdb.backends.ibis.query.IbisInsert.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="superduperdb.backends.ibis.query.IbisInsert.select_table">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">select_table</span></span><a class="headerlink" href="#superduperdb.backends.ibis.query.IbisInsert.select_table" title="Link to this definition">#</a></dt>
@@ -658,6 +675,11 @@ Query will be executed in the order they are added to the chain.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.ibis.query.IbisQueryComponent.compile">
 <span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/query.html#IbisQueryComponent.compile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.query.IbisQueryComponent.compile" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.query.IbisQueryComponent.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.ibis.query.IbisQueryComponent'</span></em><a class="headerlink" href="#superduperdb.backends.ibis.query.IbisQueryComponent.full_import_path" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -697,6 +719,11 @@ Query will be executed in the order they are added to the chain.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.ibis.query.IbisQueryLinker.execute">
 <span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/query.html#IbisQueryLinker.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.query.IbisQueryLinker.execute" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.query.IbisQueryLinker.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.ibis.query.IbisQueryLinker'</span></em><a class="headerlink" href="#superduperdb.backends.ibis.query.IbisQueryLinker.full_import_path" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -767,6 +794,11 @@ for building <code class="docutils literal notranslate"><span class="pre">IbisCo
 <span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/query.html#IbisQueryTable.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.query.IbisQueryTable.execute" title="Link to this definition">#</a></dt>
 <dd><p>Execute the query on the DB instance.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.query.IbisQueryTable.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.ibis.query.IbisQueryTable'</span></em><a class="headerlink" href="#superduperdb.backends.ibis.query.IbisQueryTable.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="superduperdb.backends.ibis.query.IbisQueryTable.id_field">
@@ -917,6 +949,11 @@ in the <code class="docutils literal notranslate"><span class="pre">superduperdb
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.ibis.query.Table.compile">
 <span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/ibis/query.html#Table.compile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.ibis.query.Table.compile" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.backends.ibis.query.Table.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.backends.ibis.query.Table'</span></em><a class="headerlink" href="#superduperdb.backends.ibis.query.Table.full_import_path" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1137,6 +1174,7 @@ with superduperdb.</p>
 </li>
 <li><a class="reference internal" href="#module-superduperdb.backends.ibis.field_types">superduperdb.backends.ibis.field_types module</a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.field_types.FieldType"><code class="docutils literal notranslate"><span class="pre">FieldType</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.field_types.FieldType.full_import_path"><code class="docutils literal notranslate"><span class="pre">FieldType.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.field_types.FieldType.identifier"><code class="docutils literal notranslate"><span class="pre">FieldType.identifier</span></code></a></li>
 </ul>
 </li>
@@ -1149,6 +1187,7 @@ with superduperdb.</p>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisCompoundSelect.add_fold"><code class="docutils literal notranslate"><span class="pre">IbisCompoundSelect.add_fold()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisCompoundSelect.compile"><code class="docutils literal notranslate"><span class="pre">IbisCompoundSelect.compile()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisCompoundSelect.execute"><code class="docutils literal notranslate"><span class="pre">IbisCompoundSelect.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisCompoundSelect.full_import_path"><code class="docutils literal notranslate"><span class="pre">IbisCompoundSelect.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisCompoundSelect.get_all_tables"><code class="docutils literal notranslate"><span class="pre">IbisCompoundSelect.get_all_tables()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisCompoundSelect.model_update"><code class="docutils literal notranslate"><span class="pre">IbisCompoundSelect.model_update()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisCompoundSelect.output_fields"><code class="docutils literal notranslate"><span class="pre">IbisCompoundSelect.output_fields</span></code></a></li>
@@ -1161,11 +1200,13 @@ with superduperdb.</p>
 </li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisInsert"><code class="docutils literal notranslate"><span class="pre">IbisInsert</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisInsert.execute"><code class="docutils literal notranslate"><span class="pre">IbisInsert.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisInsert.full_import_path"><code class="docutils literal notranslate"><span class="pre">IbisInsert.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisInsert.select_table"><code class="docutils literal notranslate"><span class="pre">IbisInsert.select_table</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryComponent"><code class="docutils literal notranslate"><span class="pre">IbisQueryComponent</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryComponent.compile"><code class="docutils literal notranslate"><span class="pre">IbisQueryComponent.compile()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryComponent.full_import_path"><code class="docutils literal notranslate"><span class="pre">IbisQueryComponent.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryComponent.get_all_tables"><code class="docutils literal notranslate"><span class="pre">IbisQueryComponent.get_all_tables()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryComponent.primary_id"><code class="docutils literal notranslate"><span class="pre">IbisQueryComponent.primary_id</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryComponent.renamings"><code class="docutils literal notranslate"><span class="pre">IbisQueryComponent.renamings</span></code></a></li>
@@ -1175,6 +1216,7 @@ with superduperdb.</p>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryLinker"><code class="docutils literal notranslate"><span class="pre">IbisQueryLinker</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryLinker.compile"><code class="docutils literal notranslate"><span class="pre">IbisQueryLinker.compile()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryLinker.execute"><code class="docutils literal notranslate"><span class="pre">IbisQueryLinker.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryLinker.full_import_path"><code class="docutils literal notranslate"><span class="pre">IbisQueryLinker.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryLinker.get_all_tables"><code class="docutils literal notranslate"><span class="pre">IbisQueryLinker.get_all_tables()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryLinker.output_fields"><code class="docutils literal notranslate"><span class="pre">IbisQueryLinker.output_fields</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryLinker.primary_id"><code class="docutils literal notranslate"><span class="pre">IbisQueryLinker.primary_id</span></code></a></li>
@@ -1189,6 +1231,7 @@ with superduperdb.</p>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryTable.add_fold"><code class="docutils literal notranslate"><span class="pre">IbisQueryTable.add_fold()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryTable.compile"><code class="docutils literal notranslate"><span class="pre">IbisQueryTable.compile()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryTable.execute"><code class="docutils literal notranslate"><span class="pre">IbisQueryTable.execute()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryTable.full_import_path"><code class="docutils literal notranslate"><span class="pre">IbisQueryTable.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryTable.id_field"><code class="docutils literal notranslate"><span class="pre">IbisQueryTable.id_field</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryTable.insert"><code class="docutils literal notranslate"><span class="pre">IbisQueryTable.insert()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.IbisQueryTable.model_update"><code class="docutils literal notranslate"><span class="pre">IbisQueryTable.model_update()</span></code></a></li>
@@ -1216,6 +1259,7 @@ with superduperdb.</p>
 </li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table"><code class="docutils literal notranslate"><span class="pre">Table</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.compile"><code class="docutils literal notranslate"><span class="pre">Table.compile()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.full_import_path"><code class="docutils literal notranslate"><span class="pre">Table.full_import_path</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.insert"><code class="docutils literal notranslate"><span class="pre">Table.insert()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.like"><code class="docutils literal notranslate"><span class="pre">Table.like()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.backends.ibis.query.Table.outputs"><code class="docutils literal notranslate"><span class="pre">Table.outputs()</span></code></a></li>

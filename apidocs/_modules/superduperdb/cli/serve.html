@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -240,7 +242,9 @@
         </div>
         <article role="main">
           <h1>Source code for superduperdb.cli.serve</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">command</span>
 
@@ -290,6 +294,26 @@
     <span class="kn">from</span> <span class="nn">superduperdb.cdc.app</span> <span class="kn">import</span> <span class="n">app</span>
 
     <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="ray_serve">
+<a class="viewcode-back" href="../../../source/superduperdb.cli.html#superduperdb.cli.serve.ray_serve">[docs]</a>
+<span class="nd">@command</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Serve a model on ray&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">ray_serve</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ray_actor_options</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">num_replicas</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.backends.ray.serve</span> <span class="kn">import</span> <span class="n">run</span>
+
+    <span class="n">run</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>
+        <span class="n">ray_actor_options</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">ray_actor_options</span><span class="p">),</span>
+        <span class="n">num_replicas</span><span class="o">=</span><span class="n">num_replicas</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 </pre></div>
         </article>

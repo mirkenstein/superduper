@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -240,11 +242,15 @@
         </div>
         <article role="main">
           <h1>Source code for superduperdb.backends.query_dataset</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">random</span>
+<span></span><span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb.backends.base.query</span> <span class="kn">import</span> <span class="n">Select</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.special_dicts</span> <span class="kn">import</span> <span class="n">MongoStyleDict</span>
+
+<span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">Mapping</span>
 
 
 <div class="viewcode-block" id="ExpiryCache">
@@ -278,51 +284,48 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">select</span><span class="p">:</span> <span class="n">Select</span><span class="p">,</span>
-        <span class="n">keys</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">mapping</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Mapping&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">fold</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span>
-        <span class="n">suppress</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
         <span class="n">transform</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">in_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">extract</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_database</span> <span class="o">=</span> <span class="n">db</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="o">=</span> <span class="n">keys</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="n">db</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span> <span class="k">if</span> <span class="n">transform</span> <span class="k">else</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
         <span class="k">if</span> <span class="n">fold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">add_fold</span><span class="p">(</span><span class="n">fold</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="o">=</span> <span class="n">select</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">in_memory</span> <span class="o">=</span> <span class="n">in_memory</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_memory</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">select_using_ids</span><span class="p">(</span><span class="n">ids</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">select_using_ids</span><span class="p">(</span><span class="n">ids</span><span class="p">))</span>
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ids</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="n">r</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">id_field</span><span class="p">]</span>
-                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">select_ids</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">select_ids</span><span class="p">)</span>
                 <span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ids</span> <span class="o">=</span> <span class="n">ids</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">select_one</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">select_single_id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">suppress</span> <span class="o">=</span> <span class="n">suppress</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">extract</span> <span class="o">=</span> <span class="n">extract</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span> <span class="o">=</span> <span class="n">mapping</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">database</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">superduperdb.base.build</span> <span class="kn">import</span> <span class="n">build_datalayer</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_database</span> <span class="o">=</span> <span class="n">build_datalayer</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="n">build_datalayer</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_memory</span><span class="p">:</span>
@@ -335,22 +338,25 @@
             <span class="nb">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_documents</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_one</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ids</span><span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">datatypes</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ids</span><span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">,</span> <span class="n">encoders</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">datatypes</span>
             <span class="p">)</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">unpack</span><span class="p">())</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">({})</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">))</span>
+        <span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">Signature</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;_base&#39;</span><span class="p">:</span>
-                    <span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">r</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract</span><span class="p">:</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">extract</span><span class="p">]</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="nb">input</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">signature</span> <span class="o">==</span> <span class="n">Signature</span><span class="o">.</span><span class="n">args_kwargs</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="o">*</span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">signature</span> <span class="o">==</span> <span class="n">Signature</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="o">*</span><span class="n">out</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">signature</span> <span class="o">==</span> <span class="n">Signature</span><span class="o">.</span><span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="o">**</span><span class="n">out</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">signature</span> <span class="o">==</span> <span class="n">Signature</span><span class="o">.</span><span class="n">singleton</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">out</span></div>
 
 
@@ -460,9 +466,14 @@
 
 <div class="viewcode-block" id="query_dataset_factory">
 <a class="viewcode-back" href="../../../source/superduperdb.backends.html#superduperdb.backends.query_dataset.query_dataset_factory">[docs]</a>
-<span class="k">def</span> <span class="nf">query_dataset_factory</span><span class="p">(</span><span class="n">data_prefetch</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">data_prefetch</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">query_dataset_factory</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data_prefetch&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">CachedQueryDataset</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">QueryDataset</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+    <span class="p">}</span>
     <span class="k">return</span> <span class="n">QueryDataset</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 </pre></div>

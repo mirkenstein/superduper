@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -457,7 +459,7 @@
 <div class="viewcode-block" id="Updater.exists">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.download.Updater.exists">[docs]</a>
     <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">datatype</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">datatype</span><span class="p">]</span><span class="o">.</span><span class="n">artifact</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">datatype</span><span class="p">]</span><span class="o">.</span><span class="n">encodable</span> <span class="o">==</span> <span class="s1">&#39;artifact&#39;</span><span class="p">:</span>
             <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">datatype</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">table_or_collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
@@ -474,7 +476,7 @@
         <span class="n">datatype</span><span class="p">,</span>
         <span class="n">bytes_</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">datatype</span><span class="p">]</span><span class="o">.</span><span class="n">artifact</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">datatype</span><span class="p">]</span><span class="o">.</span><span class="n">encodable</span> <span class="o">==</span> <span class="s1">&#39;artifact&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span>
                 <span class="p">{</span>
                     <span class="s1">&#39;uri&#39;</span><span class="p">:</span> <span class="n">uri</span><span class="p">,</span>
@@ -600,6 +602,7 @@
     <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">datatypes</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">leaf_lookup</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_leaves</span><span class="p">(</span><span class="s1">&#39;encodable&#39;</span><span class="p">)</span>
+    <span class="n">leaf_lookup</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">get_leaves</span><span class="p">(</span><span class="s1">&#39;artifact&#39;</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">leaf_lookup</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">leaf_lookup</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">uri</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">continue</span>
@@ -653,10 +656,11 @@
         <span class="k">pass</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">Select</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="c1"># TODO deprecate reference since lazy loading in any case</span>
+            <span class="n">documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">select</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">select_using_ids</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
-            <span class="n">documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="n">documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">select</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">Insert</span><span class="p">)</span>
         <span class="n">documents</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">query</span><span class="o">.</span><span class="n">documents</span><span class="p">)</span>
@@ -702,7 +706,7 @@
     <span class="p">)</span>
     <span class="n">downloader</span><span class="o">.</span><span class="n">go</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">uri</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">uris</span><span class="p">):</span>
-        <span class="n">r</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">downloader</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">uri</span><span class="p">])</span>
+        <span class="n">r</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">decode_data</span><span class="p">(</span><span class="n">downloader</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">uri</span><span class="p">])</span>
 
     <span class="k">return</span></div>
 

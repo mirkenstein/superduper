@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -267,8 +269,14 @@
 <span class="kn">from</span> <span class="nn">superduperdb.base.superduper</span> <span class="kn">import</span> <span class="n">superduper</span>
 <span class="kn">from</span> <span class="nn">superduperdb.cdc.cdc</span> <span class="kn">import</span> <span class="n">DatabaseChangeDataCapture</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">Component</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">DataType</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">,</span> <span class="n">serializers</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Artifact</span><span class="p">,</span>
+    <span class="n">DataType</span><span class="p">,</span>
+    <span class="n">File</span><span class="p">,</span>
+    <span class="n">_BaseEncodable</span><span class="p">,</span>
+    <span class="n">serializers</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">ObjectModel</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.schema</span> <span class="kn">import</span> <span class="n">Schema</span>
 <span class="kn">from</span> <span class="nn">superduperdb.jobs.job</span> <span class="kn">import</span> <span class="n">ComponentJob</span><span class="p">,</span> <span class="n">FunctionJob</span><span class="p">,</span> <span class="n">Job</span>
 <span class="kn">from</span> <span class="nn">superduperdb.jobs.task_workflow</span> <span class="kn">import</span> <span class="n">TaskWorkflow</span>
@@ -353,11 +361,11 @@
 
         <span class="n">cfg</span> <span class="o">=</span> <span class="n">cfg</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">databackend</span> <span class="o">=</span> <span class="n">build</span><span class="o">.</span><span class="n">build_databackend</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">compute</span> <span class="o">=</span> <span class="n">build</span><span class="o">.</span><span class="n">build_compute</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">compute</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">databackend</span> <span class="o">=</span> <span class="n">build</span><span class="o">.</span><span class="n">_build_databackend</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compute</span> <span class="o">=</span> <span class="n">build</span><span class="o">.</span><span class="n">_build_compute</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">compute</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">build</span><span class="o">.</span><span class="n">build_metadata</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">databackend</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span> <span class="o">=</span> <span class="n">build</span><span class="o">.</span><span class="n">build_artifact_store</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">build</span><span class="o">.</span><span class="n">_build_metadata</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">databackend</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span> <span class="o">=</span> <span class="n">build</span><span class="o">.</span><span class="n">_build_artifact_store</span><span class="p">(</span>
             <span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">databackend</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">serializers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serializers</span></div>
@@ -427,7 +435,7 @@
 
         <span class="n">progress</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Loading vectors into vector-table...&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">record_batch</span> <span class="ow">in</span> <span class="n">ibatch</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">),</span>
             <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">backfill_batch_size</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
@@ -443,7 +451,7 @@
                     <span class="n">vi</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
                     <span class="n">version</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">_BaseEncodable</span><span class="p">):</span>
                     <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">x</span>
 
                 <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">VectorItem</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">),</span> <span class="n">vector</span><span class="o">=</span><span class="n">h</span><span class="p">))</span>
@@ -517,7 +525,7 @@
         <span class="c1"># TODO: never called</span>
         <span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">type_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span>
         <span class="n">metric_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;metric&#39;</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">]</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">Model</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">ObjectModel</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">component</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">validation_set</span><span class="p">,</span>
@@ -567,7 +575,7 @@
     <span class="k">def</span> <span class="nf">_get_context</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">context_select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Select</span><span class="p">],</span> <span class="n">context_key</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="p">):</span>
-        <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">takes_context</span><span class="p">,</span> <span class="s1">&#39;model does not take context&#39;</span>
+        <span class="k">assert</span> <span class="s1">&#39;context&#39;</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="s1">&#39;model does not take context&#39;</span>
         <span class="k">assert</span> <span class="n">context_select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">sources</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">context_select</span><span class="p">))</span>
         <span class="n">context</span> <span class="o">=</span> <span class="n">sources</span><span class="p">[:]</span>
@@ -579,99 +587,6 @@
                 <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">context</span>
             <span class="p">]</span>
         <span class="k">return</span> <span class="n">context</span><span class="p">,</span> <span class="n">sources</span>
-
-<div class="viewcode-block" id="Datalayer.apredict">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.apredict">[docs]</a>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">apredict</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="nb">input</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Document</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
-        <span class="n">context_select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Select</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">context_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;_base&#39;</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Apply model to input using asyncio.</span>
-
-<span class="sd">        :param model_name: model identifier</span>
-<span class="sd">        :param input: input to be passed to the model.</span>
-<span class="sd">                      Must be possible to encode with registered datatypes</span>
-<span class="sd">        :param context_select: select query object to provide context</span>
-<span class="sd">        :param context_key: key to use to extract context from context_select</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">sources</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="k">if</span> <span class="n">context_select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">context</span><span class="p">,</span> <span class="n">sources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_context</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">context_select</span><span class="p">,</span> <span class="n">context_key</span><span class="p">)</span>
-
-        <span class="n">out</span> <span class="o">=</span> <span class="k">await</span> <span class="n">model</span><span class="o">.</span><span class="n">apredict</span><span class="p">(</span>
-            <span class="nb">input</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Document</span><span class="p">)</span> <span class="k">else</span> <span class="nb">input</span><span class="p">,</span>
-            <span class="n">one</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">datatype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="n">sources</span>
-        <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="p">[]</span></div>
-
-
-<div class="viewcode-block" id="Datalayer.predict">
-<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.predict">[docs]</a>
-    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="nb">input</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Document</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
-        <span class="n">context_select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Select</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">context_key</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Document</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Apply model to input.</span>
-
-<span class="sd">        :param model_name: model identifier</span>
-<span class="sd">        :param input: input to be passed to the model.</span>
-<span class="sd">                      Must be possible to encode with registered datatypes</span>
-<span class="sd">        :param context_select: select query object to provide context</span>
-<span class="sd">        :param context_key: key to use to extract context from context_select</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">sources</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="k">if</span> <span class="n">context_select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">context_select</span><span class="p">,</span> <span class="n">Select</span><span class="p">):</span>
-                <span class="n">context</span><span class="p">,</span> <span class="n">sources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_context</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">context_select</span><span class="p">,</span> <span class="n">context_key</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">context_select</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="n">context</span> <span class="o">=</span> <span class="n">context_select</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;context_select should be either Select or str&quot;</span><span class="p">)</span>
-
-        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span>
-            <span class="nb">input</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Document</span><span class="p">)</span> <span class="k">else</span> <span class="nb">input</span><span class="p">,</span>
-            <span class="n">one</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">context</span><span class="p">]</span> <span class="k">if</span> <span class="n">context</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span> <span class="n">DataType</span><span class="p">):</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">output_schema</span><span class="p">,</span> <span class="n">Schema</span><span class="p">):</span>
-            <span class="c1"># TODO make Schema callable</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">output_schema</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;_base&#39;</span><span class="p">:</span> <span class="n">out</span><span class="p">}</span>
-
-        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="n">sources</span>
-        <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="p">[]</span></div>
-
 
 <div class="viewcode-block" id="Datalayer.execute">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.execute">[docs]</a>
@@ -728,10 +643,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">datatypes</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+        <span class="c1"># TODO add this logic to a base Insert class</span>
+        <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">insert</span><span class="o">.</span><span class="n">documents</span><span class="p">:</span>
             <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_fold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;train&#39;</span>
             <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">fold_probability</span><span class="p">:</span>
                 <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_fold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;valid&#39;</span>
+            <span class="n">artifacts</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">get_leaves</span><span class="p">(</span><span class="s1">&#39;artifact&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">a</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">artifact_store</span><span class="p">)</span>
+
         <span class="n">inserted_ids</span> <span class="o">=</span> <span class="n">insert</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">refresh</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdc</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
@@ -967,7 +891,7 @@
         <span class="k">if</span> <span class="n">info_only</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">info</span>
 
-        <span class="n">m</span> <span class="o">=</span> <span class="n">serializable</span><span class="o">.</span><span class="n">Serializable</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">serializable</span><span class="o">.</span><span class="n">Serializable</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">m</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="n">m</span><span class="o">.</span><span class="n">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -1056,6 +980,7 @@
         <span class="n">listener_selects</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">identifier</span> <span class="ow">in</span> <span class="n">listeners</span><span class="p">:</span>
+            <span class="c1"># TODO reload listener here (with lazy loading)</span>
             <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_component</span><span class="p">(</span><span class="s1">&#39;listener&#39;</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span>
             <span class="n">listener_query</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="s1">&#39;select&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
             <span class="n">listener_select</span> <span class="o">=</span> <span class="n">serializable</span><span class="o">.</span><span class="n">Serializable</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">listener_query</span><span class="p">)</span>
@@ -1070,7 +995,7 @@
 
             <span class="n">model</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="n">identifier</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
             <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.predict(</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.predict_in_db(</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
                 <span class="n">job</span><span class="o">=</span><span class="n">ComponentJob</span><span class="p">(</span>
                     <span class="n">component_identifier</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
                     <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
@@ -1079,7 +1004,7 @@
                         <span class="s1">&#39;select&#39;</span><span class="p">:</span> <span class="n">listener_query</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span>
                         <span class="o">**</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="s1">&#39;predict_kwargs&#39;</span><span class="p">],</span>
                     <span class="p">},</span>
-                    <span class="n">method_name</span><span class="o">=</span><span class="s1">&#39;predict&#39;</span><span class="p">,</span>
+                    <span class="n">method_name</span><span class="o">=</span><span class="s1">&#39;predict_in_db&#39;</span><span class="p">,</span>
                     <span class="n">type_id</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">,</span>
                 <span class="p">),</span>
             <span class="p">)</span>
@@ -1096,14 +1021,14 @@
             <span class="n">model</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="n">identifier</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
             <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">download_content</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">()&#39;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.predict(</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.predict_in_db(</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">deps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dependencies_for_listener</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">dep</span> <span class="ow">in</span> <span class="n">deps</span><span class="p">:</span>
                 <span class="n">dep_model</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">dep_key</span> <span class="o">=</span> <span class="n">dep</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
                 <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dep_model</span><span class="si">}</span><span class="s1">.predict(</span><span class="si">{</span><span class="n">dep_key</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.predict(</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dep_model</span><span class="si">}</span><span class="s1">.predict_in_db(</span><span class="si">{</span><span class="n">dep_key</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.predict_in_db(</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span>
                 <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">self_hosted_vector_search</span><span class="p">:</span>
@@ -1142,7 +1067,7 @@
             <span class="n">model</span> <span class="o">=</span> <span class="n">vi</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">identifier</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">vi</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">key</span>
             <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.predict(</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">copy_vectors</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.predict_in_db(</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">copy_vectors</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">G</span>
@@ -1196,7 +1121,7 @@
         <span class="k">if</span> <span class="n">serialized</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">leaves</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">get_leaves</span><span class="p">()</span>
             <span class="n">leaves</span> <span class="o">=</span> <span class="n">leaves</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-            <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[</span><span class="n">leaf</span> <span class="k">for</span> <span class="n">leaf</span> <span class="ow">in</span> <span class="n">leaves</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">leaf</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">)]</span>
+            <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[</span><span class="n">leaf</span> <span class="k">for</span> <span class="n">leaf</span> <span class="ow">in</span> <span class="n">leaves</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">leaf</span><span class="p">,</span> <span class="p">(</span><span class="n">Artifact</span><span class="p">,</span> <span class="n">File</span><span class="p">))]</span>
             <span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">leaf</span> <span class="k">for</span> <span class="n">leaf</span> <span class="ow">in</span> <span class="n">leaves</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">leaf</span><span class="p">,</span> <span class="n">Component</span><span class="p">)]</span>
 
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
@@ -1427,6 +1352,57 @@
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected dict, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">outs</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">vi</span><span class="o">.</span><span class="n">get_nearest</span><span class="p">(</span><span class="n">like</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outs</span><span class="p">)</span></div>
+
+
+    <span class="c1"># TODO deprecate in favour of remote model calls</span>
+<div class="viewcode-block" id="Datalayer.predict">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.predict">[docs]</a>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="nb">input</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Document</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
+        <span class="n">context_select</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Select</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">context_key</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Document</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply model to input.</span>
+
+<span class="sd">        :param model_name: model identifier</span>
+<span class="sd">        :param input: input to be passed to the model.</span>
+<span class="sd">                      Must be possible to encode with registered datatypes</span>
+<span class="sd">        :param context_select: select query object to provide context</span>
+<span class="sd">        :param context_key: key to use to extract context from context_select</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">sources</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Document</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">context_select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="s1">&#39;context&#39;</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">params</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">context_select</span><span class="p">,</span> <span class="n">Select</span><span class="p">):</span>
+                <span class="n">context</span><span class="p">,</span> <span class="n">sources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_context</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">context_select</span><span class="p">,</span> <span class="n">context_key</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">context_select</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="n">context_select</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;context_select should be either Select or str&quot;</span><span class="p">)</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">context</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sources</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="s1">&#39;context&#39;</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_one</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict_one</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span> <span class="n">DataType</span><span class="p">):</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">output_schema</span><span class="p">,</span> <span class="n">Schema</span><span class="p">):</span>
+            <span class="c1"># TODO make Schema callable</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">output_schema</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;_base&#39;</span><span class="p">:</span> <span class="n">out</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="n">sources</span></div>
 
 
 <div class="viewcode-block" id="Datalayer.close">

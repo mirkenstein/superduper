@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -254,7 +256,7 @@
 <span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.utils</span> <span class="kn">import</span> <span class="n">get_output_table_name</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.local.artifacts</span> <span class="kn">import</span> <span class="n">FileSystemArtifactStore</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.sqlalchemy.metadata</span> <span class="kn">import</span> <span class="n">SQLAlchemyMetadata</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">APIModel</span><span class="p">,</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">APIModel</span><span class="p">,</span> <span class="n">ObjectModel</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.schema</span> <span class="kn">import</span> <span class="n">Schema</span>
 
 <span class="n">BASE64_PREFIX</span> <span class="o">=</span> <span class="s1">&#39;base64:&#39;</span>
@@ -311,7 +313,7 @@
 
 <div class="viewcode-block" id="IbisDataBackend.create_model_table_or_collection">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.create_model_table_or_collection">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_model_table_or_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Model</span><span class="p">,</span> <span class="n">APIModel</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">create_model_table_or_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">ObjectModel</span><span class="p">,</span> <span class="n">APIModel</span><span class="p">]):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
             <span class="s2">&quot;Model must have an encoder to create with the&quot;</span>
             <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> backend.&quot;</span>

@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -240,37 +242,44 @@
         </div>
         <article role="main">
           <h1>Source code for superduperdb.ext.openai.model</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">base64</span>
+<span></span><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
-<span class="kn">import</span> <span class="nn">aiohttp</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">tqdm</span>
+<span class="kn">from</span> <span class="nn">httpx</span> <span class="kn">import</span> <span class="n">ResponseNotRead</span>
 <span class="kn">from</span> <span class="nn">openai</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">APITimeoutError</span><span class="p">,</span>
-    <span class="n">AsyncOpenAI</span><span class="p">,</span>
     <span class="n">InternalServerError</span><span class="p">,</span>
     <span class="n">OpenAI</span> <span class="k">as</span> <span class="n">SyncOpenAI</span><span class="p">,</span>
     <span class="n">RateLimitError</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">openai._types</span> <span class="kn">import</span> <span class="n">NOT_GIVEN</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.data_backend</span> <span class="kn">import</span> <span class="n">IbisDataBackend</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.field_types</span> <span class="kn">import</span> <span class="n">dtype</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.query_dataset</span> <span class="kn">import</span> <span class="n">QueryDataset</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">APIModel</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">APIModel</span><span class="p">,</span> <span class="n">Inputs</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.vector_index</span> <span class="kn">import</span> <span class="n">sqlvector</span><span class="p">,</span> <span class="n">vector</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.compat</span> <span class="kn">import</span> <span class="n">cache</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.retry</span> <span class="kn">import</span> <span class="n">Retry</span>
 
-<span class="n">retry</span> <span class="o">=</span> <span class="n">Retry</span><span class="p">(</span><span class="n">exception_types</span><span class="o">=</span><span class="p">(</span><span class="n">RateLimitError</span><span class="p">,</span> <span class="n">InternalServerError</span><span class="p">,</span> <span class="n">APITimeoutError</span><span class="p">))</span>
+<span class="n">retry</span> <span class="o">=</span> <span class="n">Retry</span><span class="p">(</span>
+    <span class="n">exception_types</span><span class="o">=</span><span class="p">(</span>
+        <span class="n">RateLimitError</span><span class="p">,</span>
+        <span class="n">InternalServerError</span><span class="p">,</span>
+        <span class="n">APITimeoutError</span><span class="p">,</span>
+        <span class="n">ResponseNotRead</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
 
 
 <span class="nd">@cache</span>
+<span class="nd">@retry</span>
 <span class="k">def</span> <span class="nf">_available_models</span><span class="p">(</span><span class="n">skwargs</span><span class="p">):</span>
     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">skwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">SyncOpenAI</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="p">])</span>
@@ -282,7 +291,6 @@
 <span class="k">class</span> <span class="nc">_OpenAI</span><span class="p">(</span><span class="n">APIModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    :param client_kwargs: The kwargs to be passed to OpenAI</span>
-
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">client_kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
@@ -301,7 +309,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span> <span class="o">=</span> <span class="n">SyncOpenAI</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">client_kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">asyncClient</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">client_kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="s1">&#39;OPENAI_API_KEY&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="ow">and</span> <span class="p">(</span>
             <span class="s1">&#39;api_key&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_kwargs</span>
@@ -309,7 +316,19 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s1">&#39;OPENAI_API_KEY not available neither in environment vars &#39;</span>
                 <span class="s1">&#39;nor in `client_kwargs`&#39;</span>
-            <span class="p">)</span></div>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="_OpenAI.predict">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model._OpenAI.predict">[docs]</a>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">QueryDataset</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)):</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">dataset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">),</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">))</span>
+            <span class="p">]</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_predict_a_batch</span><span class="p">(</span><span class="n">batch</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+</div>
 
 
 
@@ -327,11 +346,17 @@
 
     <span class="n">shape</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">shapes</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;text-embedding-ada-002&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1536</span><span class="p">,)}</span>
+    <span class="n">signature</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;singleton&#39;</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Inputs</span><span class="p">([</span><span class="s1">&#39;input&#39;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shapes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">]</span>
 
 <div class="viewcode-block" id="OpenAIEmbedding.pre_create">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIEmbedding.pre_create">[docs]</a>
@@ -344,48 +369,22 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span> <span class="o">=</span> <span class="n">vector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="OpenAIEmbedding.predict_one">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIEmbedding.predict_one">[docs]</a>
     <span class="nd">@retry</span>
-    <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">e</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">embedding</span>
-
-    <span class="nd">@retry</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">e</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">asyncClient</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-            <span class="nb">input</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="nb">input</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">e</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">embedding</span>
+        <span class="k">return</span> <span class="n">e</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">embedding</span></div>
+
 
     <span class="nd">@retry</span>
-    <span class="k">def</span> <span class="nf">_predict_a_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">texts</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">embedding</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
-
-    <span class="nd">@retry</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_a_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">asyncClient</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-            <span class="nb">input</span><span class="o">=</span><span class="n">texts</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="k">def</span> <span class="nf">_predict_a_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="nb">input</span><span class="o">=</span><span class="n">texts</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">embedding</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">data</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_one</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">)):</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_predict_a_batch</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">out</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-        <span class="c1"># Note: we submit the async requests in serial to avoid rate-limiting</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">):</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_a_batch</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">out</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">embedding</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">data</span><span class="p">]</span></div>
 
 
 
@@ -398,9 +397,15 @@
 <span class="sd">    :param prompt: The prompt to use to seed the response.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">signature</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;singleton&#39;</span>
     <span class="vm">__doc__</span> <span class="o">=</span> <span class="vm">__doc__</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_openai_parameters</span><span class="o">=</span><span class="n">_OpenAI</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
 
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Inputs</span><span class="p">([</span><span class="s1">&#39;content&#39;</span><span class="p">,</span> <span class="s1">&#39;context&#39;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span>
@@ -418,53 +423,34 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="OpenAIChatCompletion.predict_one">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIChatCompletion.predict_one">[docs]</a>
     <span class="nd">@retry</span>
-    <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_prompt</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
                 <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;role&#39;</span><span class="p">:</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">X</span><span class="p">}],</span>
                 <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
-                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
 
-    <span class="nd">@retry</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_prompt</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="p">(</span>
-                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">asyncClient</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-                    <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;role&#39;</span><span class="p">:</span> <span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">X</span><span class="p">}],</span>
-                    <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
-                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-                <span class="p">)</span>
+
+<div class="viewcode-block" id="OpenAIChatCompletion.predict">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIChatCompletion.predict">[docs]</a>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">QueryDataset</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)):</span>
+            <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_input_type</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">dataset</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">signature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signature</span>
             <span class="p">)</span>
-            <span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
-        <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_predict</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
-        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_one</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_predict_one</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">X</span><span class="p">]</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
-        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">X</span><span class="p">]</span></div>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_one</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+</div>
 
 
 
@@ -478,10 +464,14 @@
 <span class="sd">    :param prompt: The prompt to use to seed the response.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">signature</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;singleton&#39;</span>
+
     <span class="vm">__doc__</span> <span class="o">=</span> <span class="vm">__doc__</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_openai_parameters</span><span class="o">=</span><span class="n">_OpenAI</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
 
     <span class="n">takes_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">response_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;b64_json&#39;</span>
 
 <div class="viewcode-block" id="OpenAIImageCreation.pre_create">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIImageCreation.pre_create">[docs]</a>
@@ -495,90 +485,42 @@
         <span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">prompt</span> <span class="o">+</span> <span class="n">X</span>
 
+<div class="viewcode-block" id="OpenAIImageCreation.predict_one">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIImageCreation.predict_one">[docs]</a>
     <span class="nd">@retry</span>
-    <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">X</span><span class="p">,</span>
-        <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">response_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_prompt</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">response_format</span> <span class="o">==</span> <span class="s1">&#39;b64_json&#39;</span><span class="p">:</span>
-            <span class="n">b64_json</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
-                    <span class="n">prompt</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">response_format</span><span class="o">=</span><span class="s1">&#39;b64_json&#39;</span>
-                <span class="p">)</span>
-                <span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="o">.</span><span class="n">b64_json</span>
+    <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_format</span> <span class="o">==</span> <span class="s1">&#39;b64_json&#39;</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+                <span class="n">prompt</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
+                <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span>
+                <span class="n">response_format</span><span class="o">=</span><span class="s1">&#39;b64_json&#39;</span><span class="p">,</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">b64_json</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">url</span>
-            <span class="k">return</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">content</span>
-
-    <span class="nd">@retry</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_one</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">X</span><span class="p">,</span>
-        <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">response_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_prompt</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">response_format</span> <span class="o">==</span> <span class="s1">&#39;b64_json&#39;</span><span class="p">:</span>
-            <span class="n">b64_json</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="p">(</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">asyncClient</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
-                        <span class="n">prompt</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">response_format</span><span class="o">=</span><span class="s1">&#39;b64_json&#39;</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="o">.</span><span class="n">b64_json</span>
-            <span class="p">)</span>
+            <span class="n">b64_json</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">b64_json</span>
+            <span class="k">assert</span> <span class="n">b64_json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">b64_json</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">asyncClient</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+                    <span class="n">prompt</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span>
+                <span class="p">)</span>
                 <span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="o">.</span><span class="n">url</span>
             <span class="p">)</span>
-            <span class="k">async</span> <span class="k">with</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-                <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">resp</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="k">await</span> <span class="n">resp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">content</span></div>
 
-    <span class="k">def</span> <span class="nf">_predict</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="n">response_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;response_format&#39;</span><span class="p">,</span> <span class="s1">&#39;b64_json&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
-        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_one</span><span class="p">(</span>
-                <span class="n">X</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">response_format</span><span class="o">=</span><span class="n">response_format</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_predict_one</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">response_format</span><span class="o">=</span><span class="n">response_format</span><span class="p">)</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">X</span>
-        <span class="p">]</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="n">response_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;response_format&#39;</span><span class="p">,</span> <span class="s1">&#39;b64_json&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
-        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span>
-                <span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">response_format</span><span class="o">=</span><span class="n">response_format</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<div class="viewcode-block" id="OpenAIImageCreation.predict">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIImageCreation.predict">[docs]</a>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">QueryDataset</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)):</span>
+            <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_input_type</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">dataset</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">signature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signature</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">response_format</span><span class="o">=</span><span class="n">response_format</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">X</span>
-        <span class="p">]</span></div>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_one</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+</div>
 
 
 
@@ -596,6 +538,8 @@
 
     <span class="n">takes_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">response_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;b64_json&#39;</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">_format_prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
@@ -609,127 +553,61 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;bytes&#39;</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="OpenAIImageEdit.predict_one">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIImageEdit.predict_one">[docs]</a>
     <span class="nd">@retry</span>
-    <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">image</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span>
-        <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">response_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mask</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">mask_png_path</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_prompt</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">mask_png_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">mask_png_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">mask</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask</span>
+        <span class="n">maybe_mask</span> <span class="o">=</span> <span class="n">mask</span> <span class="ow">or</span> <span class="n">NOT_GIVEN</span>
 
-        <span class="k">if</span> <span class="n">response_format</span> <span class="o">==</span> <span class="s1">&#39;b64_json&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_format</span> <span class="o">==</span> <span class="s1">&#39;b64_json&#39;</span><span class="p">:</span>
             <span class="n">b64_json</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">edit</span><span class="p">(</span>
                     <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+                    <span class="n">mask</span><span class="o">=</span><span class="n">maybe_mask</span><span class="p">,</span>
                     <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
-                    <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span>
+                    <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span>
                     <span class="n">response_format</span><span class="o">=</span><span class="s1">&#39;b64_json&#39;</span><span class="p">,</span>
-                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                    <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="o">.</span><span class="n">b64_json</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">b64_json</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">b64_json</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">edit</span><span class="p">(</span>
-                    <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                    <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+                    <span class="n">mask</span><span class="o">=</span><span class="n">maybe_mask</span><span class="p">,</span>
+                    <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
+                    <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span>
+                    <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="o">.</span><span class="n">url</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">content</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">content</span>
+        <span class="k">return</span> <span class="n">out</span></div>
 
-    <span class="nd">@retry</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_one</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">image</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span>
-        <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">response_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">mask_png_path</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_prompt</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">mask_png_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">mask_png_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">mask</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask</span>
-
-        <span class="k">if</span> <span class="n">response_format</span> <span class="o">==</span> <span class="s1">&#39;b64_json&#39;</span><span class="p">:</span>
-            <span class="n">b64_json</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="p">(</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">asyncClient</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">edit</span><span class="p">(</span>
-                        <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
-                        <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
-                        <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span>
-                        <span class="n">response_format</span><span class="o">=</span><span class="s1">&#39;b64_json&#39;</span><span class="p">,</span>
-                        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="o">.</span><span class="n">b64_json</span>
+<div class="viewcode-block" id="OpenAIImageEdit.predict">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIImageEdit.predict">[docs]</a>
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">QueryDataset</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)):</span>
+            <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_input_type</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">dataset</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">signature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signature</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">b64_json</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="p">(</span>
-                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">asyncClient</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">edit</span><span class="p">(</span>
-                        <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="o">.</span><span class="n">url</span>
-            <span class="p">)</span>
-            <span class="k">async</span> <span class="k">with</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-                <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">resp</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="k">await</span> <span class="n">resp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_predict</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="n">response_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;response_format&#39;</span><span class="p">,</span> <span class="s1">&#39;b64_json&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
-        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_one</span><span class="p">(</span>
-                <span class="n">image</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">response_format</span><span class="o">=</span><span class="n">response_format</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_predict_one</span><span class="p">(</span>
-                <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">response_format</span><span class="o">=</span><span class="n">response_format</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">X</span>
-        <span class="p">]</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="n">response_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;response_format&#39;</span><span class="p">,</span> <span class="s1">&#39;b64_json&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
-        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span>
-                <span class="n">image</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">response_format</span><span class="o">=</span><span class="n">response_format</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span>
-                <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">response_format</span><span class="o">=</span><span class="n">response_format</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-            <span class="p">)</span>
-            <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">X</span>
-        <span class="p">]</span></div>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_one</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+</div>
 
 
 
@@ -756,12 +634,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="OpenAIAudioTranscription._predict_one">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranscription._predict_one">[docs]</a>
+<div class="viewcode-block" id="OpenAIAudioTranscription.predict_one">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranscription.predict_one">[docs]</a>
     <span class="nd">@retry</span>
-    <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="s2">&quot;Converts a file-like Audio recording to text.&quot;</span>
         <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
@@ -769,26 +645,7 @@
             <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span>
             <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
             <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">text</span></div>
-
-
-<div class="viewcode-block" id="OpenAIAudioTranscription._apredict_one">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranscription._apredict_one">[docs]</a>
-    <span class="nd">@retry</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_one</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="s2">&quot;Converts a file-like Audio recording to text.&quot;</span>
-        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">asyncClient</span><span class="o">.</span><span class="n">audio</span><span class="o">.</span><span class="n">transcriptions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-                <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span>
-                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
-                <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
-                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">text</span></div>
 
 
@@ -799,57 +656,12 @@
         <span class="s2">&quot;Converts multiple file-like Audio recordings to text.&quot;</span>
         <span class="n">resps</span> <span class="o">=</span> <span class="p">[</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span><span class="o">.</span><span class="n">audio</span><span class="o">.</span><span class="n">transcriptions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-                <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span>
         <span class="p">]</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">resps</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="OpenAIAudioTranscription._apredict_a_batch">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranscription._apredict_a_batch">[docs]</a>
-    <span class="nd">@retry</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_a_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="s2">&quot;Converts multiple file-like Audio recordings to text.&quot;</span>
-        <span class="n">resps</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
-            <span class="o">*</span><span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">asyncClient</span><span class="o">.</span><span class="n">audio</span><span class="o">.</span><span class="n">transcriptions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-                    <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-                <span class="p">)</span>
-                <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">resps</span><span class="p">]</span></div>
-
-
-    <span class="k">def</span> <span class="nf">_predict</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
-        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_one</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">)):</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_predict_a_batch</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">out</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
-        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="n">list_of_lists</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
-            <span class="o">*</span><span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_a_batch</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">)</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">list_of_lists</span><span class="p">))</span></div>
+</div>
 
 
 
@@ -863,10 +675,13 @@
 <span class="sd">    :param prompt: The prompt to guide the model&#39;s style. Should contain ``{context}``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">signature</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;singleton&#39;</span>
+
     <span class="vm">__doc__</span> <span class="o">=</span> <span class="vm">__doc__</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_openai_parameters</span><span class="o">=</span><span class="n">_OpenAI</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{context}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="n">takes_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
 
 <div class="viewcode-block" id="OpenAIAudioTranslation.pre_create">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranslation.pre_create">[docs]</a>
@@ -876,11 +691,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="OpenAIAudioTranslation._predict_one">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranslation._predict_one">[docs]</a>
+<div class="viewcode-block" id="OpenAIAudioTranslation.predict_one">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranslation.predict_one">[docs]</a>
     <span class="nd">@retry</span>
-    <span class="k">def</span> <span class="nf">_predict_one</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="s2">&quot;Translates a file-like Audio recording to English.&quot;</span>
         <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -890,26 +707,7 @@
                 <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span>
                 <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
                 <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
-                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">text</span></div>
-
-
-<div class="viewcode-block" id="OpenAIAudioTranslation._apredict_one">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranslation._apredict_one">[docs]</a>
-    <span class="nd">@retry</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_one</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="s2">&quot;Translates a file-like Audio recording to English.&quot;</span>
-        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">asyncClient</span><span class="o">.</span><span class="n">audio</span><span class="o">.</span><span class="n">translations</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-                <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span>
-                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
-                <span class="n">prompt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
-                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">)</span><span class="o">.</span><span class="n">text</span></div>
 
@@ -917,61 +715,17 @@
 <div class="viewcode-block" id="OpenAIAudioTranslation._predict_a_batch">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranslation._predict_a_batch">[docs]</a>
     <span class="nd">@retry</span>
-    <span class="k">def</span> <span class="nf">_predict_a_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_predict_a_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">]):</span>
         <span class="s2">&quot;Translates multiple file-like Audio recordings to English.&quot;</span>
+        <span class="c1"># TODO use async or threads</span>
         <span class="n">resps</span> <span class="o">=</span> <span class="p">[</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">syncClient</span><span class="o">.</span><span class="n">audio</span><span class="o">.</span><span class="n">translations</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-                <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span>
         <span class="p">]</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">resps</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="OpenAIAudioTranslation._apredict_a_batch">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.openai.html#superduperdb.ext.openai.model.OpenAIAudioTranslation._apredict_a_batch">[docs]</a>
-    <span class="nd">@retry</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict_a_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">BinaryIO</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="s2">&quot;Translates multiple file-like Audio recordings to English.&quot;</span>
-        <span class="n">resps</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
-            <span class="o">*</span><span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">asyncClient</span><span class="o">.</span><span class="n">audio</span><span class="o">.</span><span class="n">translations</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-                    <span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-                <span class="p">)</span>
-                <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">resps</span><span class="p">]</span></div>
-
-
-    <span class="k">def</span> <span class="nf">_predict</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
-        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_predict_one</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">)):</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_predict_a_batch</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">out</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_apredict</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">one</span><span class="p">,</span> <span class="s1">&#39;context only works with ``one=True``&#39;</span>
-        <span class="k">if</span> <span class="n">one</span><span class="p">:</span>
-            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_one</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-        <span class="n">list_of_lists</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
-            <span class="o">*</span><span class="p">[</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_apredict_a_batch</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">)</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">list_of_lists</span><span class="p">))</span></div>
+</div>
 
 </pre></div>
         </article>

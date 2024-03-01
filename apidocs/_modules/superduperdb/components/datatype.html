@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -243,20 +245,43 @@
 <span></span><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
 
 <span class="kn">import</span> <span class="nn">dill</span>
+<span class="kn">from</span> <span class="nn">overrides</span> <span class="kn">import</span> <span class="n">override</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.base.artifact</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ArtifactSavingError</span><span class="p">,</span>
+    <span class="n">_construct_file_id_from_uri</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.config</span> <span class="kn">import</span> <span class="n">BytesEncoding</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.leaf</span> <span class="kn">import</span> <span class="n">Leaf</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">Component</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">Component</span><span class="p">,</span> <span class="n">ensure_initialized</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.annotations</span> <span class="kn">import</span> <span class="n">public_api</span>
 
 <span class="n">Decode</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">bytes</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>
 <span class="n">Encode</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span> <span class="nb">bytes</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="random_sha1">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.random_sha1">[docs]</a>
+<span class="k">def</span> <span class="nf">random_sha1</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate random sha1 values</span>
+<span class="sd">    Can be used to generate file_id and other values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">random_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span>
+    <span class="n">sha1</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">()</span>
+    <span class="n">sha1</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">random_data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sha1</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+
 
 
 <div class="viewcode-block" id="pickle_encode">
@@ -284,6 +309,15 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.dill_decode">[docs]</a>
 <span class="k">def</span> <span class="nf">dill_decode</span><span class="p">(</span><span class="n">b</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="file_check">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.file_check">[docs]</a>
+<span class="k">def</span> <span class="nf">file_check</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; does not exist&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span></div>
 
 
 
@@ -354,31 +388,42 @@
     <span class="n">decoder</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span> <span class="o">=</span> <span class="n">dill_decode</span>
     <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">artifact</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">reference</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">directory</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">encodable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;encodable&#39;</span>
+    <span class="n">bytes_encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">CFG</span><span class="o">.</span><span class="n">bytes_encoding</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encodable_cls</span> <span class="o">=</span> <span class="n">_ENCODABLES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">encodable</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_takes_x</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encodable_cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Encodable&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Encodable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">)</span></div>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;_BaseEncodable&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_takes_x</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">encodable_cls</span><span class="p">(</span><span class="n">datatype</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">encodable_cls</span><span class="p">(</span><span class="n">datatype</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DataType.encode_data">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.DataType.encode_data">[docs]</a>
+    <span class="nd">@ensure_initialized</span>
+    <span class="k">def</span> <span class="nf">encode_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">info</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span></div>
 
 
+<div class="viewcode-block" id="DataType.decode_data">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.DataType.decode_data">[docs]</a>
+    <span class="nd">@ensure_initialized</span>
+    <span class="k">def</span> <span class="nf">decode_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">info</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="n">info</span><span class="p">)</span></div>
+</div>
 
-<span class="n">pickle_serializer</span> <span class="o">=</span> <span class="n">DataType</span><span class="p">(</span>
-    <span class="s1">&#39;pickle&#39;</span><span class="p">,</span> <span class="n">encoder</span><span class="o">=</span><span class="n">pickle_encode</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">pickle_decode</span><span class="p">,</span> <span class="n">artifact</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
-<span class="n">dill_serializer</span> <span class="o">=</span> <span class="n">DataType</span><span class="p">(</span>
-    <span class="s1">&#39;dill&#39;</span><span class="p">,</span> <span class="n">encoder</span><span class="o">=</span><span class="n">dill_encode</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">dill_decode</span><span class="p">,</span> <span class="n">artifact</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
-<span class="n">torch_serializer</span> <span class="o">=</span> <span class="n">DataType</span><span class="p">(</span>
-    <span class="s1">&#39;torch&#39;</span><span class="p">,</span> <span class="n">encoder</span><span class="o">=</span><span class="n">torch_encode</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">torch_decode</span><span class="p">,</span> <span class="n">artifact</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
-<span class="n">serializers</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;pickle&#39;</span><span class="p">:</span> <span class="n">pickle_serializer</span><span class="p">,</span>
-    <span class="s1">&#39;dill&#39;</span><span class="p">:</span> <span class="n">dill_serializer</span><span class="p">,</span>
-    <span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="n">torch_serializer</span><span class="p">,</span>
-<span class="p">}</span>
 
 
 <div class="viewcode-block" id="encode_torch_state_dict">
@@ -421,18 +466,18 @@
 
 
 
-<div class="viewcode-block" id="LazyLoader">
-<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.LazyLoader">[docs]</a>
-<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">LazyLoader</span><span class="p">:</span>
-    <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span></div>
+<span class="k">def</span> <span class="nf">_find_descendants</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="n">descendants</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">subclass</span> <span class="ow">in</span> <span class="n">descendants</span><span class="p">:</span>
+        <span class="n">descendants</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_find_descendants</span><span class="p">(</span><span class="n">subclass</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">descendants</span>
 
 
+<div class="viewcode-block" id="_BaseEncodable">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb._BaseEncodable">[docs]</a>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">_BaseEncodable</span><span class="p">(</span><span class="n">Leaf</span><span class="p">):</span>
 
-<div class="viewcode-block" id="Encodable">
-<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Encodable">[docs]</a>
-<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
-<span class="k">class</span> <span class="nc">Encodable</span><span class="p">(</span><span class="n">Leaf</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Data variable wrapping encode-able item. Encoding is controlled by the referred</span>
 <span class="sd">    to ``Encoder`` instance.</span>
@@ -442,10 +487,16 @@
 <span class="sd">    :param uri: URI of the content, if any</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">leaf_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;encodable&#39;</span>
+    <span class="n">file_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">datatype</span><span class="p">:</span> <span class="n">DataType</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">uri</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="o">=</span> <span class="n">_construct_file_id_from_uri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^[a-z]{0,5}://&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;file://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="si">}</span><span class="s1">&#39;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -459,70 +510,444 @@
     <span class="k">def</span> <span class="nf">reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">reference</span>
 
+<div class="viewcode-block" id="_BaseEncodable.unpack">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb._BaseEncodable.unpack">[docs]</a>
+    <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unpack the content of the `Encodable`</span>
+
+<span class="sd">        :param db: `Datalayer` instance to assist with</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="_BaseEncodable.get_encodable_cls">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb._BaseEncodable.get_encodable_cls">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_encodable_cls</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the subclass of the _BaseEncodable with the given name.</span>
+<span class="sd">        All the registered subclasses must be subclasses of the _BaseEncodable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">sub_cls</span> <span class="ow">in</span> <span class="n">_find_descendants</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">sub_cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="n">sub_cls</span>
+        <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No subclass with name &quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; found.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The default class must be a subclass of the _BaseEncodable.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">default</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_get_object</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="_BaseEncodable.decode">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb._BaseEncodable.decode">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;_BaseEncodable&#39;</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Encodable">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Encodable">[docs]</a>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">Encodable</span><span class="p">(</span><span class="n">_BaseEncodable</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">leaf_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;encodable&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_encode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bytes_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">encode_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">sha1</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">bytes_</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">bytes_</span><span class="p">,</span> <span class="n">sha1</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_object</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bytes&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">db</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">serializers</span>
+
+                <span class="n">datatype</span> <span class="o">=</span> <span class="n">serializers</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;You specified a serializer which doesn</span><span class="se">\&#39;</span><span class="s1">t have a&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39; default value: </span><span class="si">{</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;datatype&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">datatype</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]]</span>
+        <span class="nb">object</span> <span class="o">=</span> <span class="n">datatype</span><span class="o">.</span><span class="n">decode_data</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">],</span> <span class="n">info</span><span class="o">=</span><span class="n">datatype</span><span class="o">.</span><span class="n">info</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">object</span>
+
 <div class="viewcode-block" id="Encodable.encode">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Encodable.encode">[docs]</a>
-    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">bytes_encoding</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">BytesEncoding</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">(),</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]]:</span>
-        <span class="kn">from</span> <span class="nn">superduperdb.backends.base.artifact</span> <span class="kn">import</span> <span class="n">ArtifactSavingError</span>
-
-        <span class="k">def</span> <span class="nf">_encode</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">bytes_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ArtifactSavingError</span> <span class="kn">from</span> <span class="nn">e</span>
-            <span class="n">sha1</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">bytes_</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">())</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="n">CFG</span><span class="o">.</span><span class="n">bytes_encoding</span> <span class="o">==</span> <span class="n">BytesEncoding</span><span class="o">.</span><span class="n">BASE64</span>
-                <span class="ow">or</span> <span class="n">bytes_encoding</span> <span class="o">==</span> <span class="n">BytesEncoding</span><span class="o">.</span><span class="n">BASE64</span>
-            <span class="p">):</span>
-                <span class="n">bytes_</span> <span class="o">=</span> <span class="n">to_base64</span><span class="p">(</span><span class="n">bytes_</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">bytes_</span><span class="p">,</span> <span class="n">sha1</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">encoder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
-
-        <span class="n">bytes_</span><span class="p">,</span> <span class="n">sha1</span> <span class="o">=</span> <span class="n">_encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">()):</span>
+        <span class="n">bytes_</span><span class="p">,</span> <span class="n">sha1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encode</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">bytes_encoding</span> <span class="o">==</span> <span class="n">BytesEncoding</span><span class="o">.</span><span class="n">BASE64</span><span class="p">:</span>
+            <span class="n">bytes_</span> <span class="o">=</span> <span class="n">to_base64</span><span class="p">(</span><span class="n">bytes_</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;_content&#39;</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s1">&#39;bytes&#39;</span><span class="p">:</span> <span class="n">bytes_</span><span class="p">,</span>
                 <span class="s1">&#39;datatype&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
-                <span class="s1">&#39;leaf_type&#39;</span><span class="p">:</span> <span class="s1">&#39;encodable&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;leaf_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">leaf_type</span><span class="p">,</span>
                 <span class="s1">&#39;sha1&#39;</span><span class="p">:</span> <span class="n">sha1</span><span class="p">,</span>
                 <span class="s1">&#39;uri&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span>
+                <span class="s1">&#39;file_id&#39;</span><span class="p">:</span> <span class="n">sha1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Encodable.init">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Encodable.init">[docs]</a>
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="Encodable.decode">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Encodable.decode">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="n">datatype</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;datatype&#39;</span><span class="p">]]</span>
-        <span class="c1"># TODO tidy up this logic</span>
-        <span class="k">if</span> <span class="n">datatype</span><span class="o">.</span><span class="n">artifact</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">datatype</span><span class="o">.</span><span class="n">reference</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">reference</span><span class="p">:</span>
-            <span class="nb">object</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">load_artifact</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="n">datatype</span><span class="o">.</span><span class="n">artifact</span> <span class="ow">and</span> <span class="n">datatype</span><span class="o">.</span><span class="n">reference</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Encodable</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">datatype</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;uri&#39;</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="s1">&#39;bytes&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">reference</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="p">(</span>
-                <span class="s1">&#39;uri&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">]</span>
-            <span class="p">),</span> <span class="s1">&#39;If load by reference, need a valid URI for data, found &quot;None&quot;&#39;</span>
-            <span class="k">return</span> <span class="n">Encodable</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">datatype</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;uri&#39;</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">object</span> <span class="o">=</span> <span class="n">datatype</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;bytes&#39;</span><span class="p">],</span> <span class="n">info</span><span class="o">=</span><span class="n">datatype</span><span class="o">.</span><span class="n">info</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Encodable</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Encodable&#39;</span><span class="p">:</span>
+        <span class="nb">object</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_object</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">x</span><span class="o">=</span><span class="nb">object</span><span class="p">,</span>
-            <span class="n">datatype</span><span class="o">=</span><span class="n">datatype</span><span class="p">,</span>
+            <span class="n">datatype</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;datatype&#39;</span><span class="p">]],</span>
             <span class="n">uri</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;uri&#39;</span><span class="p">],</span>
+            <span class="n">file_id</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_id&#39;</span><span class="p">),</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Empty">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Empty">[docs]</a>
+<span class="k">class</span> <span class="nc">Empty</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;EMPTY&gt;&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="Native">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Native">[docs]</a>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">Native</span><span class="p">(</span><span class="n">_BaseEncodable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Native data supported by underlying database</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">leaf_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;native&#39;</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_object</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="Native.encode">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Native.encode">[docs]</a>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">()):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="Native.decode">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Native.decode">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">r</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Artifact">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Artifact">[docs]</a>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">Artifact</span><span class="p">(</span><span class="n">_BaseEncodable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data to be saved on disk/ in the artifact-store</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">leaf_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;artifact&#39;</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">artifact</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">bytes_encoding</span> <span class="o">==</span> <span class="n">BytesEncoding</span><span class="o">.</span><span class="n">BASE64</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ArtifactSavingError</span><span class="p">(</span><span class="s1">&#39;BASE64 not supported on disk!&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_encode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bytes_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">encode_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">sha1</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">bytes_</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">bytes_</span><span class="p">,</span> <span class="n">sha1</span>
+
+<div class="viewcode-block" id="Artifact.encode">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Artifact.encode">[docs]</a>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">()):</span>
+        <span class="n">bytes_</span><span class="p">,</span> <span class="n">sha1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_encode</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">bytes_encoding</span> <span class="o">==</span> <span class="n">BytesEncoding</span><span class="o">.</span><span class="n">BASE64</span><span class="p">:</span>
+            <span class="n">bytes_</span> <span class="o">=</span> <span class="n">to_base64</span><span class="p">(</span><span class="n">bytes_</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;_content&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;bytes&#39;</span><span class="p">:</span> <span class="n">bytes_</span><span class="p">,</span>
+                <span class="s1">&#39;datatype&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="s1">&#39;leaf_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">leaf_type</span><span class="p">,</span>
+                <span class="s1">&#39;sha1&#39;</span><span class="p">:</span> <span class="n">sha1</span><span class="p">,</span>
+                <span class="s1">&#39;uri&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span>
+                <span class="s1">&#39;file_id&#39;</span><span class="p">:</span> <span class="n">sha1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Artifact.init">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Artifact.init">[docs]</a>
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_object</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">datatype</span><span class="p">,</span> <span class="n">uri</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">load_artifact</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;file_id&#39;</span><span class="p">:</span> <span class="n">file_id</span><span class="p">,</span>
+                <span class="s1">&#39;datatype&#39;</span><span class="p">:</span> <span class="n">datatype</span><span class="p">,</span>
+                <span class="s1">&#39;uri&#39;</span><span class="p">:</span> <span class="n">uri</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="Artifact.unpack">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Artifact.unpack">[docs]</a>
+    <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unpack the content of the `Encodable`</span>
+
+<span class="sd">        :param db: `Datalayer` instance to assist with</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="Artifact.save">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Artifact.save">[docs]</a>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifact_store</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">artifact_store</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">()[</span><span class="s1">&#39;_content&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;file_id&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Artifact.decode">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Artifact.decode">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Artifact&#39;</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_object</span><span class="p">(</span>
+            <span class="n">db</span><span class="p">,</span> <span class="n">file_id</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;file_id&#39;</span><span class="p">],</span> <span class="n">datatype</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">],</span> <span class="n">uri</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;uri&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">datatype</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]],</span>
+            <span class="n">uri</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;uri&#39;</span><span class="p">],</span>
+            <span class="n">file_id</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_id&#39;</span><span class="p">),</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="LazyArtifact">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.LazyArtifact">[docs]</a>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">LazyArtifact</span><span class="p">(</span><span class="n">Artifact</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data to be saved on disk/ in the artifact-store</span>
+<span class="sd">    and loaded only when needed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">leaf_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;lazy_artifact&#39;</span>
+    <span class="n">artifact</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">bytes_encoding</span> <span class="o">==</span> <span class="n">BytesEncoding</span><span class="o">.</span><span class="n">BASE64</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ArtifactSavingError</span><span class="p">(</span><span class="s1">&#39;BASE64 not supported on disk!&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LazyArtifact.init">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.LazyArtifact.init">[docs]</a>
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">Empty</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">(</span>
+                <span class="n">db</span><span class="p">,</span>
+                <span class="n">file_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_id</span><span class="p">,</span>
+                <span class="n">datatype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="n">uri</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LazyArtifact.encode">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.LazyArtifact.encode">[docs]</a>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">()):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">leaf_types_to_keep</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LazyArtifact.unpack">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.LazyArtifact.unpack">[docs]</a>
+    <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unpack the content of the `Encodable`</span>
+
+<span class="sd">        :param db: `Datalayer` instance to assist with</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="LazyArtifact.save">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.LazyArtifact.save">[docs]</a>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifact_store</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">artifact_store</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">()[</span><span class="s1">&#39;_content&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;file_id&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="LazyArtifact.decode">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.LazyArtifact.decode">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;LazyArtifact&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">Empty</span><span class="p">(),</span>  <span class="c1"># this is to enable lazy loading</span>
+            <span class="n">datatype</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;datatype&#39;</span><span class="p">]],</span>
+            <span class="n">uri</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;uri&#39;</span><span class="p">],</span>
+            <span class="n">file_id</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_id&#39;</span><span class="p">),</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="File">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.File">[docs]</a>
+<span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">File</span><span class="p">(</span><span class="n">_BaseEncodable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data to be saved on disk and passed</span>
+<span class="sd">    as a file reference</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">leaf_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;file&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span> <span class="o">=</span> <span class="n">random_sha1</span><span class="p">()</span>
+
+<div class="viewcode-block" id="File.init">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.File.init">[docs]</a>
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">_load_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;file://</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s1">&#39;</span></div>
+
+
+<div class="viewcode-block" id="File.unpack">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.File.unpack">[docs]</a>
+    <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;file://&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^[a-z]{0,5}://&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">uri</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_object</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="File.encode">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.File.encode">[docs]</a>
+    <span class="nd">@override</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">()):</span>
+        <span class="n">dc</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;_content&#39;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s1">&#39;datatype&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+                <span class="s1">&#39;leaf_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">leaf_type</span><span class="p">,</span>
+                <span class="s1">&#39;uri&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span>
+                <span class="s1">&#39;file_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_id</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="File.decode">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.File.decode">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;File&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">datatype</span><span class="o">=</span><span class="n">db</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;datatype&#39;</span><span class="p">]],</span>
+            <span class="n">uri</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;uri&#39;</span><span class="p">],</span>
+            <span class="n">file_id</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;file_id&#39;</span><span class="p">],</span>
         <span class="p">)</span></div>
 </div>
 
 
 
 <span class="n">Encoder</span> <span class="o">=</span> <span class="n">DataType</span>
+
+
+<span class="n">_ENCODABLES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;encodable&#39;</span><span class="p">:</span> <span class="n">Encodable</span><span class="p">,</span>
+    <span class="s1">&#39;artifact&#39;</span><span class="p">:</span> <span class="n">Artifact</span><span class="p">,</span>
+    <span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="n">File</span><span class="p">,</span>
+    <span class="s1">&#39;native&#39;</span><span class="p">:</span> <span class="n">Native</span><span class="p">,</span>
+    <span class="s1">&#39;lazy_artifact&#39;</span><span class="p">:</span> <span class="n">LazyArtifact</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="n">pickle_serializer</span> <span class="o">=</span> <span class="n">DataType</span><span class="p">(</span>
+    <span class="s1">&#39;pickle&#39;</span><span class="p">,</span>
+    <span class="n">encoder</span><span class="o">=</span><span class="n">pickle_encode</span><span class="p">,</span>
+    <span class="n">decoder</span><span class="o">=</span><span class="n">pickle_decode</span><span class="p">,</span>
+    <span class="n">encodable</span><span class="o">=</span><span class="s1">&#39;artifact&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">pickle_lazy</span> <span class="o">=</span> <span class="n">DataType</span><span class="p">(</span>
+    <span class="s1">&#39;pickle&#39;</span><span class="p">,</span>
+    <span class="n">encoder</span><span class="o">=</span><span class="n">pickle_encode</span><span class="p">,</span>
+    <span class="n">decoder</span><span class="o">=</span><span class="n">pickle_decode</span><span class="p">,</span>
+    <span class="n">encodable</span><span class="o">=</span><span class="s1">&#39;lazy_artifact&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">dill_serializer</span> <span class="o">=</span> <span class="n">DataType</span><span class="p">(</span>
+    <span class="s1">&#39;dill&#39;</span><span class="p">,</span>
+    <span class="n">encoder</span><span class="o">=</span><span class="n">dill_encode</span><span class="p">,</span>
+    <span class="n">decoder</span><span class="o">=</span><span class="n">dill_decode</span><span class="p">,</span>
+    <span class="n">encodable</span><span class="o">=</span><span class="s1">&#39;artifact&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">dill_lazy</span> <span class="o">=</span> <span class="n">DataType</span><span class="p">(</span>
+    <span class="s1">&#39;dill&#39;</span><span class="p">,</span>
+    <span class="n">encoder</span><span class="o">=</span><span class="n">dill_encode</span><span class="p">,</span>
+    <span class="n">decoder</span><span class="o">=</span><span class="n">dill_decode</span><span class="p">,</span>
+    <span class="n">encodable</span><span class="o">=</span><span class="s1">&#39;lazy_artifact&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">torch_serializer</span> <span class="o">=</span> <span class="n">DataType</span><span class="p">(</span>
+    <span class="s1">&#39;torch&#39;</span><span class="p">,</span>
+    <span class="n">encoder</span><span class="o">=</span><span class="n">torch_encode</span><span class="p">,</span>
+    <span class="n">decoder</span><span class="o">=</span><span class="n">torch_decode</span><span class="p">,</span>
+    <span class="n">encodable</span><span class="o">=</span><span class="s1">&#39;lazy_artifact&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">file_serializer</span> <span class="o">=</span> <span class="n">DataType</span><span class="p">(</span>
+    <span class="s1">&#39;file&#39;</span><span class="p">,</span>
+    <span class="n">encoder</span><span class="o">=</span><span class="n">file_check</span><span class="p">,</span>
+    <span class="n">decoder</span><span class="o">=</span><span class="n">file_check</span><span class="p">,</span>
+    <span class="n">encodable</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">serializers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;pickle&#39;</span><span class="p">:</span> <span class="n">pickle_serializer</span><span class="p">,</span>
+    <span class="s1">&#39;dill&#39;</span><span class="p">:</span> <span class="n">dill_serializer</span><span class="p">,</span>
+    <span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="n">torch_serializer</span><span class="p">,</span>
+    <span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="n">file_serializer</span><span class="p">,</span>
+<span class="p">}</span>
 </pre></div>
         </article>
       </div>

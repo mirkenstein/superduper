@@ -180,8 +180,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../source/superduperdb.components.html">superduperdb.components package</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.ext.html">superduperdb.ext package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of superduperdb.ext package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.anthropic.html">superduperdb.ext.anthropic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.auto.html">superduperdb.ext.auto package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.cohere.html">superduperdb.ext.cohere package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.jina.html">superduperdb.ext.jina package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llamacpp.html">superduperdb.ext.llamacpp package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.llm.html">superduperdb.ext.llm package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.numpy.html">superduperdb.ext.numpy package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.ext.openai.html">superduperdb.ext.openai package</a></li>
@@ -241,21 +243,23 @@
         <article role="main">
           <h1>Source code for superduperdb.base.document</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 
 <span class="kn">from</span> <span class="nn">bson.objectid</span> <span class="kn">import</span> <span class="n">ObjectId</span>
 
-<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span>
-<span class="kn">from</span> <span class="nn">superduperdb.backends.base.artifact</span> <span class="kn">import</span> <span class="n">_construct_file_id_from_uri</span>
-<span class="kn">from</span> <span class="nn">superduperdb.base.config</span> <span class="kn">import</span> <span class="n">BytesEncoding</span>
-<span class="kn">from</span> <span class="nn">superduperdb.base.leaf</span> <span class="kn">import</span> <span class="n">Leaf</span>
+<span class="kn">from</span> <span class="nn">superduperdb.base.leaf</span> <span class="kn">import</span> <span class="n">Leaf</span><span class="p">,</span> <span class="n">find_leaf_cls</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">Component</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">DataType</span><span class="p">,</span> <span class="n">Encodable</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_ENCODABLES</span><span class="p">,</span>
+    <span class="n">DataType</span><span class="p">,</span>
+    <span class="n">Encodable</span><span class="p">,</span>
+    <span class="n">_BaseEncodable</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.special_dicts</span> <span class="kn">import</span> <span class="n">MongoStyleDict</span>
 
 <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
     <span class="kn">from</span> <span class="nn">superduperdb.components.schema</span> <span class="kn">import</span> <span class="n">Schema</span>
 
 
@@ -265,9 +269,9 @@
 <span class="n">_OUTPUTS_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;_outputs&#39;</span>
 <span class="n">_LEAF_TYPES</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;component&#39;</span><span class="p">:</span> <span class="n">Component</span><span class="p">,</span>
-    <span class="s1">&#39;encodable&#39;</span><span class="p">:</span> <span class="n">Encodable</span><span class="p">,</span>
     <span class="s1">&#39;serializable&#39;</span><span class="p">:</span> <span class="n">Serializable</span><span class="p">,</span>
 <span class="p">}</span>
+<span class="n">_LEAF_TYPES</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_ENCODABLES</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Document">
@@ -288,13 +292,11 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">schema</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Schema&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Type</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
-        <span class="n">bytes_encoding</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">BytesEncoding</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Leaf</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Make a copy of the content with all the Leaves encoded&quot;&quot;&quot;</span>
-        <span class="n">bytes_encoding</span> <span class="o">=</span> <span class="n">bytes_encoding</span> <span class="ow">or</span> <span class="n">CFG</span><span class="o">.</span><span class="n">bytes_encoding</span>
         <span class="k">if</span> <span class="n">schema</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_encode_with_schema</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">schema</span><span class="p">,</span> <span class="n">bytes_encoding</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_encode</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">bytes_encoding</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">_encode_with_schema</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">schema</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_encode</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">leaf_types_to_keep</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Document.get_leaves">
@@ -345,12 +347,9 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span>
         <span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span>
-        <span class="n">db</span><span class="p">,</span>
-        <span class="n">bytes_encoding</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">BytesEncoding</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">reference</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Datalayer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-        <span class="n">bytes_encoding</span> <span class="o">=</span> <span class="n">bytes_encoding</span> <span class="ow">or</span> <span class="n">CFG</span><span class="o">.</span><span class="n">bytes_encoding</span>
-        <span class="n">decoded</span> <span class="o">=</span> <span class="n">_decode</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">db</span><span class="p">,</span> <span class="n">bytes_encoding</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">reference</span><span class="p">)</span>
+        <span class="n">decoded</span> <span class="o">=</span> <span class="n">_decode</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">decoded</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">decoded</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">decoded</span></div>
@@ -361,13 +360,12 @@
 
 <div class="viewcode-block" id="Document.unpack">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.Document.unpack">[docs]</a>
-    <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the content, but with any encodables replacecs by their contents&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s1">&#39;_base&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;_base&#39;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_unpack</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">leaves_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the content, but with any encodables replaced by their contents&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">leaves_to_keep</span><span class="o">=</span><span class="n">leaves_to_keep</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;_base&#39;</span> <span class="ow">in</span> <span class="n">out</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;_base&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">out</span></div>
 </div>
 
 
@@ -390,7 +388,8 @@
             <span class="n">keys</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">k</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sub_keys</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">keys</span><span class="p">,</span> <span class="n">leaves</span>
     <span class="k">if</span> <span class="n">leaf_type</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">_LEAF_TYPES</span><span class="p">[</span><span class="n">leaf_type</span><span class="p">]):</span>
+        <span class="n">leaf_cls</span> <span class="o">=</span> <span class="n">_LEAF_TYPES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">leaf_type</span><span class="p">)</span> <span class="ow">or</span> <span class="n">find_leaf_cls</span><span class="p">(</span><span class="n">leaf_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">leaf_cls</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">r</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[],</span> <span class="p">[]</span>
@@ -404,23 +403,15 @@
 <span class="k">def</span> <span class="nf">_decode</span><span class="p">(</span>
     <span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span>
     <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">bytes_encoding</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">BytesEncoding</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">reference</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-    <span class="n">bytes_encoding</span> <span class="o">=</span> <span class="n">bytes_encoding</span> <span class="ow">or</span> <span class="n">CFG</span><span class="o">.</span><span class="n">bytes_encoding</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;_content&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_LEAF_TYPES</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;leaf_type&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
-            <span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">reference</span>
-        <span class="p">)</span>
+        <span class="n">leaf_type</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;leaf_type&#39;</span><span class="p">]</span>
+        <span class="n">leaf_cls</span> <span class="o">=</span> <span class="n">_LEAF_TYPES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">leaf_type</span><span class="p">)</span> <span class="ow">or</span> <span class="n">find_leaf_cls</span><span class="p">(</span><span class="n">leaf_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">leaf_cls</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="n">_decode</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">bytes_encoding</span><span class="o">=</span><span class="n">bytes_encoding</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">reference</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span>
-        <span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_decode</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="n">k</span><span class="p">:</span> <span class="n">_decode</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">bytes_encoding</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">reference</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_decode</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">r</span>
 
@@ -430,7 +421,9 @@
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Reference</span><span class="p">(</span><span class="n">Serializable</span><span class="p">):</span>
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">leaf_type</span><span class="p">:</span> <span class="nb">str</span></div>
+    <span class="n">leaf_type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Datalayer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 
@@ -454,61 +447,49 @@
 
 <span class="k">def</span> <span class="nf">_encode</span><span class="p">(</span>
     <span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
-    <span class="n">bytes_encoding</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">BytesEncoding</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Type</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-    <span class="n">bytes_encoding</span> <span class="o">=</span> <span class="n">bytes_encoding</span> <span class="ow">or</span> <span class="n">CFG</span><span class="o">.</span><span class="n">bytes_encoding</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_encode</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">bytes_encoding</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">)</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_encode</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">out</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: ignore[assignment]</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_encode</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">bytes_encoding</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">))</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_encode</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">out</span>
     <span class="c1"># ruff: noqa: E501</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Leaf</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">):</span>  <span class="c1"># type: ignore[arg-type]</span>
-        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-            <span class="n">bytes_encoding</span><span class="o">=</span><span class="n">bytes_encoding</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="o">=</span><span class="n">leaf_types_to_keep</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">leaf_types_to_keep</span><span class="o">=</span><span class="n">leaf_types_to_keep</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">r</span>
 
 
-<span class="k">def</span> <span class="nf">_encode_with_schema</span><span class="p">(</span>
-    <span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
-    <span class="n">schema</span><span class="p">:</span> <span class="s1">&#39;Schema&#39;</span><span class="p">,</span>
-    <span class="n">bytes_encoding</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">BytesEncoding</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-    <span class="n">bytes_encoding</span> <span class="o">=</span> <span class="n">bytes_encoding</span> <span class="ow">or</span> <span class="n">CFG</span><span class="o">.</span><span class="n">bytes_encoding</span>
+<span class="k">def</span> <span class="nf">_encode_with_schema</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="s1">&#39;Schema&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">schema</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">DataType</span><span class="p">):</span>
                 <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">schema</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">DataType</span><span class="p">)</span>
-                <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>  <span class="c1"># type: ignore[union-attr]</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">encode_data</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>  <span class="c1"># type: ignore[union-attr]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">tmp</span> <span class="o">=</span> <span class="n">_encode_with_schema</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">schema</span><span class="p">,</span> <span class="n">bytes_encoding</span><span class="p">)</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">_encode_with_schema</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
                 <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
         <span class="k">return</span> <span class="n">out</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Leaf</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">bytes_encoding</span><span class="o">=</span><span class="n">bytes_encoding</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">r</span>
 
 
-<span class="k">def</span> <span class="nf">_unpack</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Encodable</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">reference</span><span class="p">:</span>
-            <span class="n">file_id</span> <span class="o">=</span> <span class="n">_construct_file_id_from_uri</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">directory</span><span class="p">:</span>
-                <span class="n">file_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">file_id</span>
-        <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">x</span>
+<span class="k">def</span> <span class="nf">_unpack</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">leaves_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">_BaseEncodable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">leaves_to_keep</span><span class="p">):</span>  <span class="c1"># type: ignore[arg-type]</span>
+        <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_unpack</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="n">_unpack</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">leaves_to_keep</span><span class="o">=</span><span class="n">leaves_to_keep</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">_unpack</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">item</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_unpack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">leaves_to_keep</span><span class="o">=</span><span class="n">leaves_to_keep</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">item</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">item</span>
 </pre></div>
