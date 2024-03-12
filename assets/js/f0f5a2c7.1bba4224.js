@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunknewdocs=self.webpackChunknewdocs||[]).push([[9787],{75827:e=>{e.exports=JSON.parse('{"label":"LanceDB","permalink":"/blog/tags/lance-db","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

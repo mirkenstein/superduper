@@ -161,7 +161,6 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/superduperdb.html">superduperdb package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of superduperdb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.backends.html">superduperdb.backends package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of superduperdb.backends package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.base.html">superduperdb.backends.base package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.dask.html">superduperdb.backends.dask package</a></li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../../source/superduperdb.backends.ibis.html">superduperdb.backends.ibis package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of superduperdb.backends.ibis package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../../source/superduperdb.backends.ibis.cdc.html">superduperdb.backends.ibis.cdc package</a></li>
 </ul>
@@ -242,11 +241,107 @@
         </div>
         <article role="main">
           <h1>Source code for superduperdb.misc.annotations</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span></span><span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">metadata</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
+<span class="kn">from</span> <span class="nn">packaging</span> <span class="kn">import</span> <span class="n">version</span>
 
+<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">from</span> <span class="nn">superduperdb.base.exceptions</span> <span class="kn">import</span> <span class="n">RequiredPackageVersionsNotFound</span>
+
+
+<span class="k">def</span> <span class="nf">_normalize_module</span><span class="p">(</span><span class="n">import_module</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">upper_bound</span><span class="p">,</span> <span class="n">install_module</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">import_module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">install_module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">install_module</span> <span class="o">=</span> <span class="n">import_module</span>
+    <span class="k">if</span> <span class="n">upper_bound</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">upper_bound</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="si">}</span><span class="s1">.0.0&#39;</span>
+    <span class="k">if</span> <span class="n">lower_bound</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">lower_bound</span> <span class="o">=</span> <span class="s1">&#39;0.0.0&#39;</span>
+    <span class="k">if</span> <span class="n">install_module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">install_module</span> <span class="o">=</span> <span class="n">import_module</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">import_module</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">lower_bound</span><span class="p">),</span>
+        <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">upper_bound</span><span class="p">),</span>
+        <span class="n">install_module</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="n">MIN</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;0.0.0&#39;</span><span class="p">)</span>
+<span class="n">MAX</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="si">}</span><span class="s1">.0.0&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_compare_versions</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">upper_bound</span><span class="p">,</span> <span class="n">install_name</span><span class="p">):</span>
+    <span class="n">constraint</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">lower_bound</span> <span class="o">==</span> <span class="n">upper_bound</span><span class="p">:</span>
+        <span class="n">constraint</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;==</span><span class="si">{</span><span class="n">lower_bound</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">elif</span> <span class="n">lower_bound</span> <span class="o">&gt;</span> <span class="n">MIN</span> <span class="ow">and</span> <span class="n">upper_bound</span> <span class="o">&lt;</span> <span class="n">MAX</span><span class="p">:</span>
+        <span class="n">constraint</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&gt;=</span><span class="si">{</span><span class="n">lower_bound</span><span class="si">}</span><span class="s1">,&lt;=</span><span class="si">{</span><span class="n">upper_bound</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">elif</span> <span class="n">upper_bound</span> <span class="o">&lt;</span> <span class="n">MAX</span><span class="p">:</span>
+        <span class="n">constraint</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;=</span><span class="si">{</span><span class="n">upper_bound</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">elif</span> <span class="n">lower_bound</span> <span class="o">&gt;</span> <span class="n">MIN</span><span class="p">:</span>
+        <span class="n">constraint</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&gt;=</span><span class="si">{</span><span class="n">lower_bound</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">installation_line</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">install_name</span><span class="si">}{</span><span class="n">constraint</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">got_version</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+    <span class="k">except</span> <span class="n">metadata</span><span class="o">.</span><span class="n">PackageNotFoundError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">got_version</span> <span class="o">=</span> <span class="n">version</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">package</span><span class="p">)</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">PackageNotFoundError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not find package </span><span class="si">{</span><span class="n">package</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">installation_line</span> <span class="o">+</span> <span class="s1">&#39;    # (no such package installed)&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">lower_bound</span> <span class="o">&lt;=</span> <span class="n">got_version</span> <span class="ow">and</span> <span class="n">got_version</span> <span class="o">&lt;=</span> <span class="n">upper_bound</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">installation_line</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;    # (got </span><span class="si">{</span><span class="n">got_version</span><span class="si">}</span><span class="s1">)&#39;</span>
+    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+
+
+<div class="viewcode-block" id="requires_packages">
+<a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.annotations.requires_packages">[docs]</a>
+<span class="k">def</span> <span class="nf">requires_packages</span><span class="p">(</span><span class="o">*</span><span class="n">packages</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Require the packages to be installed</span>
+<span class="sd">    :param packages: list of tuples of packages</span>
+<span class="sd">                     each tuple of the form</span>
+<span class="sd">                     (import_name, lower_bound/None,</span>
+<span class="sd">                      upper_bound/None, install_name/None)</span>
+
+<span class="sd">    E.g. (&#39;sklearn&#39;, &#39;0.1.0&#39;, &#39;0.2.0&#39;, &#39;scikit-learn&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">packages</span><span class="p">:</span>
+        <span class="n">satisfactory</span><span class="p">,</span> <span class="n">install_line</span> <span class="o">=</span> <span class="n">_requires_packages</span><span class="p">(</span><span class="o">*</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">satisfactory</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">install_line</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">out</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">RequiredPackageVersionsNotFound</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+
+<div class="viewcode-block" id="_requires_packages">
+<a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.annotations._requires_packages">[docs]</a>
+<span class="k">def</span> <span class="nf">_requires_packages</span><span class="p">(</span>
+    <span class="n">import_module</span><span class="p">,</span> <span class="n">lower_bound</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_bound</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">install_module</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A utility function to check that a required package for a module</span>
+<span class="sd">    in superduperdb.ext is installed.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">import_module</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">upper_bound</span><span class="p">,</span> <span class="n">install_module</span> <span class="o">=</span> <span class="n">_normalize_module</span><span class="p">(</span>
+        <span class="n">import_module</span><span class="p">,</span>
+        <span class="n">lower_bound</span><span class="p">,</span>
+        <span class="n">upper_bound</span><span class="p">,</span>
+        <span class="n">install_module</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">_compare_versions</span><span class="p">(</span><span class="n">import_module</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">upper_bound</span><span class="p">,</span> <span class="n">install_module</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># TODO add deprecated also</span>
 <div class="viewcode-block" id="public_api">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.annotations.public_api">[docs]</a>
 <span class="k">def</span> <span class="nf">public_api</span><span class="p">(</span><span class="n">stability</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;stable&#39;</span><span class="p">):</span>

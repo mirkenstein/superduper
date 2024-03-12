@@ -162,7 +162,6 @@
 <li class="toctree-l2 current has-children"><a class="reference internal" href="superduperdb.html">superduperdb package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of superduperdb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3 has-children"><a class="reference internal" href="superduperdb.backends.html">superduperdb.backends package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of superduperdb.backends package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="superduperdb.backends.base.html">superduperdb.backends.base package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="superduperdb.backends.dask.html">superduperdb.backends.dask package</a></li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="superduperdb.backends.ibis.html">superduperdb.backends.ibis package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of superduperdb.backends.ibis package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="superduperdb.backends.ibis.cdc.html">superduperdb.backends.ibis.cdc package</a></li>
 </ul>
@@ -354,6 +353,13 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.misc.annotations._requires_packages">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.misc.annotations.</span></span><span class="sig-name descname"><span class="pre">_requires_packages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">import_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_bound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">install_module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/misc/annotations.html#_requires_packages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.misc.annotations._requires_packages" title="Link to this definition">#</a></dt>
+<dd><p>A utility function to check that a required package for a module
+in superduperdb.ext is installed.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="superduperdb.misc.annotations.public_api">
 <span class="sig-prename descclassname"><span class="pre">superduperdb.misc.annotations.</span></span><span class="sig-name descname"><span class="pre">public_api</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'stable'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/misc/annotations.html#public_api"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.misc.annotations.public_api" title="Link to this definition">#</a></dt>
 <dd><p>Annotation for documenting public APIs.</p>
@@ -363,6 +369,21 @@ tolerant to and expect breaking changes.</p>
 users, but are subject to change.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">stability=&quot;stable&quot;</span></code>, the APIs will remain backwards compatible across
 minor releases.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.misc.annotations.requires_packages">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.misc.annotations.</span></span><span class="sig-name descname"><span class="pre">requires_packages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">packages</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/misc/annotations.html#requires_packages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.misc.annotations.requires_packages" title="Link to this definition">#</a></dt>
+<dd><p>Require the packages to be installed
+:param packages: list of tuples of packages</p>
+<blockquote>
+<div><p>each tuple of the form
+(import_name, lower_bound/None,</p>
+<blockquote>
+<div><p>upper_bound/None, install_name/None)</p>
+</div></blockquote>
+</div></blockquote>
+<p>E.g. (‘sklearn’, ‘0.1.0’, ‘0.2.0’, ‘scikit-learn’)</p>
 </dd></dl>
 
 </section>
@@ -692,8 +713,25 @@ to the database, unless a <code class="docutils literal notranslate"><span class
 </dd></dl>
 
 </section>
-<section id="superduperdb-misc-hash-module">
-<h2>superduperdb.misc.hash module<a class="headerlink" href="#superduperdb-misc-hash-module" title="Link to this heading">#</a></h2>
+<section id="module-superduperdb.misc.hash">
+<span id="superduperdb-misc-hash-module"></span><h2>superduperdb.misc.hash module<a class="headerlink" href="#module-superduperdb.misc.hash" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.misc.hash.hash_dict">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.misc.hash.</span></span><span class="sig-name descname"><span class="pre">hash_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/misc/hash.html#hash_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.misc.hash.hash_dict" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.misc.hash.hash_string">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.misc.hash.</span></span><span class="sig-name descname"><span class="pre">hash_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/misc/hash.html#hash_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.misc.hash.hash_string" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.misc.hash.random_sha1">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.misc.hash.</span></span><span class="sig-name descname"><span class="pre">random_sha1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/misc/hash.html#random_sha1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.misc.hash.random_sha1" title="Link to this definition">#</a></dt>
+<dd><p>Generate random sha1 values
+Can be used to generate file_id and other values</p>
+</dd></dl>
+
 </section>
 <section id="module-superduperdb.misc.retry">
 <span id="superduperdb-misc-retry-module"></span><h2>superduperdb.misc.retry module<a class="headerlink" href="#module-superduperdb.misc.retry" title="Link to this heading">#</a></h2>
@@ -819,6 +857,17 @@ Traceback (most recent call last):
 KeyError: ‘d’</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="superduperdb.misc.special_dicts.diff">
+<span class="sig-prename descclassname"><span class="pre">superduperdb.misc.special_dicts.</span></span><span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/misc/special_dicts.html#diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.misc.special_dicts.diff" title="Link to this definition">#</a></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">_diff</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+<span class="go">{&#39;a&#39;: (1, 2)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_diff</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+<span class="go">{&#39;a&#39;: ({&#39;c&#39;: 3}, 2)}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="module-superduperdb.misc">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-superduperdb.misc" title="Link to this heading">#</a></h2>
@@ -891,7 +940,9 @@ KeyError: ‘d’</p>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-superduperdb.misc.annotations">superduperdb.misc.annotations module</a><ul>
 <li><a class="reference internal" href="#superduperdb.misc.annotations.SuperDuperDBDeprecationWarning"><code class="docutils literal notranslate"><span class="pre">SuperDuperDBDeprecationWarning</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.misc.annotations._requires_packages"><code class="docutils literal notranslate"><span class="pre">_requires_packages()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.misc.annotations.public_api"><code class="docutils literal notranslate"><span class="pre">public_api()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.misc.annotations.requires_packages"><code class="docutils literal notranslate"><span class="pre">requires_packages()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-superduperdb.misc.archives">superduperdb.misc.archives module</a><ul>
@@ -954,7 +1005,12 @@ KeyError: ‘d’</p>
 <li><a class="reference internal" href="#superduperdb.misc.files.load_uris"><code class="docutils literal notranslate"><span class="pre">load_uris()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#superduperdb-misc-hash-module">superduperdb.misc.hash module</a></li>
+<li><a class="reference internal" href="#module-superduperdb.misc.hash">superduperdb.misc.hash module</a><ul>
+<li><a class="reference internal" href="#superduperdb.misc.hash.hash_dict"><code class="docutils literal notranslate"><span class="pre">hash_dict()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.misc.hash.hash_string"><code class="docutils literal notranslate"><span class="pre">hash_string()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.misc.hash.random_sha1"><code class="docutils literal notranslate"><span class="pre">random_sha1()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-superduperdb.misc.retry">superduperdb.misc.retry module</a><ul>
 <li><a class="reference internal" href="#superduperdb.misc.retry.Retry"><code class="docutils literal notranslate"><span class="pre">Retry</span></code></a><ul>
 <li><a class="reference internal" href="#superduperdb.misc.retry.Retry.cfg"><code class="docutils literal notranslate"><span class="pre">Retry.cfg</span></code></a></li>
@@ -983,6 +1039,7 @@ KeyError: ‘d’</p>
 <li><a class="reference internal" href="#module-superduperdb.misc.special_dicts">superduperdb.misc.special_dicts module</a><ul>
 <li><a class="reference internal" href="#superduperdb.misc.special_dicts.ArgumentDefaultDict"><code class="docutils literal notranslate"><span class="pre">ArgumentDefaultDict</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.misc.special_dicts.MongoStyleDict"><code class="docutils literal notranslate"><span class="pre">MongoStyleDict</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.misc.special_dicts.diff"><code class="docutils literal notranslate"><span class="pre">diff()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-superduperdb.misc">Module contents</a><ul>

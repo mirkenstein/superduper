@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunknewdocs=self.webpackChunknewdocs||[]).push([[9521],{37297:s=>{s.exports=JSON.parse('{"label":"DuckDB","permalink":"/blog/tags/duck-db","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

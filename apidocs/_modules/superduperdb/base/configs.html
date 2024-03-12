@@ -161,7 +161,6 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../source/superduperdb.html">superduperdb package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of superduperdb package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../source/superduperdb.backends.html">superduperdb.backends package</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of superduperdb.backends package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.base.html">superduperdb.backends.base package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../source/superduperdb.backends.dask.html">superduperdb.backends.dask package</a></li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../../source/superduperdb.backends.ibis.html">superduperdb.backends.ibis package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of superduperdb.backends.ibis package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../../source/superduperdb.backends.ibis.cdc.html">superduperdb.backends.ibis.cdc package</a></li>
 </ul>
@@ -267,6 +266,7 @@
 <span class="n">FILES_NAME</span> <span class="o">=</span> <span class="s1">&#39;CONFIG_FILES&#39;</span>
 
 <span class="c1"># The base name of the configs file</span>
+<span class="c1"># TODO remove this is not used</span>
 <span class="n">CONFIG_FILE</span> <span class="o">=</span> <span class="s1">&#39;configs.json&#39;</span>
 
 <span class="n">_LOCAL_CONFIG</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">CONFIG_FILE</span><span class="p">)</span>
@@ -311,6 +311,7 @@
         <span class="n">env</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">environ</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">environ</span><span class="p">)</span>
         <span class="n">env</span> <span class="o">=</span> <span class="n">config_dicts</span><span class="o">.</span><span class="n">environ_to_config_dict</span><span class="p">(</span><span class="s1">&#39;SUPERDUPERDB_&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span>
 
+        <span class="c1"># TODO make configurable</span>
         <span class="n">config_path</span> <span class="o">=</span> <span class="s1">&#39;.superduperdb/config.yaml&#39;</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config_path</span><span class="p">):</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
