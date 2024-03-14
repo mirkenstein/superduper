@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunknewdocs=self.webpackChunknewdocs||[]).push([[474],{62469:s=>{s.exports=JSON.parse('{"label":"Nomic","permalink":"/blog/tags/nomic","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);
