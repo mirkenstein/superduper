@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunknewdocs=self.webpackChunknewdocs||[]).push([[3572],{19890:a=>{a.exports=JSON.parse('{"label":"Jina AI","permalink":"/blog/tags/jina-ai","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunknewdocs=self.webpackChunknewdocs||[]).push([[5151],{30350:s=>{s.exports=JSON.parse('[{"label":"quickstart","permalink":"/docs/tags/quickstart","count":4}]')}}]);
