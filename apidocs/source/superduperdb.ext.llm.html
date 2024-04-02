@@ -248,14 +248,188 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
 </section>
-<section id="superduperdb-ext-llm-model-module">
-<h2>superduperdb.ext.llm.model module<a class="headerlink" href="#superduperdb-ext-llm-model-module" title="Link to this heading">#</a></h2>
+<section id="module-superduperdb.ext.llm.model">
+<span id="superduperdb-ext-llm-model-module"></span><h2>superduperdb.ext.llm.model module<a class="headerlink" href="#module-superduperdb.ext.llm.model" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.model.</span></span><span class="sig-name descname"><span class="pre">BaseLLM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts:</span> <span class="pre">dc.InitVar[t.Optional[t.Dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[Schema]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/model.html#BaseLLM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="superduperdb.components.html#superduperdb.components.model.Model" title="superduperdb.components.model.Model"><code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>predict_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM._batch_generate">
+<span class="sig-name descname"><span class="pre">_batch_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/model.html#BaseLLM._batch_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM._batch_generate" title="Link to this definition">#</a></dt>
+<dd><p>Base method to batch generate text from a list of prompts.
+If the model can run batch generation efficiently, pls override this method.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.ext.llm.model.BaseLLM'</span></em><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM.get_kwargs">
+<span class="sig-name descname"><span class="pre">get_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">kwargs_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/model.html#BaseLLM.get_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM.get_kwargs" title="Link to this definition">#</a></dt>
+<dd><p>Get kwargs and object attributes that are in the function signature
+:param func (Callable): function to get kwargs for
+:param kwargs (list of dict): kwargs to filter</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM.init">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/model.html#BaseLLM.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM.init" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM.max_batch_size">
+<span class="sig-name descname"><span class="pre">max_batch_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM.max_batch_size" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM.post_create">
+<span class="sig-name descname"><span class="pre">post_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/model.html#BaseLLM.post_create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM.post_create" title="Link to this definition">#</a></dt>
+<dd><p>Called after the first time this component is created.
+Generally used if <code class="docutils literal notranslate"><span class="pre">self.version</span></code> is important in this logic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>db</strong> – the db that creates the component</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.backends.html#superduperdb.backends.query_dataset.QueryDataset" title="superduperdb.backends.query_dataset.QueryDataset"><span class="pre">QueryDataset</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Sequence</span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/model.html#BaseLLM.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM.predict" title="Link to this definition">#</a></dt>
+<dd><p>Execute a single prediction on a datapoint
+given by positional and keyword arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – arguments handled by model</p></li>
+<li><p><strong>kwargs</strong> – key-word arguments handled by model</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM.predict_one">
+<span class="sig-name descname"><span class="pre">predict_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/model.html#BaseLLM.predict_one"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM.predict_one" title="Link to this definition">#</a></dt>
+<dd><p>Execute a single prediction on a datapoint
+given by positional and keyword arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – arguments handled by model</p></li>
+<li><p><strong>kwargs</strong> – key-word arguments handled by model</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM.prompt">
+<span class="sig-name descname"><span class="pre">prompt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{input}'</span></em><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM.prompt" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM.prompt_func">
+<span class="sig-name descname"><span class="pre">prompt_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM.prompt_func" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM.prompter">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prompter</span></span><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM.prompter" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM.signature">
+<span class="sig-name descname"><span class="pre">signature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'singleton'</span></em><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM.signature" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLM.to_call">
+<span class="sig-name descname"><span class="pre">to_call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/model.html#BaseLLM.to_call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLM.to_call" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLMAPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.model.</span></span><span class="sig-name descname"><span class="pre">BaseLLMAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts:</span> <span class="pre">dc.InitVar[t.Optional[t.Dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_url:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[Schema]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/model.html#BaseLLMAPI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLMAPI" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM" title="superduperdb.ext.llm.model.BaseLLM"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLM</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api_url</strong> – The URL for the API.</p></li>
+<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
+<li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
+<li><p><strong>predict_kwargs</strong> – Parameters used during inference.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLMAPI._batch_generate">
+<span class="sig-name descname"><span class="pre">_batch_generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/model.html#BaseLLMAPI._batch_generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLMAPI._batch_generate" title="Link to this definition">#</a></dt>
+<dd><p>Base method to batch generate text from a list of prompts using multi-threading.
+Handles exceptions in _generate method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLMAPI._generate_wrapper">
+<span class="sig-name descname"><span class="pre">_generate_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/llm/model.html#BaseLLMAPI._generate_wrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLMAPI._generate_wrapper" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper for the _generate method to handle exceptions.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLMAPI.api_url">
+<span class="sig-name descname"><span class="pre">api_url</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLMAPI.api_url" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLMAPI.full_import_path">
+<span class="sig-name descname"><span class="pre">full_import_path</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'superduperdb.ext.llm.model.BaseLLMAPI'</span></em><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLMAPI.full_import_path" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.model.BaseLLMAPI.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/model.html#BaseLLMAPI.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.model.BaseLLMAPI.init" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="superduperdb-ext-llm-prompter-module">
-<h2>superduperdb.ext.llm.prompter module<a class="headerlink" href="#superduperdb-ext-llm-prompter-module" title="Link to this heading">#</a></h2>
+<section id="module-superduperdb.ext.llm.prompter">
+<span id="superduperdb-ext-llm-prompter-module"></span><h2>superduperdb.ext.llm.prompter module<a class="headerlink" href="#module-superduperdb.ext.llm.prompter" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.prompter.Prompter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.llm.prompter.</span></span><span class="sig-name descname"><span class="pre">Prompter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt_template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/llm/prompter.html#Prompter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.llm.prompter.Prompter" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.prompter.Prompter.prompt_func">
+<span class="sig-name descname"><span class="pre">prompt_func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#superduperdb.ext.llm.prompter.Prompter.prompt_func" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="superduperdb.ext.llm.prompter.Prompter.prompt_template">
+<span class="sig-name descname"><span class="pre">prompt_template</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'{input}'</span></em><a class="headerlink" href="#superduperdb.ext.llm.prompter.Prompter.prompt_template" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<section id="module-superduperdb.ext.llm">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-superduperdb.ext.llm" title="Link to this heading">#</a></h2>
 </section>
 </section>
 
@@ -316,9 +490,42 @@
             <ul>
 <li><a class="reference internal" href="#">superduperdb.ext.llm package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#superduperdb-ext-llm-model-module">superduperdb.ext.llm.model module</a></li>
-<li><a class="reference internal" href="#superduperdb-ext-llm-prompter-module">superduperdb.ext.llm.prompter module</a></li>
-<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li><a class="reference internal" href="#module-superduperdb.ext.llm.model">superduperdb.ext.llm.model module</a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM"><code class="docutils literal notranslate"><span class="pre">BaseLLM</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM._batch_generate"><code class="docutils literal notranslate"><span class="pre">BaseLLM._batch_generate()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM.full_import_path"><code class="docutils literal notranslate"><span class="pre">BaseLLM.full_import_path</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM.get_kwargs"><code class="docutils literal notranslate"><span class="pre">BaseLLM.get_kwargs()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM.init"><code class="docutils literal notranslate"><span class="pre">BaseLLM.init()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM.max_batch_size"><code class="docutils literal notranslate"><span class="pre">BaseLLM.max_batch_size</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM.post_create"><code class="docutils literal notranslate"><span class="pre">BaseLLM.post_create()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM.predict"><code class="docutils literal notranslate"><span class="pre">BaseLLM.predict()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM.predict_one"><code class="docutils literal notranslate"><span class="pre">BaseLLM.predict_one()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM.prompt"><code class="docutils literal notranslate"><span class="pre">BaseLLM.prompt</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM.prompt_func"><code class="docutils literal notranslate"><span class="pre">BaseLLM.prompt_func</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM.prompter"><code class="docutils literal notranslate"><span class="pre">BaseLLM.prompter</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM.signature"><code class="docutils literal notranslate"><span class="pre">BaseLLM.signature</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLM.to_call"><code class="docutils literal notranslate"><span class="pre">BaseLLM.to_call()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLMAPI"><code class="docutils literal notranslate"><span class="pre">BaseLLMAPI</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLMAPI._batch_generate"><code class="docutils literal notranslate"><span class="pre">BaseLLMAPI._batch_generate()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLMAPI._generate_wrapper"><code class="docutils literal notranslate"><span class="pre">BaseLLMAPI._generate_wrapper()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLMAPI.api_url"><code class="docutils literal notranslate"><span class="pre">BaseLLMAPI.api_url</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLMAPI.full_import_path"><code class="docutils literal notranslate"><span class="pre">BaseLLMAPI.full_import_path</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.model.BaseLLMAPI.init"><code class="docutils literal notranslate"><span class="pre">BaseLLMAPI.init()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-superduperdb.ext.llm.prompter">superduperdb.ext.llm.prompter module</a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.prompter.Prompter"><code class="docutils literal notranslate"><span class="pre">Prompter</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.llm.prompter.Prompter.prompt_func"><code class="docutils literal notranslate"><span class="pre">Prompter.prompt_func</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.llm.prompter.Prompter.prompt_template"><code class="docutils literal notranslate"><span class="pre">Prompter.prompt_template</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-superduperdb.ext.llm">Module contents</a></li>
 </ul>
 </li>
 </ul>
