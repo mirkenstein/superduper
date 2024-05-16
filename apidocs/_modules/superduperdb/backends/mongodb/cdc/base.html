@@ -316,6 +316,11 @@
 <div class="viewcode-block" id="CachedTokens">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.base.CachedTokens">[docs]</a>
 <span class="k">class</span> <span class="nc">CachedTokens</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class to cache the CDC tokens in a file.</span>
+
+<span class="sd">    This class is used to cache the CDC tokens in a file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">token_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;.superduperdb&#39;</span><span class="p">,</span> <span class="s1">&#39;.cdc.tokens&#39;</span><span class="p">)</span>
     <span class="n">separate</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
 
@@ -327,6 +332,10 @@
 <div class="viewcode-block" id="CachedTokens.append">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.base.CachedTokens.append">[docs]</a>
     <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="n">TokenType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append the token to the file.</span>
+
+<span class="sd">        :param token: The token to be appended.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">CachedTokens</span><span class="o">.</span><span class="n">token_path</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">stoken</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
             <span class="n">stoken</span> <span class="o">=</span> <span class="n">stoken</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate</span>
@@ -336,6 +345,7 @@
 <div class="viewcode-block" id="CachedTokens.load">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.base.CachedTokens.load">[docs]</a>
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">TokenType</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the tokens from the file.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">CachedTokens</span><span class="o">.</span><span class="n">token_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">tokens</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separate</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_current_tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">TokenType</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">t</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">]</span>
@@ -347,6 +357,12 @@
 <div class="viewcode-block" id="ObjectId">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.base.ObjectId">[docs]</a>
 <span class="k">class</span> <span class="nc">ObjectId</span><span class="p">(</span><span class="n">objectid</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class to represent the ObjectId.</span>
+
+<span class="sd">    This class is a subclass of the `bson.objectid.ObjectId` class.</span>
+<span class="sd">    Use this class to validate the ObjectId.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">__get_validators__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">yield</span> <span class="bp">cls</span><span class="o">.</span><span class="n">validate</span>
@@ -355,6 +371,10 @@
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.base.ObjectId.validate">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the ObjectId.</span>
+
+<span class="sd">        :param v: The value to be validated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">objectid</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Id is required.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
@@ -366,8 +386,13 @@
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.base.MongoDBPacket">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">MongoDBPacket</span><span class="p">(</span><span class="n">Packet</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A base packet to represent message in task queue.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base packet to represent message in task queue.</span>
+
+<span class="sd">    This class is a subclass of the `Packet` class.</span>
+
+<span class="sd">    :param ids: The ids of the rows.</span>
+<span class="sd">    :param query: The query to be executed.</span>
+<span class="sd">    :param event_type: The event type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">ObjectId</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>

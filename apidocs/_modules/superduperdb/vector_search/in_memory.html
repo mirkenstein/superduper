@@ -315,6 +315,7 @@
 <span class="sd">    Simple hash-set for looking up with vector similarity.</span>
 
 <span class="sd">    :param identifier: Unique string identifier of index</span>
+<span class="sd">    :param dimensions: Dimension of the vector embeddings</span>
 <span class="sd">    :param h: array/ tensor of vectors</span>
 <span class="sd">    :param index: list of IDs</span>
 <span class="sd">    :param measure: measure to assess similarity</span>
@@ -369,6 +370,11 @@
 <div class="viewcode-block" id="InMemoryVectorSearcher.find_nearest_from_id">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.in_memory.InMemoryVectorSearcher.find_nearest_from_id">[docs]</a>
     <span class="k">def</span> <span class="nf">find_nearest_from_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the nearest vectors to the given ID.</span>
+
+<span class="sd">        :param _id: ID of the vector</span>
+<span class="sd">        :param n: number of nearest vectors to return</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">post_create</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_nearest_from_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">[</span><span class="n">_id</span><span class="p">]],</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span></div>
 
@@ -376,6 +382,12 @@
 <div class="viewcode-block" id="InMemoryVectorSearcher.find_nearest_from_array">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.in_memory.InMemoryVectorSearcher.find_nearest_from_array">[docs]</a>
     <span class="k">def</span> <span class="nf">find_nearest_from_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">within_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the nearest vectors to the given vector.</span>
+
+<span class="sd">        :param h: vector</span>
+<span class="sd">        :param n: number of nearest vectors to return</span>
+<span class="sd">        :param within_ids: list of IDs to search within</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">post_create</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -410,6 +422,12 @@
 <div class="viewcode-block" id="InMemoryVectorSearcher.add">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.in_memory.InMemoryVectorSearcher.add">[docs]</a>
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">VectorItem</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add vectors to the index.</span>
+
+<span class="sd">        Only adds to cache if cache is not full.</span>
+
+<span class="sd">        :param items: List of vectors to add</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_CACHE_SIZE</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
@@ -421,6 +439,7 @@
 <div class="viewcode-block" id="InMemoryVectorSearcher.post_create">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.in_memory.InMemoryVectorSearcher.post_create">[docs]</a>
     <span class="k">def</span> <span class="nf">post_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post create method to incorporate remaining vectors to be added in cache.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">[]</span></div>
@@ -441,6 +460,10 @@
 <div class="viewcode-block" id="InMemoryVectorSearcher.delete">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.in_memory.InMemoryVectorSearcher.delete">[docs]</a>
     <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete vectors from the index.</span>
+
+<span class="sd">        :param ids: List of IDs to delete</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">post_create</span><span class="p">()</span>
         <span class="n">ix</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">,</span> <span class="n">ids</span><span class="p">))</span>
         <span class="n">h</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>

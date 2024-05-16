@@ -348,6 +348,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the Lance dataset.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_create_or_append_to_dataset</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;create&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lance</span><span class="o">.</span><span class="n">dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">)</span>
@@ -375,6 +376,10 @@
 <div class="viewcode-block" id="LanceVectorSearcher.add">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.lance.LanceVectorSearcher.add">[docs]</a>
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">VectorItem</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add vectors to the index.</span>
+
+<span class="sd">        :param items: List of vectors to add</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
         <span class="n">vectors</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">vector</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_create_or_append_to_dataset</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">)</span></div>
@@ -383,6 +388,10 @@
 <div class="viewcode-block" id="LanceVectorSearcher.delete">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.lance.LanceVectorSearcher.delete">[docs]</a>
     <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete vectors from the index.</span>
+
+<span class="sd">        :param ids: List of IDs to delete</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">to_remove</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;id IN (</span><span class="si">{</span><span class="n">to_remove</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span></div>
 
@@ -395,6 +404,12 @@
         <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
         <span class="n">within_ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the nearest vectors to a given ID.</span>
+
+<span class="sd">        :param _id: ID to search</span>
+<span class="sd">        :param n: Number of results to return</span>
+<span class="sd">        :param within_ids: List of IDs to search within</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># The ``lance`` file format has been specifically designed for fast</span>
         <span class="c1"># random access. The logic to take advantage of this is implemented</span>
         <span class="c1"># by the ``.take`` method.</span>
@@ -416,6 +431,12 @@
         <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
         <span class="n">within_ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the nearest vectors to a given vector.</span>
+
+<span class="sd">        :param h: Vector to search</span>
+<span class="sd">        :param n: Number of results to return</span>
+<span class="sd">        :param within_ids: List of IDs to search within</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># NOTE: filter is currently applied AFTER vector-search</span>
         <span class="c1"># See https://lancedb.github.io/lance/api/python/lance.html#lance.dataset.LanceDataset.scanner</span>
         <span class="k">if</span> <span class="n">within_ids</span><span class="p">:</span>

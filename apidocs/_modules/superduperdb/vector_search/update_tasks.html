@@ -309,21 +309,22 @@
 <span class="kn">from</span> <span class="nn">superduperdb.misc.special_dicts</span> <span class="kn">import</span> <span class="n">MongoStyleDict</span>
 <span class="kn">from</span> <span class="nn">superduperdb.vector_search.base</span> <span class="kn">import</span> <span class="n">VectorItem</span>
 
+<span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
+
 
 <div class="viewcode-block" id="delete_vectors">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.update_tasks.delete_vectors">[docs]</a>
 <span class="k">def</span> <span class="nf">delete_vectors</span><span class="p">(</span>
     <span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-    <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Datalayer&#39;</span><span class="p">],</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A helper fxn to delete vectors of a ``VectorIndex`` component</span>
-<span class="sd">    in the fast_vector_search backend.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete vectors of a ``VectorIndex`` component in the fast_vector_search backend.</span>
 
 <span class="sd">    :param vector_index: A identifier of vector-index.</span>
 <span class="sd">    :param ids: List of ids which were observed as deleted documents.</span>
-<span class="sd">    :param db: A ``DB`` instance.</span>
+<span class="sd">    :param db: Datalayer instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">fast_vector_searchers</span><span class="p">[</span><span class="n">vector_index</span><span class="p">]</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span></div>
 
@@ -335,18 +336,15 @@
     <span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">query</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">CompoundSelect</span><span class="p">],</span>
     <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-    <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">db</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Datalayer&#39;</span><span class="p">],</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A helper fxn to copy vectors of a ``VectorIndex`` component</span>
-<span class="sd">    from the databackend to the fast_vector_search backend.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Copy vectors of a ``VectorIndex`` component from the databackend to the fast_vector_search backend.</span>
 
-<span class="sd">    :param vector-index: A identifier of the vector-index.</span>
+<span class="sd">    :param vector_index: A identifier of the vector-index.</span>
 <span class="sd">    :param query: A query which was used by `db._build_task_workflow` method</span>
 <span class="sd">    :param ids: List of ids which were observed as added/updated documents.</span>
-<span class="sd">    :param db: A ``DB`` instance.</span>
+<span class="sd">    :param db: Datalayer instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">vi</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">vector_indices</span><span class="p">[</span><span class="n">vector_index</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="c1"># ruff: noqa: E501</span>

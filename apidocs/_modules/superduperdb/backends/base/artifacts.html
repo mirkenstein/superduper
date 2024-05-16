@@ -305,6 +305,8 @@
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
+<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
+
 
 <span class="k">def</span> <span class="nf">_construct_file_id_from_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">())</span>
@@ -331,20 +333,23 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">serializers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the serializers.&quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serializers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Serializers not initialized!&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serializers</span>
 
     <span class="nd">@serializers</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">serializers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the serializers.</span>
+
+<span class="sd">        :param value: The serializers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_serializers</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="ArtifactStore.url">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifacts.ArtifactStore.url">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Artifact store connection url</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Artifact store connection url.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -352,15 +357,20 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifacts.ArtifactStore._delete_artifact">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">_delete_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Delete artifact from artifact store</span>
-<span class="sd">        :param file_id: File id uses to identify artifact in store</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete artifact from artifact store.</span>
+
+<span class="sd">        :param file_id: File id uses to identify artifact in store.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="ArtifactStore.delete">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifacts.ArtifactStore.delete">[docs]</a>
     <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete artifact from artifact store.</span>
+
+<span class="sd">        :param r: dictionary with mandatory fields</span>
+<span class="sd">                  {&#39;file_id&#39;}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s1">&#39;_content&#39;</span> <span class="ow">in</span> <span class="n">r</span> <span class="ow">and</span> <span class="s1">&#39;file_id&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete_artifact</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;file_id&#39;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -392,6 +402,12 @@
         <span class="n">datatype</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">uri</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if artifact exists in artifact store.</span>
+
+<span class="sd">        :param file_id: file id of artifact in the store</span>
+<span class="sd">        :param datatype: Datatype of the artifact</span>
+<span class="sd">        :param uri: URI of the artifact</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">file_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;if file_id is None, uri can</span><span class="se">\&#39;</span><span class="s2">t be None&quot;</span>
             <span class="n">file_id</span> <span class="o">=</span> <span class="n">_construct_file_id_from_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
@@ -413,7 +429,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifacts.ArtifactStore._save_file">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">_save_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save file in artifact store and return file_id&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save file in artifact store and return file_id.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -428,7 +444,13 @@
 <span class="sd">                  and optional fields</span>
 <span class="sd">                  {&#39;file_id&#39;, &#39;uri&#39;}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;leaf_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;artifact_type&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;file&#39;</span>
+            <span class="ow">and</span> <span class="s1">&#39;file_id&#39;</span> <span class="ow">in</span> <span class="n">r</span>
+            <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bytes&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;artifact_type&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
             <span class="k">assert</span> <span class="s1">&#39;file_id&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">,</span> <span class="s1">&#39;file_id is missing!&#39;</span>
             <span class="n">file_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_file</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;uri&#39;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;file_id&#39;</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
@@ -443,7 +465,13 @@
                 <span class="n">file_id</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sha1&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;directory&#39;</span><span class="p">):</span>
                 <span class="n">file_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datatype</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_save_bytes</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">],</span> <span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_save_bytes</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">],</span> <span class="n">file_id</span><span class="o">=</span><span class="n">file_id</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">FileExistsError</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Artifact with file_id </span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s1"> already exists, skipping...&#39;</span>
+                <span class="p">)</span>
+
             <span class="k">del</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">]</span>
         <span class="n">r</span><span class="p">[</span><span class="s1">&#39;file_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file_id</span>
         <span class="k">return</span> <span class="n">r</span></div>
@@ -466,7 +494,7 @@
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">_load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load file from artifact store and return path</span>
+<span class="sd">        Load file from artifact store and return path.</span>
 
 <span class="sd">        :param file_id: Identifier of artifact in the store</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -481,7 +509,6 @@
 
 <span class="sd">        :param r: Mandatory fields {&#39;file_id&#39;, &#39;datatype&#39;}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">datatype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">serializers</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]]</span>
         <span class="n">file_id</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;file_id&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;encodable&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
@@ -499,15 +526,16 @@
 <div class="viewcode-block" id="ArtifactStore.save">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifacts.ArtifactStore.save">[docs]</a>
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save list of artifacts and replace the artifacts with file reference</span>
-<span class="sd">        :param r: `dict` of artifacts</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save list of artifacts and replace the artifacts with file reference.</span>
+
+<span class="sd">        :param r: `dict` of artifacts.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">if</span> <span class="s1">&#39;_content&#39;</span> <span class="ow">in</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;leaf_type&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span>
                 <span class="s1">&#39;artifact&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;file&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;lazy_artifact&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;lazy_file&#39;</span><span class="p">,</span>
             <span class="p">}:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
@@ -523,9 +551,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifacts.ArtifactStore.disconnect">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Disconnect the client</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect the client.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
 
@@ -534,6 +560,8 @@
 <div class="viewcode-block" id="ArtifactSavingError">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.artifacts.ArtifactSavingError">[docs]</a>
 <span class="k">class</span> <span class="nc">ArtifactSavingError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Error when saving artifact in artifact store fails.&quot;&quot;&quot;</span>
+
     <span class="k">pass</span></div>
 
 </pre></div>

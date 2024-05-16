@@ -314,6 +314,10 @@
 <div class="viewcode-block" id="none">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.none">[docs]</a>
 <span class="k">def</span> <span class="nf">none</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;No-op function.</span>
+
+<span class="sd">    :param x: Any</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -360,6 +364,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.ThreadBase.pre_run">[docs]</a>
     <span class="nd">@_debug</span>
     <span class="k">def</span> <span class="nf">pre_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pre-run the thread.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -367,6 +372,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.ThreadBase.run">[docs]</a>
     <span class="nd">@_debug</span><span class="p">(</span><span class="n">after</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the thread.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pre_run</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
 
@@ -391,6 +397,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.ThreadBase.stop">[docs]</a>
     <span class="nd">@_debug</span>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the thread.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
@@ -398,6 +405,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.ThreadBase.finish">[docs]</a>
     <span class="nd">@_debug</span>
     <span class="k">def</span> <span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Finish the thread.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
 
@@ -406,7 +414,7 @@
 <div class="viewcode-block" id="IsThread">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.IsThread">[docs]</a>
 <span class="k">class</span> <span class="nc">IsThread</span><span class="p">(</span><span class="n">ThreadBase</span><span class="p">,</span> <span class="n">Thread</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This ThreadBase inherits from threading.Thread.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;IsThread is a thread that inherits from threading.Thread.</span>
 
 <span class="sd">    To use IsThread, derive from it and override either or both of</span>
 <span class="sd">    self.callback() and self.pre_run()</span>
@@ -419,12 +427,17 @@
 <div class="viewcode-block" id="IsThread.callback">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.IsThread.callback">[docs]</a>
     <span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The callback to run in the thread.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="IsThread.error">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.IsThread.error">[docs]</a>
     <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle an error.</span>
+
+<span class="sd">        :param item: Exception</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -432,6 +445,10 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.IsThread.join">[docs]</a>
     <span class="nd">@_debug</span><span class="p">(</span><span class="n">after</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Join the thread.</span>
+
+<span class="sd">        :param timeout: Timeout in seconds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Thread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
 
 
@@ -439,6 +456,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.IsThread.start">[docs]</a>
     <span class="nd">@_debug</span>
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start the thread.&quot;&quot;&quot;</span>
         <span class="n">Thread</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 </div>
 
@@ -448,7 +466,14 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.HasThread">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">HasThread</span><span class="p">(</span><span class="n">ThreadBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This ThreadBase contains a thread, and is constructed with a callback&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;HasThread contains a thread, and is constructed with a callback.</span>
+
+<span class="sd">    :param callback: The callback to run in the thread.</span>
+<span class="sd">    :param daemon: Whether the thread is a daemon.</span>
+<span class="sd">    :param error: The error callback.</span>
+<span class="sd">    :param looping: Whether the thread should loop.</span>
+<span class="sd">    :param name: The name of the thread.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">callback</span><span class="p">:</span> <span class="n">Callback</span> <span class="o">=</span> <span class="nb">print</span>
     <span class="n">daemon</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -463,6 +488,10 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.HasThread.join">[docs]</a>
     <span class="nd">@_debug</span><span class="p">(</span><span class="n">after</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Join the thread.</span>
+
+<span class="sd">        :param timeout: Timeout in seconds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span></div>
 
 
@@ -470,17 +499,20 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.HasThread.start">[docs]</a>
     <span class="nd">@_debug</span>
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start the thread.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="HasThread.new_thread">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.HasThread.new_thread">[docs]</a>
     <span class="k">def</span> <span class="nf">new_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Thread</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new thread.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">daemon</span><span class="p">)</span></div>
 
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">thread</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Thread</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the thread.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_thread</span><span class="p">()</span></div>
 
 </pre></div>

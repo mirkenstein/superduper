@@ -331,12 +331,19 @@
 <div class="viewcode-block" id="MongoArtifactStore.url">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.artifacts.MongoArtifactStore.url">[docs]</a>
     <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the URL of the database.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">HOST</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">PORT</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
 
 <div class="viewcode-block" id="MongoArtifactStore.drop">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.artifacts.MongoArtifactStore.drop">[docs]</a>
     <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop the database.</span>
+
+<span class="sd">        Please use with caution as this will delete all artifacts.</span>
+
+<span class="sd">        :param force: If True, will not prompt for confirmation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">click</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">Colors</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s1">[!!!WARNING USE WITH CAUTION AS YOU &#39;</span>
@@ -368,7 +375,7 @@
 <div class="viewcode-block" id="MongoArtifactStore._save_file">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.artifacts.MongoArtifactStore._save_file">[docs]</a>
     <span class="k">def</span> <span class="nf">_save_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save file to GridFS&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save file to GridFS.&quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
             <span class="n">upload_folder</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filesystem</span><span class="p">)</span>
@@ -380,14 +387,17 @@
 <div class="viewcode-block" id="MongoArtifactStore._load_file">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.artifacts.MongoArtifactStore._load_file">[docs]</a>
     <span class="k">def</span> <span class="nf">_load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Download file from GridFS and return the path</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download file from GridFS and return the path.</span>
+
 <span class="sd">        The path is a temporary directory, {tmp_prefix}/{file_id}/{filename or folder}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">download</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filesystem</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="nf">_save_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serialized</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filesystem</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">file_id</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">cur</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileExistsError</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filesystem</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
             <span class="n">serialized</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">file_id</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;file_id&quot;</span><span class="p">:</span> <span class="n">file_id</span><span class="p">}</span>
         <span class="p">)</span>
@@ -395,9 +405,7 @@
 <div class="viewcode-block" id="MongoArtifactStore.disconnect">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.artifacts.MongoArtifactStore.disconnect">[docs]</a>
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Disconnect the client</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect the client.&quot;&quot;&quot;</span></div>
 </div>
 
 
@@ -407,7 +415,12 @@
 <div class="viewcode-block" id="upload_file">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.artifacts.upload_file">[docs]</a>
 <span class="k">def</span> <span class="nf">upload_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">fs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Upload file to GridFS&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Upload file to GridFS.</span>
+
+<span class="sd">    :param path: The path to the file to upload</span>
+<span class="sd">    :param file_id: The file_id of the file</span>
+<span class="sd">    :param fs: The GridFS object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uploading file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> to GridFS with file_id </span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_to_upload</span><span class="p">:</span>
@@ -422,7 +435,13 @@
 <div class="viewcode-block" id="upload_folder">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.artifacts.upload_folder">[docs]</a>
 <span class="k">def</span> <span class="nf">upload_folder</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file_id</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">parent_path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Upload folder to GridFS&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Upload folder to GridFS.</span>
+
+<span class="sd">    :param path: The path to the folder to upload</span>
+<span class="sd">    :param file_id: The file_id of the folder</span>
+<span class="sd">    :param fs: The GridFS object</span>
+<span class="sd">    :param parent_path: The parent path of the folder</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">parent_path</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uploading folder </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> to GridFS with file_id </span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -453,8 +472,13 @@
 <div class="viewcode-block" id="download">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.artifacts.download">[docs]</a>
 <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="n">file_id</span><span class="p">,</span> <span class="n">fs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download file or folder from GridFS and return the path&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download file or folder from GridFS and return the path.</span>
 
+<span class="sd">    The path is a temporary directory, {tmp_prefix}/{file_id}/{filename or folder}</span>
+
+<span class="sd">    :param file_id: The file_id of the file or folder to download</span>
+<span class="sd">    :param fs: The GridFS object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">download_folder</span> <span class="o">=</span> <span class="n">CFG</span><span class="o">.</span><span class="n">downloads</span><span class="o">.</span><span class="n">folder</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">download_folder</span><span class="p">:</span>

@@ -317,14 +317,14 @@
 <div class="viewcode-block" id="BaseVectorSearcher">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.BaseVectorSearcher">[docs]</a>
 <span class="k">class</span> <span class="nc">BaseVectorSearcher</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<div class="viewcode-block" id="BaseVectorSearcher.from_component">
-<a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.BaseVectorSearcher.from_component">[docs]</a>
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_component</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">vi</span><span class="p">:</span> <span class="s1">&#39;VectorIndex&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="n">identifier</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">measure</span>
-        <span class="p">)</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for vector searchers.</span>
 
+<span class="sd">    :param identifier: Unique string identifier of index</span>
+<span class="sd">    :param dimensions: Dimension of the vector embeddings</span>
+<span class="sd">    :param h: Seed vectors ``numpy.ndarray``</span>
+<span class="sd">    :param index: list of IDs</span>
+<span class="sd">    :param measure: measure to assess similarity</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -337,6 +337,19 @@
     <span class="p">):</span>
         <span class="k">pass</span>
 
+<div class="viewcode-block" id="BaseVectorSearcher.from_component">
+<a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.BaseVectorSearcher.from_component">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_component</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">vi</span><span class="p">:</span> <span class="s1">&#39;VectorIndex&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a vector searcher from a vector index.</span>
+
+<span class="sd">        :param vi: VectorIndex instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">identifier</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="n">vi</span><span class="o">.</span><span class="n">measure</span>
+        <span class="p">)</span></div>
+
+
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
@@ -345,6 +358,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.BaseVectorSearcher.to_numpy">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts a vector to a numpy array.</span>
+
+<span class="sd">        :param h: vector, numpy.ndarray, or list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">h</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="s1">&#39;numpy&#39;</span><span class="p">):</span>
@@ -358,6 +375,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.BaseVectorSearcher.to_list">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts a vector to a list.</span>
+
+<span class="sd">        :param h: vector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="s1">&#39;tolist&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">h</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -380,8 +401,7 @@
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.BaseVectorSearcher.delete">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Remove items from the index</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove items from the index.</span>
 
 <span class="sd">        :param ids: t.Sequence of ids of vectors.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
@@ -401,6 +421,7 @@
 
 <span class="sd">        :param _id: id of the vector</span>
 <span class="sd">        :param n: number of nearest vectors to return</span>
+<span class="sd">        :param within_ids: list of ids to search within</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 
@@ -418,13 +439,15 @@
 
 <span class="sd">        :param h: vector</span>
 <span class="sd">        :param n: number of nearest vectors to return</span>
+<span class="sd">        :param within_ids: list of ids to search within</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="BaseVectorSearcher.post_create">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.BaseVectorSearcher.post_create">[docs]</a>
     <span class="k">def</span> <span class="nf">post_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post create method.</span>
+
 <span class="sd">        This method is used for searchers which requires</span>
 <span class="sd">        to perform a task after all vectors have been added</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
@@ -435,6 +458,8 @@
 <div class="viewcode-block" id="VectorIndexMeasureType">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.VectorIndexMeasureType">[docs]</a>
 <span class="k">class</span> <span class="nc">VectorIndexMeasureType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enum for vector index measure types.&quot;&quot;&quot;</span>
+
     <span class="n">cosine</span> <span class="o">=</span> <span class="s1">&#39;cosine&#39;</span>
     <span class="n">css</span> <span class="o">=</span> <span class="s1">&#39;css&#39;</span>
     <span class="n">dot</span> <span class="o">=</span> <span class="s1">&#39;dot&#39;</span>
@@ -446,10 +471,13 @@
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.VectorSearchConfig">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">VectorSearchConfig</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Represents search config which helps initiate a vector</span>
-<span class="sd">    searcher class.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents search config which helps initiate a vector searcher class.</span>
+
+<span class="sd">    :param id: Identifier for the vector index</span>
+<span class="sd">    :param dimensions: Dimensions of the vector</span>
+<span class="sd">    :param measure: Measure for vector search</span>
+<span class="sd">    :param parameters: Additional parameters for vector search</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">dimensions</span><span class="p">:</span> <span class="nb">int</span>
@@ -462,11 +490,11 @@
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.VectorItem">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">VectorItem</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Class for representing a vector in vector search with</span>
-<span class="sd">    id and vector.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for representing a vector in vector search with id and vector.</span>
 
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    :param id: ID of the vector</span>
+<span class="sd">    :param vector: Vector of the item</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">vector</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>
@@ -480,12 +508,18 @@
         <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">vector</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorItem</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a vector item from id and vector.</span>
+
+<span class="sd">        :param id: ID of the vector</span>
+<span class="sd">        :param vector: Vector of the item</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">VectorItem</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span> <span class="n">vector</span><span class="o">=</span><span class="n">BaseVectorSearcher</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">vector</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="VectorItem.to_dict">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.VectorItem.to_dict">[docs]</a>
     <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts the vector item to a dictionary.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;vector&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">}</span></div>
 </div>
 
@@ -495,10 +529,11 @@
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.VectorSearchResult">[docs]</a>
 <span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">VectorSearchResult</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Dataclass for representing vector search results with</span>
-<span class="sd">    `id` and `score`.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dataclass for representing vector search results with `id` and `score`.</span>
+
+<span class="sd">    :param id: ID of the vector</span>
+<span class="sd">    :param score: Similarity score of the vector</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">score</span><span class="p">:</span> <span class="nb">float</span></div>
@@ -508,9 +543,11 @@
 <div class="viewcode-block" id="l2">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.l2">[docs]</a>
 <span class="k">def</span> <span class="nf">l2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    L2 function for vector similarity search</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;L2 function for vector similarity search.</span>
+
+<span class="sd">    :param x: numpy.ndarray</span>
+<span class="sd">    :param y: numpy.ndarray</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)])</span></div>
 
 
@@ -518,9 +555,11 @@
 <div class="viewcode-block" id="dot">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.dot">[docs]</a>
 <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Dot function for vector similarity search</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dot function for vector similarity search.</span>
+
+<span class="sd">    :param x: numpy.ndarray</span>
+<span class="sd">    :param y: numpy.ndarray</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">T</span><span class="p">)</span></div>
 
 
@@ -528,9 +567,11 @@
 <div class="viewcode-block" id="cosine">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.base.cosine">[docs]</a>
 <span class="k">def</span> <span class="nf">cosine</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Cosine similarity function for vector search</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cosine similarity function for vector search.</span>
+
+<span class="sd">    :param x: numpy.ndarray</span>
+<span class="sd">    :param y: numpy.ndarray, y should be normalized!</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span>
     <span class="c1"># y which implies all vectors in vectordatabase</span>
     <span class="c1"># has normalized vectors.</span>

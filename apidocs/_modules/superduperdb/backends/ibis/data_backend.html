@@ -300,12 +300,15 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for superduperdb.backends.ibis.data_backend</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">ibis</span>
 <span class="kn">import</span> <span class="nn">pandas</span>
 <span class="kn">from</span> <span class="nn">ibis.backends.base</span> <span class="kn">import</span> <span class="n">BaseBackend</span>
+<span class="kn">from</span> <span class="nn">pandas.core.frame</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.exc</span> <span class="kn">import</span> <span class="n">NoSuchTableError</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb.backends.base.data_backend</span> <span class="kn">import</span> <span class="n">BaseDataBackend</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.db_helper</span> <span class="kn">import</span> <span class="n">get_db_helper</span>
@@ -313,6 +316,7 @@
 <span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.query</span> <span class="kn">import</span> <span class="n">Table</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.local.artifacts</span> <span class="kn">import</span> <span class="n">FileSystemArtifactStore</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.sqlalchemy.metadata</span> <span class="kn">import</span> <span class="n">SQLAlchemyMetadata</span>
+<span class="kn">from</span> <span class="nn">superduperdb.base.enums</span> <span class="kn">import</span> <span class="n">DBType</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">DataType</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.schema</span> <span class="kn">import</span> <span class="n">Schema</span>
 
@@ -323,6 +327,15 @@
 <div class="viewcode-block" id="IbisDataBackend">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend">[docs]</a>
 <span class="k">class</span> <span class="nc">IbisDataBackend</span><span class="p">(</span><span class="n">BaseDataBackend</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ibis data backend for the database.</span>
+
+<span class="sd">    :param conn: The connection to the database.</span>
+<span class="sd">    :param name: The name of the database.</span>
+<span class="sd">    :param in_memory: Whether to store the data in memory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">db_type</span> <span class="o">=</span> <span class="n">DBType</span><span class="o">.</span><span class="n">SQL</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">:</span> <span class="n">BaseBackend</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">in_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">conn</span><span class="o">=</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">in_memory</span> <span class="o">=</span> <span class="n">in_memory</span>
@@ -332,30 +345,43 @@
 <div class="viewcode-block" id="IbisDataBackend.url">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.url">[docs]</a>
     <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the URL of the database.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">con</span><span class="o">.</span><span class="n">url</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
 
 <div class="viewcode-block" id="IbisDataBackend.build_artifact_store">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.build_artifact_store">[docs]</a>
     <span class="k">def</span> <span class="nf">build_artifact_store</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build artifact store for the database.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">FileSystemArtifactStore</span><span class="p">(</span><span class="n">conn</span><span class="o">=</span><span class="s1">&#39;.superduperdb/artifacts/&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ibis&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="IbisDataBackend.build_metadata">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.build_metadata">[docs]</a>
     <span class="k">def</span> <span class="nf">build_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build metadata for the database.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">SQLAlchemyMetadata</span><span class="p">(</span><span class="n">conn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">con</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ibis&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="IbisDataBackend.create_ibis_table">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.create_ibis_table">[docs]</a>
     <span class="k">def</span> <span class="nf">create_ibis_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Schema</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a table in the database.</span>
+
+<span class="sd">        :param identifier: The identifier of the table.</span>
+<span class="sd">        :param schema: The schema of the table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="IbisDataBackend.insert">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.insert">[docs]</a>
     <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">raw_documents</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert data into the database.</span>
+
+<span class="sd">        :param table_name: The name of the table.</span>
+<span class="sd">        :param raw_documents: The data to insert.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">raw_documents</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">doc</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_helper</span><span class="o">.</span><span class="n">convert_data_format</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
@@ -365,7 +391,17 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_memory</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">raw_documents</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">raw_documents</span><span class="p">))</span></div>
+            <span class="c1"># CAUTION: The following is only tested with pandas.</span>
+            <span class="k">if</span> <span class="n">table_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">tables</span><span class="p">:</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">tables</span><span class="p">[</span><span class="n">table_name</span><span class="p">]</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">t</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(),</span> <span class="n">raw_documents</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">raw_documents</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">backend_table_type</span> <span class="o">==</span> <span class="n">DataFrame</span><span class="p">:</span>
+                <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">table_name</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="IbisDataBackend.create_output_dest">
@@ -376,6 +412,12 @@
         <span class="n">datatype</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">FieldType</span><span class="p">,</span> <span class="n">DataType</span><span class="p">],</span>
         <span class="n">flatten</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a table for the output of the model.</span>
+
+<span class="sd">        :param predict_id: The identifier of the prediction.</span>
+<span class="sd">        :param datatype: The data type of the output.</span>
+<span class="sd">        :param flatten: Whether to flatten the output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
             <span class="s2">&quot;Model must have an encoder to create with the&quot;</span>
             <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> backend.&quot;</span>
@@ -408,18 +450,33 @@
             <span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="IbisDataBackend.check_output_dest">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.check_output_dest">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_output_dest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predict_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the output destination exists.</span>
+
+<span class="sd">        :param predict_id: The identifier of the prediction.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;_outputs.</span><span class="si">{</span><span class="n">predict_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="n">NoSuchTableError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
 <div class="viewcode-block" id="IbisDataBackend.create_table_and_schema">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.create_table_and_schema">[docs]</a>
     <span class="k">def</span> <span class="nf">create_table_and_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mapping</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a schema in the data-backend.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a schema in the data-backend.</span>
 
+<span class="sd">        :param identifier: The identifier of the table.</span>
+<span class="sd">        :param mapping: The mapping of the schema.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_helper</span><span class="o">.</span><span class="n">process_schema_types</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span>
             <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">ibis</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span><span class="n">mapping</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;exists&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;exists&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">or</span> <span class="s1">&#39;override&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
                 <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Table already exists, skipping...&quot;</span><span class="p">)</span>
                 <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -430,6 +487,10 @@
 <div class="viewcode-block" id="IbisDataBackend.drop">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.drop">[docs]</a>
     <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop tables or collections in the database.</span>
+
+<span class="sd">        :param force: Whether to force the drop.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="s2">&quot;Dropping tables needs to be done in each DB natively&quot;</span>
         <span class="p">)</span></div>
@@ -438,15 +499,17 @@
 <div class="viewcode-block" id="IbisDataBackend.get_table_or_collection">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.get_table_or_collection">[docs]</a>
     <span class="k">def</span> <span class="nf">get_table_or_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a table or collection from the database.</span>
+
+<span class="sd">        :param identifier: The identifier of the table or collection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="IbisDataBackend.disconnect">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.disconnect">[docs]</a>
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Disconnect the client</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect the client.&quot;&quot;&quot;</span></div>
 
 
         <span class="c1"># TODO: implement me</span>
@@ -454,7 +517,23 @@
 <div class="viewcode-block" id="IbisDataBackend.list_tables_or_collections">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.list_tables_or_collections">[docs]</a>
     <span class="k">def</span> <span class="nf">list_tables_or_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List all tables or collections in the database.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">list_tables</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="IbisDataBackend.infer_schema">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.data_backend.IbisDataBackend.infer_schema">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">infer_schema</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span> <span class="n">identifier</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer a schema from a given data object.</span>
+
+<span class="sd">        :param data: The data object</span>
+<span class="sd">        :param identifier: The identifier for the schema, if None, it will be generated</span>
+<span class="sd">        :return: The inferred schema</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">superduperdb.misc.auto_schema</span> <span class="kn">import</span> <span class="n">infer_schema</span>
+
+        <span class="k">return</span> <span class="n">infer_schema</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span> <span class="n">ibis</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

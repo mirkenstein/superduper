@@ -311,6 +311,7 @@
 <span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.field_types</span> <span class="kn">import</span> <span class="n">FieldType</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.mongodb.artifacts</span> <span class="kn">import</span> <span class="n">MongoArtifactStore</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.mongodb.metadata</span> <span class="kn">import</span> <span class="n">MongoMetaDataStore</span>
+<span class="kn">from</span> <span class="nn">superduperdb.base.enums</span> <span class="kn">import</span> <span class="n">DBType</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">DataType</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.colors</span> <span class="kn">import</span> <span class="n">Colors</span>
@@ -327,6 +328,8 @@
 <span class="sd">    :param name: Name of database to host filesystem</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">db_type</span> <span class="o">=</span> <span class="n">DBType</span><span class="o">.</span><span class="n">MONGODB</span>
+
     <span class="n">id_field</span> <span class="o">=</span> <span class="s1">&#39;_id&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">:</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -336,22 +339,26 @@
 <div class="viewcode-block" id="MongoDataBackend.url">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.url">[docs]</a>
     <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the data backend connection url.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">HOST</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">PORT</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the datalayer instance.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span>
 
 <div class="viewcode-block" id="MongoDataBackend.build_metadata">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.build_metadata">[docs]</a>
     <span class="k">def</span> <span class="nf">build_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the metadata store for the data backend.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">MongoMetaDataStore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MongoDataBackend.build_artifact_store">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.build_artifact_store">[docs]</a>
     <span class="k">def</span> <span class="nf">build_artifact_store</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the artifact store for the data backend.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">mongomock</span> <span class="kn">import</span> <span class="n">MongoClient</span> <span class="k">as</span> <span class="n">MockClient</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span> <span class="n">MockClient</span><span class="p">):</span>
@@ -367,6 +374,12 @@
 <div class="viewcode-block" id="MongoDataBackend.drop">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.drop">[docs]</a>
     <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop the data backend.</span>
+
+<span class="sd">        Please use with caution as you will lose all data.</span>
+<span class="sd">        :param force: Force the drop, default is False.</span>
+<span class="sd">                      If False, a confirmation prompt will be displayed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">click</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">Colors</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s1">[!!!WARNING USE WITH CAUTION AS YOU &#39;</span>
@@ -381,12 +394,22 @@
 <div class="viewcode-block" id="MongoDataBackend.get_table_or_collection">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.get_table_or_collection">[docs]</a>
     <span class="k">def</span> <span class="nf">get_table_or_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a table or collection from the data backend.</span>
+
+<span class="sd">        :param identifier: table or collection identifier</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="MongoDataBackend.set_content_bytes">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.set_content_bytes">[docs]</a>
     <span class="k">def</span> <span class="nf">set_content_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">bytes_</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the content bytes in the data backend.</span>
+
+<span class="sd">        :param r: dictionary containing information about the content</span>
+<span class="sd">        :param key: key to set</span>
+<span class="sd">        :param bytes_: content bytes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">MongoStyleDict</span><span class="p">):</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
         <span class="n">r</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">._content.bytes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bytes_</span>
@@ -396,6 +419,12 @@
 <div class="viewcode-block" id="MongoDataBackend.exists">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.exists">[docs]</a>
     <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_or_collection</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a document exists in the data backend.</span>
+
+<span class="sd">        :param table_or_collection: table or collection identifier</span>
+<span class="sd">        :param id: document identifier</span>
+<span class="sd">        :param key: key to check</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">[</span><span class="n">table_or_collection</span><span class="p">]</span><span class="o">.</span><span class="n">find_one</span><span class="p">(</span>
                 <span class="p">{</span><span class="s1">&#39;_id&#39;</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">._content.bytes&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$exists&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}</span>
@@ -404,9 +433,14 @@
         <span class="p">)</span></div>
 
 
+    <span class="c1"># TODO: Remove the unused function</span>
 <div class="viewcode-block" id="MongoDataBackend.unset_outputs">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.unset_outputs">[docs]</a>
     <span class="k">def</span> <span class="nf">unset_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unset the output field in the data backend.</span>
+
+<span class="sd">        :param info: dictionary containing information about the output field</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">select</span> <span class="o">=</span> <span class="n">Serializable</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">])</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unsetting output field _outputs.</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$unset&#39;</span><span class="p">:</span> <span class="p">{</span><span class="sa">f</span><span class="s1">&#39;_outputs.</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}</span>
@@ -417,6 +451,7 @@
 <div class="viewcode-block" id="MongoDataBackend.list_vector_indexes">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.list_vector_indexes">[docs]</a>
     <span class="k">def</span> <span class="nf">list_vector_indexes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List all vector indexes in the data backend.&quot;&quot;&quot;</span>
         <span class="n">indexes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">coll</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">list_collection_names</span><span class="p">():</span>
             <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">command</span><span class="p">({</span><span class="s1">&#39;listSearchIndexes&#39;</span><span class="p">:</span> <span class="n">coll</span><span class="p">})</span>
@@ -432,6 +467,7 @@
 <div class="viewcode-block" id="MongoDataBackend.list_tables_or_collections">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.list_tables_or_collections">[docs]</a>
     <span class="k">def</span> <span class="nf">list_tables_or_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List all tables or collections in the data backend.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">list_collection_names</span><span class="p">()</span></div>
 
 
@@ -460,9 +496,7 @@
 <div class="viewcode-block" id="MongoDataBackend.disconnect">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.disconnect">[docs]</a>
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Disconnect the client</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect the client.&quot;&quot;&quot;</span></div>
 
 
         <span class="c1"># TODO: implement me</span>
@@ -471,11 +505,44 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.create_output_dest">[docs]</a>
     <span class="k">def</span> <span class="nf">create_output_dest</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">predict_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">datatype</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">DataType</span><span class="p">,</span> <span class="n">FieldType</span><span class="p">],</span>
         <span class="n">flatten</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an output collection for a component.</span>
+
+<span class="sd">        That will do nothing for MongoDB.</span>
+
+<span class="sd">        :param predict_id: The predict id of the output destination</span>
+<span class="sd">        :param datatype: datatype of component</span>
+<span class="sd">        :param flatten: flatten the output</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="MongoDataBackend.check_output_dest">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.check_output_dest">[docs]</a>
+    <span class="k">def</span> <span class="nf">check_output_dest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predict_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the output destination exists.</span>
+
+<span class="sd">        :param predict_id: identifier of the prediction</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="MongoDataBackend.infer_schema">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.data_backend.MongoDataBackend.infer_schema">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">infer_schema</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span> <span class="n">identifier</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer a schema from a given data object.</span>
+
+<span class="sd">        :param data: The data object</span>
+<span class="sd">        :param identifier: The identifier for the schema, if None, it will be generated</span>
+<span class="sd">        :return: The inferred schema</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">superduperdb.misc.auto_schema</span> <span class="kn">import</span> <span class="n">infer_schema</span>
+
+        <span class="k">return</span> <span class="n">infer_schema</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

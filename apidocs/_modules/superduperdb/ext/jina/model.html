@@ -316,7 +316,10 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.jina.html#superduperdb.ext.jina.model.Jina">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Jina</span><span class="p">(</span><span class="n">APIBaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cohere predictor&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cohere predictor.</span>
+
+<span class="sd">    :param api_key: The API key to use for the predicto</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">api_key</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -331,8 +334,9 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.jina.html#superduperdb.ext.jina.model.JinaEmbedding">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">JinaEmbedding</span><span class="p">(</span><span class="n">Jina</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Jina embedding predictor</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Jina embedding predictor.</span>
 
+<span class="sd">    :param batch_size: The batch size to use for the predictor.</span>
 <span class="sd">    :param shape: The shape of the embedding as ``tuple``.</span>
 <span class="sd">        If not provided, it will be obtained by sending a simple query to the API</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -350,6 +354,13 @@
 <div class="viewcode-block" id="JinaEmbedding.pre_create">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.jina.html#superduperdb.ext.jina.model.JinaEmbedding.pre_create">[docs]</a>
     <span class="k">def</span> <span class="nf">pre_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pre create method for the model.</span>
+
+<span class="sd">        If the datalayer is Ibis, the datatype will be set to the appropriate</span>
+<span class="sd">        SQL datatype.</span>
+
+<span class="sd">        :param db: The datalayer to use for the model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pre_create</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="p">,</span> <span class="n">IbisDataBackend</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -361,6 +372,10 @@
 <div class="viewcode-block" id="JinaEmbedding.predict_one">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.jina.html#superduperdb.ext.jina.model.JinaEmbedding.predict_one">[docs]</a>
     <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict the embedding of a single text.</span>
+
+<span class="sd">        :param X: The text to predict the embedding of.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">encode_batch</span><span class="p">([</span><span class="n">X</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
@@ -370,6 +385,10 @@
 <div class="viewcode-block" id="JinaEmbedding.predict">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.jina.html#superduperdb.ext.jina.model.JinaEmbedding.predict">[docs]</a>
     <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">QueryDataset</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict the embeddings of a dataset.</span>
+
+<span class="sd">        :param dataset: The dataset to predict the embeddings of.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)):</span>
             <span class="n">batch</span> <span class="o">=</span> <span class="p">[</span>

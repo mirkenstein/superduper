@@ -317,12 +317,78 @@
 <dt class="sig sig-object py" id="superduperdb.ext.numpy.encoder.DecodeArray">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.numpy.encoder.</span></span><span class="sig-name descname"><span class="pre">DecodeArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/numpy/encoder.html#DecodeArray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.numpy.encoder.DecodeArray" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Decode a numpy array from bytes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype</strong> – The dtype of the array.</p></li>
+<li><p><strong>shape</strong> – The shape of the array.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.numpy.encoder.DecodeArray.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/numpy/encoder.html#DecodeArray.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.numpy.encoder.DecodeArray.__call__" title="Link to this definition">¶</a></dt>
+<dd><p>Decode the numpy array from bytes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bytes</strong> – The bytes to decode.</p></li>
+<li><p><strong>info</strong> – The info of the encoding.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="superduperdb.ext.numpy.encoder.EncodeArray">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.numpy.encoder.</span></span><span class="sig-name descname"><span class="pre">EncodeArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/numpy/encoder.html#EncodeArray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.numpy.encoder.EncodeArray" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Encode a numpy array to bytes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dtype</strong> – The dtype of the array.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.numpy.encoder.EncodeArray.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/numpy/encoder.html#EncodeArray.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.numpy.encoder.EncodeArray.__call__" title="Link to this definition">¶</a></dt>
+<dd><p>Encode the numpy array to bytes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – The numpy array.</p></li>
+<li><p><strong>info</strong> – The info of the encoding.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="superduperdb.ext.numpy.encoder.NumpyDataTypeFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.numpy.encoder.</span></span><span class="sig-name descname"><span class="pre">NumpyDataTypeFactory</span></span><a class="reference internal" href="../_modules/superduperdb/ext/numpy/encoder.html#NumpyDataTypeFactory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.numpy.encoder.NumpyDataTypeFactory" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="superduperdb.components.html#superduperdb.components.datatype.DataTypeFactory" title="superduperdb.components.datatype.DataTypeFactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataTypeFactory</span></code></a></p>
+<p>A factory for numpy arrays.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.numpy.encoder.NumpyDataTypeFactory.check">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/numpy/encoder.html#NumpyDataTypeFactory.check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.numpy.encoder.NumpyDataTypeFactory.check" title="Link to this definition">¶</a></dt>
+<dd><p>Check if the data is a numpy array.</p>
+<p>It’s used for registering the auto schema.
+:param data: The data to check.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.numpy.encoder.NumpyDataTypeFactory.create">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="superduperdb.components.html#superduperdb.components.datatype.DataType" title="superduperdb.components.datatype.DataType"><span class="pre">DataType</span></a></span></span><a class="reference internal" href="../_modules/superduperdb/ext/numpy/encoder.html#NumpyDataTypeFactory.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.numpy.encoder.NumpyDataTypeFactory.create" title="Link to this definition">¶</a></dt>
+<dd><p>Create a numpy array datatype.</p>
+<p>It’s used for registering the auto schema.
+:param data: The numpy array.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -334,6 +400,8 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dtype</strong> – The dtype of the array.</p></li>
 <li><p><strong>shape</strong> – The shape of the array.</p></li>
+<li><p><strong>bytes_encoding</strong> – The bytes encoding to use.</p></li>
+<li><p><strong>encodable</strong> – The encodable to use.</p></li>
 </ul>
 </dd>
 </dl>
@@ -351,6 +419,8 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dtype</strong> – The dtype of the array.</p></li>
 <li><p><strong>shape</strong> – The shape of the array.</p></li>
+<li><p><strong>bytes_encoding</strong> – The bytes encoding to use.</p></li>
+<li><p><strong>encodable</strong> – The encodable to use.</p></li>
 </ul>
 </dd>
 </dl>
@@ -417,8 +487,19 @@
 <li><a class="reference internal" href="#">superduperdb.ext.numpy package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-superduperdb.ext.numpy.encoder">superduperdb.ext.numpy.encoder module</a><ul>
-<li><a class="reference internal" href="#superduperdb.ext.numpy.encoder.DecodeArray"><code class="docutils literal notranslate"><span class="pre">DecodeArray</span></code></a></li>
-<li><a class="reference internal" href="#superduperdb.ext.numpy.encoder.EncodeArray"><code class="docutils literal notranslate"><span class="pre">EncodeArray</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.numpy.encoder.DecodeArray"><code class="docutils literal notranslate"><span class="pre">DecodeArray</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.numpy.encoder.DecodeArray.__call__"><code class="docutils literal notranslate"><span class="pre">DecodeArray.__call__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.numpy.encoder.EncodeArray"><code class="docutils literal notranslate"><span class="pre">EncodeArray</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.numpy.encoder.EncodeArray.__call__"><code class="docutils literal notranslate"><span class="pre">EncodeArray.__call__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#superduperdb.ext.numpy.encoder.NumpyDataTypeFactory"><code class="docutils literal notranslate"><span class="pre">NumpyDataTypeFactory</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.numpy.encoder.NumpyDataTypeFactory.check"><code class="docutils literal notranslate"><span class="pre">NumpyDataTypeFactory.check()</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.numpy.encoder.NumpyDataTypeFactory.create"><code class="docutils literal notranslate"><span class="pre">NumpyDataTypeFactory.create()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#superduperdb.ext.numpy.encoder.array"><code class="docutils literal notranslate"><span class="pre">array()</span></code></a></li>
 </ul>
 </li>

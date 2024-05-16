@@ -319,23 +319,23 @@
 <div class="viewcode-block" id="JinaAPIClient">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.jina.html#superduperdb.ext.jina.client.JinaAPIClient">[docs]</a>
 <span class="k">class</span> <span class="nc">JinaAPIClient</span><span class="p">:</span>
-<div class="viewcode-block" id="JinaAPIClient.__init__">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.jina.html#superduperdb.ext.jina.client.JinaAPIClient.__init__">[docs]</a>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A client for the Jina Embedding platform.</span>
+
+<span class="sd">    Create a JinaAPIClient to provide an interface to encode using</span>
+<span class="sd">        Jina Embedding platform sync and async.</span>
+
+<span class="sd">    :param api_key: The Jina API key.</span>
+<span class="sd">        It can be explicitly provided or automatically read</span>
+<span class="sd">        from the environment variable JINA_API_KEY (recommended).</span>
+<span class="sd">    :param model_name: The name of the Jina model to use.</span>
+<span class="sd">        Check the list of available models on `https://jina.ai/embeddings/`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jina-embeddings-v2-base-en&#39;</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a JinaAPIClient to provide an interface to encode using</span>
-<span class="sd">            Jina Embedding platform sync and async.</span>
-
-<span class="sd">        :param api_key: The Jina API key.</span>
-<span class="sd">            It can be explicitly provided or automatically read</span>
-<span class="sd">            from the environment variable JINA_API_KEY (recommended).</span>
-<span class="sd">        :param model_name: The name of the Jina model to use.</span>
-<span class="sd">         Check the list of available models on `https://jina.ai/embeddings/`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># if the user does not provide the API key,</span>
         <span class="c1"># check if it is set in the environment variable</span>
         <span class="k">if</span> <span class="n">api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -348,13 +348,16 @@
             <span class="s2">&quot;Accept-Encoding&quot;</span><span class="p">:</span> <span class="s2">&quot;identity&quot;</span><span class="p">,</span>
             <span class="s2">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="p">)</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_headers</span><span class="p">)</span>
 
 <div class="viewcode-block" id="JinaAPIClient.encode_batch">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.jina.html#superduperdb.ext.jina.client.JinaAPIClient.encode_batch">[docs]</a>
     <span class="nd">@retry</span>
     <span class="k">def</span> <span class="nf">encode_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Encode a batch of texts synchronously.</span>
+
+<span class="sd">        :param texts: The list of texts to encode.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">JINA_API_URL</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">texts</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="p">}</span>
         <span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
@@ -371,6 +374,10 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.jina.html#superduperdb.ext.jina.client.JinaAPIClient.aencode_batch">[docs]</a>
     <span class="nd">@retry</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">aencode_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Encode a batch of texts asynchronously.</span>
+
+<span class="sd">        :param texts: The list of texts to encode.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">async</span> <span class="k">with</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
             <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="p">,</span>

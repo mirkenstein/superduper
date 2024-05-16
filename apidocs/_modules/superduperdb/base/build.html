@@ -300,7 +300,8 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for superduperdb.base.build</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
@@ -309,6 +310,7 @@
 <span class="kn">import</span> <span class="nn">mongomock</span>
 <span class="kn">import</span> <span class="nn">pandas</span>
 <span class="kn">import</span> <span class="nn">pymongo</span>
+<span class="kn">from</span> <span class="nn">prettytable</span> <span class="kn">import</span> <span class="n">PrettyTable</span>
 
 <span class="kn">import</span> <span class="nn">superduperdb</span> <span class="k">as</span> <span class="nn">s</span>
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
@@ -317,8 +319,10 @@
 <span class="kn">from</span> <span class="nn">superduperdb.backends.local.artifacts</span> <span class="kn">import</span> <span class="n">FileSystemArtifactStore</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.local.compute</span> <span class="kn">import</span> <span class="n">LocalComputeBackend</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.mongodb.artifacts</span> <span class="kn">import</span> <span class="n">MongoArtifactStore</span>
+<span class="kn">from</span> <span class="nn">superduperdb.backends.mongodb.utils</span> <span class="kn">import</span> <span class="n">get_avaliable_conn</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.ray.compute</span> <span class="kn">import</span> <span class="n">RayComputeBackend</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
+<span class="kn">from</span> <span class="nn">superduperdb.misc.anonymize</span> <span class="kn">import</span> <span class="n">anonymize_url</span>
 
 
 <span class="k">def</span> <span class="nf">_build_metadata</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">databackend</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;BaseDataBackend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -399,12 +403,10 @@
 <span class="k">def</span> <span class="nf">_build_databackend_impl</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;data_backend&#39;</span><span class="p">):</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsing data connection URI:</span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+    <span class="c1"># TODO: Should we move the following code to the DataBackend classes?</span>
     <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^mongodb:\/\/&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">conn</span><span class="p">:</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span>
-            <span class="n">uri</span><span class="p">,</span>
-            <span class="n">serverSelectionTimeoutMS</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="n">conn</span> <span class="o">=</span> <span class="n">get_avaliable_conn</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">serverSelectionTimeoutMS</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;mongodb&#39;</span><span class="p">](</span><span class="n">conn</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^mongodb\+srv:\/\/&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">):</span>
@@ -424,15 +426,20 @@
         <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;metadata&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot build metadata from a CSV file.&#39;</span><span class="p">)</span>
 
-        <span class="kn">import</span> <span class="nn">glob</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;://&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="n">csv_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+        <span class="n">dir_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
         <span class="n">tables</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">csv_file</span> <span class="ow">in</span> <span class="n">csv_files</span><span class="p">:</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
-            <span class="n">tables</span><span class="p">[</span><span class="n">filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
+            <span class="n">tables</span><span class="p">[</span><span class="n">filename</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">df</span>
         <span class="n">ibis_conn</span> <span class="o">=</span> <span class="n">ibis</span><span class="o">.</span><span class="n">pandas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">tables</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;ibis&#39;</span><span class="p">](</span><span class="n">ibis_conn</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">mapping</span><span class="p">[</span><span class="s1">&#39;ibis&#39;</span><span class="p">](</span><span class="n">ibis_conn</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">uri</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s1">&#39;data_backend&#39;</span><span class="p">:</span>
@@ -466,7 +473,6 @@
 <span class="sd">                        If None, use ``superduperdb.CFG.data_backend``.</span>
 <span class="sd">    :pararm kwargs: keyword arguments to be adopted by the `CFG`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># Configuration</span>
     <span class="c1"># ------------------------------</span>
     <span class="c1"># Use the provided configuration or fall back to the default configuration.</span>
@@ -489,7 +495,36 @@
     <span class="c1"># Keep the real configuration in the datalayer object.</span>
     <span class="n">datalayer</span><span class="o">.</span><span class="n">cfg</span> <span class="o">=</span> <span class="n">cfg</span>
 
+    <span class="n">show_configuration</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">datalayer</span></div>
+
+
+
+<div class="viewcode-block" id="show_configuration">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.build.show_configuration">[docs]</a>
+<span class="k">def</span> <span class="nf">show_configuration</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Show the configuration.</span>
+
+<span class="sd">    Only show the important configuration values and anonymize the URLs.</span>
+
+<span class="sd">    :param cfg: The configuration object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">PrettyTable</span><span class="p">()</span>
+    <span class="n">table</span><span class="o">.</span><span class="n">field_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Configuration&quot;</span><span class="p">,</span> <span class="s2">&quot;Value&quot;</span><span class="p">]</span>
+    <span class="c1"># Only show the important configuration values.</span>
+    <span class="n">key_values</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;Data Backend&#39;</span><span class="p">,</span> <span class="n">anonymize_url</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">data_backend</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;Metadata Store&#39;</span><span class="p">,</span> <span class="n">anonymize_url</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">metadata_store</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;Artifact Store&#39;</span><span class="p">,</span> <span class="n">anonymize_url</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">artifact_store</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s1">&#39;Compute&#39;</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">compute</span><span class="o">.</span><span class="n">uri</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;CDC&#39;</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">cdc</span><span class="o">.</span><span class="n">uri</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;Vector Search&#39;</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">uri</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">key_values</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">([</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">])</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Configuration: </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 </pre></div>
         </article>

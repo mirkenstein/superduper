@@ -307,12 +307,17 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">LoadDict</span>
     <span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">DataType</span>
 
 
 <div class="viewcode-block" id="str_shape">
 <a class="viewcode-back" href="../../../source/superduperdb.ext.html#superduperdb.ext.utils.str_shape">[docs]</a>
 <span class="k">def</span> <span class="nf">str_shape</span><span class="p">(</span><span class="n">shape</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a shape to a string.</span>
+
+<span class="sd">    :param shape: The shape to convert.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">shape</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Shape was empty&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="s1">&#39;x&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">shape</span><span class="p">)</span></div>
@@ -322,6 +327,10 @@
 <div class="viewcode-block" id="get_key">
 <a class="viewcode-back" href="../../../source/superduperdb.ext.html#superduperdb.ext.utils.get_key">[docs]</a>
 <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="n">key_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get an environment variable.</span>
+
+<span class="sd">    :param key_name: The name of the environment variable to get.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">key_name</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
@@ -332,6 +341,12 @@
 <div class="viewcode-block" id="format_prompt">
 <a class="viewcode-back" href="../../../source/superduperdb.ext.html#superduperdb.ext.utils.format_prompt">[docs]</a>
 <span class="k">def</span> <span class="nf">format_prompt</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Format a prompt with the given input and context.</span>
+
+<span class="sd">    :param X: The input to format the prompt with.</span>
+<span class="sd">    :param prompt: The prompt to format.</span>
+<span class="sd">    :param context: The context to format the prompt with.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">format_params</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="s1">&#39;</span><span class="si">{input}</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">prompt</span><span class="p">:</span>
         <span class="n">format_params</span><span class="p">[</span><span class="s1">&#39;input&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
@@ -354,6 +369,10 @@
 <div class="viewcode-block" id="superduperencode">
 <a class="viewcode-back" href="../../../source/superduperdb.ext.html#superduperdb.ext.utils.superduperencode">[docs]</a>
 <span class="k">def</span> <span class="nf">superduperencode</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Encode an object using superduper.</span>
+
+<span class="sd">    :param object: The object to encode.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">superduperdb.ext.numpy</span> <span class="kn">import</span> <span class="n">array</span>
 
@@ -367,7 +386,12 @@
 
 <div class="viewcode-block" id="superduperdecode">
 <a class="viewcode-back" href="../../../source/superduperdb.ext.html#superduperdb.ext.utils.superduperdecode">[docs]</a>
-<span class="k">def</span> <span class="nf">superduperdecode</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="s1">&#39;DataType&#39;</span><span class="p">]):</span>
+<span class="k">def</span> <span class="nf">superduperdecode</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">encoders</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;DataType&#39;</span><span class="p">],</span> <span class="s1">&#39;LoadDict&#39;</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decode a superduper encoded object.</span>
+
+<span class="sd">    :param r: The object to decode.</span>
+<span class="sd">    :param encoders: The encoders to use.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">encoder</span> <span class="o">=</span> <span class="n">encoders</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;datatype&#39;</span><span class="p">]]</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;bytes&#39;</span><span class="p">])</span>

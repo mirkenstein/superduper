@@ -307,6 +307,10 @@
 <div class="viewcode-block" id="hash_string">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.hash.hash_string">[docs]</a>
 <span class="k">def</span> <span class="nf">hash_string</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Hash a string.</span>
+
+<span class="sd">    :param string: string to hash</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
 
 
@@ -314,6 +318,11 @@
 <div class="viewcode-block" id="hash_dict">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.hash.hash_dict">[docs]</a>
 <span class="k">def</span> <span class="nf">hash_dict</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Hash a dictionary.</span>
+
+<span class="sd">    :param data: dictionary to hash</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">sorted</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">process</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
@@ -330,10 +339,7 @@
 <div class="viewcode-block" id="random_sha1">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.hash.random_sha1">[docs]</a>
 <span class="k">def</span> <span class="nf">random_sha1</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generate random sha1 values</span>
-<span class="sd">    Can be used to generate file_id and other values</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate random sha1 values.&quot;&quot;&quot;</span>
     <span class="n">random_data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span>
     <span class="n">sha1</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">()</span>
     <span class="n">sha1</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">random_data</span><span class="p">)</span>

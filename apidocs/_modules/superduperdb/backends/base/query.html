@@ -335,21 +335,29 @@
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempt to access illegal attribute &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
 
+<span class="c1"># TODO: Remove unused code</span>
 <div class="viewcode-block" id="model">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.model">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">model</span><span class="p">(</span><span class="n">Serializable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Model.</span>
+
+<span class="sd">    :param identifier: The identifier of the model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
 
 <div class="viewcode-block" id="model.predict_one">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.model.predict_one">[docs]</a>
     <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict one.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">PredictOne</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="model.predict">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.model.predict">[docs]</a>
     <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 </div>
 
@@ -358,6 +366,8 @@
 <div class="viewcode-block" id="Predict">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Predict">[docs]</a>
 <span class="k">class</span> <span class="nc">Predict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all prediction queries.&quot;&quot;&quot;</span>
+
     <span class="o">...</span></div>
 
 
@@ -366,6 +376,13 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.PredictOne">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">PredictOne</span><span class="p">(</span><span class="n">Predict</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A query to predict a single document.</span>
+
+<span class="sd">    :param model: The model to use</span>
+<span class="sd">    :param args: The arguments to pass to the model</span>
+<span class="sd">    :param kwargs: The keyword arguments to pass to the model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">model</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">args</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
@@ -373,6 +390,10 @@
 <div class="viewcode-block" id="PredictOne.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.PredictOne.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">]</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">predict_one</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span> <span class="n">DataType</span><span class="p">):</span>
@@ -390,16 +411,16 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Select">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Select</span><span class="p">(</span><span class="n">Serializable</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for all select queries.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all select queries.&quot;&quot;&quot;</span>
 
     <span class="nd">@abstractproperty</span>
     <span class="k">def</span> <span class="nf">id_field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the primary id of the table.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">query_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the query components of the query.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">query_components</span>
 
 <div class="viewcode-block" id="Select.model_update">
@@ -417,8 +438,7 @@
 
 <span class="sd">        :param db: The DB instance to use</span>
 <span class="sd">        :param ids: The ids to update</span>
-<span class="sd">        :param key: The key to update</span>
-<span class="sd">        :param model: The model to update</span>
+<span class="sd">        :param predict_id: The predict_id of the outputs</span>
 <span class="sd">        :param outputs: The outputs to update</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">model_update</span><span class="p">(</span>
@@ -432,12 +452,17 @@
 
     <span class="nd">@abstractproperty</span>
     <span class="k">def</span> <span class="nf">select_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a select query for the table.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="Select.add_fold">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Select.add_fold">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">add_fold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fold</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Select&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a fold to the query.</span>
+
+<span class="sd">        :param fold: The fold to add</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -445,17 +470,25 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Select.select_using_ids">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">select_using_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Select&#39;</span><span class="p">:</span>
-        <span class="k">pass</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a query that selects only the given ids.</span>
+
+<span class="sd">        :param ids: The ids to select</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
 
     <span class="nd">@abstractproperty</span>
     <span class="k">def</span> <span class="nf">select_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Select&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a query that selects only the ids.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="Select.select_ids_of_missing_outputs">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Select.select_ids_of_missing_outputs">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">select_ids_of_missing_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predict_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Select&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a query that selects ids where outputs are missing.</span>
+
+<span class="sd">        :param predict_id: The predict_id of the outputs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -463,6 +496,10 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Select.select_single_id">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">select_single_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Select&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a query that selects a single id.</span>
+
+<span class="sd">        :param id: The id to select</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -470,8 +507,10 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Select.execute">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Execute the query on the DB instance.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query on the DB instance.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        :param reference: Whether to return a reference to the data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
@@ -483,7 +522,7 @@
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Delete</span><span class="p">(</span><span class="n">Serializable</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for all deletion queries</span>
+<span class="sd">    Base class for all deletion queries.</span>
 
 <span class="sd">    :param table_or_collection: The table or collection that this query is linked to</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -496,6 +535,10 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Delete.execute">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
 
@@ -506,7 +549,7 @@
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Update</span><span class="p">(</span><span class="n">Serializable</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for all update queries</span>
+<span class="sd">    Base class for all update queries.</span>
 
 <span class="sd">    :param table_or_collection: The table or collection that this query is linked to</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -517,6 +560,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Update.select_table">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">select_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a select query for the table.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -524,6 +568,10 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Update.execute">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
 
@@ -534,7 +582,7 @@
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Write</span><span class="p">(</span><span class="n">Serializable</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for all bulk write queries</span>
+<span class="sd">    Base class for all bulk write queries.</span>
 
 <span class="sd">    :param table_or_collection: The table or collection that this query is linked to</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -545,6 +593,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Write.select_table">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">select_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a select query for the table.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -552,6 +601,10 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Write.execute">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query on the DB instance.</span>
+
+<span class="sd">        :param db: The datalaer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
 
@@ -572,7 +625,6 @@
 <span class="sd">                      (e.g. ``table.filter(...)....like(...)``)</span>
 <span class="sd">    :param query_linker: The query linker that is responsible for linking the</span>
 <span class="sd">                         query chain. E.g. ``table.filter(...).select(...)``.</span>
-<span class="sd">    :param i: The index of the query in the query chain</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">table_or_collection</span><span class="p">:</span> <span class="s1">&#39;TableOrCollection&#39;</span>
@@ -582,19 +634,26 @@
 
     <span class="nd">@abstractproperty</span>
     <span class="k">def</span> <span class="nf">output_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the output fields of the query.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id_field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the primary id of the table.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">primary_id</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">primary_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the primary id of the table.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">primary_id</span>
 
 <div class="viewcode-block" id="CompoundSelect.add_fold">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.CompoundSelect.add_fold">[docs]</a>
     <span class="k">def</span> <span class="nf">add_fold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fold</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a fold to the query.</span>
+
+<span class="sd">        :param fold: The fold to add</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_like</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -606,10 +665,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">select_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Query which selects the same documents/ rows but only ids.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Query which selects the same documents/ rows but only ids.&quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_like</span> <span class="ow">is</span> <span class="kc">None</span>
 
@@ -621,10 +677,10 @@
 <div class="viewcode-block" id="CompoundSelect.select_ids_of_missing_outputs">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.CompoundSelect.select_ids_of_missing_outputs">[docs]</a>
     <span class="k">def</span> <span class="nf">select_ids_of_missing_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predict_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Query which selects ids where outputs are missing.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Query which selects ids where outputs are missing.</span>
 
+<span class="sd">        :param predict_id: The predict_id of the outputs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_like</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -663,7 +719,6 @@
 
 <span class="sd">        :param ids: The ids to subset to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_like</span> <span class="ow">is</span> <span class="kc">None</span>
 
@@ -676,10 +731,7 @@
 <div class="viewcode-block" id="CompoundSelect.repr_">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.CompoundSelect.repr_">[docs]</a>
     <span class="k">def</span> <span class="nf">repr_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        String representation of the query.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;String representation of the query.&quot;&quot;&quot;</span>
         <span class="n">components</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span><span class="p">:</span>
@@ -738,14 +790,18 @@
             <span class="n">query_linker</span><span class="o">=</span><span class="n">query_linker</span><span class="p">,</span>
         <span class="p">)</span>
 
+<div class="viewcode-block" id="CompoundSelect.__call__">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.CompoundSelect.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a query to the query chain.&quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_like</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_from_parts</span><span class="p">(</span>
             <span class="n">table_or_collection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="p">,</span>
             <span class="n">pre_like</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span><span class="p">,</span>
             <span class="n">query_linker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="CompoundSelect.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.CompoundSelect.execute">[docs]</a>
@@ -755,12 +811,19 @@
 <span class="sd">        Execute the compound query on the DB instance.</span>
 
 <span class="sd">        :param db: The DB instance to use</span>
+<span class="sd">        :param load_hybrid: Whether to load hybrid fields</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="CompoundSelect.like">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.CompoundSelect.like">[docs]</a>
     <span class="k">def</span> <span class="nf">like</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span> <span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a query that performs a vector search.</span>
+
+<span class="sd">        :param r: The document to search for</span>
+<span class="sd">        :param vector_index: The vector index to use</span>
+<span class="sd">        :param n: The number of results to return</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_from_parts</span><span class="p">(</span>
@@ -782,10 +845,8 @@
 
 <span class="sd">    :param table_or_collection: The table or collection that this query is linked to</span>
 <span class="sd">    :param documents: The documents to insert</span>
-<span class="sd">    :param refresh: Whether to refresh the task-graph after inserting</span>
 <span class="sd">    :param verbose: Whether to print the progress of the insert</span>
 <span class="sd">    :param kwargs: Any additional keyword arguments to pass to the insert method</span>
-<span class="sd">    :param encoders: The encoders to use to encode the documents</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">table_or_collection</span><span class="p">:</span> <span class="s1">&#39;TableOrCollection&#39;</span>
@@ -796,6 +857,7 @@
 <div class="viewcode-block" id="Insert.repr_">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Insert.repr_">[docs]</a>
     <span class="k">def</span> <span class="nf">repr_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;String representation of the query.&quot;&quot;&quot;</span>
         <span class="n">documents_str</span> <span class="o">=</span> <span class="p">(</span>
             <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">documents</span><span class="p">)[:</span><span class="mi">25</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;...&#39;</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">documents</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">25</span>
@@ -808,6 +870,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Insert.select_table">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">select_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a select query for the inserted documents.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -826,6 +889,10 @@
 <div class="viewcode-block" id="Insert.to_select">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Insert.to_select">[docs]</a>
     <span class="k">def</span> <span class="nf">to_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a select query for the inserted documents.</span>
+
+<span class="sd">        :param ids: The ids to select</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">documents</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;_id&#39;</span><span class="p">:</span> <span class="n">ids</span><span class="p">})</span></div>
@@ -836,21 +903,66 @@
 <div class="viewcode-block" id="QueryType">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.QueryType">[docs]</a>
 <span class="k">class</span> <span class="nc">QueryType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The type of a query. Either `query` or `attr`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The type of a query. Either `query` or `attr`.&quot;&quot;&quot;</span>
 
     <span class="n">QUERY</span> <span class="o">=</span> <span class="s1">&#39;query&#39;</span>
     <span class="n">ATTR</span> <span class="o">=</span> <span class="s1">&#39;attr&#39;</span></div>
 
 
 
+<span class="k">def</span> <span class="nf">_deep_flat_encode_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">json</span>
+    <span class="kn">import</span> <span class="nn">uuid</span>
+
+    <span class="n">out_str</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">documents</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">dc</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">}:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;args&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
+                    <span class="nb">id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                    <span class="n">out_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;_documents[</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">)</span>
+                    <span class="n">documents</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg</span>
+                    <span class="k">continue</span>
+                <span class="n">out_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">))</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
+                    <span class="nb">id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                    <span class="n">out_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">=_documents[</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">)</span>
+                    <span class="n">documents</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+                    <span class="n">out_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="n">out_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">=_documents[</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">)</span>
+            <span class="n">documents</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+            <span class="n">out_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">out_str</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_str</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">out_str</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">documents</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">out_str</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">documents</span>
+
+
 <div class="viewcode-block" id="QueryComponent">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.QueryComponent">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">QueryComponent</span><span class="p">(</span><span class="n">Serializable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This is a representation of a single query object in ibis query chain.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;QueryComponent is a representation of a query object in ibis query chain.</span>
+
 <span class="sd">    This is used to build a query chain that can be executed on a database.</span>
 <span class="sd">    Query will be executed in the order they are added to the chain.</span>
 
@@ -864,6 +976,7 @@
 <span class="sd">    :param type: The type of the query, either `query` or `attr`</span>
 <span class="sd">    :param args: The arguments to pass to the query</span>
 <span class="sd">    :param kwargs: The keyword arguments to pass to the query</span>
+<span class="sd">    :param _deep_flat_encode: The method to encode the query</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
@@ -871,9 +984,12 @@
     <span class="n">args</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
 
+    <span class="n">_deep_flat_encode</span> <span class="o">=</span> <span class="n">_deep_flat_encode_impl</span>
+
 <div class="viewcode-block" id="QueryComponent.repr_">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.QueryComponent.repr_">[docs]</a>
     <span class="k">def</span> <span class="nf">repr_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;String representation of the query.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">ATTR</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
@@ -895,7 +1011,10 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">joined</span><span class="si">}</span><span class="s1">)&#39;</span></div>
 
 
+<div class="viewcode-block" id="QueryComponent.__call__">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.QueryComponent.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a query to the query chain.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">assert</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">ATTR</span>
@@ -908,11 +1027,16 @@
             <span class="nb">type</span><span class="o">=</span><span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span><span class="p">,</span>
             <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span>
             <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="QueryComponent.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.QueryComponent.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query on the parent object.</span>
+
+<span class="sd">        :param parent: The parent object to execute the query on.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">ATTR</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span>
@@ -926,7 +1050,8 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.QueryLinker">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">QueryLinker</span><span class="p">(</span><span class="n">_ReprMixin</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;QueryLinker is a representation of a query chain.</span>
+
 <span class="sd">    This class is responsible for linking together a query using</span>
 <span class="sd">    `getattr` and `__call__`.</span>
 
@@ -953,11 +1078,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">query_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the query components of the query chain.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">query_components</span>
 
 <div class="viewcode-block" id="QueryLinker.repr_">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.QueryLinker.repr_">[docs]</a>
     <span class="k">def</span> <span class="nf">repr_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;String representation of the query.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="o">+</span> <span class="s1">&#39;.&#39;</span>
@@ -987,12 +1114,20 @@
     <span class="nd">@property</span>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">select_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a query that selects only the ids.</span>
+
+<span class="sd">        This is used to select only the ids of the documents.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="QueryLinker.select_single_id">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.QueryLinker.select_single_id">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">select_single_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a query that selects a single id.</span>
+
+<span class="sd">        :param id: The id to select</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -1000,17 +1135,29 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.QueryLinker.select_using_ids">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">select_using_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a query that selects only the given ids.</span>
+
+<span class="sd">        :param ids: The ids to select</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
+<div class="viewcode-block" id="QueryLinker.__call__">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.QueryLinker.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a query to the query chain.&quot;&quot;&quot;</span>
         <span class="n">members</span> <span class="o">=</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">table_or_collection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="p">,</span> <span class="n">members</span><span class="o">=</span><span class="n">members</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="n">table_or_collection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="p">,</span> <span class="n">members</span><span class="o">=</span><span class="n">members</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="QueryLinker.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.QueryLinker.execute">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
 
@@ -1026,15 +1173,23 @@
 <span class="sd">    :param r: The item to be converted to a vector, to search with.</span>
 <span class="sd">    :param vector_index: The vector index to use</span>
 <span class="sd">    :param n: The number of results to return</span>
+<span class="sd">    :param _deep_flat_encode: The method to encode the query</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">Document</span><span class="p">]</span>
     <span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
 
+    <span class="n">_deep_flat_encode</span> <span class="o">=</span> <span class="n">_deep_flat_encode_impl</span>
+
 <div class="viewcode-block" id="Like.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.Like.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        :param ids: The ids to search for</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">select_nearest</span><span class="p">(</span>
             <span class="n">like</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span>
             <span class="n">vector_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span><span class="p">,</span>
@@ -1049,10 +1204,11 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.TableOrCollection">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">TableOrCollection</span><span class="p">(</span><span class="n">Serializable</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This is a representation of an SQL table in ibis.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base class for all tables and collections.</span>
 
-<span class="sd">    :param identifier: The name of the table</span>
+<span class="sd">    Defines the interface for all tables and collections.</span>
+
+<span class="sd">    :param identifier: The identifier of the table or collection.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">query_components</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1080,6 +1236,14 @@
         <span class="n">flatten</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update model outputs for a set of ids.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        :param ids: The ids to update</span>
+<span class="sd">        :param predict_id: The predict_id of outputs</span>
+<span class="sd">        :param outputs: The outputs to update</span>
+<span class="sd">        :param flatten: Whether to flatten the output</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -1087,6 +1251,10 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.TableOrCollection.insert">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">documents</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Insert</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return Insert query.</span>
+
+<span class="sd">        :param documents: The documents to insert</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -1117,7 +1285,8 @@
         <span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a query that performs a vector search.</span>
+
 <span class="sd">        This method appends a query to the query chain where the query is repsonsible</span>
 <span class="sd">        for performing a vector search on the parent query chain inputs.</span>
 
@@ -1152,15 +1321,21 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.RawQuery">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">RawQuery</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A raw query object.</span>
+
+<span class="sd">    :param query: The raw query to execute.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">query</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span>
 
 <div class="viewcode-block" id="RawQuery.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.query.RawQuery.execute">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        A raw query method which executes the query and returns the result</span>
-<span class="sd">        &#39;&#39;&#39;</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A raw query method which executes the query and returns the result.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 </div>
 
 </pre></div>

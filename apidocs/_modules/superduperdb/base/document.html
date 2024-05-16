@@ -306,6 +306,7 @@
 
 <span class="kn">from</span> <span class="nn">bson.objectid</span> <span class="kn">import</span> <span class="n">ObjectId</span>
 
+<span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.code</span> <span class="kn">import</span> <span class="n">Code</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.leaf</span> <span class="kn">import</span> <span class="n">Leaf</span><span class="p">,</span> <span class="n">find_leaf_cls</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">Serializable</span>
@@ -338,11 +339,10 @@
 <div class="viewcode-block" id="Document">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.Document">[docs]</a>
 <span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">MongoStyleDict</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A wrapper around an instance of dict or a Encodable which may be used to dump</span>
-<span class="sd">    that resource to a mix of json-able content, ids and `bytes`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper around an instance of dict or a Encodable.</span>
 
-<span class="sd">    :param content: The content to wrap</span>
+<span class="sd">    The document data is used to dump that resource to a mix of json-able content, ids and `bytes`</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_DEFAULT_ID_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;_id&#39;</span>
@@ -354,7 +354,11 @@
         <span class="n">schema</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Schema&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Type</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make a copy of the content with all the Leaves encoded&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make a copy of the content with all the Leaves encoded.</span>
+
+<span class="sd">        :param schema: The schema to encode with.</span>
+<span class="sd">        :param leaf_types_to_keep: The types of leaves to keep.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">schema</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_encode_with_schema</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">schema</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_encode</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">leaf_types_to_keep</span><span class="p">)</span></div>
@@ -362,20 +366,29 @@
 
 <div class="viewcode-block" id="Document.get_leaves">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.Document.get_leaves">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_leaves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">leaf_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="n">keys</span><span class="p">,</span> <span class="n">leaves</span> <span class="o">=</span> <span class="n">_find_leaves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">leaf_type</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_leaves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">leaf_types</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all the leaves in the document.</span>
+
+<span class="sd">        :param *leaf_types: The types of leaves to get.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">keys</span><span class="p">,</span> <span class="n">leaves</span> <span class="o">=</span> <span class="n">_find_leaves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">leaf_types</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">leaves</span><span class="p">))</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of variables in the object.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">_find_variables</span>
 
         <span class="k">return</span> <span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Document.set_variables">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.Document.set_variables">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">set_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s1">&#39;Datalayer&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set free variables of self.</span>
+
+<span class="sd">        :param db: The datalayer to use.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">_replace_variables</span>
 
         <span class="n">content</span> <span class="o">=</span> <span class="n">_replace_variables</span><span class="p">(</span>
@@ -387,19 +400,17 @@
 <div class="viewcode-block" id="Document.decode">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.Document.decode">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span>
-        <span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span>
-        <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Datalayer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Datalayer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode the object from a encoded data.</span>
+
+<span class="sd">        :param r: Encoded data.</span>
+<span class="sd">        :param db: Datalayer instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="s1">&#39;_artifacts&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
-            <span class="n">decoded_artifacts</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-                <span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">({</span><span class="s1">&#39;_base&#39;</span><span class="p">:</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_artifacts&#39;</span><span class="p">]},</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
-            <span class="p">)[</span><span class="s1">&#39;_base&#39;</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">decoded_artifacts</span><span class="p">:</span>
-                <span class="n">cache</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">file_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
-            <span class="k">del</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_artifacts&#39;</span><span class="p">]</span>
-        <span class="n">decoded</span> <span class="o">=</span> <span class="n">_decode</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">artifact_cache</span><span class="o">=</span><span class="n">cache</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;_leaves&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+            <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_leaves&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_build_leaves</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_leaves&#39;</span><span class="p">],</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
+            <span class="n">cache</span> <span class="o">=</span> <span class="p">{</span><span class="n">sub</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]:</span> <span class="n">sub</span> <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_leaves&#39;</span><span class="p">]}</span>
+        <span class="n">decoded</span> <span class="o">=</span> <span class="n">_decode</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">leaf_cache</span><span class="o">=</span><span class="n">cache</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">decoded</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">decoded</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">decoded</span></div>
@@ -411,7 +422,11 @@
 <div class="viewcode-block" id="Document.unpack">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.Document.unpack">[docs]</a>
     <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">leaves_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the content, but with any encodables replaced by their contents&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the content, but with any encodables replaced by their contents.</span>
+
+<span class="sd">        :param db: The datalayer to use.</span>
+<span class="sd">        :param leaves_to_keep: The types of leaves to keep.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">_unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">leaves_to_keep</span><span class="o">=</span><span class="n">leaves_to_keep</span><span class="p">)</span>
         <span class="k">if</span> <span class="s1">&#39;_base&#39;</span> <span class="ow">in</span> <span class="n">out</span><span class="p">:</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;_base&#39;</span><span class="p">]</span>
@@ -420,12 +435,12 @@
 
 
 
-<span class="k">def</span> <span class="nf">_find_leaves</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">leaf_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_find_leaves</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">leaf_types</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">leaves</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">sub_keys</span><span class="p">,</span> <span class="n">sub_leaves</span> <span class="o">=</span> <span class="n">_find_leaves</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">leaf_type</span><span class="p">)</span>
+            <span class="n">sub_keys</span><span class="p">,</span> <span class="n">sub_leaves</span> <span class="o">=</span> <span class="n">_find_leaves</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">*</span><span class="n">leaf_types</span><span class="p">)</span>
             <span class="n">leaves</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sub_leaves</span><span class="p">)</span>
             <span class="n">keys</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">sub_key</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">sub_key</span> <span class="k">else</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">sub_key</span> <span class="ow">in</span> <span class="n">sub_keys</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">keys</span><span class="p">,</span> <span class="n">leaves</span>
@@ -433,13 +448,16 @@
         <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">leaves</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-            <span class="n">sub_keys</span><span class="p">,</span> <span class="n">sub_leaves</span> <span class="o">=</span> <span class="n">_find_leaves</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">leaf_type</span><span class="p">)</span>
+            <span class="n">sub_keys</span><span class="p">,</span> <span class="n">sub_leaves</span> <span class="o">=</span> <span class="n">_find_leaves</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">leaf_types</span><span class="p">)</span>
             <span class="n">leaves</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sub_leaves</span><span class="p">)</span>
             <span class="n">keys</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">k</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sub_keys</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">keys</span><span class="p">,</span> <span class="n">leaves</span>
-    <span class="k">if</span> <span class="n">leaf_type</span><span class="p">:</span>
-        <span class="n">leaf_cls</span> <span class="o">=</span> <span class="n">_LEAF_TYPES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">leaf_type</span><span class="p">)</span> <span class="ow">or</span> <span class="n">find_leaf_cls</span><span class="p">(</span><span class="n">leaf_type</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">leaf_cls</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">leaf_types</span><span class="p">:</span>
+        <span class="n">leaf_clses</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">_LEAF_TYPES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">leaf_type</span><span class="p">)</span> <span class="ow">or</span> <span class="n">find_leaf_cls</span><span class="p">(</span><span class="n">leaf_type</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">leaf_type</span> <span class="ow">in</span> <span class="n">leaf_types</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">leaf_clses</span><span class="p">)):</span>
             <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">],</span> <span class="p">[</span><span class="n">r</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[],</span> <span class="p">[]</span>
@@ -453,24 +471,21 @@
 <span class="k">def</span> <span class="nf">_decode</span><span class="p">(</span>
     <span class="n">r</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
     <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">artifact_cache</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">leaf_cache</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;_content&#39;</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
         <span class="n">leaf_type</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;leaf_type&#39;</span><span class="p">]</span>
         <span class="n">leaf_cls</span> <span class="o">=</span> <span class="n">_LEAF_TYPES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">leaf_type</span><span class="p">)</span> <span class="ow">or</span> <span class="n">find_leaf_cls</span><span class="p">(</span><span class="n">leaf_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">leaf_cls</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
-        <span class="s1">&#39;^\$(artifacts|lazy_artifacts|blobs|encodables)\/&#39;</span><span class="p">,</span> <span class="n">r</span>
+        <span class="s1">&#39;^_(artifact|lazy_artifact|component|encodable)\/&#39;</span><span class="p">,</span> <span class="n">r</span>
     <span class="p">):</span>
-        <span class="n">type_</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">artifact_cache</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">artifact_cache</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">leaf_cache</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Leaf cache must be provided to decode&#39;</span>
+        <span class="k">return</span> <span class="n">leaf_cache</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">_decode</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">artifact_cache</span><span class="o">=</span><span class="n">artifact_cache</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_decode</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">leaf_cache</span><span class="o">=</span><span class="n">leaf_cache</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="n">k</span><span class="p">:</span> <span class="n">_decode</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">artifact_cache</span><span class="o">=</span><span class="n">artifact_cache</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_decode</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">leaf_cache</span><span class="o">=</span><span class="n">leaf_cache</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">r</span>
 
@@ -544,10 +559,30 @@
 <div class="viewcode-block" id="NotBuiltError">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.NotBuiltError">[docs]</a>
 <span class="k">class</span> <span class="nc">NotBuiltError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception for when a leaf is not built.</span>
+
+<span class="sd">    :param key: The key that was not built.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span></div>
 
+
+
+<span class="k">def</span> <span class="nf">_encode_flattened</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">,</span> <span class="n">leaf_cache</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Leaf</span><span class="p">):</span>
+        <span class="n">encoded</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">encode</span><span class="p">()[</span><span class="s1">&#39;_content&#39;</span><span class="p">]</span>
+        <span class="n">leaf_cache</span><span class="p">[</span><span class="n">encoded</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">encoded</span>
+        <span class="k">return</span> <span class="n">encoded</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_encode_flattened</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">,</span> <span class="n">leaf_cache</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="n">_encode_flattened</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">leaf_types_to_keep</span><span class="p">,</span> <span class="n">leaf_cache</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+    <span class="k">return</span> <span class="n">r</span>
 
 
 <span class="k">def</span> <span class="nf">_fetch_cache_keys</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">used</span><span class="p">):</span>
@@ -558,10 +593,11 @@
             <span class="k">return</span> <span class="n">out</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">NotBuiltError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Cache key </span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2"> not found in cache: available: </span><span class="si">{</span><span class="n">cache</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Cache key </span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2"> not found in cache: available: </span><span class="si">{</span><span class="n">cache</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="n">r</span><span class="p">,</span>
             <span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_fetch_cache_keys</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">used</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_fetch_cache_keys</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">used</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">&#39;id&#39;</span><span class="p">}</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">_fetch_cache_keys</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">used</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">r</span>
@@ -593,6 +629,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">r</span> <span class="o">=</span> <span class="n">_fetch_cache_keys</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">used</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">NotBuiltError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
                 <span class="n">missing_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="n">built</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
@@ -603,6 +640,16 @@
             <span class="k">break</span>
     <span class="n">exit_leaves</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cache</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">used</span> <span class="ow">and</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">default_keys</span><span class="p">]</span>
     <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cache</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">default_keys</span><span class="p">},</span> <span class="n">exit_leaves</span>
+
+
+<span class="k">def</span> <span class="nf">_deep_flat_encode</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">cache</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_deep_flat_encode</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">_deep_flat_encode</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">cache</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Leaf</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">_deep_flat_encode</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span>
 </pre></div>
         </article>
       </div>

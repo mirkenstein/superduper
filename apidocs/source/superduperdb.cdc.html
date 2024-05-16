@@ -316,6 +316,7 @@
 </section>
 <section id="module-superduperdb.cdc.cdc">
 <span id="superduperdb-cdc-cdc-module"></span><h2>superduperdb.cdc.cdc module<a class="headerlink" href="#module-superduperdb.cdc.cdc" title="Link to this heading">¶</a></h2>
+<p>CDC module for superduperdb.</p>
 <p>Change Data Capture (CDC) is a mechanism used in database systems to track
 and capture changes made to a table or collection in real-time.
 It allows applications to stay up-to-date with the latest changes in the database
@@ -343,6 +344,19 @@ db.cdc.listen(on=Collection(‘test_collection’))</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.cdc.cdc.</span></span><span class="sig-name descname"><span class="pre">BaseDatabaseListener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.backends.ibis.html#superduperdb.backends.ibis.query.Table" title="superduperdb.backends.ibis.query.Table"><span class="pre">Table</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.backends.base.html#superduperdb.backends.base.query.TableOrCollection" title="superduperdb.backends.base.query.TableOrCollection"><span class="pre">TableOrCollection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.misc.runnable.html#superduperdb.misc.runnable.runnable.Event" title="superduperdb.misc.runnable.runnable.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#BaseDatabaseListener"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.BaseDatabaseListener" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>A Base class which defines basic functions to implement.</p>
+<p>This class is responsible for defining the basic functions
+that needs to be implemented by the database listener.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – A superduperdb instance.</p></li>
+<li><p><strong>on</strong> – A table or collection on which the listener is invoked.</p></li>
+<li><p><strong>stop_event</strong> – A threading event flag to notify for stoppage.</p></li>
+<li><p><strong>identifier</strong> – A identity given to the listener service.</p></li>
+<li><p><strong>timeout</strong> – A timeout for the listener.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.BaseDatabaseListener.IDENTITY_SEP">
 <span class="sig-name descname"><span class="pre">IDENTITY_SEP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/'</span></em><a class="headerlink" href="#superduperdb.cdc.cdc.BaseDatabaseListener.IDENTITY_SEP" title="Link to this definition">¶</a></dt>
@@ -370,11 +384,12 @@ db.cdc.listen(on=Collection(‘test_collection’))</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.BaseDatabaseListener.create_event">
 <span class="sig-name descname"><span class="pre">create_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_or_collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.backends.ibis.html#superduperdb.backends.ibis.query.Table" title="superduperdb.backends.ibis.query.Table"><span class="pre">Table</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.backends.base.html#superduperdb.backends.base.query.TableOrCollection" title="superduperdb.backends.base.query.TableOrCollection"><span class="pre">TableOrCollection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#superduperdb.cdc.cdc.DBEvent" title="superduperdb.cdc.cdc.DBEvent"><span class="pre">DBEvent</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#BaseDatabaseListener.create_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.BaseDatabaseListener.create_event" title="Link to this definition">¶</a></dt>
-<dd><p>A helper to create packet based on the event type and put it on the cdc queue</p>
+<dd><p>Create an event.</p>
+<p>A helper to create packet based on the event type and put it on the cdc queue</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>change</strong> – The changed document.</p></li>
+<li><p><strong>ids</strong> – Document ids</p></li>
 <li><p><strong>db</strong> – a superduperdb instance.</p></li>
 <li><p><strong>table_or_collection</strong> – The collection on which change was observed.</p></li>
 <li><p><strong>event</strong> – CDC event type</p></li>
@@ -386,8 +401,8 @@ db.cdc.listen(on=Collection(‘test_collection’))</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.BaseDatabaseListener.event_handler">
 <span class="sig-name descname"><span class="pre">event_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#superduperdb.cdc.cdc.DBEvent" title="superduperdb.cdc.cdc.DBEvent"><span class="pre">DBEvent</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#BaseDatabaseListener.event_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.BaseDatabaseListener.event_handler" title="Link to this definition">¶</a></dt>
-<dd><p>event_handler.
-A helper fxn to handle incoming changes from change stream on a collection.</p>
+<dd><p>Handle the incoming change stream event.</p>
+<p>A helper fxn to handle incoming changes from change stream on a collection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -401,7 +416,8 @@ A helper fxn to handle incoming changes from change stream on a collection.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.BaseDatabaseListener.identity">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">identity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#superduperdb.cdc.cdc.BaseDatabaseListener.identity" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the database listener identity.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.BaseDatabaseListener.info">
@@ -412,37 +428,49 @@ A helper fxn to handle incoming changes from change stream on a collection.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.BaseDatabaseListener.listen">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#BaseDatabaseListener.listen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.BaseDatabaseListener.listen" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Start the database listener.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.BaseDatabaseListener.next_cdc">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">next_cdc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CollectionChangeStream</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#BaseDatabaseListener.next_cdc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.BaseDatabaseListener.next_cdc" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>next_cdc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stream</strong> – CollectionChangeStream</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.BaseDatabaseListener.on_create">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#BaseDatabaseListener.on_create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.BaseDatabaseListener.on_create" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Handle the create event.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.BaseDatabaseListener.on_delete">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#BaseDatabaseListener.on_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.BaseDatabaseListener.on_delete" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Handle the delete event.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.BaseDatabaseListener.on_update">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#BaseDatabaseListener.on_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.BaseDatabaseListener.on_update" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Handle the update event.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.BaseDatabaseListener.setup_cdc">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setup_cdc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">CollectionChangeStream</span></span></span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#BaseDatabaseListener.setup_cdc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.BaseDatabaseListener.setup_cdc" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>setup_cdc.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.BaseDatabaseListener.stop">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#BaseDatabaseListener.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.BaseDatabaseListener.stop" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Stop the database listener.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -450,9 +478,19 @@ A helper fxn to handle incoming changes from change stream on a collection.</p>
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.CDCHandler">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.cdc.cdc.</span></span><span class="sig-name descname"><span class="pre">CDCHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.misc.runnable.html#superduperdb.misc.runnable.runnable.Event" title="superduperdb.misc.runnable.runnable.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#CDCHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.CDCHandler" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Thread</span></code></p>
+<p>CDCHandler for handling CDC changes.</p>
 <p>This class is responsible for handling the change by executing the taskflow.
 This class also extends the task graph by adding funcation job node which
 does post model executiong jobs, i.e <cite>copy_vectors</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – A superduperdb instance.</p></li>
+<li><p><strong>stop_event</strong> – A threading event flag to notify for stoppage.</p></li>
+<li><p><strong>queue</strong> – A queue to hold the cdc packets.</p></li>
+</ul>
+</dd>
+</dl>
 <p>__init__.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -479,16 +517,13 @@ does post model executiong jobs, i.e <cite>copy_vectors</cite>.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.CDCHandler.is_running">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_running</span></span><a class="headerlink" href="#superduperdb.cdc.cdc.CDCHandler.is_running" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check if the cdc handler is running.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.CDCHandler.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#CDCHandler.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.CDCHandler.run" title="Link to this definition">¶</a></dt>
-<dd><p>Method representing the thread’s activity.</p>
-<p>You may override this method in a subclass. The standard run() method
-invokes the callable object passed to the object’s constructor as the
-target argument, if any, with sequential and keyword arguments taken
-from the args and kwargs arguments, respectively.</p>
+<dd><p>Run the cdc handler.</p>
 </dd></dl>
 
 </dd></dl>
@@ -519,6 +554,7 @@ from the args and kwargs arguments, respectively.</p>
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.DatabaseChangeDataCapture">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.cdc.cdc.</span></span><span class="sig-name descname"><span class="pre">DatabaseChangeDataCapture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#DatabaseChangeDataCapture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.DatabaseChangeDataCapture" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>DatabaseChangeDataCapture (CDC).</p>
 <p>DatabaseChangeDataCapture is a Python class that provides a flexible and
 extensible framework for capturing and managing data changes
 in a database.</p>
@@ -526,21 +562,30 @@ in a database.</p>
 This class is designed to simplify the process of tracking changes
 to database records,allowing you to monitor and respond to
 data modifications efficiently.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>db</strong> – A superduperdb datalayer instance.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.DatabaseChangeDataCapture.add">
 <span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.html#superduperdb.Listener" title="superduperdb.Listener"><span class="pre">Listener</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#DatabaseChangeDataCapture.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.DatabaseChangeDataCapture.add" title="Link to this definition">¶</a></dt>
-<dd><p>This method registered the given collection for cdc</p>
+<dd><p>Register a listener to the cdc service.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>listener</strong> – A listener instance.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.DatabaseChangeDataCapture.listen">
 <span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.backends.ibis.html#superduperdb.backends.ibis.query.Table" title="superduperdb.backends.ibis.query.Table"><span class="pre">Table</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.backends.base.html#superduperdb.backends.base.query.TableOrCollection" title="superduperdb.backends.base.query.TableOrCollection"><span class="pre">TableOrCollection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#DatabaseChangeDataCapture.listen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.DatabaseChangeDataCapture.listen" title="Link to this definition">¶</a></dt>
-<dd><p>Starts cdc service on the provided collection
-Not to be confused with <code class="docutils literal notranslate"><span class="pre">superduperdb.container.listener.Listener</span></code>.</p>
+<dd><p>Starts cdc service on the provided collection.</p>
+<p>Not to be confused with <code class="docutils literal notranslate"><span class="pre">superduperdb.container.listener.Listener</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>db</strong> – A superduperdb instance.</p></li>
 <li><p><strong>on</strong> – Which collection/table listener service this be invoked on?</p></li>
 <li><p><strong>identifier</strong> – A identity given to the listener service.</p></li>
 </ul>
@@ -551,25 +596,30 @@ Not to be confused with <code class="docutils literal notranslate"><span class="
 <dl class="py property">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.DatabaseChangeDataCapture.running">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">running</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#superduperdb.cdc.cdc.DatabaseChangeDataCapture.running" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check if the cdc service is running.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.DatabaseChangeDataCapture.start">
 <span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#DatabaseChangeDataCapture.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.DatabaseChangeDataCapture.start" title="Link to this definition">¶</a></dt>
-<dd><p>This method starts the cdc process on the database.</p>
+<dd><p>Start the cdc service.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.DatabaseChangeDataCapture.stop">
 <span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#DatabaseChangeDataCapture.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.DatabaseChangeDataCapture.stop" title="Link to this definition">¶</a></dt>
-<dd><p>Stop all registered listeners
-:param name: Listener name</p>
+<dd><p>Stop all registered listeners.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Listener name</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.DatabaseChangeDataCapture.stop_handler">
 <span class="sig-name descname"><span class="pre">stop_handler</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#DatabaseChangeDataCapture.stop_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.DatabaseChangeDataCapture.stop_handler" title="Link to this definition">¶</a></dt>
-<dd><p>Stop the cdc handler thread</p>
+<dd><p>Stop the cdc handler thread.</p>
 </dd></dl>
 
 </dd></dl>
@@ -578,8 +628,14 @@ Not to be confused with <code class="docutils literal notranslate"><span class="
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.DatabaseListenerFactory">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.cdc.cdc.</span></span><span class="sig-name descname"><span class="pre">DatabaseListenerFactory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'mongodb'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#DatabaseListenerFactory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.DatabaseListenerFactory" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">DBListenerType</span></code>]</p>
-<p>A Factory class to create instance of DatabaseListener corresponding to the
-<cite>db_type</cite>.</p>
+<p>DatabaseListenerFactory to create listeners for different databases.</p>
+<p>This class is responsible for creating a DatabaseListener instance
+based on the database type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>db_type</strong> – Database type.</p>
+</dd>
+</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.DatabaseListenerFactory.SUPPORTED_LISTENERS">
 <span class="sig-name descname"><span class="pre">SUPPORTED_LISTENERS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['mongodb',</span> <span class="pre">'ibis']</span></em><a class="headerlink" href="#superduperdb.cdc.cdc.DatabaseListenerFactory.SUPPORTED_LISTENERS" title="Link to this definition">¶</a></dt>
@@ -588,7 +644,8 @@ Not to be confused with <code class="docutils literal notranslate"><span class="
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.DatabaseListenerFactory.create">
 <span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DBListenerType</span></span></span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#DatabaseListenerFactory.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.DatabaseListenerFactory.create" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Create a DatabaseListener instance.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -596,6 +653,18 @@ Not to be confused with <code class="docutils literal notranslate"><span class="
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.DatabaseListenerThreadScheduler">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.cdc.cdc.</span></span><span class="sig-name descname"><span class="pre">DatabaseListenerThreadScheduler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">listener</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#superduperdb.cdc.cdc.BaseDatabaseListener" title="superduperdb.cdc.cdc.BaseDatabaseListener"><span class="pre">BaseDatabaseListener</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.misc.runnable.html#superduperdb.misc.runnable.runnable.Event" title="superduperdb.misc.runnable.runnable.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.misc.runnable.html#superduperdb.misc.runnable.runnable.Event" title="superduperdb.misc.runnable.runnable.Event"><span class="pre">Event</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#DatabaseListenerThreadScheduler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.DatabaseListenerThreadScheduler" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Thread</span></code></p>
+<p>DatabaseListenerThreadScheduler to listen to the cdc changes.</p>
+<p>This class is responsible for listening to the cdc changes and
+executing the following job.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>listener</strong> – A BaseDatabaseListener instance.</p></li>
+<li><p><strong>stop_event</strong> – A threading event flag to notify for stoppage.</p></li>
+<li><p><strong>start_event</strong> – A threading event flag to notify for start.</p></li>
+</ul>
+</dd>
+</dl>
 <p>This constructor should always be called with keyword arguments. Arguments are:</p>
 <p><em>group</em> should be None; reserved for future extension when a ThreadGroup
 class is implemented.</p>
@@ -612,23 +681,34 @@ else to the thread.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.DatabaseListenerThreadScheduler.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#DatabaseListenerThreadScheduler.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.DatabaseListenerThreadScheduler.run" title="Link to this definition">¶</a></dt>
-<dd><p>Method representing the thread’s activity.</p>
-<p>You may override this method in a subclass. The standard run() method
-invokes the callable object passed to the object’s constructor as the
-target argument, if any, with sequential and keyword arguments taken
-from the args and kwargs arguments, respectively.</p>
+<dd><p>Start to listen to the cdc changes.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.Packet">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.cdc.cdc.</span></span><span class="sig-name descname"><span class="pre">Packet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">ids:</span> <span class="pre">Any,</span> <span class="pre">query:</span> <span class="pre">Optional[ForwardRef('Serializable')],</span> <span class="pre">event_type:</span> <span class="pre">superduperdb.cdc.cdc.DBEvent</span> <span class="pre">=</span> <span class="pre">&lt;DBEvent.insert:</span> <span class="pre">'insert'&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#Packet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.Packet" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.cdc.cdc.</span></span><span class="sig-name descname"><span class="pre">Packet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.serializable.Serializable" title="superduperdb.base.serializable.Serializable"><span class="pre">Serializable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#superduperdb.cdc.cdc.DBEvent" title="superduperdb.cdc.cdc.DBEvent"><span class="pre">DBEvent</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DBEvent.insert</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#Packet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.Packet" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Packet to hold the cdc event data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ids</strong> – Document ids.</p></li>
+<li><p><strong>query</strong> – Query to fetch the document.</p></li>
+<li><p><strong>event_type</strong> – CDC event type.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.Packet.collate">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">collate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">packets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#superduperdb.cdc.cdc.Packet" title="superduperdb.cdc.cdc.Packet"><span class="pre">Packet</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#superduperdb.cdc.cdc.Packet" title="superduperdb.cdc.cdc.Packet"><span class="pre">Packet</span></a></span></span><a class="reference internal" href="../_modules/superduperdb/cdc/cdc.html#Packet.collate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cdc.cdc.Packet.collate" title="Link to this definition">¶</a></dt>
-<dd><p>Collate a batch of packets into one</p>
+<dd><p>Collate a batch of packets into one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>packets</strong> – A list of packets.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -644,7 +724,8 @@ from the args and kwargs arguments, respectively.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.Packet.is_delete">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_delete</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#superduperdb.cdc.cdc.Packet.is_delete" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check if the event is delete.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.cdc.cdc.Packet.query">

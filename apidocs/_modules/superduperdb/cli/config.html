@@ -317,6 +317,10 @@
         <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;--schema&#39;</span><span class="p">,</span> <span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;If set, print the JSON schema for the model&#39;</span>
     <span class="p">),</span>
 <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print all the SuperDuperDB configs as JSON.</span>
+
+<span class="sd">    :param schema: If set, print the JSON schema for the model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">CFG</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">()</span> <span class="k">if</span> <span class="n">schema</span> <span class="k">else</span> <span class="n">CFG</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">schema</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">CFG</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">())</span>

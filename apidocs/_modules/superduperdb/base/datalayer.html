@@ -334,11 +334,8 @@
 <span class="kn">from</span> <span class="nn">superduperdb.base.superduper</span> <span class="kn">import</span> <span class="n">superduper</span>
 <span class="kn">from</span> <span class="nn">superduperdb.cdc.cdc</span> <span class="kn">import</span> <span class="n">DatabaseChangeDataCapture</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.component</span> <span class="kn">import</span> <span class="n">Component</span>
-<span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">DataType</span><span class="p">,</span>
-    <span class="n">_BaseEncodable</span><span class="p">,</span>
-    <span class="n">serializers</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">DataType</span><span class="p">,</span> <span class="n">_BaseEncodable</span><span class="p">,</span> <span class="n">serializers</span>
+<span class="kn">from</span> <span class="nn">superduperdb.components.schema</span> <span class="kn">import</span> <span class="n">Schema</span>
 <span class="kn">from</span> <span class="nn">superduperdb.jobs.job</span> <span class="kn">import</span> <span class="n">ComponentJob</span><span class="p">,</span> <span class="n">FunctionJob</span><span class="p">,</span> <span class="n">Job</span>
 <span class="kn">from</span> <span class="nn">superduperdb.jobs.task_workflow</span> <span class="kn">import</span> <span class="n">TaskWorkflow</span>
 <span class="kn">from</span> <span class="nn">superduperdb.misc.annotations</span> <span class="kn">import</span> <span class="n">deprecated</span>
@@ -367,7 +364,12 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer">[docs]</a>
 <span class="k">class</span> <span class="nc">Datalayer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base database connector for SuperDuperDB</span>
+<span class="sd">    Base database connector for SuperDuperDB.</span>
+
+<span class="sd">    :param databackend: Object containing connection to Datastore.</span>
+<span class="sd">    :param metadata: Object containing connection to Metadatastore.</span>
+<span class="sd">    :param artifact_store: Object containing connection to Artifactstore.</span>
+<span class="sd">    :param compute: Object containing connection to ComputeBackend.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">type_id_to_cache_mapping</span> <span class="o">=</span> <span class="p">{</span>
@@ -388,10 +390,12 @@
         <span class="n">compute</span><span class="p">:</span> <span class="n">ComputeBackend</span> <span class="o">=</span> <span class="n">LocalComputeBackend</span><span class="p">(),</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param databackend: object containing connection to Datastore</span>
-<span class="sd">        :param metadata: object containing connection to Metadatastore</span>
-<span class="sd">        :param artifact_store: object containing connection to Artifactstore</span>
-<span class="sd">        :param compute: object containing connection to ComputeBackend</span>
+<span class="sd">        Initialize Data Layer.</span>
+
+<span class="sd">        :param databackend: Object containing connection to Datastore.</span>
+<span class="sd">        :param metadata: Object containing connection to Metadatastore.</span>
+<span class="sd">        :param artifact_store: Object containing connection to Artifactstore.</span>
+<span class="sd">        :param compute: Object containing connection to ComputeBackend.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Building Data Layer&quot;</span><span class="p">)</span>
 
@@ -420,18 +424,30 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">server_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property for server mode.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server_mode</span>
 
     <span class="nd">@server_mode</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">server_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_server</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set server mode property.</span>
+
+<span class="sd">        :param is_server: New boolean property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">is_server</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_server_mode</span> <span class="o">=</span> <span class="n">is_server</span>
 
 <div class="viewcode-block" id="Datalayer.initialize_vector_searcher">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.initialize_vector_searcher">[docs]</a>
     <span class="k">def</span> <span class="nf">initialize_vector_searcher</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">searcher_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">backfill</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">searcher_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">BaseVectorSearcher</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize vector searcher.</span>
+
+<span class="sd">        :param identifier: Identifying string to component.</span>
+<span class="sd">        :param searcher_type: Searcher type (in_memory|native).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">searcher_type</span> <span class="o">=</span> <span class="n">searcher_type</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">type</span>
 
         <span class="n">vi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_indices</span><span class="o">.</span><span class="n">force_load</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
@@ -454,13 +470,19 @@
 <div class="viewcode-block" id="Datalayer.backfill_vector_search">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.backfill_vector_search">[docs]</a>
     <span class="k">def</span> <span class="nf">backfill_vector_search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vi</span><span class="p">,</span> <span class="n">searcher</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Backfill vector search from model outputs of a given vector index.</span>
+
+<span class="sd">        :param vi: Identifier of vector index.</span>
+<span class="sd">        :param searcher: FastVectorSearch instance to load model outputs as vectors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;native&#39;</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">uri</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_mode</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;loading of vectors of vector-index: &#39;</span><span class="si">{</span><span class="n">vi</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading vectors of vector-index: &#39;</span><span class="si">{</span><span class="n">vi</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">vi</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">select</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;.select must be set&#39;</span><span class="p">)</span>
@@ -498,16 +520,20 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.set_compute">[docs]</a>
     <span class="k">def</span> <span class="nf">set_compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">ComputeBackend</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set a new compute engine at runtime. Use it only if you know what you do.</span>
-<span class="sd">        The standard procedure is to set compute engine during initialization.</span>
+<span class="sd">        Set a new compute engine at runtime.</span>
+
+<span class="sd">        Use it only if you know what you are doing.</span>
+<span class="sd">        The standard procedure is to set the compute engine during initialization.</span>
+
+<span class="sd">        :param new: New compute backend.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Change compute engine from &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; to &#39;</span><span class="si">{</span><span class="n">new</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Changing compute engine from &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; to &#39;</span><span class="si">{</span><span class="n">new</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">success</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Succesfully disconnected from compute engine: &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Successfully disconnected from compute engine: &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
         <span class="p">)</span>
 
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connecting to compute engine: </span><span class="si">{</span><span class="n">new</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -517,6 +543,7 @@
 <div class="viewcode-block" id="Datalayer.get_compute">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.get_compute">[docs]</a>
     <span class="k">def</span> <span class="nf">get_compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get compute.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute</span></div>
 
 
@@ -524,15 +551,17 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.drop">[docs]</a>
     <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Drop all data, artifacts and metadata</span>
+<span class="sd">        Drop all data, artifacts, and metadata.</span>
+
+<span class="sd">        :param force: Force drop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">click</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">Colors</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s1">[!!!WARNING USE WITH CAUTION AS YOU &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;WILL LOSE ALL DATA!!!]</span><span class="si">{</span><span class="n">Colors</span><span class="o">.</span><span class="n">RESET</span><span class="si">}</span><span class="s1"> &#39;</span>
-            <span class="s1">&#39;Are you sure you want to drop the database? &#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Colors</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s2">[!!!WARNING USE WITH CAUTION AS YOU WILL&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;LOSE ALL DATA!!!]</span><span class="si">{</span><span class="n">Colors</span><span class="o">.</span><span class="n">RESET</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="s2">&quot;Are you sure you want to drop the database? &quot;</span><span class="p">,</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">):</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Aborting...&#39;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Aborting...&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -549,16 +578,17 @@
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Show available functionality which has been added using ``self.add``.</span>
-<span class="sd">        If version is specified, then print full metadata</span>
 
-<span class="sd">        :param type_id: type_id of component to show [&#39;datatype&#39;, &#39;model&#39;, &#39;listener&#39;,</span>
+<span class="sd">        If the version is specified, then print full metadata.</span>
+
+<span class="sd">        :param type_id: Type_id of component to show [&#39;datatype&#39;, &#39;model&#39;, &#39;listener&#39;,</span>
 <span class="sd">                       &#39;learning_task&#39;, &#39;training_configuration&#39;, &#39;metric&#39;,</span>
-<span class="sd">                       &#39;vector_index&#39;, &#39;job&#39;]</span>
-<span class="sd">        :param identifier: identifying string to component</span>
-<span class="sd">        :param version: (optional) numerical version - specify for full metadata</span>
+<span class="sd">                       &#39;vector_index&#39;, &#39;job&#39;].</span>
+<span class="sd">        :param identifier: Identifying string to component.</span>
+<span class="sd">        :param version: (Optional) Numerical version - specify for full metadata.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;must specify </span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s1"> to go with </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must specify </span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s2"> to go with </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">type_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">nt</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;nt&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;type_id&#39;</span><span class="p">,</span> <span class="s1">&#39;identifier&#39;</span><span class="p">))</span>
@@ -606,11 +636,11 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">ExecuteQuery</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExecuteResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Execute a query on the db.</span>
+<span class="sd">        Execute a query on the database.</span>
 
-<span class="sd">        :param query: select, insert, delete, update,</span>
+<span class="sd">        :param query: The SQL query to execute, such as select, insert,</span>
+<span class="sd">                      delete, or update.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">Delete</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">Insert</span><span class="p">):</span>
@@ -643,9 +673,9 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer._delete">[docs]</a>
     <span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delete</span><span class="p">:</span> <span class="n">Delete</span><span class="p">,</span> <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DeleteResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Delete data.</span>
+<span class="sd">        Delete data from the database.</span>
 
-<span class="sd">        :param delete: delete query object</span>
+<span class="sd">        :param delete: The delete query object specifying the data to be deleted.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">delete</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">refresh</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdc</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
@@ -659,9 +689,11 @@
         <span class="bp">self</span><span class="p">,</span> <span class="n">insert</span><span class="p">:</span> <span class="n">Insert</span><span class="p">,</span> <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">datatypes</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">DataType</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InsertResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Insert data.</span>
+<span class="sd">        Insert data into the database.</span>
 
-<span class="sd">        :param insert: insert query object</span>
+<span class="sd">        :param insert: The insert query object specifying the data to be inserted.</span>
+<span class="sd">        :param refresh: Boolean indicating whether to refresh the task group on insert.</span>
+<span class="sd">        :param datatypes: List of datatypes in the insert documents.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">datatypes</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -672,7 +704,7 @@
             <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_fold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;train&#39;</span>
             <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">fold_probability</span><span class="p">:</span>
                 <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_fold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;valid&#39;</span>
-            <span class="n">artifacts</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">get_leaves</span><span class="p">(</span><span class="s1">&#39;artifact&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+            <span class="n">artifacts</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">get_leaves</span><span class="p">(</span><span class="s1">&#39;artifact&#39;</span><span class="p">,</span> <span class="s1">&#39;file&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
 
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="n">file_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -696,9 +728,9 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer._select">[docs]</a>
     <span class="k">def</span> <span class="nf">_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="p">:</span> <span class="n">Select</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SelectResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Select data.</span>
+<span class="sd">        Select data from the database.</span>
 
-<span class="sd">        :param select: select query object</span>
+<span class="sd">        :param select: The select query object specifying the data to be retrieved.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">select</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
             <span class="n">select</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">set_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="c1"># type: ignore[assignment]</span>
@@ -716,9 +748,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Trigger cleanup jobs after data deletion.</span>
 
-<span class="sd">        :param query: Select or Update which reduces scope of computations</span>
-<span class="sd">        :param ids: ids which reduce scopy of computations</span>
-<span class="sd">        :param verbose: Toggle to ``True`` to get more output</span>
+<span class="sd">        :param query: The select or update query object that reduces</span>
+<span class="sd">                      the scope of computations.</span>
+<span class="sd">        :param ids: IDs that further reduce the scope of computations.</span>
+<span class="sd">        :param verbose: Set to ``True`` to enable more detailed output.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">task_workflow</span><span class="p">:</span> <span class="n">TaskWorkflow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_delete_task_workflow</span><span class="p">(</span>
             <span class="n">query</span><span class="p">,</span>
@@ -741,9 +774,11 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Trigger computation jobs after data insertion.</span>
 
-<span class="sd">        :param query: Select or Update which reduces scope of computations</span>
-<span class="sd">        :param ids: ids which reduce scopy of computations</span>
-<span class="sd">        :param verbose: Toggle to ``True`` to get more output</span>
+<span class="sd">        :param query: The select or update query object that reduces</span>
+<span class="sd">                      the scope of computations.</span>
+<span class="sd">        :param ids: IDs that further reduce the scope of computations.</span>
+<span class="sd">        :param verbose: Set to ``True`` to enable more detailed output.</span>
+<span class="sd">        :param overwrite: If True, cascade the value to the &#39;predict_in_db&#39; job.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">task_workflow</span><span class="p">:</span> <span class="n">TaskWorkflow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_task_workflow</span><span class="p">(</span>
             <span class="n">query</span><span class="o">.</span><span class="n">select_table</span><span class="p">,</span>  <span class="c1"># TODO can be replaced by select_using_ids</span>
@@ -759,9 +794,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer._write">[docs]</a>
     <span class="k">def</span> <span class="nf">_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">write</span><span class="p">:</span> <span class="n">Write</span><span class="p">,</span> <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UpdateResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Bulk write data to database.</span>
+<span class="sd">        Bulk write data to the database.</span>
 
-<span class="sd">        :param write: update query object</span>
+<span class="sd">        :param write: The update query object specifying the data to be written.</span>
+<span class="sd">        :param refresh: Boolean indicating whether to refresh the task group on write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">write_result</span><span class="p">,</span> <span class="n">updated_ids</span><span class="p">,</span> <span class="n">deleted_ids</span> <span class="o">=</span> <span class="n">write</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -797,9 +833,13 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer._update">[docs]</a>
     <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="p">:</span> <span class="n">Update</span><span class="p">,</span> <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UpdateResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update data.</span>
+<span class="sd">        Update data in the database.</span>
 
-<span class="sd">        :param update: update query object</span>
+<span class="sd">        :param update: The update query object specifying the data to be updated.</span>
+<span class="sd">        :param refresh: Boolean indicating whether to refresh the task group</span>
+<span class="sd">                        after update.</span>
+<span class="sd">        :return: Tuple containing the updated IDs and the refresh result if</span>
+<span class="sd">                 performed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">updated_ids</span> <span class="o">=</span> <span class="n">update</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -810,7 +850,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Overwrite should be true since updates could be done on collections</span>
                 <span class="c1"># with already existing outputs.</span>
-                <span class="c1"># We need overwrite ouptuts on those select and recompute predict</span>
+                <span class="c1"># We need overwrite outputs on those select and recompute predict</span>
                 <span class="k">return</span> <span class="n">updated_ids</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">refresh_after_update_or_insert</span><span class="p">(</span>
                     <span class="n">query</span><span class="o">=</span><span class="n">update</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">updated_ids</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span>
                 <span class="p">)</span>
@@ -822,11 +862,11 @@
     <span class="nd">@deprecated</span>
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">()):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Note use of `add` is deprecated, use `apply` instead.</span>
+<span class="sd">        Note: The use of `add` is deprecated, use `apply` instead.</span>
 
-<span class="sd">        :param object: Object to be stored</span>
-<span class="sd">        :param dependencies: list of jobs which should execute before component</span>
-<span class="sd">                             init begins</span>
+<span class="sd">        :param object: Object to be stored.</span>
+<span class="sd">        :param dependencies: List of jobs which should execute before component</span>
+<span class="sd">                             initialization begins.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span></div>
 
@@ -839,13 +879,15 @@
         <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add functionality in the form of components. Components are stored in the</span>
-<span class="sd">        configured artifact store, and linked to the primary db through</span>
-<span class="sd">        the metadata.</span>
+<span class="sd">        Add functionality in the form of components.</span>
 
-<span class="sd">        :param object: Object to be stored</span>
-<span class="sd">        :param dependencies: list of jobs which should execute before component</span>
-<span class="sd">                             init begins</span>
+<span class="sd">        Components are stored in the configured artifact store</span>
+<span class="sd">        and linked to the primary database through metadata.</span>
+
+<span class="sd">        :param object: Object to be stored.</span>
+<span class="sd">        :param dependencies: List of jobs which should execute before component</span>
+<span class="sd">                             initialization begins.</span>
+<span class="sd">        :return: Tuple containing the added object(s) and the original object(s).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="nb">object</span><span class="p">)(</span>
@@ -871,13 +913,15 @@
         <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Remove component (version: optional)</span>
+<span class="sd">        Remove a component (version optional).</span>
 
-<span class="sd">        :param type_id: type_id of component to remove [&#39;datatype&#39;, &#39;model&#39;, &#39;listener&#39;,</span>
-<span class="sd">                        &#39;training_configuration&#39;, &#39;vector_index&#39;]</span>
-<span class="sd">        :param identifier: identifier of component (see `container.base.Component`)</span>
-<span class="sd">        :param version: [optional] numerical version to remove</span>
-<span class="sd">        :param force: force skip confirmation (use with caution)</span>
+<span class="sd">        :param type_id: Type ID of the component to remove (&#39;datatype&#39;,</span>
+<span class="sd">                        &#39;model&#39;, &#39;listener&#39;, &#39;training_configuration&#39;,</span>
+<span class="sd">                        &#39;vector_index&#39;).</span>
+<span class="sd">        :param identifier: Identifier of the component (refer to</span>
+<span class="sd">                            `container.base.Component`).</span>
+<span class="sd">        :param version: [Optional] Numerical version to remove.</span>
+<span class="sd">        :param force: Force skip confirmation (use with caution).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO: versions = [version] if version is not None else ...</span>
         <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -932,20 +976,19 @@
         <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">allow_hidden</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">info_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">on_ray</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Component</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load component using uniquely identifying information.</span>
+<span class="sd">        Load a component using uniquely identifying information.</span>
 
-<span class="sd">        :param type_id: type_id of component to remove</span>
-<span class="sd">                        [&#39;datatype&#39;, &#39;model&#39;, &#39;listener&#39;, ...]</span>
-<span class="sd">        :param identifier: identifier of component (see `container.base.Component`)</span>
-<span class="sd">        :param version: [optional] numerical version</span>
-<span class="sd">        :param allow_hidden: toggle to ``True`` to allow loading of deprecated</span>
-<span class="sd">                             components</span>
-<span class="sd">        :param info_only: toggle to ``True`` to return metadata only</span>
+<span class="sd">        :param type_id: Type ID of the component to load</span>
+<span class="sd">                         (&#39;datatype&#39;, &#39;model&#39;, &#39;listener&#39;, ...).</span>
+<span class="sd">        :param identifier: Identifier of the component</span>
+<span class="sd">                           (see `container.base.Component`).</span>
+<span class="sd">        :param version: [Optional] Numerical version.</span>
+<span class="sd">        :param allow_hidden: Toggle to ``True`` to allow loading</span>
+<span class="sd">                             of deprecated components.</span>
+<span class="sd">        :param info_only: Toggle to ``True`` to return metadata only.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">if</span> <span class="n">type_id</span> <span class="o">==</span> <span class="s1">&#39;encoder&#39;</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s1">&#39;&quot;encoder&quot; has moved to &quot;datatype&quot; this functionality will not work&#39;</span>
@@ -1026,6 +1069,8 @@
 
         <span class="k">return</span> <span class="n">G</span>
 
+<div class="viewcode-block" id="Datalayer._build_task_workflow">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer._build_task_workflow">[docs]</a>
     <span class="k">def</span> <span class="nf">_build_task_workflow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">,</span>
@@ -1034,6 +1079,7 @@
         <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskWorkflow</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A helper function to build a task workflow for a query with dependencies.&quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Building task workflow graph. Query:</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">job_ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[])</span>
@@ -1164,7 +1210,8 @@
                 <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">.predict_in_db(</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">copy_vectors</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">G</span>
+        <span class="k">return</span> <span class="n">G</span></div>
+
 
     <span class="k">def</span> <span class="nf">_add_child_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="c1"># TODO this is a bit of a mess</span>
@@ -1320,9 +1367,13 @@
         <span class="n">upsert</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        (Use-with caution!!) Replace a model in artifact store with updated object.</span>
-<span class="sd">        :param object: object to replace</span>
-<span class="sd">        :param upsert: toggle to ``True`` to enable even if object doesn&#39;t exist yet</span>
+<span class="sd">        Replace a model in the artifact store with an updated object.</span>
+
+<span class="sd">        (Use with caution!)</span>
+
+<span class="sd">        :param object: The object to replace.</span>
+<span class="sd">        :param upsert: Toggle to ``True`` to enable replacement even if</span>
+<span class="sd">                       the object doesn&#39;t exist yet.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get_component</span><span class="p">(</span>
@@ -1357,6 +1408,15 @@
         <span class="n">outputs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Document</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs a vector search query on the given vector index.</span>
+
+<span class="sd">        :param like: Vector search document to search.</span>
+<span class="sd">        :param vector_index: Vector index to search.</span>
+<span class="sd">        :param ids: (Optional) IDs to search within.</span>
+<span class="sd">        :param outputs: (Optional) Seed outputs dictionary.</span>
+<span class="sd">        :param n: Get top k results from vector search.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO - make this un-ambiguous</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">like</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">like</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
@@ -1376,9 +1436,7 @@
 <div class="viewcode-block" id="Datalayer.close">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.close">[docs]</a>
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gracefully shutdown the Datalayer</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gracefully shutdown the Datalayer.&quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Disconnect from Data Store&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
 
@@ -1400,12 +1458,27 @@
     <span class="k">def</span> <span class="nf">_add_component_to_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">component</span><span class="p">:</span> <span class="n">Component</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add component to cache when it is added to the db.</span>
+
 <span class="sd">        Avoiding the need to load it from the db again.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">type_id</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">type_id</span>
         <span class="k">if</span> <span class="n">cm</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_id_to_cache_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">type_id</span><span class="p">):</span>
             <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cm</span><span class="p">)[</span><span class="n">component</span><span class="o">.</span><span class="n">identifier</span><span class="p">]</span> <span class="o">=</span> <span class="n">component</span>
         <span class="n">component</span><span class="o">.</span><span class="n">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Datalayer.infer_schema">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.Datalayer.infer_schema">[docs]</a>
+    <span class="k">def</span> <span class="nf">infer_schema</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span> <span class="n">identifier</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Schema</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer a schema from a given data object.</span>
+
+<span class="sd">        :param data: The data object</span>
+<span class="sd">        :param identifier: The identifier for the schema, if None, it will be generated</span>
+<span class="sd">        :return: The inferred schema</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">infer_schema</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span></div>
 </div>
 
 
@@ -1414,6 +1487,14 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.LoadDict">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">LoadDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper class to load component identifiers with on-demand loading from the database.</span>
+
+<span class="sd">    :param database: Instance of Datalayer.</span>
+<span class="sd">    :param field: (optional) Component type identifier.</span>
+<span class="sd">    :param callable: (optional) Callable function on key.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">database</span><span class="p">:</span> <span class="n">Datalayer</span>
     <span class="n">field</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="nb">callable</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1430,6 +1511,11 @@
 <div class="viewcode-block" id="LoadDict.force_load">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.datalayer.LoadDict.force_load">[docs]</a>
     <span class="k">def</span> <span class="nf">force_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Force load the component from database.</span>
+
+<span class="sd">        :param key: Force load key</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__missing__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
 </div>
 

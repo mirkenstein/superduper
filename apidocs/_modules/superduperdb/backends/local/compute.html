@@ -310,9 +310,7 @@
 <div class="viewcode-block" id="LocalComputeBackend">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.local.html#superduperdb.backends.local.compute.LocalComputeBackend">[docs]</a>
 <span class="k">class</span> <span class="nc">LocalComputeBackend</span><span class="p">(</span><span class="n">ComputeBackend</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A mockup backend for running jobs locally.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A mockup backend for running jobs locally.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -321,10 +319,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The type of the backend.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;local&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The name of the backend.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;local&quot;</span>
 
 <div class="viewcode-block" id="LocalComputeBackend.submit">
@@ -336,6 +336,7 @@
 <span class="sd">        Submits a function for local execution.</span>
 
 <span class="sd">        :param function: The function to be executed.</span>
+<span class="sd">        :param compute_kwargs: Do not use this parameter.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Submitting job. function:</span><span class="si">{</span><span class="n">function</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -351,25 +352,21 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        List for all pending tasks</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List for all pending tasks.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__outputs</span>
 
 <div class="viewcode-block" id="LocalComputeBackend.wait_all">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.local.html#superduperdb.backends.local.compute.LocalComputeBackend.wait_all">[docs]</a>
     <span class="k">def</span> <span class="nf">wait_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Waits for all pending tasks to complete.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Waits for all pending tasks to complete.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="LocalComputeBackend.result">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.local.html#superduperdb.backends.local.compute.LocalComputeBackend.result">[docs]</a>
     <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves the result of a previously submitted task.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves the result of a previously submitted task.</span>
+
 <span class="sd">        Note: This will block until the future is completed.</span>
 
 <span class="sd">        :param identifier: The identifier of the submitted task.</span>
@@ -380,18 +377,14 @@
 <div class="viewcode-block" id="LocalComputeBackend.disconnect">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.local.html#superduperdb.backends.local.compute.LocalComputeBackend.disconnect">[docs]</a>
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Disconnect the local client.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect the local client.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="LocalComputeBackend.shutdown">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.local.html#superduperdb.backends.local.compute.LocalComputeBackend.shutdown">[docs]</a>
     <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Shuts down the local cluster.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shuts down the local cluster.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
 

@@ -309,12 +309,14 @@
 <div class="viewcode-block" id="Event">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.runnable.Event">[docs]</a>
 <span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An Event that calls a list of callbacks when set or cleared.</span>
+
 <span class="sd">    A threading.Event that also calls back to zero or more functions when its state</span>
 <span class="sd">    is set or reset, and has a __bool__ method.</span>
 
 <span class="sd">    Note that the callback might happen on some completely different thread,</span>
-<span class="sd">    so these functions cannot block&quot;&quot;&quot;</span>
+<span class="sd">    so these functions cannot block</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">on_set</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Callback</span><span class="p">]</span>
 
@@ -325,6 +327,7 @@
 <div class="viewcode-block" id="Event.set">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.runnable.Event.set">[docs]</a>
     <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the flag to True and call all the callbacks.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
         <span class="p">[</span><span class="n">c</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_set</span><span class="p">]</span></div>
 
@@ -332,6 +335,7 @@
 <div class="viewcode-block" id="Event.clear">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.runnable.Event.clear">[docs]</a>
     <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear the flag to False and call all the callbacks.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="p">[</span><span class="n">c</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_set</span><span class="p">]</span></div>
 
@@ -344,7 +348,7 @@
 <div class="viewcode-block" id="Runnable">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.runnable.Runnable">[docs]</a>
 <span class="k">class</span> <span class="nc">Runnable</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base class for things that start, run, finish, stop and join</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base class for things that start, run, finish, stop and join.</span>
 
 <span class="sd">    Stopping is requesting immediate termination: finishing is saying that</span>
 <span class="sd">    there is no more work to be done, finish what you are doing.</span>
@@ -419,7 +423,10 @@
 <div class="viewcode-block" id="Runnable.join">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.runnable.Runnable.join">[docs]</a>
     <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Join this thread or process.  Might block indefinitely, might do nothing&quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Join this thread or process.  Might block indefinitely, might do nothing.</span>
+
+<span class="sd">        :param timeout: Timeout in seconds</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

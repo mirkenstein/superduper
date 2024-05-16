@@ -304,13 +304,14 @@
 <span class="kn">import</span> <span class="nn">tarfile</span>
 
 
+<span class="c1"># TODO: Remove the unused functions</span>
 <div class="viewcode-block" id="to_tarball">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.archives.to_tarball">[docs]</a>
 <span class="k">def</span> <span class="nf">to_tarball</span><span class="p">(</span><span class="n">folder_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a tarball (compressed archive) from a folder.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a tarball (compressed archive) from a folder.</span>
 
 <span class="sd">    :param folder_path: Path to the folder to be archived.</span>
+<span class="sd">    :param output_path: Path to the output tarball file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_path</span> <span class="o">+</span> <span class="s1">&#39;.tar.gz&#39;</span><span class="p">,</span> <span class="s2">&quot;w:gz&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
@@ -325,8 +326,7 @@
 <div class="viewcode-block" id="from_tarball">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.archives.from_tarball">[docs]</a>
 <span class="k">def</span> <span class="nf">from_tarball</span><span class="p">(</span><span class="n">tarball_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Extract the contents of stack tarball</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the contents of stack tarball.</span>
 
 <span class="sd">    :param tarball_path: Path to the tarball file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

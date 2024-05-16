@@ -300,16 +300,18 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for superduperdb.components.component</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The component module provides the base class for all components in SuperDuperDB.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;The component module provides the base class for all components in SuperDuperDB.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">dataclasses</span> <span class="k">as</span> <span class="nn">dc</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+
+<span class="kn">import</span> <span class="nn">yaml</span>
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.leaf</span> <span class="kn">import</span> <span class="n">Leaf</span>
@@ -323,9 +325,42 @@
     <span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">DataType</span>
 
 
+<div class="viewcode-block" id="import_">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.import_">[docs]</a>
+<span class="k">def</span> <span class="nf">import_</span><span class="p">(</span><span class="n">r</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function for importing component JSONs, YAMLs, etc.</span>
+
+<span class="sd">    :param r: Object to be imported.</span>
+<span class="sd">    :param path: Components directory.</span>
+<span class="sd">    :param db: Datalayer instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">_build_leaves</span>
+
+    <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">/component.json&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">/component.yaml&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">id_</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">id_</span> <span class="o">==</span> <span class="s1">&#39;component.json&#39;</span> <span class="ow">or</span> <span class="n">id_</span> <span class="o">==</span> <span class="s1">&#39;component.yaml&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">id_</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="nb">bytes</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_leaves&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_build_leaves</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_leaves&#39;</span><span class="p">],</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_leaves&#39;</span><span class="p">][</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;_base&#39;</span><span class="p">]]</span></div>
+
+
+
 <div class="viewcode-block" id="getdeepattr">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.getdeepattr">[docs]</a>
 <span class="k">def</span> <span class="nf">getdeepattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get nested attribute with dot notation.</span>
+
+<span class="sd">    :param obj: Object.</span>
+<span class="sd">    :param attr: Attribute.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">obj</span></div>
@@ -339,8 +374,15 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Component</span><span class="p">(</span><span class="n">Serializable</span><span class="p">,</span> <span class="n">Leaf</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    :param identifier: A unique identifier for the component&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all components in SuperDuperDB.</span>
+
+<span class="sd">    Class to represent SuperDuperDB serializable entities</span>
+<span class="sd">    that can be saved into a database.</span>
+
+<span class="sd">    :param identifier: A unique identifier for the component.</span>
+<span class="sd">    :param artifacts: List of artifacts which represent entities that are</span>
+<span class="sd">                      not serializable by default.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;component&#39;</span>
     <span class="n">leaf_type</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;component&#39;</span>
@@ -355,18 +397,21 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.handle_integration">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">handle_integration</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Abstract method for handling integration.</span>
+
+<span class="sd">        :param kwargs: Integration kwargs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">kwargs</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;_component/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type_id</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;_component/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type_id</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the component identifier.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;_component/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type_id</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an object as `ComponentTuple`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ComponentTuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">):</span>
@@ -374,12 +419,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;identifier cannot be empty or None&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Identifier cannot be empty or None&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Component.get_ui_schema">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.get_ui_schema">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_ui_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper method to get the UI schema.&quot;&quot;&quot;</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">ancestors</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">mro</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ancestors</span><span class="p">:</span>
@@ -391,12 +437,10 @@
 <div class="viewcode-block" id="Component.set_variables">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.set_variables">[docs]</a>
     <span class="k">def</span> <span class="nf">set_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set free variables of self.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set free variables of self.</span>
 
-<span class="sd">        :param db:</span>
+<span class="sd">        :param db: Datalayer instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="n">_find_variables_with_path</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
@@ -407,11 +451,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get dependencies on the component.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">()</span>
 
 <div class="viewcode-block" id="Component.init">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.init">[docs]</a>
     <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to help initiate component field dependencies.&quot;&quot;&quot;</span>
+
         <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Component</span><span class="p">):</span>
                 <span class="n">item</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
@@ -437,6 +484,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">artifact_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns `Schema` representation for the serializers in the component.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">Schema</span>
         <span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">dill_serializer</span>
 
@@ -457,19 +505,25 @@
         <span class="k">return</span> <span class="n">Schema</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;serializer/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">db</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Datalayer</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Datalayer instance.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span>
 
     <span class="nd">@db</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Datalayer instance property setter.</span>
+
+<span class="sd">        :param value: Datalayer instance to set.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="Component.pre_create">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.pre_create">[docs]</a>
     <span class="k">def</span> <span class="nf">pre_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called the first time this component is created</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called the first time this component is created.</span>
 
-<span class="sd">        :param db: the db that creates the component</span>
+<span class="sd">        :param db: the db that creates the component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">db</span></div>
 
@@ -478,9 +532,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.post_create">[docs]</a>
     <span class="k">def</span> <span class="nf">post_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Called after the first time this component is created.</span>
+
 <span class="sd">        Generally used if ``self.version`` is important in this logic.</span>
 
-<span class="sd">        :param db: the db that creates the component</span>
+<span class="sd">        :param db: the db that creates the component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">db</span></div>
 
@@ -488,16 +543,82 @@
 <div class="viewcode-block" id="Component.on_load">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.on_load">[docs]</a>
     <span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when this component is loaded from the data store</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when this component is loaded from the data store.</span>
 
-<span class="sd">        :param db: the db that loaded the component</span>
+<span class="sd">        :param db: the db that loaded the component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">db</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_deep_flat_encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">_deep_flat_encode</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">())</span>
+        <span class="n">r</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_deep_flat_encode</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">],</span> <span class="n">cache</span><span class="p">)</span>
+        <span class="n">r</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">cache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+
+<div class="viewcode-block" id="Component.deep_flat_encode">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.deep_flat_encode">[docs]</a>
+    <span class="k">def</span> <span class="nf">deep_flat_encode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Encode cache with deep flattened structure.&quot;&quot;&quot;</span>
+        <span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deep_flat_encode</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;_leaves&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="s1">&#39;_base&#39;</span><span class="p">:</span> <span class="nb">id</span><span class="p">}</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_to_dict_and_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deep_flat_encode</span><span class="p">()</span>
+        <span class="nb">bytes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">leaf</span> <span class="ow">in</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_leaves&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="s1">&#39;bytes&#39;</span> <span class="ow">in</span> <span class="n">leaf</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">]:</span>
+                <span class="nb">bytes</span><span class="p">[</span><span class="n">leaf</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="s1">&#39;file_id&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">leaf</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="s1">&#39;bytes&#39;</span><span class="p">]</span>
+                <span class="k">del</span> <span class="n">leaf</span><span class="p">[</span><span class="s1">&#39;dict&#39;</span><span class="p">][</span><span class="s1">&#39;bytes&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">r</span><span class="p">,</span> <span class="nb">bytes</span>
+
+<div class="viewcode-block" id="Component.export">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.export">[docs]</a>
+    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to export the component in the provided format.</span>
+
+<span class="sd">        If format is None, the method exports the component in a dictionary.</span>
+
+<span class="sd">        :param format: `json` and `yaml`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span><span class="p">,</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_dict_and_bytes</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">r</span><span class="p">,</span> <span class="nb">bytes</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;_component.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type_id</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;_component.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type_id</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">file_id</span> <span class="ow">in</span> <span class="nb">bytes</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">[</span><span class="n">file_id</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;json&#39;</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">/component.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">r</span><span class="p">,</span> <span class="nb">bytes</span>
+
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;yaml&#39;</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">/component.yaml&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">r</span><span class="p">,</span> <span class="nb">bytes</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Format </span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s1"> not supported&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Component.dict">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.dict">[docs]</a>
     <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A dictionary representation of the component.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">Document</span>
         <span class="kn">from</span> <span class="nn">superduperdb.components.datatype</span> <span class="kn">import</span> <span class="n">Artifact</span><span class="p">,</span> <span class="n">File</span>
 
@@ -508,10 +629,7 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="p">(</span><span class="n">Artifact</span><span class="p">,</span> <span class="n">File</span><span class="p">)):</span>
                 <span class="n">r</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;dict.</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">encodable</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
-                    <span class="n">r</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;dict.</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">](</span><span class="n">uri</span><span class="o">=</span><span class="n">attr</span><span class="p">)</span>  <span class="c1"># artifact or file</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">r</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;dict.</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">](</span><span class="n">x</span><span class="o">=</span><span class="n">attr</span><span class="p">)</span>  <span class="c1"># artifact or file</span>
+                <span class="n">r</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;dict.</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">](</span><span class="n">x</span><span class="o">=</span><span class="n">attr</span><span class="p">)</span>  <span class="c1"># artifact or file</span>
         <span class="n">r</span><span class="p">[</span><span class="s1">&#39;type_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_id</span>
         <span class="n">r</span><span class="p">[</span><span class="s1">&#39;identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span>
         <span class="n">r</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span>
@@ -526,9 +644,14 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to encode the component into a dictionary.</span>
+
+<span class="sd">        :param leaf_types_to_keep: Leaf types to be excluded from encoding.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">leaf_types_to_keep</span><span class="o">=</span><span class="n">leaf_types_to_keep</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;dict&#39;</span><span class="p">]</span>
         <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;leaf_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;component&#39;</span>
+        <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 
@@ -536,6 +659,12 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.decode">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decodes a dictionary component into a `Component` instance.</span>
+
+<span class="sd">        :param r: Object to be decoded.</span>
+<span class="sd">        :param db: Datalayer instance.</span>
+<span class="sd">        :param reference: If decode with reference.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">db</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;_content&#39;</span><span class="p">]</span>
         <span class="k">assert</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -544,6 +673,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to get a unique identifier for the component.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Version not yet set for component uniqueness&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">type_id</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span>
@@ -555,6 +685,12 @@
         <span class="n">validation_set</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">],</span>
         <span class="n">metrics</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComponentJob</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to create a validation job with `validation_set` and `metrics`.</span>
+
+<span class="sd">        :param validation_set: Kwargs for the `predict` method of `Model`.</span>
+<span class="sd">        :param metrics: Kwargs for the `predict` method of `Model` to set</span>
+<span class="sd">                        metrics for the validation job.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">ComponentJob</span><span class="p">(</span>
             <span class="n">component_identifier</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
@@ -574,11 +710,10 @@
         <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">,</span>
         <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the job for this listener</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the job for this listener.</span>
 
-<span class="sd">        :param database: The db to process</span>
-<span class="sd">        :param dependencies: A sequence of dependencies,</span>
-<span class="sd">        :param verbose: If true, print more information</span>
+<span class="sd">        :param db: The db to process.</span>
+<span class="sd">        :param dependencies: A sequence of dependencies.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[]</span></div>
 
@@ -587,6 +722,12 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.Component.make_unique_id">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">make_unique_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class method to create a unique identifier.</span>
+
+<span class="sd">        :param type_id: Component type id.</span>
+<span class="sd">        :param identifier: Unique identifier.</span>
+<span class="sd">        :param version: Component version.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span></div>
 
 
@@ -600,7 +741,10 @@
 <div class="viewcode-block" id="ensure_initialized">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.components.component.ensure_initialized">[docs]</a>
 <span class="k">def</span> <span class="nf">ensure_initialized</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator to ensure that the model is initialized before calling the function&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator to ensure that the model is initialized before calling the function.</span>
+
+<span class="sd">    :param func: Decorator function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

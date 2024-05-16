@@ -310,10 +310,20 @@
 <div class="viewcode-block" id="Base64Mixin">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.db_helper.Base64Mixin">[docs]</a>
 <span class="k">class</span> <span class="nc">Base64Mixin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mixin class for converting byte data to base64 format for storage in the database.</span>
+
+<span class="sd">    This class is used to convert byte data to base64 format for storage in the</span>
+<span class="sd">    database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="Base64Mixin.convert_data_format">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.db_helper.Base64Mixin.convert_data_format">[docs]</a>
     <span class="k">def</span> <span class="nf">convert_data_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert byte data to base64 format for storage in the database.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert byte data to base64 format for storage in the database.</span>
+
+<span class="sd">        :param data: The data to convert.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">BASE64_PREFIX</span> <span class="o">+</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -323,7 +333,10 @@
 <div class="viewcode-block" id="Base64Mixin.recover_data_format">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.db_helper.Base64Mixin.recover_data_format">[docs]</a>
     <span class="k">def</span> <span class="nf">recover_data_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recover byte data from base64 format stored in the database.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recover byte data from base64 format stored in the database.</span>
+
+<span class="sd">        :param data: The data to recover.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">BASE64_PREFIX</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">BASE64_PREFIX</span><span class="p">)</span> <span class="p">:])</span>
         <span class="k">else</span><span class="p">:</span>
@@ -333,7 +346,10 @@
 <div class="viewcode-block" id="Base64Mixin.process_schema_types">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.db_helper.Base64Mixin.process_schema_types">[docs]</a>
     <span class="k">def</span> <span class="nf">process_schema_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema_mapping</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert bytes to string in the schema.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert bytes to string in the schema.</span>
+
+<span class="sd">        :param schema_mapping: The schema mapping to convert.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">schema_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;Bytes&#39;</span><span class="p">:</span>
                 <span class="n">schema_mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;String&#39;</span>
@@ -345,6 +361,11 @@
 <div class="viewcode-block" id="DBHelper">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.db_helper.DBHelper">[docs]</a>
 <span class="k">class</span> <span class="nc">DBHelper</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generic helper class for database.</span>
+
+<span class="sd">    :param dialect: The dialect of the database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">match_dialect</span> <span class="o">=</span> <span class="s1">&#39;base&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialect</span><span class="p">):</span>
@@ -353,24 +374,41 @@
 <div class="viewcode-block" id="DBHelper.process_before_insert">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.db_helper.DBHelper.process_before_insert">[docs]</a>
     <span class="k">def</span> <span class="nf">process_before_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">datas</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert byte data to base64 format for storage in the database.</span>
+
+<span class="sd">        :param table_name: The name of the table.</span>
+<span class="sd">        :param datas: The data to insert.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">datas</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DBHelper.process_schema_types">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.db_helper.DBHelper.process_schema_types">[docs]</a>
     <span class="k">def</span> <span class="nf">process_schema_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema_mapping</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert bytes to string in the schema.</span>
+
+<span class="sd">        :param schema_mapping: The schema mapping to convert.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">schema_mapping</span></div>
 
 
 <div class="viewcode-block" id="DBHelper.convert_data_format">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.db_helper.DBHelper.convert_data_format">[docs]</a>
     <span class="k">def</span> <span class="nf">convert_data_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert data to the format for storage in the database.</span>
+
+<span class="sd">        :param data: The data to convert.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">data</span></div>
 
 
 <div class="viewcode-block" id="DBHelper.recover_data_format">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.db_helper.DBHelper.recover_data_format">[docs]</a>
     <span class="k">def</span> <span class="nf">recover_data_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recover data from the format stored in the database.</span>
+
+<span class="sd">        :param data: The data to recover.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">data</span></div>
 </div>
 
@@ -379,11 +417,22 @@
 <div class="viewcode-block" id="ClickHouseHelper">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.db_helper.ClickHouseHelper">[docs]</a>
 <span class="k">class</span> <span class="nc">ClickHouseHelper</span><span class="p">(</span><span class="n">Base64Mixin</span><span class="p">,</span> <span class="n">DBHelper</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class for ClickHouse database.</span>
+
+<span class="sd">    This class is used to convert byte data to base64 format for storage in the</span>
+<span class="sd">    database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">match_dialect</span> <span class="o">=</span> <span class="s1">&#39;clickhouse&#39;</span>
 
 <div class="viewcode-block" id="ClickHouseHelper.process_before_insert">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.db_helper.ClickHouseHelper.process_before_insert">[docs]</a>
     <span class="k">def</span> <span class="nf">process_before_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">datas</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert byte data to base64 format for storage in the database.</span>
+
+<span class="sd">        :param table_name: The name of the table.</span>
+<span class="sd">        :param datas: The data to insert.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;`</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s1">`&#39;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">datas</span><span class="p">)</span></div>
 </div>
 
@@ -392,7 +441,10 @@
 <div class="viewcode-block" id="get_db_helper">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.db_helper.get_db_helper">[docs]</a>
 <span class="k">def</span> <span class="nf">get_db_helper</span><span class="p">(</span><span class="n">dialect</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBHelper</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the insert processor for the given dialect.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the insert processor for the given dialect.</span>
+
+<span class="sd">    :param dialect: The dialect of the database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">helper</span> <span class="ow">in</span> <span class="n">DBHelper</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">helper</span><span class="o">.</span><span class="n">match_dialect</span> <span class="o">==</span> <span class="n">dialect</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">helper</span><span class="p">(</span><span class="n">dialect</span><span class="p">)</span>

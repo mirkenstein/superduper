@@ -330,7 +330,8 @@
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">VectorIndex</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A component carrying the information to apply a vector index to a ``DB`` instance</span>
+<span class="sd">    A component carrying the information to apply a vector index to a ``DB`` instance.</span>
+
 <span class="sd">    {component_parameters}</span>
 <span class="sd">    :param indexing_listener: Listener which is applied to created vectors</span>
 <span class="sd">    :param compatible_listener: Listener which is applied to vectors to be compared</span>
@@ -357,6 +358,13 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.VectorIndex.on_load">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        On load hook to perform indexing and compatible listenernd compatible listener.</span>
+
+<span class="sd">        Automatically loads the listeners if they are not already loaded.</span>
+
+<span class="sd">        :param db: A DataLayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span>
                 <span class="n">Listener</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;listener&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">)</span>
@@ -378,6 +386,18 @@
         <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">outputs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Peform vector search.</span>
+
+<span class="sd">        Perform vector search with query `like` from outputs in db</span>
+<span class="sd">        on `self.identifier` vector index.</span>
+
+<span class="sd">        :param like: The document to compare against</span>
+<span class="sd">        :param models: List of models to retrieve outputs</span>
+<span class="sd">        :param keys: Keys available to retrieve outputs of model</span>
+<span class="sd">        :param db: A datalayer instance.</span>
+<span class="sd">        :param outputs: (optional) update `like` with outputs</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">document</span> <span class="o">=</span> <span class="n">MongoStyleDict</span><span class="p">(</span><span class="n">like</span><span class="o">.</span><span class="n">unpack</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">outputs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">outputs</span> <span class="o">=</span> <span class="n">outputs</span> <span class="ow">or</span> <span class="p">{}</span>
@@ -432,16 +452,18 @@
         <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Given a document, find the nearest results in this vector index, returned as</span>
-<span class="sd">        two parallel lists of result IDs and scores</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get nearest results in this vector index.</span>
+
+<span class="sd">        Given a document, find the nearest results in this vector index, returned as</span>
+<span class="sd">        two parallel lists of result IDs and scores.</span>
 
 <span class="sd">        :param like: The document to compare against</span>
-<span class="sd">        :param db: The datastore to use</span>
+<span class="sd">        :param db: The datalayer to use</span>
+<span class="sd">        :param id_field: Identifier field</span>
 <span class="sd">        :param outputs: An optional dictionary</span>
 <span class="sd">        :param ids: A list of ids to match</span>
 <span class="sd">        :param n: Number of items to return</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">models</span><span class="p">,</span> <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">models_keys</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;len(model=</span><span class="si">{</span><span class="n">models</span><span class="si">}</span><span class="s1">) != len(keys=</span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
@@ -466,9 +488,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">models_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">ModelInputType</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return a list of model and keys for each listener</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of model and keys for each listener.&quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compatible_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
 
@@ -483,6 +503,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get dimension for vector database.</span>
+
+<span class="sd">        This dimension will be used to prepare vectors in the vector database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">shape</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexing_listener</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
@@ -497,12 +521,10 @@
         <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">,</span>
         <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Job&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Schedule jobs for the listener</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Schedule jobs for the listener.</span>
 
-<span class="sd">        :param database: The DB instance to process</span>
+<span class="sd">        :param db: The DB instance to process</span>
 <span class="sd">        :param dependencies: A list of dependencies</span>
-<span class="sd">        :param verbose: Whether to print verbose output</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">db</span><span class="o">.</span><span class="n">cdc</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
             <span class="n">job</span> <span class="o">=</span> <span class="n">FunctionJob</span><span class="p">(</span>
@@ -524,25 +546,51 @@
 <div class="viewcode-block" id="EncodeArray">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.EncodeArray">[docs]</a>
 <span class="k">class</span> <span class="nc">EncodeArray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to encode an array.</span>
+
+<span class="sd">    :param dtype: Datatype of array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
 
+<div class="viewcode-block" id="EncodeArray.__call__">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.EncodeArray.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Encode an array.</span>
+
+<span class="sd">        :param x: The array to encode</span>
+<span class="sd">        :param info: Optional info</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;dtype was </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">, expected </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">memoryview</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span></div>
+</div>
 
 
 
 <div class="viewcode-block" id="DecodeArray">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.DecodeArray">[docs]</a>
 <span class="k">class</span> <span class="nc">DecodeArray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to decode an array.</span>
+
+<span class="sd">    :param dtype: Datatype of array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
 
+<div class="viewcode-block" id="DecodeArray.__call__">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.DecodeArray.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode an array.</span>
+
+<span class="sd">        :param bytes: The bytes to decode</span>
+<span class="sd">        :param info: Optional info</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+</div>
 
 
 
@@ -553,10 +601,10 @@
     <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;identifier&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">},</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">vector</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create an encoder for a vector (list of ints/ floats) of a given shape</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an encoder for a vector (list of ints/ floats) of a given shape.</span>
 
 <span class="sd">    :param shape: The shape of the vector</span>
+<span class="sd">    :param identifier: The identifier of the vector</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">shape</span><span class="p">,)</span>
@@ -575,9 +623,9 @@
 <div class="viewcode-block" id="sqlvector">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.sqlvector">[docs]</a>
 <span class="k">def</span> <span class="nf">sqlvector</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create an encoder for a vector (list of ints/ floats) of a given shape</span>
-<span class="sd">    compatible with sql databases.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an encoder for a vector (list of ints/ floats) of a given shape.</span>
+
+<span class="sd">    This is used for compatibility with SQL databases, as the default vector</span>
 
 <span class="sd">    :param shape: The shape of the vector</span>
 <span class="sd">    &quot;&quot;&quot;</span>

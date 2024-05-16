@@ -300,9 +300,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for superduperdb.misc.compat</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Functions from later standard libraries not available in Python 3.8</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Functions from later standard libraries not available in Python 3.8.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 
@@ -313,6 +311,14 @@
 <div class="viewcode-block" id="cache">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.compat.cache">[docs]</a>
 <span class="k">def</span> <span class="nf">cache</span><span class="p">(</span><span class="n">user_function</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple cache decorator.</span>
+
+<span class="sd">    This is a simple cache decorator that can be used to cache the results of</span>
+<span class="sd">    a function call. It does not have any of the advanced features of</span>
+<span class="sd">    functools.lru_cache.</span>
+
+<span class="sd">    :param user_function: Function to cache</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="kc">None</span><span class="p">)(</span><span class="n">user_function</span><span class="p">)</span></div>
 
 </pre></div>

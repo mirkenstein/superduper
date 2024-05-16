@@ -306,6 +306,8 @@
 <div class="viewcode-block" id="ComponentInUseError">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.exceptions.ComponentInUseError">[docs]</a>
 <span class="k">class</span> <span class="nc">ComponentInUseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception raised when a component is already in use.&quot;&quot;&quot;</span>
+
     <span class="k">pass</span></div>
 
 
@@ -313,6 +315,8 @@
 <div class="viewcode-block" id="ComponentInUseWarning">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.exceptions.ComponentInUseWarning">[docs]</a>
 <span class="k">class</span> <span class="nc">ComponentInUseWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning raised when a component is already in use.&quot;&quot;&quot;</span>
+
     <span class="k">pass</span></div>
 
 
@@ -320,10 +324,10 @@
 <div class="viewcode-block" id="BaseException">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.exceptions.BaseException">[docs]</a>
 <span class="k">class</span> <span class="nc">BaseException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    BaseException which logs a message after</span>
-<span class="sd">    exception</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;BaseException which logs a message after exception.</span>
+
+<span class="sd">    :param msg: The message to log.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
@@ -337,63 +341,49 @@
 <div class="viewcode-block" id="RequiredPackageVersionsNotFound">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.exceptions.RequiredPackageVersionsNotFound">[docs]</a>
 <span class="k">class</span> <span class="nc">RequiredPackageVersionsNotFound</span><span class="p">(</span><span class="ne">ImportError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Exception raised when one or more required packages are not found.</span>
-<span class="sd">    &#39;&#39;&#39;</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception raised when one or more required packages are not found.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="RequiredPackageVersionsWarning">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.exceptions.RequiredPackageVersionsWarning">[docs]</a>
 <span class="k">class</span> <span class="nc">RequiredPackageVersionsWarning</span><span class="p">(</span><span class="ne">ImportWarning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Exception raised when one or more required packages are not found.</span>
-<span class="sd">    &#39;&#39;&#39;</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception raised when one or more required packages are not found.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ServiceRequestException">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.exceptions.ServiceRequestException">[docs]</a>
 <span class="k">class</span> <span class="nc">ServiceRequestException</span><span class="p">(</span><span class="ne">BaseException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    ServiceRequestException</span>
-<span class="sd">    &#39;&#39;&#39;</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ServiceRequestException.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="QueryException">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.exceptions.QueryException">[docs]</a>
 <span class="k">class</span> <span class="nc">QueryException</span><span class="p">(</span><span class="ne">BaseException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    QueryException</span>
-<span class="sd">    &#39;&#39;&#39;</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;QueryException.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="DatabackendException">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.exceptions.DatabackendException">[docs]</a>
 <span class="k">class</span> <span class="nc">DatabackendException</span><span class="p">(</span><span class="ne">BaseException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    DatabackendException</span>
-<span class="sd">    &#39;&#39;&#39;</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DatabackendException.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="MetadataException">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.exceptions.MetadataException">[docs]</a>
 <span class="k">class</span> <span class="nc">MetadataException</span><span class="p">(</span><span class="ne">BaseException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    MetadataException</span>
-<span class="sd">    &#39;&#39;&#39;</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MetadataException.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="ComponentException">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.exceptions.ComponentException">[docs]</a>
 <span class="k">class</span> <span class="nc">ComponentException</span><span class="p">(</span><span class="ne">BaseException</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    ComponentException</span>
-<span class="sd">    &#39;&#39;&#39;</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ComponentException.&quot;&quot;&quot;</span></div>
 
 </pre></div>
         </article>

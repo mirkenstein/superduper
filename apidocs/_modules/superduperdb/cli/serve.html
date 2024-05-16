@@ -310,6 +310,11 @@
 <a class="viewcode-back" href="../../../source/superduperdb.cli.html#superduperdb.cli.serve.local_cluster">[docs]</a>
 <span class="nd">@command</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Start local cluster: server, ray and change data capture&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">local_cluster</span><span class="p">(</span><span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">notebook_token</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Start local cluster: server, ray and change data capture.</span>
+
+<span class="sd">    :param action: Action to perform (up, down, attach).</span>
+<span class="sd">    :param notebook_token: Notebook token.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">superduperdb.server.cluster</span> <span class="kn">import</span> <span class="n">attach_cluster</span><span class="p">,</span> <span class="n">down_cluster</span><span class="p">,</span> <span class="n">up_cluster</span>
 
     <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
@@ -327,6 +332,7 @@
 <a class="viewcode-back" href="../../../source/superduperdb.cli.html#superduperdb.cli.serve.vector_search">[docs]</a>
 <span class="nd">@command</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Start vector search server&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">vector_search</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Start vector search server.&quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">superduperdb.vector_search.server.app</span> <span class="kn">import</span> <span class="n">app</span>
 
     <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
@@ -337,6 +343,7 @@
 <a class="viewcode-back" href="../../../source/superduperdb.cli.html#superduperdb.cli.serve.cdc">[docs]</a>
 <span class="nd">@command</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Start standalone change data capture&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cdc</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Start standalone change data capture.&quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">superduperdb.cdc.app</span> <span class="kn">import</span> <span class="n">app</span>
 
     <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
@@ -352,6 +359,13 @@
     <span class="n">ray_actor_options</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
     <span class="n">num_replicas</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Serve a model on ray.</span>
+
+<span class="sd">    :param model: Model name.</span>
+<span class="sd">    :param version: Model version.</span>
+<span class="sd">    :param ray_actor_options: Ray actor options.</span>
+<span class="sd">    :param num_replicas: Number of replicas.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">superduperdb.backends.ray.serve</span> <span class="kn">import</span> <span class="n">run</span>
 
     <span class="n">run</span><span class="p">(</span>
@@ -367,6 +381,7 @@
 <a class="viewcode-back" href="../../../source/superduperdb.cli.html#superduperdb.cli.serve.rest">[docs]</a>
 <span class="nd">@command</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;Start FastAPI REST server&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">rest</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Start FastAPI REST server.&quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">superduperdb.rest.app</span> <span class="kn">import</span> <span class="n">app</span>
 
     <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>

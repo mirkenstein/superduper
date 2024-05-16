@@ -312,6 +312,14 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.field_types.FieldType">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">FieldType</span><span class="p">(</span><span class="n">Serializable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Field type to represent the type of a field in a table.</span>
+
+<span class="sd">    This is a wrapper around ibis.expr.datatypes.DataType to make it</span>
+<span class="sd">    serializable.</span>
+
+<span class="sd">    :param identifier: The name of the data type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">identifier</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DataType</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -323,10 +331,11 @@
 <div class="viewcode-block" id="dtype">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.field_types.dtype">[docs]</a>
 <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Ibis dtype to represent basic data types in ibis</span>
-<span class="sd">    e.g int, str, etc</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ibis dtype to represent basic data types in ibis.</span>
+
+<span class="sd">    :param x: The data type</span>
+<span class="sd">    e.g int, str, etc.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">FieldType</span><span class="p">(</span><span class="n">_dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
 </pre></div>

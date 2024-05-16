@@ -300,7 +300,8 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for superduperdb.base.config_dicts</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Utility functions for combining and converting dictionaries.</span>
+
 <span class="sd">Operations on dictionaries used to fill and combine config files</span>
 <span class="sd">and environment variables</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -319,6 +320,10 @@
 <div class="viewcode-block" id="combine_configs">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config_dicts.combine_configs">[docs]</a>
 <span class="k">def</span> <span class="nf">combine_configs</span><span class="p">(</span><span class="n">dicts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine a sequence of dictionaries into a single dictionary.</span>
+
+<span class="sd">    :param dicts: The dictionaries to combine.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dicts</span><span class="p">:</span>
         <span class="n">_combine_one</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
@@ -335,6 +340,15 @@
     <span class="n">err</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">TextIO</span><span class="p">]</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span>
     <span class="n">fail</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert environment variables to a configuration dictionary.</span>
+
+<span class="sd">    :param prefix: The prefix to use for environment variables.</span>
+<span class="sd">    :param parent: The parent dictionary to use as a basis.</span>
+<span class="sd">    :param environ: The environment variables to read from.</span>
+<span class="sd">    :param err: The file to write errors to.</span>
+<span class="sd">    :param fail: Whether to raise an exception on error.</span>
+<span class="sd">    :return: The configuration dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">env_dict</span> <span class="o">=</span> <span class="n">_environ_dict</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">environ</span><span class="p">)</span>
     <span class="n">good</span><span class="p">,</span> <span class="n">bad</span> <span class="o">=</span> <span class="n">_env_dict_to_config_dict</span><span class="p">(</span><span class="n">env_dict</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
     <span class="n">bad</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">bad</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">&#39;SUPERDUPERDB_CONFIG&#39;</span><span class="p">}</span>

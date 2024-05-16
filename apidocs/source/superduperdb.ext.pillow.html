@@ -317,23 +317,56 @@
 <dt class="sig sig-object py" id="superduperdb.ext.pillow.encoder.DecoderPILImage">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.pillow.encoder.</span></span><span class="sig-name descname"><span class="pre">DecoderPILImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handle_exceptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/pillow/encoder.html#DecoderPILImage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.pillow.encoder.DecoderPILImage" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Decoder to convert <cite>bytes</cite> back into a <cite>PIL.Image</cite> class</p>
+<p>Decoder to convert <cite>bytes</cite> back into a <cite>PIL.Image</cite> class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>handle_exceptions</strong> – return a blank image if failure</p>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="superduperdb.ext.pillow.encoder.DecoderPILImage.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/pillow/encoder.html#DecoderPILImage.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.pillow.encoder.DecoderPILImage.__call__" title="Link to this definition">¶</a></dt>
+<dd><p>Decode a <cite>PIL.Image</cite> from bytes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bytes</strong> – The bytes to decode.</p></li>
+<li><p><strong>info</strong> – Additional information.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="superduperdb.ext.pillow.encoder.encode_pil_image">
 <span class="sig-prename descclassname"><span class="pre">superduperdb.ext.pillow.encoder.</span></span><span class="sig-name descname"><span class="pre">encode_pil_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/pillow/encoder.html#encode_pil_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.pillow.encoder.encode_pil_image" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Encode a <cite>PIL.Image</cite> to bytes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – The image to encode.</p></li>
+<li><p><strong>info</strong> – Additional information.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="superduperdb.ext.pillow.encoder.image_type">
 <span class="sig-prename descclassname"><span class="pre">superduperdb.ext.pillow.encoder.</span></span><span class="sig-name descname"><span class="pre">image_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encodable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'lazy_artifact'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">media_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'image/png'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/pillow/encoder.html#image_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.pillow.encoder.image_type" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Create a <cite>DataType</cite> for an image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>identifier</strong> – The identifier for the data type.</p></li>
+<li><p><strong>encodable</strong> – The encodable type.</p></li>
+<li><p><strong>media_type</strong> – The media type.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-superduperdb.ext.pillow">
@@ -399,7 +432,10 @@
 <li><a class="reference internal" href="#">superduperdb.ext.pillow package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-superduperdb.ext.pillow.encoder">superduperdb.ext.pillow.encoder module</a><ul>
-<li><a class="reference internal" href="#superduperdb.ext.pillow.encoder.DecoderPILImage"><code class="docutils literal notranslate"><span class="pre">DecoderPILImage</span></code></a></li>
+<li><a class="reference internal" href="#superduperdb.ext.pillow.encoder.DecoderPILImage"><code class="docutils literal notranslate"><span class="pre">DecoderPILImage</span></code></a><ul>
+<li><a class="reference internal" href="#superduperdb.ext.pillow.encoder.DecoderPILImage.__call__"><code class="docutils literal notranslate"><span class="pre">DecoderPILImage.__call__()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#superduperdb.ext.pillow.encoder.encode_pil_image"><code class="docutils literal notranslate"><span class="pre">encode_pil_image()</span></code></a></li>
 <li><a class="reference internal" href="#superduperdb.ext.pillow.encoder.image_type"><code class="docutils literal notranslate"><span class="pre">image_type()</span></code></a></li>
 </ul>

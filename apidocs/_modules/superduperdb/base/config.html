@@ -300,7 +300,8 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for superduperdb.base.config</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Configuration variables for SuperDuperDB.</span>
+
 <span class="sd">The classes in this file define the configuration variables for SuperDuperDB,</span>
 <span class="sd">which means that this file gets imported before alost anything else, and</span>
 <span class="sd">canot contain any other imports from this project.</span>
@@ -332,7 +333,16 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.BaseConfig">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">BaseConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base class for configuration dataclasses.</span>
+
+<span class="sd">    This class allows for easy updating of configuration dataclasses</span>
+<span class="sd">    with a dictionary of parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BaseConfig.__call__">
+<a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.BaseConfig.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the configuration with the given parameters.&quot;&quot;&quot;</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="s1">&#39;__&#39;</span> <span class="ow">in</span> <span class="n">k</span><span class="p">:</span>
@@ -342,11 +352,13 @@
                 <span class="n">parameters</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)(</span><span class="o">**</span><span class="p">{</span><span class="n">child</span><span class="p">:</span> <span class="n">v</span><span class="p">})</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">parameters</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="k">return</span> <span class="n">_dataclass_from_dict</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_dataclass_from_dict</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">parameters</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="BaseConfig.dict">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.BaseConfig.dict">[docs]</a>
     <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the configuration as a dictionary.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">dc</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 </div>
 
@@ -356,8 +368,7 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Retry">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Retry</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Describes how to retry using the `tenacity` library</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes how to retry using the `tenacity` library.</span>
 
 <span class="sd">    :param stop_after_attempt: The number of attempts to make</span>
 <span class="sd">    :param wait_max: The maximum time to wait between attempts</span>
@@ -376,7 +387,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.CDCStrategy">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">CDCStrategy</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;Base CDC strategy dataclass&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base CDC strategy dataclass.</span>
+
+<span class="sd">    :param type: The type of CDC strategy</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span></div>
 
@@ -386,6 +400,13 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.PollingStrategy">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">PollingStrategy</span><span class="p">(</span><span class="n">CDCStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes a polling strategy for change data capture.</span>
+
+<span class="sd">    :param auto_increment_field: The field to use for auto-incrementing</span>
+<span class="sd">    :param frequency: The frequency to poll for changes</span>
+<span class="sd">    :param type: The type of CDC strategy</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">auto_increment_field</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">3600</span>
     <span class="nb">type</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span> <span class="o">=</span> <span class="s1">&#39;incremental&#39;</span></div>
@@ -396,6 +417,12 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.LogBasedStrategy">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">LogBasedStrategy</span><span class="p">(</span><span class="n">CDCStrategy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes a log-based strategy for change data capture.</span>
+
+<span class="sd">    :param resume_token: The resume token to use for log-based CDC</span>
+<span class="sd">    :param type: The type of CDC strategy</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">resume_token</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;logbased&#39;</span></div>
 
@@ -405,6 +432,12 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.CDCConfig">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">CDCConfig</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes the configuration for change data capture.</span>
+
+<span class="sd">    :param uri: The URI for the CDC service</span>
+<span class="sd">    :param strategy: The strategy to use for CDC</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">uri</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># None implies local mode</span>
     <span class="n">strategy</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">PollingStrategy</span><span class="p">,</span> <span class="n">LogBasedStrategy</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
@@ -414,6 +447,13 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.VectorSearch">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">VectorSearch</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes the configuration for vector search.</span>
+
+<span class="sd">    :param uri: The URI for the vector search service</span>
+<span class="sd">    :param type: The type of vector search service</span>
+<span class="sd">    :param backfill_batch_size: The size of the backfill batch</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">uri</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># None implies local mode</span>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;in_memory&#39;</span>  <span class="c1"># in_memory|lance</span>
     <span class="n">backfill_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span></div>
@@ -424,6 +464,11 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Rest">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Rest</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes the configuration for the REST service.</span>
+
+<span class="sd">    :param uri: The URI for the REST service</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">uri</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
@@ -432,6 +477,12 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Compute">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Compute</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes the configuration for distributed computing.</span>
+
+<span class="sd">    :param uri: The URI for the compute service</span>
+<span class="sd">    :param compute_kwargs: The keyword arguments to pass to the compute service</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">uri</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># None implies local mode</span>
     <span class="n">compute_kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
@@ -441,8 +492,7 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Cluster">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Cluster</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Describes a connection to distributed work via Dask</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes a connection to distributed work via Ray.</span>
 
 <span class="sd">    :param compute: The URI for compute</span>
 <span class="sd">                    - None: run all jobs in local mode i.e. simple function call</span>
@@ -450,6 +500,7 @@
 <span class="sd">    :param vector_search: The URI for the vector search service</span>
 <span class="sd">                          None: Run vector search on local</span>
 <span class="sd">                          &quot;http://&lt;host&gt;:&lt;port&gt;&quot;: Connect a remote vector search service</span>
+<span class="sd">    :param rest: The URI for the REST service</span>
 <span class="sd">    :param cdc: The URI for the change data capture service (if &quot;None&quot;</span>
 <span class="sd">                then no cdc assumed)</span>
 <span class="sd">                None: Run cdc on local as a thread.</span>
@@ -466,9 +517,7 @@
 <div class="viewcode-block" id="LogLevel">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.LogLevel">[docs]</a>
 <span class="k">class</span> <span class="nc">LogLevel</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Enumerate log severity level</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enumerate log severity level.&quot;&quot;&quot;</span>
 
     <span class="n">DEBUG</span> <span class="o">=</span> <span class="s1">&#39;DEBUG&#39;</span>
     <span class="n">INFO</span> <span class="o">=</span> <span class="s1">&#39;INFO&#39;</span>
@@ -481,9 +530,7 @@
 <div class="viewcode-block" id="LogType">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.LogType">[docs]</a>
 <span class="k">class</span> <span class="nc">LogType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Enumerate the standard logs</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enumerate the standard logs.&quot;&quot;&quot;</span>
 
     <span class="c1"># SYSTEM uses the systems STDOUT and STDERR for printing the logs.</span>
     <span class="c1"># DEBUG, INFO, and WARN go to STDOUT.</span>
@@ -498,6 +545,8 @@
 <div class="viewcode-block" id="BytesEncoding">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.BytesEncoding">[docs]</a>
 <span class="k">class</span> <span class="nc">BytesEncoding</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enumerate the encoding of bytes in the data backend.&quot;&quot;&quot;</span>
+
     <span class="n">BYTES</span> <span class="o">=</span> <span class="s1">&#39;Bytes&#39;</span>
     <span class="n">BASE64</span> <span class="o">=</span> <span class="s1">&#39;Str&#39;</span></div>
 
@@ -507,6 +556,14 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Downloads">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Downloads</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes the configuration for downloading files.</span>
+
+<span class="sd">    :param folder: The folder to download files to</span>
+<span class="sd">    :param n_workers: The number of workers to use for downloading</span>
+<span class="sd">    :param headers: The headers to use for downloading</span>
+<span class="sd">    :param timeout: The timeout for downloading</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">folder</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">headers</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s1">&#39;me&#39;</span><span class="p">})</span>
@@ -518,11 +575,12 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The data class containing all configurable superduperdb values</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The data class containing all configurable superduperdb values.</span>
 
+<span class="sd">    :param envs: The envs datas</span>
 <span class="sd">    :param data_backend: The URI for the data backend</span>
-<span class="sd">    :param vector_search: The configuration for the vector search {&#39;in_memory&#39;, &#39;lance&#39;}</span>
+<span class="sd">    :param lance_home: The home directory for the Lance vector indices,</span>
+<span class="sd">                       Default: .superduperdb/vector_indices</span>
 <span class="sd">    :param artifact_store: The URI for the artifact store</span>
 <span class="sd">    :param metadata_store: The URI for the metadata store</span>
 <span class="sd">    :param cluster: Settings distributed computing and change data capture</span>
@@ -561,13 +619,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hybrid_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether to use hybrid storage.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">downloads</span><span class="o">.</span><span class="n">folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">comparables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        A dict of `self` excluding some defined attributes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A dict of `self` excluding some defined attributes.&quot;&quot;&quot;</span>
         <span class="n">_dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;cluster&#39;</span><span class="p">,</span> <span class="s1">&#39;retries&#39;</span><span class="p">,</span> <span class="s1">&#39;downloads&#39;</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">_dict</span>
@@ -575,8 +632,9 @@
 <div class="viewcode-block" id="Config.match">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config.match">[docs]</a>
     <span class="k">def</span> <span class="nf">match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Match the target cfg dict with `self` comparables dict.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Match the target cfg dict with `self` comparables dict.</span>
+
+<span class="sd">        :param cfg: The target configuration dictionary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">self_cfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">comparables</span>
         <span class="n">self_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">self_cfg</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
@@ -587,12 +645,17 @@
 <div class="viewcode-block" id="Config.diff">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config.diff">[docs]</a>
     <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the difference between `self` and the target cfg dict.</span>
+
+<span class="sd">        :param cfg: The target configuration dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">_diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">cfg</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Config.to_yaml">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config.Config.to_yaml">[docs]</a>
     <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the configuration as a YAML string.&quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">yaml</span>
 
         <span class="k">def</span> <span class="nf">enum_representer</span><span class="p">(</span><span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
@@ -610,7 +673,8 @@
 <div class="viewcode-block" id="_diff">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.config._diff">[docs]</a>
 <span class="k">def</span> <span class="nf">_diff</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the difference between two dictionaries.</span>
+
 <span class="sd">    &gt;&gt;&gt; _diff({&#39;a&#39;: 1, &#39;b&#39;: 2}, {&#39;a&#39;: 2, &#39;b&#39;: 2})</span>
 <span class="sd">    {&#39;a&#39;: (1, 2)}</span>
 <span class="sd">    &gt;&gt;&gt; _diff({&#39;a&#39;: {&#39;c&#39;: 3}, &#39;b&#39;: 2}, {&#39;a&#39;: 2, &#39;b&#39;: 2})</span>

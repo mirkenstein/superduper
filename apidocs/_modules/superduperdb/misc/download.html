@@ -324,6 +324,8 @@
 <div class="viewcode-block" id="TimeoutException">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.download.TimeoutException">[docs]</a>
 <span class="k">class</span> <span class="nc">TimeoutException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Timeout exception.&quot;&quot;&quot;</span>
+
     <span class="o">...</span></div>
 
 
@@ -331,6 +333,11 @@
 <div class="viewcode-block" id="timeout_handler">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.download.timeout_handler">[docs]</a>
 <span class="k">def</span> <span class="nf">timeout_handler</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Timeout handler to raise an TimeoutException.</span>
+
+<span class="sd">    :param signum: signal number</span>
+<span class="sd">    :param frame: frame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="n">TimeoutException</span><span class="p">()</span></div>
 
 
@@ -339,6 +346,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.download.timeout">[docs]</a>
 <span class="nd">@contextmanager</span>
 <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Context manager to set a timeout.</span>
+
+<span class="sd">    :param seconds: seconds until timeout</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">old_handler</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="n">timeout_handler</span><span class="p">)</span>
     <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -352,8 +363,7 @@
 <div class="viewcode-block" id="Fetcher">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.download.Fetcher">[docs]</a>
 <span class="k">class</span> <span class="nc">Fetcher</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Fetches data from a URI</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fetches data from a URI.</span>
 
 <span class="sd">    :param headers: headers to be used for download</span>
 <span class="sd">    :param n_workers: number of download workers</span>
@@ -391,8 +401,7 @@
 <div class="viewcode-block" id="Fetcher.__call__">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.download.Fetcher.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Download data from a URI</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download data from a URI.</span>
 
 <span class="sd">        :param uri: uri to download from</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -411,8 +420,7 @@
 <div class="viewcode-block" id="BaseDownloader">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.download.BaseDownloader">[docs]</a>
 <span class="k">class</span> <span class="nc">BaseDownloader</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for downloading files</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for downloading files.</span>
 
 <span class="sd">    :param uris: list of uris/ file names to fetch</span>
 <span class="sd">    :param n_workers: number of multiprocessing workers</span>
@@ -440,8 +448,8 @@
 <div class="viewcode-block" id="BaseDownloader.go">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.download.BaseDownloader.go">[docs]</a>
     <span class="k">def</span> <span class="nf">go</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Download all files</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download all files.</span>
+
 <span class="sd">        Uses a :py:class:`multiprocessing.pool.ThreadPool` to parallelize</span>
 <span class="sd">                          connections.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -510,6 +518,12 @@
 <div class="viewcode-block" id="Updater">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.download.Updater">[docs]</a>
 <span class="k">class</span> <span class="nc">Updater</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Updater class to update the artifact.</span>
+
+<span class="sd">    :param db: Datalayer instance</span>
+<span class="sd">    :param query: query to be executed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">db</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">query</span> <span class="o">=</span> <span class="n">query</span>
@@ -517,6 +531,13 @@
 <div class="viewcode-block" id="Updater.exists">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.download.Updater.exists">[docs]</a>
     <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">datatype</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the artifact exists.</span>
+
+<span class="sd">        :param uri: uri to download from</span>
+<span class="sd">        :param key: key in the document</span>
+<span class="sd">        :param id: id of the document</span>
+<span class="sd">        :param datatype: datatype of the document</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">datatype</span><span class="p">]</span><span class="o">.</span><span class="n">encodable</span> <span class="o">==</span> <span class="s1">&#39;artifact&#39;</span><span class="p">:</span>
             <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">uri</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">datatype</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -525,6 +546,8 @@
         <span class="k">return</span> <span class="n">out</span></div>
 
 
+<div class="viewcode-block" id="Updater.__call__">
+<a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.download.Updater.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -534,6 +557,14 @@
         <span class="n">datatype</span><span class="p">,</span>
         <span class="n">bytes_</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the updater.</span>
+
+<span class="sd">        :param uri: uri to download from</span>
+<span class="sd">        :param key: key in the document</span>
+<span class="sd">        :param id: id of the document</span>
+<span class="sd">        :param datatype: datatype of the document</span>
+<span class="sd">        :param bytes_: bytes to insert</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">datatype</span><span class="p">]</span><span class="o">.</span><span class="n">encodable</span> <span class="o">==</span> <span class="s1">&#39;artifact&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">artifact_store</span><span class="o">.</span><span class="n">save_artifact</span><span class="p">(</span>
                 <span class="p">{</span>
@@ -546,6 +577,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># TODO move back to databackend</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">download_update</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span> <span class="nb">bytes</span><span class="o">=</span><span class="n">bytes_</span><span class="p">)</span></div>
+</div>
 
 
 
@@ -559,6 +591,7 @@
 <span class="sd">    :param update_one: function to call to insert data into table</span>
 <span class="sd">    :param ids: list of ids of rows/ documents to update</span>
 <span class="sd">    :param keys: list of keys in rows/ documents to insert to</span>
+<span class="sd">    :param datatypes: list of datatypes of rows/ documents to insert to</span>
 <span class="sd">    :param n_workers: number of multiprocessing workers</span>
 <span class="sd">    :param headers: dictionary of request headers passed to``requests`` package</span>
 <span class="sd">    :param skip_existing: if ``True`` then don&#39;t bother getting already present data</span>
@@ -620,8 +653,7 @@
 <span class="k">def</span> <span class="nf">gather_uris</span><span class="p">(</span>
     <span class="n">documents</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">],</span> <span class="n">gather_ids</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the uris out of all documents as denoted by ``{&quot;_content&quot;: ...}``</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the uris out of all documents as denoted by ``{&quot;_content&quot;: ...}``.</span>
 
 <span class="sd">    :param documents: list of dictionaries</span>
 <span class="sd">    :param gather_ids: if ``True`` then gather ids of documents</span>
@@ -646,7 +678,8 @@
 <div class="viewcode-block" id="_gather_uris_for_document">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.download._gather_uris_for_document">[docs]</a>
 <span class="k">def</span> <span class="nf">_gather_uris_for_document</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span> <span class="n">id_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;_id&#39;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the uris out of a single document as denoted by ``{&quot;_content&quot;: ...}``.</span>
+
 <span class="sd">    &gt;&gt;&gt; _gather_uris_for_document({&#39;a&#39;: {&#39;_content&#39;: {&#39;uri&#39;: &#39;test&#39;}}})</span>
 <span class="sd">    ([&#39;test&#39;], [&#39;a&#39;])</span>
 <span class="sd">    &gt;&gt;&gt; d = {&#39;b&#39;: {&#39;a&#39;: {&#39;_content&#39;: {&#39;uri&#39;: &#39;test&#39;}}}}</span>
@@ -655,7 +688,7 @@
 <span class="sd">    &gt;&gt;&gt; d = {&#39;b&#39;: {&#39;a&#39;: {&#39;_content&#39;: {&#39;uri&#39;: &#39;test&#39;, &#39;bytes&#39;: b&#39;abc&#39;}}}}</span>
 <span class="sd">    &gt;&gt;&gt; _gather_uris_for_document(d)</span>
 <span class="sd">    ([], [])</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">uris</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">datatypes</span> <span class="o">=</span> <span class="p">[]</span>
@@ -681,8 +714,9 @@
     <span class="n">raises</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">n_workers</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Document</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Download content contained in uploaded data. Items to be downloaded are identifier</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download content contained in uploaded data.</span>
+
+<span class="sd">    Items to be downloaded are identifier</span>
 <span class="sd">    via the subdocuments in the form exemplified below. By default items are downloaded</span>
 <span class="sd">    to the database, unless a ``download_update`` function is provided.</span>
 
@@ -690,12 +724,8 @@
 <span class="sd">    :param query: query to be executed</span>
 <span class="sd">    :param ids: ids to be downloaded</span>
 <span class="sd">    :param documents: documents to be downloaded</span>
-<span class="sd">    :param timeout: timeout for download</span>
 <span class="sd">    :param raises: whether to raise errors</span>
-<span class="sd">    :param n_download_workers: number of download workers</span>
-<span class="sd">    :param headers: headers to be used for download</span>
-<span class="sd">    :param download_update: function to be used for updating the database</span>
-<span class="sd">    :param **kwargs: additional keyword arguments</span>
+<span class="sd">    :param n_workers: number of download workers</span>
 
 <span class="sd">    &gt;&gt;&gt; d = {&quot;_content&quot;: {&quot;uri&quot;: &quot;&lt;uri&gt;&quot;, &quot;encoder&quot;: &quot;&lt;encoder-identifier&gt;&quot;}}</span>
 <span class="sd">    &gt;&gt;&gt; def update(key, id, bytes):</span>
@@ -751,6 +781,12 @@
 <div class="viewcode-block" id="download_from_one">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.download.download_from_one">[docs]</a>
 <span class="k">def</span> <span class="nf">download_from_one</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Document</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download content from a single document.</span>
+
+<span class="sd">    This function will find all URIs in the document and download them.</span>
+
+<span class="sd">    :param r: document to download from</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">uris</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">gather_uris</span><span class="p">([</span><span class="n">r</span><span class="p">])</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">uris</span><span class="p">:</span>
         <span class="k">return</span>

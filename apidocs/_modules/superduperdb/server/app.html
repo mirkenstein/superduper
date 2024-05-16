@@ -304,6 +304,7 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span>
 <span class="kn">from</span> <span class="nn">traceback</span> <span class="kn">import</span> <span class="n">format_exc</span>
 
@@ -317,6 +318,7 @@
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.build</span> <span class="kn">import</span> <span class="n">build_datalayer</span>
+<span class="kn">from</span> <span class="nn">superduperdb.base.config</span> <span class="kn">import</span> <span class="n">Config</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
 
 <span class="c1"># --------------- Create exception handler middleware-----------------</span>
@@ -325,9 +327,16 @@
 <div class="viewcode-block" id="ExceptionHandlerMiddleware">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.ExceptionHandlerMiddleware">[docs]</a>
 <span class="k">class</span> <span class="nc">ExceptionHandlerMiddleware</span><span class="p">(</span><span class="n">BaseHTTPMiddleware</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Middleware to handle exceptions and log them.&quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="ExceptionHandlerMiddleware.dispatch">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.ExceptionHandlerMiddleware.dispatch">[docs]</a>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">call_next</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dispatch the request and handle exceptions.</span>
+
+<span class="sd">        :param request: request to dispatch</span>
+<span class="sd">        :param call_next: next call to make</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="k">await</span> <span class="n">call_next</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -360,9 +369,14 @@
 <div class="viewcode-block" id="SuperDuperApp">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp">[docs]</a>
 <span class="k">class</span> <span class="nc">SuperDuperApp</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This is a wrapper class that prepares helper functions used to create a</span>
-<span class="sd">    fastapi application in the realm of superduperdb.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper class for creating a fastapi application.</span>
+
+<span class="sd">    The class provides a simple interface for creating a fastapi application</span>
+<span class="sd">    with custom endpoints.</span>
+
+<span class="sd">    :param service: name of the service</span>
+<span class="sd">    :param port: port to run the service on</span>
+<span class="sd">    :param db: datalayer instance</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -393,24 +407,32 @@
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">app</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the application instance.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">router</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_app</span>
 
 <div class="viewcode-block" id="SuperDuperApp.raise_error">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.raise_error">[docs]</a>
     <span class="k">def</span> <span class="nf">raise_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise an error with the given message and code.</span>
+
+<span class="sd">        :param msg: message to raise</span>
+<span class="sd">        :param code: code to raise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span></div>
 
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the database instance from the app state.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pool</span>
 
 <div class="viewcode-block" id="SuperDuperApp.add">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.add">[docs]</a>
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Register an endpoint with this method.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register an endpoint with this method.</span>
+
+<span class="sd">        :param method: method to use</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
@@ -424,8 +446,10 @@
 <div class="viewcode-block" id="SuperDuperApp.add_default_endpoints">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.add_default_endpoints">[docs]</a>
     <span class="k">def</span> <span class="nf">add_default_endpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add a list of default endpoints which comes out of the box with `SuperDuperApp`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add default endpoints to the application.</span>
+
+<span class="sd">        - /health: Health check endpoint</span>
+<span class="sd">        - /handshake/config: Handshake endpoint</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="nd">@self</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/health&#39;</span><span class="p">)</span>
@@ -452,6 +476,7 @@
 <div class="viewcode-block" id="SuperDuperApp.print_routes">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.print_routes">[docs]</a>
     <span class="k">def</span> <span class="nf">print_routes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print the routes of the application.&quot;&quot;&quot;</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">PrettyTable</span><span class="p">()</span>
 
         <span class="c1"># Define the table headers</span>
@@ -466,7 +491,11 @@
 
 <div class="viewcode-block" id="SuperDuperApp.pre_start">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.pre_start">[docs]</a>
-    <span class="k">def</span> <span class="nf">pre_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">pre_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Config</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pre-start the application.</span>
+
+<span class="sd">        :param cfg: Configurations to use</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_default_endpoints</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_startup</span><span class="p">:</span>
@@ -479,6 +508,7 @@
 <div class="viewcode-block" id="SuperDuperApp.run">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.run">[docs]</a>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the application.&quot;&quot;&quot;</span>
         <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_app</span><span class="p">,</span>
             <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">app_host</span><span class="p">,</span>
@@ -489,9 +519,7 @@
 <div class="viewcode-block" id="SuperDuperApp.start">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.start">[docs]</a>
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This method is used to start the application server</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start the application.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pre_start</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">print_routes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">()</span></div>
@@ -499,9 +527,15 @@
 
 <div class="viewcode-block" id="SuperDuperApp.startup">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.startup">[docs]</a>
-    <span class="k">def</span> <span class="nf">startup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This method is used to register a startup function</span>
+    <span class="k">def</span> <span class="nf">startup</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">function</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cfg</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Config</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Startup the application.</span>
+
+<span class="sd">        :param function: function to run on startup</span>
+<span class="sd">        :param cfg: Configurations to use</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_user_startup</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -522,9 +556,10 @@
 
 <div class="viewcode-block" id="SuperDuperApp.shutdown">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.SuperDuperApp.shutdown">[docs]</a>
-    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This method is used to register a shutdown function</span>
+    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shutdown the application.</span>
+
+<span class="sd">        :param function: function to run on shutdown</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_user_shutdown</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -543,6 +578,10 @@
 <div class="viewcode-block" id="database">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.database">[docs]</a>
 <span class="k">def</span> <span class="nf">database</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Datalayer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the database instance from the app state.</span>
+
+<span class="sd">    :param request: request object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">pool</span></div>
 
 
@@ -550,10 +589,7 @@
 <div class="viewcode-block" id="DatalayerDependency">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.DatalayerDependency">[docs]</a>
 <span class="k">def</span> <span class="nf">DatalayerDependency</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A helper method to be used for injecting datalayer instance</span>
-<span class="sd">    into endpoint implementation</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dependency for injecting datalayer instance into endpoint implementation.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">Depends</span><span class="p">(</span><span class="n">database</span><span class="p">)</span></div>
 
 
@@ -561,15 +597,19 @@
 <div class="viewcode-block" id="Server">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.Server">[docs]</a>
 <span class="k">class</span> <span class="nc">Server</span><span class="p">(</span><span class="n">uvicorn</span><span class="o">.</span><span class="n">Server</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom server class.&quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="Server.install_signal_handlers">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.Server.install_signal_handlers">[docs]</a>
     <span class="k">def</span> <span class="nf">install_signal_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Install signal handlers.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="Server.run_in_thread">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.Server.run_in_thread">[docs]</a>
     <span class="k">def</span> <span class="nf">run_in_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the server in a separate thread.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
@@ -580,6 +620,7 @@
 <div class="viewcode-block" id="Server.stop">
 <a class="viewcode-back" href="../../../source/superduperdb.server.html#superduperdb.server.app.Server.stop">[docs]</a>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the server.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">should_exit</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></div>
 </div>

@@ -318,6 +318,8 @@
 <div class="viewcode-block" id="Logging">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.logger.Logging">[docs]</a>
 <span class="k">class</span> <span class="nc">Logging</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Logging class to handle logging for the SuperDuperDB.&quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">logging_type</span> <span class="o">==</span> <span class="n">LogType</span><span class="o">.</span><span class="n">LOKI</span><span class="p">:</span>  <span class="c1"># Send logs to Loki</span>
         <span class="n">custom_handler</span> <span class="o">=</span> <span class="n">LokiLoggerHandler</span><span class="p">(</span>
             <span class="n">url</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;LOKI_URI&quot;</span><span class="p">],</span>
@@ -381,6 +383,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.logger.Logging.multikey_debug">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">multikey_debug</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log a message with the DEBUG level.</span>
+
+<span class="sd">        :param msg: The message to log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
 
 
@@ -388,6 +394,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.logger.Logging.multikey_info">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">multikey_info</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log a message with the INFO level.</span>
+
+<span class="sd">        :param msg: The message to log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
 
 
@@ -395,6 +405,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.logger.Logging.multikey_success">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">multikey_success</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log a message with the SUCCESS level.</span>
+
+<span class="sd">        :param msg: The message to log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
 
 
@@ -402,6 +416,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.logger.Logging.multikey_warn">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">multikey_warn</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log a message with the WARNING level.</span>
+
+<span class="sd">        :param msg: The message to log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
 
 
@@ -409,6 +427,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.logger.Logging.multikey_error">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">multikey_error</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log a message with the ERROR level.</span>
+
+<span class="sd">        :param msg: The message to log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
 
 
@@ -416,6 +438,13 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.logger.Logging.multikey_exception">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">multikey_exception</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log a message with the ERROR level.</span>
+
+<span class="sd">        e.g. logger.exception(&quot;An error occurred&quot;, e)</span>
+
+<span class="sd">        :param msg: The message to log.</span>
+<span class="sd">        :param e: The exception to log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">opt</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">exception</span><span class="o">=</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
 
 

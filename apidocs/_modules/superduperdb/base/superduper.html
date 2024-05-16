@@ -311,13 +311,13 @@
 <div class="viewcode-block" id="superduper">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.superduper">[docs]</a>
 <span class="k">def</span> <span class="nf">superduper</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Superduper API to automatically wrap an object to a db or a component.</span>
+
 <span class="sd">    Attempts to automatically wrap an item in a superduperdb component by</span>
 <span class="sd">    using duck typing to recognize it.</span>
 
 <span class="sd">    :param item: A database or model</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">item</span> <span class="o">=</span> <span class="n">CFG</span><span class="o">.</span><span class="n">data_backend</span>
 
@@ -341,6 +341,8 @@
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;data_backend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
 
     <span class="k">elif</span> <span class="n">item</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">cdc</span><span class="o">.</span><span class="n">uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Pandas is not supported in cluster mode!&#39;</span><span class="p">)</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;data_backend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
 
     <span class="k">else</span><span class="p">:</span>
@@ -368,9 +370,10 @@
 
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1"> matched more than one type: </span><span class="si">{</span><span class="n">dts</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
+    <span class="c1"># TODO: Does this item match the DuckType?</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">accept</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Does this item match the DuckType?</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if an item matches the DuckType.</span>
 
 <span class="sd">        The default implementation returns True if the number of attrs that</span>
 <span class="sd">        the item has is exactly equal to self.count.</span>
@@ -380,7 +383,11 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a superduperdb component for an item that has already been accepted&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a component from the item.</span>
+
+<span class="sd">        This method should be implemented by subclasses.</span>
+<span class="sd">        :param item: The item to create the component from.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="n">_DUCK_TYPES</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Type</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -391,15 +398,29 @@
 
 
 <span class="k">class</span> <span class="nc">MongoDbTyper</span><span class="p">(</span><span class="n">_DuckTyper</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A DuckTyper for MongoDB databases.</span>
+
+<span class="sd">    This DuckTyper is used to automatically wrap a MongoDB database in a</span>
+<span class="sd">    Datalayer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;list_collection_names&#39;</span><span class="p">,)</span>
     <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">accept</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if an item is a MongoDB database.</span>
+
+<span class="sd">        :param item: The item to check.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="ow">and</span> <span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;Database&#39;</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Datalayer from a MongoDB database.</span>
+
+<span class="sd">        :param item: A MongoDB database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">mongomock.database</span> <span class="kn">import</span> <span class="n">Database</span> <span class="k">as</span> <span class="n">MockDatabase</span>
         <span class="kn">from</span> <span class="nn">pymongo.database</span> <span class="kn">import</span> <span class="n">Database</span>
 
@@ -423,11 +444,21 @@
 
 
 <span class="k">class</span> <span class="nc">SklearnTyper</span><span class="p">(</span><span class="n">_DuckTyper</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A DuckTyper for scikit-learn estimators.</span>
+
+<span class="sd">    This DuckTyper is used to automatically wrap a scikit-learn estimator in</span>
+<span class="sd">    an Estimator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">attrs</span> <span class="o">=</span> <span class="s1">&#39;_predict&#39;</span><span class="p">,</span> <span class="s1">&#39;fit&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;transform&#39;</span>
     <span class="n">count</span> <span class="o">=</span> <span class="mi">2</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an Estimator from a scikit-learn estimator.</span>
+
+<span class="sd">        :param item: A scikit-learn estimator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span>
 
         <span class="kn">from</span> <span class="nn">superduperdb.ext.sklearn.model</span> <span class="kn">import</span> <span class="n">Estimator</span>
@@ -440,11 +471,21 @@
 
 
 <span class="k">class</span> <span class="nc">TorchTyper</span><span class="p">(</span><span class="n">_DuckTyper</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A DuckTyper for torch.nn.Module and torch.jit.ScriptModule.</span>
+
+<span class="sd">    This DuckTyper is used to automatically wrap a torch.nn.Module or</span>
+<span class="sd">    torch.jit.ScriptModule in a TorchModel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">attrs</span> <span class="o">=</span> <span class="s1">&#39;forward&#39;</span><span class="p">,</span> <span class="s1">&#39;parameters&#39;</span><span class="p">,</span> <span class="s1">&#39;state_dict&#39;</span><span class="p">,</span> <span class="s1">&#39;_load_from_state_dict&#39;</span>
     <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a TorchModel from a torch.nn.Module or torch.jit.ScriptModule.</span>
+
+<span class="sd">        :param item: A torch.nn.Module or torch.jit.ScriptModule.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">jit</span><span class="p">,</span> <span class="n">nn</span>
 
         <span class="kn">from</span> <span class="nn">superduperdb.ext.torch.model</span> <span class="kn">import</span> <span class="n">TorchModel</span>

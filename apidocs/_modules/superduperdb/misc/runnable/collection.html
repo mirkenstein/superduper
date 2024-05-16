@@ -314,13 +314,14 @@
 <div class="viewcode-block" id="HasRunnables">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.HasRunnables">[docs]</a>
 <span class="k">class</span> <span class="nc">HasRunnables</span><span class="p">(</span><span class="n">Runnable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collect zero or more Runnable into one&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collect zero or more Runnable into one.&quot;&quot;&quot;</span>
 
     <span class="n">runnables</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Runnable</span><span class="p">]</span>
 
 <div class="viewcode-block" id="HasRunnables.start">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.HasRunnables.start">[docs]</a>
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start all runnables.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">runnables</span><span class="p">:</span>
             <span class="n">r</span><span class="o">.</span><span class="n">running</span><span class="o">.</span><span class="n">on_set</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_start</span><span class="p">)</span>
             <span class="n">r</span><span class="o">.</span><span class="n">stopped</span><span class="o">.</span><span class="n">on_set</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_stop</span><span class="p">)</span>
@@ -330,6 +331,7 @@
 <div class="viewcode-block" id="HasRunnables.stop">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.HasRunnables.stop">[docs]</a>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop all runnables.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">runnables</span><span class="p">:</span>
             <span class="n">r</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
@@ -338,6 +340,7 @@
 <div class="viewcode-block" id="HasRunnables.finish">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.HasRunnables.finish">[docs]</a>
     <span class="k">def</span> <span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Finish all runnables.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">runnables</span><span class="p">:</span>
             <span class="n">r</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span></div>
 
@@ -345,6 +348,10 @@
 <div class="viewcode-block" id="HasRunnables.join">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.HasRunnables.join">[docs]</a>
     <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Join all runnables.</span>
+
+<span class="sd">        :param timeout: Timeout in seconds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">runnables</span><span class="p">:</span>
             <span class="n">r</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span></div>
 
@@ -368,6 +375,13 @@
 <span class="sd">    There is a special `finish_message` value, which when received shuts down</span>
 <span class="sd">    that consumer.  ThreadQueue.finish() puts one `self.finish_message` onto the</span>
 <span class="sd">    queue for each consumer.</span>
+
+<span class="sd">    :param callback: The callback to run for each item in the queue.</span>
+<span class="sd">    :param error: The error callback.</span>
+<span class="sd">    :param maxsize: The maximum size of the queue.</span>
+<span class="sd">    :param name: The name of the queue.</span>
+<span class="sd">    :param thread_count: The number of threads to run.</span>
+<span class="sd">    :param timeout: The timeout for getting an item from the queue.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">callback</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
@@ -383,12 +397,13 @@
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">queue</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Queue</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new queue.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Queue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maxsize</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ThreadQueue.finish">
 <a class="viewcode-back" href="../../../../source/superduperdb.misc.runnable.html#superduperdb.misc.runnable.collection.ThreadQueue.finish">[docs]</a>
     <span class="k">def</span> <span class="nf">finish</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Put an empty message into the queue for each listener&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Put an empty message into the queue for each listener.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">runnables</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_SENTINEL_MESSAGE</span><span class="p">)</span></div>
 

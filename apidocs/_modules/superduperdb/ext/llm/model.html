@@ -325,11 +325,11 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.BaseLLM">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">BaseLLM</span><span class="p">(</span><span class="n">Model</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    :param prompt_template: The template to use for the prompt.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for LLM models.</span>
+
+<span class="sd">    :param prompt: The template to use for the prompt.</span>
 <span class="sd">    :param prompt_func: The function to use for the prompt.</span>
 <span class="sd">    :param max_batch_size: The maximum batch size to use for batch generation.</span>
-<span class="sd">    :param predict_kwargs: Parameters used during inference.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{input}</span><span class="s2">&quot;</span>
@@ -342,15 +342,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">takes_context</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BaseLLM.to_call">
-<a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.BaseLLM.to_call">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-
 <div class="viewcode-block" id="BaseLLM.post_create">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.BaseLLM.post_create">[docs]</a>
     <span class="k">def</span> <span class="nf">post_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s2">&quot;Datalayer&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post create method for the model.</span>
+
+<span class="sd">        :param db: The datalayer to use for the model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO: Do not make sense to add this logic here,</span>
         <span class="c1"># Need a auto DataType to handle this</span>
         <span class="kn">from</span> <span class="nn">superduperdb.backends.ibis.data_backend</span> <span class="kn">import</span> <span class="n">IbisDataBackend</span>
@@ -366,6 +364,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.BaseLLM.init">[docs]</a>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the model.&quot;&quot;&quot;</span>
         <span class="o">...</span></div>
 
 
@@ -375,9 +374,13 @@
 <div class="viewcode-block" id="BaseLLM._batch_generate">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.BaseLLM._batch_generate">[docs]</a>
     <span class="k">def</span> <span class="nf">_batch_generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Base method to batch generate text from a list of prompts.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Base method to batch generate text from a list of prompts.</span>
+
 <span class="sd">        If the model can run batch generation efficiently, pls override this method.</span>
+
+<span class="sd">        :param prompts: The list of prompts to generate text from.</span>
+<span class="sd">        :param kwargs: The keyword arguments to pass to the prompt function and</span>
+<span class="sd">                        the llm model.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">prompt</span> <span class="ow">in</span> <span class="n">prompts</span><span class="p">]</span></div>
 
@@ -386,6 +389,13 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.BaseLLM.predict_one">[docs]</a>
     <span class="nd">@ensure_initialized</span>
     <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate text from a single input.</span>
+
+<span class="sd">        :param X: The input to generate text from.</span>
+<span class="sd">        :param context: The context to use for the prompt.</span>
+<span class="sd">        :param kwargs: The keyword arguments to pass to the prompt function and</span>
+<span class="sd">                        the llm model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompter</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -394,6 +404,13 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.BaseLLM.predict">[docs]</a>
     <span class="nd">@ensure_initialized</span>
     <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">,</span> <span class="n">QueryDataset</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate text from a dataset.</span>
+
+<span class="sd">        :param dataset: The dataset to generate text from.</span>
+<span class="sd">        :param kwargs: The keyword arguments to pass to the prompt function and</span>
+<span class="sd">                        the llm model.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prompter</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">))]</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;context&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_generate</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -401,13 +418,12 @@
 
 <div class="viewcode-block" id="BaseLLM.get_kwargs">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.BaseLLM.get_kwargs">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">kwargs_list</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get kwargs and object attributes that are in the function signature</span>
-<span class="sd">        :param func (Callable): function to get kwargs for</span>
-<span class="sd">        :param kwargs (list of dict): kwargs to filter</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">get_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">kwargs_list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get kwargs and object attributes that are in the function signature.</span>
 
+<span class="sd">        :param func: function to get kwargs for</span>
+<span class="sd">        :param *kwargs_list: kwargs to filter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">total_kwargs</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="p">{</span><span class="o">**</span><span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">x</span><span class="p">},</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="o">*</span><span class="n">kwargs_list</span><span class="p">])</span>
         <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="n">new_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -419,6 +435,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">prompter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a prompter for the model.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Prompter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_func</span><span class="p">)</span></div>
 
 
@@ -427,7 +444,8 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.BaseLLMAPI">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">BaseLLMAPI</span><span class="p">(</span><span class="n">BaseLLM</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for LLM models that use an API.</span>
+
 <span class="sd">    :param api_url: The URL for the API.</span>
 <span class="sd">    {parent_doc}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -439,15 +457,14 @@
 <div class="viewcode-block" id="BaseLLMAPI.init">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.BaseLLMAPI.init">[docs]</a>
     <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the model.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="BaseLLMAPI._generate_wrapper">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.model.BaseLLMAPI._generate_wrapper">[docs]</a>
     <span class="k">def</span> <span class="nf">_generate_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Wrapper for the _generate method to handle exceptions.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper for the _generate method to handle exceptions.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -460,7 +477,10 @@
     <span class="k">def</span> <span class="nf">_batch_generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompts</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Base method to batch generate text from a list of prompts using multi-threading.</span>
+
 <span class="sd">        Handles exceptions in _generate method.</span>
+
+<span class="sd">        :param prompts: The list of prompts to generate text from.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span>
             <span class="n">max_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_batch_size</span>

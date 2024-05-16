@@ -307,7 +307,6 @@
 
 <span class="kn">from</span> <span class="nn">superduperdb</span> <span class="kn">import</span> <span class="n">CFG</span>
 <span class="kn">from</span> <span class="nn">superduperdb.backends.base.query</span> <span class="kn">import</span> <span class="n">CompoundSelect</span>
-<span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.document</span> <span class="kn">import</span> <span class="n">_OUTPUTS_KEY</span>
 <span class="kn">from</span> <span class="nn">superduperdb.base.serializable</span> <span class="kn">import</span> <span class="n">Variable</span>
 <span class="kn">from</span> <span class="nn">superduperdb.components.model</span> <span class="kn">import</span> <span class="n">Mapping</span>
@@ -319,6 +318,10 @@
 <span class="kn">from</span> <span class="nn">.component</span> <span class="kn">import</span> <span class="n">Component</span><span class="p">,</span> <span class="n">ComponentTuple</span>
 <span class="kn">from</span> <span class="nn">.model</span> <span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">ModelInputType</span>
 
+<span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">superduperdb.base.datalayer</span> <span class="kn">import</span> <span class="n">Datalayer</span>
+
+
 <span class="n">SELECT_TEMPLATE</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;documents&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;query&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;collection_name&gt;.find()&#39;</span><span class="p">}</span>
 
 
@@ -327,16 +330,17 @@
 <span class="nd">@public_api</span><span class="p">(</span><span class="n">stability</span><span class="o">=</span><span class="s1">&#39;stable&#39;</span><span class="p">)</span>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Listener</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Listener object which is used to process a column/ key of a collection or table,</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Listener component.</span>
+
+<span class="sd">    Listener object which is used to process a column/key of a collection or table,</span>
 <span class="sd">    and store the outputs.</span>
-<span class="sd">    {component_parameters}</span>
-<span class="sd">    :param key: Key to be bound to model</span>
-<span class="sd">    :param model: Model for processing data</span>
-<span class="sd">    :param select: Object for selecting which data is processed</span>
+
+<span class="sd">    :param key: Key to be bound to the model.</span>
+<span class="sd">    :param model: Model for processing data.</span>
+<span class="sd">    :param select: Object for selecting which data is processed.</span>
+<span class="sd">    :param active: Toggle to ``False`` to deactivate change data triggering.</span>
+<span class="sd">    :param predict_kwargs: Keyword arguments to self.model.predict().</span>
 <span class="sd">    :param identifier: A string used to identify the model.</span>
-<span class="sd">    :param active: Toggle to ``False`` to deactivate change data triggering</span>
-<span class="sd">    :param predict_kwargs: Keyword arguments to self.model.predict</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__doc__</span> <span class="o">=</span> <span class="vm">__doc__</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">component_parameters</span><span class="o">=</span><span class="n">Component</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
@@ -363,6 +367,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Listener.handle_integration">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">handle_integration</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to handle integration.</span>
+
+<span class="sd">        :param kwargs: Integration keyword arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s1">&#39;select&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_query</span><span class="p">(</span>
                 <span class="n">query</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">][</span><span class="s1">&#39;query&#39;</span><span class="p">],</span>
@@ -388,10 +396,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mapping property.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Mapping</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">signature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">signature</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get reference to outputs of listener model.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_OUTPUTS_KEY</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">::</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="k">else</span><span class="p">:</span>
@@ -406,10 +416,24 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">outputs_select</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">outputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_id</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get query reference to model outputs.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">DB_TYPE</span> <span class="o">==</span> <span class="s2">&quot;SQL&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">outputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_id</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">superduperdb.backends.mongodb.query</span> <span class="kn">import</span> <span class="n">Collection</span>
+
+            <span class="n">model_update_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">model_update_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">model_update_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;document_embedded&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="n">collection_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">collection_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span>
+
+            <span class="k">return</span> <span class="n">Collection</span><span class="p">(</span><span class="n">collection_name</span><span class="p">)</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">outputs_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Model outputs key.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">DB_TYPE</span> <span class="o">==</span> <span class="s2">&quot;SQL&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;output&#39;</span>
         <span class="k">else</span><span class="p">:</span>
@@ -418,7 +442,11 @@
 <div class="viewcode-block" id="Listener.pre_create">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Listener.pre_create">[docs]</a>
     <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">pre_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">pre_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s2">&quot;Datalayer&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pre-create hook.</span>
+
+<span class="sd">        :param db: Data layer instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">CompoundSelect</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">set_variables</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
 
@@ -442,14 +470,12 @@
 <div class="viewcode-block" id="Listener.post_create">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Listener.post_create">[docs]</a>
     <span class="nd">@override</span>
-    <span class="k">def</span> <span class="nf">post_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">output_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">create_output_dest</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">::</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span>
-            <span class="n">flatten</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">flatten</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">output_table</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">output_table</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">post_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s2">&quot;Datalayer&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post-create hook.</span>
+
+<span class="sd">        :param db: Data layer instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_output_dest</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">db</span><span class="o">.</span><span class="n">server_mode</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">cdc</span><span class="o">.</span><span class="n">uri</span><span class="p">:</span>
                 <span class="n">request_server</span><span class="p">(</span>
@@ -462,8 +488,31 @@
                 <span class="n">db</span><span class="o">.</span><span class="n">cdc</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Listener.create_output_dest">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Listener.create_output_dest">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_output_dest</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s2">&quot;Datalayer&quot;</span><span class="p">,</span> <span class="n">predict_id</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create output destination.</span>
+
+<span class="sd">        :param db: Data layer instance.</span>
+<span class="sd">        :param predict_id: Predict ID.</span>
+<span class="sd">        :param model: Model instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">datatype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">output_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">create_output_dest</span><span class="p">(</span>
+            <span class="n">predict_id</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">datatype</span><span class="p">,</span>
+            <span class="n">flatten</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">flatten</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">output_table</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">output_table</span><span class="p">)</span></div>
+
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">ComponentTuple</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Listener model dependencies.&quot;&quot;&quot;</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">mapping</span>
         <span class="n">all_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
@@ -476,10 +525,27 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">predict_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get predict ID.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">::</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="Listener.from_predict_id">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Listener.from_predict_id">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_predict_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s2">&quot;Datalayer&quot;</span><span class="p">,</span> <span class="n">predict_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Listener&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Split predict ID.</span>
+
+<span class="sd">        :param db: Data layer instance.</span>
+<span class="sd">        :param predict_id: Predict ID.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">identifier</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="n">predict_id</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;::&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">Listener</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;listener&#39;</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">version</span><span class="p">)))</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get identifier key.&quot;&quot;&quot;</span>
+
         <span class="k">def</span> <span class="nf">_id_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_outputs.&#39;</span><span class="p">):</span>
@@ -498,6 +564,10 @@
 <div class="viewcode-block" id="Listener.depends_on">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Listener.depends_on">[docs]</a>
     <span class="k">def</span> <span class="nf">depends_on</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Component</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the listener depends on another component.</span>
+
+<span class="sd">        :param other: Another component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Listener</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
 
@@ -511,14 +581,15 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Listener.schedule_jobs">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">schedule_jobs</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span> <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">db</span><span class="p">:</span> <span class="s2">&quot;Datalayer&quot;</span><span class="p">,</span>
+        <span class="n">dependencies</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Job</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span>
+        <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Schedule jobs for the listener</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Schedule jobs for the listener.</span>
 
-<span class="sd">        :param database: The DB instance to process</span>
-<span class="sd">        :param dependencies: A list of dependencies</span>
-<span class="sd">        :param verbose: Whether to print verbose output</span>
+<span class="sd">        :param db: Data layer instance to process.</span>
+<span class="sd">        :param dependencies: A list of dependencies.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
@@ -528,7 +599,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict_in_db_job</span><span class="p">(</span>
                 <span class="n">X</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span>
                 <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span>
-                <span class="n">predict_id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">::</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="n">predict_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_id</span><span class="p">,</span>
                 <span class="n">select</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
                 <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">,</span>
                 <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
@@ -540,10 +611,10 @@
 
 <div class="viewcode-block" id="Listener.cleanup">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Listener.cleanup">[docs]</a>
-    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">:</span> <span class="n">Datalayer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean up when the listener is deleted</span>
+    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">:</span> <span class="s2">&quot;Datalayer&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean up when the listener is deleted.</span>
 
-<span class="sd">        :param database: The DB instance to process</span>
+<span class="sd">        :param database: Data layer instance to process.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO - this doesn&#39;t seem to do anything</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">cleanup</span> <span class="o">:=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">,</span> <span class="s1">&#39;model_cleanup&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

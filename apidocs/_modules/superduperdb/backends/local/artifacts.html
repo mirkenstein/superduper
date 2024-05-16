@@ -340,14 +340,15 @@
 <div class="viewcode-block" id="FileSystemArtifactStore.url">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.local.html#superduperdb.backends.local.artifacts.FileSystemArtifactStore.url">[docs]</a>
     <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the URL of the artifact store.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span></div>
 
 
 <div class="viewcode-block" id="FileSystemArtifactStore._delete_artifact">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.local.html#superduperdb.backends.local.artifacts.FileSystemArtifactStore._delete_artifact">[docs]</a>
     <span class="k">def</span> <span class="nf">_delete_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Delete artifact from artifact store</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete artifact from artifact store.</span>
+
 <span class="sd">        :param file_id: File id uses to identify artifact in store</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
@@ -360,8 +361,11 @@
 <div class="viewcode-block" id="FileSystemArtifactStore.drop">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.local.html#superduperdb.backends.local.artifacts.FileSystemArtifactStore.drop">[docs]</a>
     <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Drop the artifact store.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop the artifact store.</span>
+
+<span class="sd">        Please use with caution as this will delete all data in the artifact store.</span>
+
+<span class="sd">        :param force: Whether to force the drop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">click</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
@@ -380,7 +384,10 @@
         <span class="n">serialized</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
         <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span> <span class="n">file_id</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">FileExistsError</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">serialized</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_load_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
@@ -390,9 +397,12 @@
 <div class="viewcode-block" id="FileSystemArtifactStore._save_file">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.local.html#superduperdb.backends.local.artifacts.FileSystemArtifactStore._save_file">[docs]</a>
     <span class="k">def</span> <span class="nf">_save_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save file in artifact store and return the relative path</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save file in artifact store and return the relative path.</span>
+
 <span class="sd">        return the relative path {file_id}/{name}</span>
+
+<span class="sd">        :param file_path: The path to the file to be saved.</span>
+<span class="sd">        :param file_id: The id of the file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">name</span>
@@ -411,7 +421,7 @@
 <div class="viewcode-block" id="FileSystemArtifactStore._load_file">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.local.html#superduperdb.backends.local.artifacts.FileSystemArtifactStore._load_file">[docs]</a>
     <span class="k">def</span> <span class="nf">_load_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the path to the file in the artifact store&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the path to the file in the artifact store.&quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading file </span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span> <span class="n">file_id</span><span class="p">)</span></div>
 
@@ -419,9 +429,7 @@
 <div class="viewcode-block" id="FileSystemArtifactStore.disconnect">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.local.html#superduperdb.backends.local.artifacts.FileSystemArtifactStore.disconnect">[docs]</a>
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Disconnect the client</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect the client.&quot;&quot;&quot;</span>
         <span class="c1"># Not necessary since just local filesystem</span>
         <span class="k">pass</span></div>
 </div>

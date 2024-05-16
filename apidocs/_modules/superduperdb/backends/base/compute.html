@@ -307,28 +307,22 @@
 <div class="viewcode-block" id="ComputeBackend">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.compute.ComputeBackend">[docs]</a>
 <span class="k">class</span> <span class="nc">ComputeBackend</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Abstraction for sending jobs to a distributed compute platform.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstraction for sending jobs to a distributed compute platform.&quot;&quot;&quot;</span>
 
     <span class="nd">@abstractproperty</span>
     <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the type of compute engine</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the type of compute engine.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@abstractproperty</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the name of current compute engine</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the name of current compute engine.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="ComputeBackend.get_local_client">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.compute.ComputeBackend.get_local_client">[docs]</a>
     <span class="k">def</span> <span class="nf">get_local_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;Returns a local version of self&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a local version of self.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -347,18 +341,14 @@
 
     <span class="nd">@abstractproperty</span>
     <span class="k">def</span> <span class="nf">tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        List for all tasks</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List for all tasks.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="ComputeBackend.wait_all">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.compute.ComputeBackend.wait_all">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">wait_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Waits for all pending tasks to complete.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Waits for all pending tasks to complete.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -366,8 +356,8 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.compute.ComputeBackend.result">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retrieves the result of a previously submitted task.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves the result of a previously submitted task.</span>
+
 <span class="sd">        Note: This will block until the future is completed.</span>
 
 <span class="sd">        :param identifier: The identifier of the submitted task.</span>
@@ -379,9 +369,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.compute.ComputeBackend.disconnect">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Disconnect the client.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect the client.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -389,9 +377,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.compute.ComputeBackend.shutdown">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Shuts down the compute cluster.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shuts down the compute cluster.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
 

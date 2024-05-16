@@ -328,12 +328,14 @@
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Dataset</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A dataset is an immutable collection of documents.</span>
+
 <span class="sd">    {component_params}</span>
-<span class="sd">    :param select: A query to select the documents for the dataset</span>
-<span class="sd">    :param sample_size: The number of documents to sample from the query</span>
-<span class="sd">    :param random_seed: The random seed to use for sampling</span>
-<span class="sd">    :param creation_date: The date the dataset was created</span>
-<span class="sd">    :param raw_data: The raw data for the dataset</span>
+
+<span class="sd">    :param select: A query to select the documents for the dataset.</span>
+<span class="sd">    :param sample_size: The number of documents to sample from the query.</span>
+<span class="sd">    :param random_seed: The random seed to use for sampling.</span>
+<span class="sd">    :param creation_date: The date the dataset was created.</span>
+<span class="sd">    :param raw_data: The raw data for the dataset.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__doc__</span> <span class="o">=</span> <span class="vm">__doc__</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">component_params</span><span class="o">=</span><span class="n">Component</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
@@ -349,18 +351,27 @@
     <span class="n">creation_date</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">raw_data</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 
+<div class="viewcode-block" id="Dataset.__post_init__">
+<a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Dataset.__post_init__">[docs]</a>
     <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artifacts</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post-initialization method.</span>
+
+<span class="sd">        :param artifacts: Optional additional artifacts for initialization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">(</span><span class="n">artifacts</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="nd">@ensure_initialized</span>
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Property representing the dataset&#39;s data.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
 
 <div class="viewcode-block" id="Dataset.init">
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Dataset.init">[docs]</a>
     <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialization method.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pickle_decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_data</span><span class="p">)]</span></div>
 
@@ -369,9 +380,13 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Dataset.pre_create">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span> <span class="nf">pre_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s1">&#39;Datalayer&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pre-create hook for database operations.</span>
+
+<span class="sd">        :param db: The database to use for the operation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;select cannot be None&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Select cannot be None&#39;</span><span class="p">)</span>
             <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">))</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_size</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
                 <span class="n">perm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
@@ -381,6 +396,7 @@
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cached property representing the random number generator.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_seed</span><span class="p">)</span></div>
 
 </pre></div>

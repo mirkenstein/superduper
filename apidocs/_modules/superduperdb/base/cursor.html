@@ -315,14 +315,18 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.cursor.SuperDuperCursor">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">SuperDuperCursor</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper around a raw cursor that adds some extra functionality.</span>
+
 <span class="sd">    A cursor that wraps a cursor and returns ``Document`` wrapping</span>
 <span class="sd">    a dict including ``Encodable`` objects.</span>
 
 <span class="sd">    :param raw_cursor: the cursor to wrap</span>
 <span class="sd">    :param id_field: the field to use as the document id</span>
-<span class="sd">    :param encoders: a dict of encoders to use to decode the documents</span>
+<span class="sd">    :param db: the datalayer to use to decode the documents</span>
 <span class="sd">    :param scores: a dict of scores to add to the documents</span>
+<span class="sd">    :param decode_function: a function to use to decode the documents</span>
+<span class="sd">    :param _it: an iterator to keep track of the current position in the cursor,</span>
+<span class="sd">            Default is 0.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">raw_cursor</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span>
@@ -336,9 +340,7 @@
 <div class="viewcode-block" id="SuperDuperCursor.limit">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.cursor.SuperDuperCursor.limit">[docs]</a>
     <span class="k">def</span> <span class="nf">limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;SuperDuperCursor&#39;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Limit the number of results returned by the cursor.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Limit the number of results returned by the cursor.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">SuperDuperCursor</span><span class="p">(</span>
             <span class="n">raw_cursor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_cursor</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span>
             <span class="n">id_field</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id_field</span><span class="p">,</span>
@@ -351,6 +353,7 @@
 <div class="viewcode-block" id="SuperDuperCursor.cursor_next">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.cursor.SuperDuperCursor.cursor_next">[docs]</a>
     <span class="k">def</span> <span class="nf">cursor_next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the next document from the cursor.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_cursor</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_it</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_cursor</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">StopIteration</span>

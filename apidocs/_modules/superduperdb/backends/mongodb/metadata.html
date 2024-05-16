@@ -339,12 +339,18 @@
 <div class="viewcode-block" id="MongoMetaDataStore.url">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.url">[docs]</a>
     <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Metadata store connection url.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">HOST</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">PORT</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
 
 <div class="viewcode-block" id="MongoMetaDataStore.drop">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.drop">[docs]</a>
     <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop all meta-data from the metadata store.</span>
+
+<span class="sd">        Please always use with caution. This will drop all the meta-data collections.</span>
+<span class="sd">        :param force: whether to force the drop, defaults to False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">click</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">Colors</span><span class="o">.</span><span class="n">RED</span><span class="si">}</span><span class="s1">[!!!WARNING USE WITH CAUTION AS YOU &#39;</span>
@@ -362,6 +368,11 @@
 <div class="viewcode-block" id="MongoMetaDataStore.create_parent_child">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.create_parent_child">[docs]</a>
     <span class="k">def</span> <span class="nf">create_parent_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">child</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a parent-child relationship between two components.</span>
+
+<span class="sd">        :param parent: parent component</span>
+<span class="sd">        :param child: child component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent_child_mappings</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span>
             <span class="p">{</span>
                 <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="n">parent</span><span class="p">,</span>
@@ -373,6 +384,10 @@
 <div class="viewcode-block" id="MongoMetaDataStore.create_component">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.create_component">[docs]</a>
     <span class="k">def</span> <span class="nf">create_component</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InsertOneResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a component in the metadata store.</span>
+
+<span class="sd">        :param info: dictionary containing information about the component.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s1">&#39;hidden&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">info</span><span class="p">:</span>
             <span class="n">info</span><span class="p">[</span><span class="s1">&#39;hidden&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">info</span><span class="p">)</span></div>
@@ -381,12 +396,17 @@
 <div class="viewcode-block" id="MongoMetaDataStore.create_job">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.create_job">[docs]</a>
     <span class="k">def</span> <span class="nf">create_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InsertOneResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a job in the metadata store.</span>
+
+<span class="sd">        :param info: dictionary containing information about the job.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">(</span><span class="n">info</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MongoMetaDataStore.get_parent_child_relations">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.get_parent_child_relations">[docs]</a>
     <span class="k">def</span> <span class="nf">get_parent_child_relations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get parent-child relations from the metadata store.&quot;&quot;&quot;</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_child_mappings</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">[(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;parent&#39;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;child&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">c</span><span class="p">]</span></div>
 
@@ -394,30 +414,52 @@
 <div class="viewcode-block" id="MongoMetaDataStore.get_component_version_children">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.get_component_version_children">[docs]</a>
     <span class="k">def</span> <span class="nf">get_component_version_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the children of a component version.</span>
+
+<span class="sd">        :param unique_id: unique identifier of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_child_mappings</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="s1">&#39;child&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="n">unique_id</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="MongoMetaDataStore.get_job">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.get_job">[docs]</a>
     <span class="k">def</span> <span class="nf">get_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a job from the metadata store.</span>
+
+<span class="sd">        :param identifier: identifier of job</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="n">identifier</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="MongoMetaDataStore.create_metadata">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.create_metadata">[docs]</a>
     <span class="k">def</span> <span class="nf">create_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create metadata in the metadata store.</span>
+
+<span class="sd">        :param key: key to be created</span>
+<span class="sd">        :param value: value to be created</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_collection</span><span class="o">.</span><span class="n">insert_one</span><span class="p">({</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span></div>
 
 
 <div class="viewcode-block" id="MongoMetaDataStore.get_metadata">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.get_metadata">[docs]</a>
     <span class="k">def</span> <span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get metadata from the metadata store.</span>
+
+<span class="sd">        :param key: key to be retrieved</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">key</span><span class="p">})[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="MongoMetaDataStore.update_metadata">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.update_metadata">[docs]</a>
     <span class="k">def</span> <span class="nf">update_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update metadata in the metadata store.</span>
+
+<span class="sd">        :param key: key to be updated</span>
+<span class="sd">        :param value: value to be updated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_collection</span><span class="o">.</span><span class="n">update_one</span><span class="p">({</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">key</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">}})</span></div>
 
 
@@ -426,6 +468,12 @@
     <span class="k">def</span> <span class="nf">get_latest_version</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">allow_hidden</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the latest version of a component.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        :param allow_hidden: whether to allow hidden components</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">allow_hidden</span><span class="p">:</span>
                 <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span>
@@ -462,6 +510,12 @@
 <div class="viewcode-block" id="MongoMetaDataStore.update_job">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.update_job">[docs]</a>
     <span class="k">def</span> <span class="nf">update_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UpdateResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update a job in the metadata store.</span>
+
+<span class="sd">        :param identifier: identifier of job</span>
+<span class="sd">        :param key: key to be updated</span>
+<span class="sd">        :param value: value to be updated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_collection</span><span class="o">.</span><span class="n">update_one</span><span class="p">(</span>
             <span class="p">{</span><span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="n">identifier</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">}}</span>
         <span class="p">)</span></div>
@@ -470,6 +524,10 @@
 <div class="viewcode-block" id="MongoMetaDataStore.show_components">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.show_components">[docs]</a>
     <span class="k">def</span> <span class="nf">show_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show components in the metadata store.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO: Should this be sorted?</span>
         <span class="k">if</span> <span class="n">type_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_collection</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span>
@@ -490,6 +548,11 @@
     <span class="k">def</span> <span class="nf">show_component_versions</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show component versions in the metadata store.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_collection</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span>
             <span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;type_id&#39;</span><span class="p">:</span> <span class="n">type_id</span><span class="p">,</span> <span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="n">identifier</span><span class="p">}</span>
         <span class="p">)</span></div>
@@ -498,6 +561,10 @@
 <div class="viewcode-block" id="MongoMetaDataStore.list_components_in_scope">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.list_components_in_scope">[docs]</a>
     <span class="k">def</span> <span class="nf">list_components_in_scope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List components in a scope.</span>
+
+<span class="sd">        :param scope: scope of components</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_collection</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="n">scope</span><span class="p">}):</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;type_id&#39;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;identifier&#39;</span><span class="p">]))</span>
@@ -507,6 +574,10 @@
 <div class="viewcode-block" id="MongoMetaDataStore.show_job">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.show_job">[docs]</a>
     <span class="k">def</span> <span class="nf">show_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show a job in the metadata store.</span>
+
+<span class="sd">        :param job_id: identifier of job</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_collection</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="n">job_id</span><span class="p">})</span></div>
 
 
@@ -517,6 +588,11 @@
         <span class="n">component_identifier</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show jobs in the metadata store.</span>
+
+<span class="sd">        :param component_identifier: identifier of component</span>
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filter_</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">component_identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">filter_</span><span class="p">[</span><span class="s1">&#39;component_identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">component_identifier</span>
@@ -525,19 +601,33 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_collection</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">filter_</span><span class="p">))</span></div>
 
 
+<div class="viewcode-block" id="MongoMetaDataStore._component_used">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore._component_used">[docs]</a>
     <span class="k">def</span> <span class="nf">_component_used</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a component is used in other components.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        :param version: version of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">members</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$regex&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;^</span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">members</span> <span class="o">=</span> <span class="n">Component</span><span class="o">.</span><span class="n">make_unique_id</span><span class="p">(</span><span class="n">type_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component_collection</span><span class="o">.</span><span class="n">count_documents</span><span class="p">({</span><span class="s1">&#39;members&#39;</span><span class="p">:</span> <span class="n">members</span><span class="p">}))</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">component_collection</span><span class="o">.</span><span class="n">count_documents</span><span class="p">({</span><span class="s1">&#39;members&#39;</span><span class="p">:</span> <span class="n">members</span><span class="p">}))</span></div>
+
 
 <div class="viewcode-block" id="MongoMetaDataStore.component_has_parents">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.component_has_parents">[docs]</a>
     <span class="k">def</span> <span class="nf">component_has_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a component has parents.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;child&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$regex&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;^</span><span class="si">{</span><span class="n">type_id</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s1">/&#39;</span><span class="p">}}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_child_mappings</span><span class="o">.</span><span class="n">count_documents</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
 
@@ -547,6 +637,12 @@
     <span class="k">def</span> <span class="nf">component_version_has_parents</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a component version has parents.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        :param version: version of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;child&#39;</span><span class="p">:</span> <span class="n">Component</span><span class="o">.</span><span class="n">make_unique_id</span><span class="p">(</span><span class="n">type_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">version</span><span class="p">)}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_child_mappings</span><span class="o">.</span><span class="n">count_documents</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
 
@@ -556,6 +652,12 @@
     <span class="k">def</span> <span class="nf">delete_component_version</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DeleteResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete a component version from the metadata store.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        :param version: version of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_component_used</span><span class="p">(</span><span class="n">type_id</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Component version already in use in other components!&#39;</span><span class="p">)</span>
 
@@ -611,6 +713,10 @@
 <div class="viewcode-block" id="MongoMetaDataStore.get_component_version_parents">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.get_component_version_parents">[docs]</a>
     <span class="k">def</span> <span class="nf">get_component_version_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unique_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the parents of a component version.</span>
+
+<span class="sd">        :param unique_id: unique identifier of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="n">r</span><span class="p">[</span><span class="s1">&#39;parent&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_child_mappings</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s1">&#39;child&#39;</span><span class="p">:</span> <span class="n">unique_id</span><span class="p">})</span>
         <span class="p">]</span></div>
@@ -628,6 +734,8 @@
             <span class="n">info</span><span class="p">,</span>
         <span class="p">)</span>
 
+<div class="viewcode-block" id="MongoMetaDataStore._update_object">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore._update_object">[docs]</a>
     <span class="k">def</span> <span class="nf">_update_object</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -636,14 +744,29 @@
         <span class="n">value</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span>
         <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update a component in the metadata store.</span>
+
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param key: key to be updated</span>
+<span class="sd">        :param value: value to be updated</span>
+<span class="sd">        :param version: version of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_collection</span><span class="o">.</span><span class="n">update_one</span><span class="p">(</span>
             <span class="p">{</span><span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="n">identifier</span><span class="p">,</span> <span class="s1">&#39;type_id&#39;</span><span class="p">:</span> <span class="n">type_id</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="n">version</span><span class="p">},</span>
             <span class="p">{</span><span class="s1">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">}},</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="MongoMetaDataStore.write_output_to_job">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.write_output_to_job">[docs]</a>
     <span class="k">def</span> <span class="nf">write_output_to_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write output to a job in the metadata store.</span>
+
+<span class="sd">        :param identifier: identifier of job</span>
+<span class="sd">        :param msg: message to be written</span>
+<span class="sd">        :param stream: stream to be written to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">stream</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;stdout&#39;</span><span class="p">,</span> <span class="s1">&#39;stderr&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;stream is &quot;</span><span class="si">{</span><span class="n">stream</span><span class="si">}</span><span class="s1">&quot;, should be stdout or stderr&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">job_collection</span><span class="o">.</span><span class="n">update_one</span><span class="p">(</span>
@@ -656,6 +779,12 @@
     <span class="k">def</span> <span class="nf">hide_component_version</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">type_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Hide a component version.</span>
+
+<span class="sd">        :param type_id: type of component</span>
+<span class="sd">        :param identifier: identifier of component</span>
+<span class="sd">        :param version: version of component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">component_collection</span><span class="o">.</span><span class="n">update_one</span><span class="p">(</span>
             <span class="p">{</span><span class="s1">&#39;type_id&#39;</span><span class="p">:</span> <span class="n">type_id</span><span class="p">,</span> <span class="s1">&#39;identifier&#39;</span><span class="p">:</span> <span class="n">identifier</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="n">version</span><span class="p">},</span>
             <span class="p">{</span><span class="s1">&#39;$set&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;hidden&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}},</span>
@@ -665,9 +794,7 @@
 <div class="viewcode-block" id="MongoMetaDataStore.disconnect">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.metadata.MongoMetaDataStore.disconnect">[docs]</a>
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Disconnect the client</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect the client.&quot;&quot;&quot;</span></div>
 </div>
 
 

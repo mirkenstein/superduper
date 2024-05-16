@@ -333,8 +333,7 @@
 <div class="viewcode-block" id="FindOne">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.FindOne">[docs]</a>
 <span class="k">class</span> <span class="nc">FindOne</span><span class="p">(</span><span class="n">QueryComponent</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Wrapper around ``pymongo.Collection.find_one``</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper around ``pymongo.Collection.find_one``.</span>
 
 <span class="sd">    :param args: Positional arguments to ``pymongo.Collection.find_one``</span>
 <span class="sd">    :param kwargs: Named arguments to ``pymongo.Collection.find_one``</span>
@@ -343,6 +342,10 @@
 <div class="viewcode-block" id="FindOne.select_using_ids">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.FindOne.select_using_ids">[docs]</a>
     <span class="k">def</span> <span class="nf">select_using_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select documents using ids.</span>
+
+<span class="sd">        :param ids: The ids to select</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">ObjectId</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)[:]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
@@ -359,12 +362,10 @@
 <div class="viewcode-block" id="FindOne.add_fold">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.FindOne.add_fold">[docs]</a>
     <span class="k">def</span> <span class="nf">add_fold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fold</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Modify the query to add a fold to filter {&#39;_fold&#39;: fold}</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Modify the query to add a fold to filter {&#39;_fold&#39;: fold}.</span>
 
 <span class="sd">        :param fold: The fold to add</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="ow">or</span> <span class="p">[{}]</span>
         <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;_fold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fold</span>
         <span class="k">return</span> <span class="n">FindOne</span><span class="p">(</span>
@@ -381,11 +382,9 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Find">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Find</span><span class="p">(</span><span class="n">QueryComponent</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Wrapper around ``pymongo.Collection.find``</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper around ``pymongo.Collection.find``.</span>
 
-<span class="sd">    :param args: Positional arguments to ``pymongo.Collection.find``</span>
-<span class="sd">    :param kwargs: Named arguments to ``pymongo.Collection.find``</span>
+<span class="sd">    :param output_fields: The output fields to project to</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">output_fields</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -406,6 +405,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">select_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select ids.&quot;&quot;&quot;</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)[:]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
             <span class="n">args</span> <span class="o">=</span> <span class="p">[{}]</span>
@@ -428,7 +428,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Join the query with the outputs for a table.</span>
 
-<span class="sd">        :param **kwargs: key=model/version or key=model pairs</span>
+<span class="sd">        :param *predict_ids: The ids to predict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">[:]))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
@@ -450,6 +450,10 @@
 <div class="viewcode-block" id="Find.select_using_ids">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Find.select_using_ids">[docs]</a>
     <span class="k">def</span> <span class="nf">select_using_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select documents using ids.</span>
+
+<span class="sd">        :param ids: The ids to select</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">ObjectId</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)[:]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
@@ -466,6 +470,10 @@
 <div class="viewcode-block" id="Find.select_ids_of_missing_outputs">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Find.select_ids_of_missing_outputs">[docs]</a>
     <span class="k">def</span> <span class="nf">select_ids_of_missing_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predict_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select ids of missing outputs.</span>
+
+<span class="sd">        :param predict_id: The predict id to select</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
             <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
@@ -496,6 +504,10 @@
 <div class="viewcode-block" id="Find.select_single_id">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Find.select_single_id">[docs]</a>
     <span class="k">def</span> <span class="nf">select_single_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select a single document by id.</span>
+
+<span class="sd">        :param id: The id of the document to select</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)[:]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
@@ -512,6 +524,10 @@
 <div class="viewcode-block" id="Find.add_fold">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Find.add_fold">[docs]</a>
     <span class="k">def</span> <span class="nf">add_fold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fold</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a fold to the query.</span>
+
+<span class="sd">        :param fold: The fold to add</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
             <span class="n">args</span> <span class="o">=</span> <span class="p">[{}]</span>
@@ -530,8 +546,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Aggregate">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Aggregate</span><span class="p">(</span><span class="n">Select</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Wrapper around ``pymongo.Collection.aggregate``</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper around ``pymongo.Collection.aggregate``.</span>
 
 <span class="sd">    :param table_or_collection: The table or collection to perform the query on</span>
 <span class="sd">    :param vector_index: The vector index to use</span>
@@ -546,37 +561,52 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id_field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the id field.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">primary_id</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">select_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select the table to perform the query on.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="Aggregate.add_fold">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Aggregate.add_fold">[docs]</a>
     <span class="k">def</span> <span class="nf">add_fold</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a fold to the query.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
 <div class="viewcode-block" id="Aggregate.select_single_id">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Aggregate.select_single_id">[docs]</a>
     <span class="k">def</span> <span class="nf">select_single_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select a single document by id.</span>
+
+<span class="sd">        :param id: The id of the document to select</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">select_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select ids.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="Aggregate.select_using_ids">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Aggregate.select_using_ids">[docs]</a>
     <span class="k">def</span> <span class="nf">select_using_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select documents using ids.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
 <div class="viewcode-block" id="Aggregate.select_ids_of_missing_outputs">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Aggregate.select_ids_of_missing_outputs">[docs]</a>
     <span class="k">def</span> <span class="nf">select_ids_of_missing_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select ids of missing outputs.</span>
+
+<span class="sd">        :param key: The key to select</span>
+<span class="sd">        :param model: The model to select</span>
+<span class="sd">        :param version: The version to select</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -628,6 +658,11 @@
 <div class="viewcode-block" id="Aggregate.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Aggregate.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        :param reference: Not used</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">get_table_or_collection</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">)</span>
@@ -653,7 +688,35 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoCompoundSelect">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MongoCompoundSelect</span><span class="p">(</span><span class="n">CompoundSelect</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;CompoundSelect class to perform compound queries on a collection.&quot;&quot;&quot;</span>
+
     <span class="n">DB_TYPE</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;MONGODB&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_deep_flat_encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache</span><span class="p">):</span>
+        <span class="n">documents</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">query_chain</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">query</span><span class="p">,</span> <span class="n">sub_docs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span><span class="o">.</span><span class="n">_deep_flat_encode</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span>
+            <span class="n">query_chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+            <span class="n">documents</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_docs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
+            <span class="n">query</span><span class="p">,</span> <span class="n">sub_docs</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">_deep_flat_encode</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span>
+            <span class="n">query_chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+            <span class="n">documents</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_docs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_like</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">query</span><span class="p">,</span> <span class="n">sub_docs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_like</span><span class="o">.</span><span class="n">_deep_flat_encode</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span>
+            <span class="n">query_chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+            <span class="n">documents</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sub_docs</span><span class="p">)</span>
+
+        <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span><span class="si">}</span><span class="s1">.&#39;</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_chain</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">documents</span><span class="p">):</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">documents</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;query&#39;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span> <span class="s1">&#39;documents&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">documents</span><span class="p">]}</span>
 
     <span class="k">def</span> <span class="nf">_get_query_linker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_or_collection</span><span class="p">,</span> <span class="n">members</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QueryLinker&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">MongoQueryLinker</span><span class="p">(</span>
@@ -662,16 +725,15 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">output_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the output fields.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_linker</span><span class="o">.</span><span class="n">output_fields</span>
 
 <div class="viewcode-block" id="MongoCompoundSelect.outputs">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoCompoundSelect.outputs">[docs]</a>
     <span class="k">def</span> <span class="nf">outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">predict_ids</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This method returns a query which joins a query with the outputs</span>
-<span class="sd">        for a table.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a query which joins a query with the outputs for a table.</span>
 
-<span class="sd">        :param model: The model identifier for which to get the outputs</span>
+<span class="sd">        :param *predict_ids: The ids to predict</span>
 
 <span class="sd">        &gt;&gt;&gt; q = Collection(...).find(...).outputs(&#39;key&#39;, &#39;model_name&#39;)</span>
 
@@ -688,6 +750,7 @@
 <div class="viewcode-block" id="MongoCompoundSelect.change_stream">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoCompoundSelect.change_stream">[docs]</a>
     <span class="k">def</span> <span class="nf">change_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change stream for the query.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">change_stream</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
@@ -717,6 +780,11 @@
 <div class="viewcode-block" id="MongoCompoundSelect.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoCompoundSelect.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        :param reference: If True, load the references</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
         <span class="n">decode_function</span> <span class="o">=</span> <span class="n">_get_decode_function</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="n">pymongo</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">Cursor</span><span class="p">,</span> <span class="n">mongomock</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">Cursor</span><span class="p">)):</span>
@@ -743,7 +811,7 @@
 
 <span class="sd">        :param db: The db to query</span>
 <span class="sd">        :param id: The id to filter on</span>
-<span class="sd">        :param key:</span>
+<span class="sd">        :param key: The key to update</span>
 <span class="sd">        :param bytes: The bytes to update</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -758,11 +826,16 @@
 <div class="viewcode-block" id="MongoCompoundSelect.check_exists">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoCompoundSelect.check_exists">[docs]</a>
     <span class="k">def</span> <span class="nf">check_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the query exists in the database.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="o">...</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">select_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select the table to perform the query on.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">find</span><span class="p">()</span></div>
 
 
@@ -771,12 +844,16 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoQueryLinker">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MongoQueryLinker</span><span class="p">(</span><span class="n">QueryLinker</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;QueryLinker class to link queries together.&quot;&quot;&quot;</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">query_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the query components.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">query_components</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">output_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the output fields.&quot;&quot;&quot;</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="s1">&#39;output_fields&#39;</span><span class="p">):</span>
@@ -786,6 +863,10 @@
 <div class="viewcode-block" id="MongoQueryLinker.add_fold">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoQueryLinker.add_fold">[docs]</a>
     <span class="k">def</span> <span class="nf">add_fold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fold</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a fold to the query.</span>
+
+<span class="sd">        :param fold: The fold to add</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_members</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="s1">&#39;add_fold&#39;</span><span class="p">):</span>
@@ -801,6 +882,7 @@
 <div class="viewcode-block" id="MongoQueryLinker.outputs">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoQueryLinker.outputs">[docs]</a>
     <span class="k">def</span> <span class="nf">outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">predict_ids</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Join the query with the outputs for a table.&quot;&quot;&quot;</span>
         <span class="n">new_members</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="s1">&#39;outputs&#39;</span><span class="p">):</span>
@@ -816,6 +898,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">select_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select ids.&quot;&quot;&quot;</span>
         <span class="n">new_members</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="s1">&#39;select_ids&#39;</span><span class="p">):</span>
@@ -831,6 +914,10 @@
 <div class="viewcode-block" id="MongoQueryLinker.select_using_ids">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoQueryLinker.select_using_ids">[docs]</a>
     <span class="k">def</span> <span class="nf">select_using_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select documents using ids.</span>
+
+<span class="sd">        :param ids: The ids to select</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_members</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="s1">&#39;select_using_ids&#39;</span><span class="p">):</span>
@@ -859,6 +946,10 @@
 <div class="viewcode-block" id="MongoQueryLinker.select_single_id">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoQueryLinker.select_single_id">[docs]</a>
     <span class="k">def</span> <span class="nf">select_single_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select a single document by id.</span>
+
+<span class="sd">        :param id: The id of the document to select</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
             <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">QueryType</span><span class="o">.</span><span class="n">QUERY</span>
@@ -873,6 +964,10 @@
 <div class="viewcode-block" id="MongoQueryLinker.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoQueryLinker.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">parent</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">get_table_or_collection</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">)</span>
@@ -887,14 +982,20 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoInsert">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MongoInsert</span><span class="p">(</span><span class="n">Insert</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Insert class to insert a single document in the database.</span>
+
+<span class="sd">    :param one: If True, only one document will be inserted</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="MongoInsert.raw_query">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoInsert.raw_query">[docs]</a>
     <span class="k">def</span> <span class="nf">raw_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Returns a raw mongodb query for mongodb operation.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a raw mongodb query for mongodb operation.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">schema</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;schema&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">schema</span> <span class="o">=</span> <span class="n">get_schema</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span> <span class="k">if</span> <span class="n">schema</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">documents</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">documents</span><span class="p">]</span>
@@ -907,6 +1008,10 @@
 <div class="viewcode-block" id="MongoInsert.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoInsert.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">get_table_or_collection</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">)</span>
@@ -917,6 +1022,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">select_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select collection to be inserted.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">find</span><span class="p">()</span></div>
 
 
@@ -925,18 +1031,25 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoDelete">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MongoDelete</span><span class="p">(</span><span class="n">Delete</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete class to delete a single document in the database.</span>
+
+<span class="sd">    :param one: If True, only one document will be deleted</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">collection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the collection from the database.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span>
 
 <div class="viewcode-block" id="MongoDelete.to_operation">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoDelete.to_operation">[docs]</a>
     <span class="k">def</span> <span class="nf">to_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Returns a mongodb operation i.e `pymongo.InsertOne`</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a mongodb operation i.e `pymongo.InsertOne`.</span>
+
+<span class="sd">        :param collection: The collection to perform the operation on</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">one</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">DeleteOne</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">DeleteMany</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -945,6 +1058,10 @@
 <div class="viewcode-block" id="MongoDelete.arg_ids">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoDelete.arg_ids">[docs]</a>
     <span class="k">def</span> <span class="nf">arg_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the ids of the documents to be deleted.</span>
+
+<span class="sd">        :param collection: The collection to be deleted from</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">if</span> <span class="s1">&#39;_id&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">:</span>
@@ -962,6 +1079,10 @@
 <div class="viewcode-block" id="MongoDelete.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoDelete.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">get_table_or_collection</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">)</span>
@@ -993,6 +1114,15 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoUpdate">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MongoUpdate</span><span class="p">(</span><span class="n">Update</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update class to update a single document in the database.</span>
+
+<span class="sd">    :param update: The update document</span>
+<span class="sd">    :param filter: The filter to apply</span>
+<span class="sd">    :param one: If True, only one document will be updated</span>
+<span class="sd">    :param args: Positional arguments to ``pymongo.Collection.update_one``</span>
+<span class="sd">    :param kwargs: Named arguments to ``pymongo.Collection.update_one``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">update</span><span class="p">:</span> <span class="n">Document</span>
     <span class="nb">filter</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span>
     <span class="n">one</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1001,14 +1131,16 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">select_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select collection to be updated.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
 
 <div class="viewcode-block" id="MongoUpdate.to_operation">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoUpdate.to_operation">[docs]</a>
     <span class="k">def</span> <span class="nf">to_operation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Returns a mongodb operation i.e `pymongo.InsertOne`</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a mongodb operation i.e `pymongo.InsertOne`.</span>
+
+<span class="sd">        :param collection: The collection to perform the operation on</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">filter</span><span class="p">,</span> <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_query</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">one</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">UpdateOne</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">update</span><span class="p">)</span>
@@ -1018,6 +1150,10 @@
 <div class="viewcode-block" id="MongoUpdate.arg_ids">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoUpdate.arg_ids">[docs]</a>
     <span class="k">def</span> <span class="nf">arg_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the ids of the documents to be updated.</span>
+
+<span class="sd">        :param collection: The collection to be updated from</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">filter</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_query</span><span class="p">(</span><span class="n">collection</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">one</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="nb">filter</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">]]</span>
@@ -1028,9 +1164,10 @@
 <div class="viewcode-block" id="MongoUpdate.raw_query">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoUpdate.raw_query">[docs]</a>
     <span class="k">def</span> <span class="nf">raw_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Returns a raw mongodb query for mongodb operation.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a raw mongodb query for mongodb operation.</span>
+
+<span class="sd">        :param collection: The collection to perform the operation on</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
             <span class="n">update</span> <span class="o">=</span> <span class="n">update</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
@@ -1046,6 +1183,10 @@
 <div class="viewcode-block" id="MongoUpdate.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoUpdate.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">get_table_or_collection</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">)</span>
@@ -1065,13 +1206,17 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoBulkWrite">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MongoBulkWrite</span><span class="p">(</span><span class="n">Write</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    MongoBulkWrite will help write multiple mongodb operations</span>
-<span class="sd">    to database at once.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MongoBulkWrite will help write multiple mongodb operations to database at once.</span>
 
-<span class="sd">    example:</span>
+<span class="sd">    Example:</span>
+<span class="sd">    -------</span>
 <span class="sd">        MongoBulkWrite(operations= [MongoUpdate(...), MongoDelete(...)])</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+
+<span class="sd">    :param operations: List of operations to be performed</span>
+<span class="sd">    :param args: Positional arguments to ``pymongo.Collection.bulk_write``</span>
+<span class="sd">    :param kwargs: Named arguments to ``pymongo.Collection.bulk_write``</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">operations</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">MongoUpdate</span><span class="p">,</span> <span class="n">MongoDelete</span><span class="p">]]</span>
     <span class="n">args</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
@@ -1088,14 +1233,16 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">select_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Select collection to be bulk written</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select collection to be bulk written.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
 
 <div class="viewcode-block" id="MongoBulkWrite.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoBulkWrite.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">get_table_or_collection</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">)</span>
@@ -1139,6 +1286,14 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoReplaceOne">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MongoReplaceOne</span><span class="p">(</span><span class="n">Update</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Replace class to replace a single document in the database.</span>
+
+<span class="sd">    :param replacement: The replacement document</span>
+<span class="sd">    :param filter: The filter to apply</span>
+<span class="sd">    :param args: Positional arguments to ``pymongo.Collection.replace_one``</span>
+<span class="sd">    :param kwargs: Named arguments to ``pymongo.Collection.replace_one``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">replacement</span><span class="p">:</span> <span class="n">Document</span>
     <span class="nb">filter</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span>
     <span class="n">args</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
@@ -1146,15 +1301,21 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">collection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the collection from the database.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">select_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the table from the database.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
 
 <div class="viewcode-block" id="MongoReplaceOne.execute">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.MongoReplaceOne.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the query.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">get_table_or_collection</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">table_or_collection</span><span class="o">.</span><span class="n">identifier</span>
         <span class="p">)</span>
@@ -1174,7 +1335,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.ChangeStream">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">ChangeStream</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Request a stream of changes from a db</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Change stream class to watch for changes in specified collection.</span>
 
 <span class="sd">    :param collection: The collection to perform the query on</span>
 <span class="sd">    :param args: Positional query arguments to ``pymongo.Collection.watch``</span>
@@ -1185,9 +1346,16 @@
     <span class="n">args</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">kwargs</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
 
+<div class="viewcode-block" id="ChangeStream.__call__">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.ChangeStream.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Watch for changes in the database in specified collection.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">get_table_or_collection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">collection</span><span class="o">.</span><span class="n">watch</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
 
 
 
@@ -1195,6 +1363,8 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Collection</span><span class="p">(</span><span class="n">TableOrCollection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collection class to perform queries on a collection.&quot;&quot;&quot;</span>
+
     <span class="n">query_components</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;find&#39;</span><span class="p">:</span> <span class="n">Find</span><span class="p">,</span> <span class="s1">&#39;find_one&#39;</span><span class="p">:</span> <span class="n">FindOne</span><span class="p">}</span>
     <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;collection&#39;</span>
 
@@ -1203,6 +1373,10 @@
 <div class="viewcode-block" id="Collection.get_table">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection.get_table">[docs]</a>
     <span class="k">def</span> <span class="nf">get_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the table from the database.</span>
+
+<span class="sd">        :param db: The datalayer instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">databackend</span><span class="o">.</span><span class="n">get_table_or_collection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">collection</span></div>
 
@@ -1210,6 +1384,7 @@
 <div class="viewcode-block" id="Collection.change_stream">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection.change_stream">[docs]</a>
     <span class="k">def</span> <span class="nf">change_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Request a stream of changes from the collection.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ChangeStream</span><span class="p">(</span>
             <span class="n">collection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
             <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span>
@@ -1263,6 +1438,10 @@
     <span class="k">def</span> <span class="nf">aggregate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">vector_index</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Aggregate</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform an aggregation on the collection.</span>
+
+<span class="sd">        :param vector_index: The vector index to use</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Aggregate</span><span class="p">(</span>
             <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span>
             <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">,</span>
@@ -1274,18 +1453,25 @@
 <div class="viewcode-block" id="Collection.delete_one">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection.delete_one">[docs]</a>
     <span class="k">def</span> <span class="nf">delete_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete a single document in the database.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Collection.delete_many">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection.delete_many">[docs]</a>
     <span class="k">def</span> <span class="nf">delete_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete multiple documents in the database.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Collection.replace_one">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection.replace_one">[docs]</a>
     <span class="k">def</span> <span class="nf">replace_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">replacement</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace a single document in the database.</span>
+
+<span class="sd">        :param filter: The filter to apply</span>
+<span class="sd">        :param replacement: The replacement to apply</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">MongoReplaceOne</span><span class="p">(</span>
             <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">,</span>
             <span class="n">replacement</span><span class="o">=</span><span class="n">replacement</span><span class="p">,</span>
@@ -1298,36 +1484,62 @@
 <div class="viewcode-block" id="Collection.update_one">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection.update_one">[docs]</a>
     <span class="k">def</span> <span class="nf">update_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update a single document in the database.</span>
+
+<span class="sd">        :param filter: The filter to apply</span>
+<span class="sd">        :param update: The update to apply</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Collection.update_many">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection.update_many">[docs]</a>
     <span class="k">def</span> <span class="nf">update_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update multiple documents in the database.</span>
+
+<span class="sd">        :param filter: The filter to apply</span>
+<span class="sd">        :param update: The update to apply</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">one</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Collection.bulk_write">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection.bulk_write">[docs]</a>
     <span class="k">def</span> <span class="nf">bulk_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operations</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Bulk write multiple operations into the database.</span>
+
+<span class="sd">        :param operations: The operations to perform</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bulk_write</span><span class="p">(</span><span class="n">operations</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Collection.insert">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection.insert">[docs]</a>
     <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert multiple documents into the database.</span>
+
+<span class="sd">        :param args: The documents to insert</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_many</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Collection.insert_many">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection.insert_many">[docs]</a>
     <span class="k">def</span> <span class="nf">insert_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert multiple documents into the database.</span>
+
+<span class="sd">        :param args: The documents to insert</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insert</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Collection.insert_one">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection.insert_one">[docs]</a>
     <span class="k">def</span> <span class="nf">insert_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert a single document into the database.</span>
+
+<span class="sd">        :param document: The document to insert</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insert</span><span class="p">([</span><span class="n">document</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
@@ -1342,6 +1554,15 @@
         <span class="n">flatten</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the outputs of a model in the database.</span>
+
+<span class="sd">        :param db: The datalaer instance</span>
+<span class="sd">        :param ids: The ids of the documents to update</span>
+<span class="sd">        :param predict_id: The predict_id of outputs to store</span>
+<span class="sd">        :param outputs: The outputs to store</span>
+<span class="sd">        :param flatten: Whether to flatten the outputs</span>
+<span class="sd">        :param kwargs: Additional arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">document_embedded</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;document_embedded&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">outputs</span><span class="p">):</span>
@@ -1424,7 +1645,11 @@
 <div class="viewcode-block" id="get_schema">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.get_schema">[docs]</a>
 <span class="k">def</span> <span class="nf">get_schema</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Schema</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Schema</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle schema caching and loading.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle schema caching and loading.</span>
+
+<span class="sd">    :param db: the Datalayer instance</span>
+<span class="sd">    :param schema: the schema to be loaded</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">schema</span><span class="p">,</span> <span class="n">Schema</span><span class="p">):</span>
         <span class="c1"># If the schema is not in the db, it is added to the db.</span>
         <span class="k">if</span> <span class="n">schema</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">Schema</span><span class="o">.</span><span class="n">type_id</span><span class="p">):</span>

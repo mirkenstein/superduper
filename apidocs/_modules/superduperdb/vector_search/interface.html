@@ -315,6 +315,13 @@
 <div class="viewcode-block" id="FastVectorSearcher">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.interface.FastVectorSearcher">[docs]</a>
 <span class="k">class</span> <span class="nc">FastVectorSearcher</span><span class="p">(</span><span class="n">BaseVectorSearcher</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fast vector searcher implementation using the server.</span>
+
+<span class="sd">    :param db: Datalayer instance</span>
+<span class="sd">    :param vector_searcher: Vector searcher instance</span>
+<span class="sd">    :param vector_index: Vector index name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s1">&#39;Datalayer&#39;</span><span class="p">,</span> <span class="n">vector_searcher</span><span class="p">,</span> <span class="n">vector_index</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">searcher</span> <span class="o">=</span> <span class="n">vector_searcher</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vector_index</span> <span class="o">=</span> <span class="n">vector_index</span>
@@ -359,8 +366,7 @@
 <div class="viewcode-block" id="FastVectorSearcher.delete">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.interface.FastVectorSearcher.delete">[docs]</a>
     <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Remove items from the index</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove items from the index.</span>
 
 <span class="sd">        :param ids: t.Sequence of ids of vectors.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -391,6 +397,7 @@
 
 <span class="sd">        :param _id: id of the vector</span>
 <span class="sd">        :param n: number of nearest vectors to return</span>
+<span class="sd">        :param within_ids: list of ids to search within</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">response</span> <span class="o">=</span> <span class="n">request_server</span><span class="p">(</span>
@@ -416,6 +423,7 @@
 
 <span class="sd">        :param h: vector</span>
 <span class="sd">        :param n: number of nearest vectors to return</span>
+<span class="sd">        :param within_ids: list of ids to search within</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">vector_search</span><span class="o">.</span><span class="n">uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">response</span> <span class="o">=</span> <span class="n">request_server</span><span class="p">(</span>
@@ -432,6 +440,7 @@
 <div class="viewcode-block" id="FastVectorSearcher.post_create">
 <a class="viewcode-back" href="../../../source/superduperdb.vector_search.html#superduperdb.vector_search.interface.FastVectorSearcher.post_create">[docs]</a>
     <span class="k">def</span> <span class="nf">post_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post create method for vector searcher.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">is_remote_vector_search</span><span class="p">:</span>
             <span class="n">request_server</span><span class="p">(</span>
                 <span class="n">service</span><span class="o">=</span><span class="s1">&#39;vector_search&#39;</span><span class="p">,</span>

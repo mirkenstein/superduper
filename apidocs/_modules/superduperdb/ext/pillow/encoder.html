@@ -316,6 +316,11 @@
 <div class="viewcode-block" id="encode_pil_image">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.pillow.html#superduperdb.ext.pillow.encoder.encode_pil_image">[docs]</a>
 <span class="k">def</span> <span class="nf">encode_pil_image</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Encode a `PIL.Image` to bytes.</span>
+
+<span class="sd">    :param x: The image to encode.</span>
+<span class="sd">    :param info: Additional information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">buffer</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
     <span class="n">x</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="s1">&#39;png&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
@@ -325,8 +330,7 @@
 <div class="viewcode-block" id="DecoderPILImage">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.pillow.html#superduperdb.ext.pillow.encoder.DecoderPILImage">[docs]</a>
 <span class="k">class</span> <span class="nc">DecoderPILImage</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decoder to convert `bytes` back into a `PIL.Image` class</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decoder to convert `bytes` back into a `PIL.Image` class.</span>
 
 <span class="sd">    :param handle_exceptions: return a blank image if failure</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -334,7 +338,14 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle_exceptions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handle_exceptions</span> <span class="o">=</span> <span class="n">handle_exceptions</span>
 
+<div class="viewcode-block" id="DecoderPILImage.__call__">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.pillow.html#superduperdb.ext.pillow.encoder.DecoderPILImage.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode a `PIL.Image` from bytes.</span>
+
+<span class="sd">        :param bytes: The bytes to decode.</span>
+<span class="sd">        :param info: Additional information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="nb">bytes</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -342,6 +353,7 @@
                 <span class="k">return</span> <span class="n">BLANK_IMAGE</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">e</span></div>
+</div>
 
 
 
@@ -387,6 +399,12 @@
 <span class="k">def</span> <span class="nf">image_type</span><span class="p">(</span>
     <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">encodable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;lazy_artifact&#39;</span><span class="p">,</span> <span class="n">media_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;image/png&#39;</span>
 <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a `DataType` for an image.</span>
+
+<span class="sd">    :param identifier: The identifier for the data type.</span>
+<span class="sd">    :param encodable: The encodable type.</span>
+<span class="sd">    :param media_type: The media type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">DataType</span><span class="p">(</span>
         <span class="n">identifier</span><span class="p">,</span>
         <span class="n">encoder</span><span class="o">=</span><span class="n">encode_pil_image</span><span class="p">,</span>

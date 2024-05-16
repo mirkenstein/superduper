@@ -316,7 +316,13 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="superduperdb.cli.config.config">
 <span class="sig-prename descclassname"><span class="pre">superduperdb.cli.config.</span></span><span class="sig-name descname"><span class="pre">config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cli/config.html#config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cli.config.config" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Print all the SuperDuperDB configs as JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>schema</strong> – If set, print the JSON schema for the model.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-superduperdb.cli.info">
@@ -324,12 +330,19 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="superduperdb.cli.info.info">
 <span class="sig-prename descclassname"><span class="pre">superduperdb.cli.info.</span></span><span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cli/info.html#info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cli.info.info" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Print information about the current machine and installation.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="superduperdb.cli.info.requirements">
 <span class="sig-prename descclassname"><span class="pre">superduperdb.cli.info.</span></span><span class="sig-name descname"><span class="pre">requirements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cli/info.html#requirements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cli.info.requirements" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Print information about the current machine and installation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ext</strong> – Extensions to check.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-superduperdb.cli.serve">
@@ -337,27 +350,50 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="superduperdb.cli.serve.cdc">
 <span class="sig-prename descclassname"><span class="pre">superduperdb.cli.serve.</span></span><span class="sig-name descname"><span class="pre">cdc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cli/serve.html#cdc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cli.serve.cdc" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Start standalone change data capture.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="superduperdb.cli.serve.local_cluster">
 <span class="sig-prename descclassname"><span class="pre">superduperdb.cli.serve.</span></span><span class="sig-name descname"><span class="pre">local_cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notebook_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cli/serve.html#local_cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cli.serve.local_cluster" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Start local cluster: server, ray and change data capture.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>action</strong> – Action to perform (up, down, attach).</p></li>
+<li><p><strong>notebook_token</strong> – Notebook token.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="superduperdb.cli.serve.ray_serve">
 <span class="sig-prename descclassname"><span class="pre">superduperdb.cli.serve.</span></span><span class="sig-name descname"><span class="pre">ray_serve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_actor_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_replicas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cli/serve.html#ray_serve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cli.serve.ray_serve" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Serve a model on ray.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – Model name.</p></li>
+<li><p><strong>version</strong> – Model version.</p></li>
+<li><p><strong>ray_actor_options</strong> – Ray actor options.</p></li>
+<li><p><strong>num_replicas</strong> – Number of replicas.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="superduperdb.cli.serve.rest">
 <span class="sig-prename descclassname"><span class="pre">superduperdb.cli.serve.</span></span><span class="sig-name descname"><span class="pre">rest</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cli/serve.html#rest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cli.serve.rest" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Start FastAPI REST server.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="superduperdb.cli.serve.vector_search">
 <span class="sig-prename descclassname"><span class="pre">superduperdb.cli.serve.</span></span><span class="sig-name descname"><span class="pre">vector_search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cli/serve.html#vector_search"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cli.serve.vector_search" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Start vector search server.</p>
+</dd></dl>
 
 </section>
 <section id="module-superduperdb.cli.stack">
@@ -365,7 +401,16 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="superduperdb.cli.stack.apply">
 <span class="sig-prename descclassname"><span class="pre">superduperdb.cli.stack.</span></span><span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">yaml_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/cli/stack.html#apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.cli.stack.apply" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Apply the stack tarball to the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>yaml_path</strong> – Path to the stack tarball.</p></li>
+<li><p><strong>identifier</strong> – Stack identifier.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-superduperdb.cli">

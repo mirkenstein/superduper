@@ -312,14 +312,16 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.cursor.SuperDuperIbisResult">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">SuperDuperIbisResult</span><span class="p">(</span><span class="n">SuperDuperCursor</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;SuperDuperIbisResult class for ibis query results.</span>
+
 <span class="sd">    SuperDuperIbisResult represents ibis query results with options</span>
-<span class="sd">    to unroll results as i.e pandas</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    to unroll results as i.e pandas.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SuperDuperIbisResult.as_pandas">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.ibis.html#superduperdb.backends.ibis.cursor.SuperDuperIbisResult.as_pandas">[docs]</a>
     <span class="k">def</span> <span class="nf">as_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unroll the result as a pandas DataFrame.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_cursor</span><span class="p">])</span></div>
 
 

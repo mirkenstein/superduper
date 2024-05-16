@@ -312,10 +312,27 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.prompter.Prompter">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Prompter</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Prompt the user for input.</span>
+
+<span class="sd">    This function prompts the user for input based on a</span>
+<span class="sd">    template string and a function which formats the</span>
+<span class="sd">    prompt.</span>
+
+<span class="sd">    :param prompt_template: The template string for the prompt.</span>
+<span class="sd">    :param prompt_func: The function which formats the prompt.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">prompt_template</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{input}</span><span class="s2">&quot;</span>
     <span class="n">prompt_func</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Prompter.__call__">
+<a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.prompter.Prompter.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format the prompt.</span>
+
+<span class="sd">        :param x: The input to format the prompt.</span>
+<span class="sd">        :param kwargs: The keyword arguments to pass to the prompt function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_func</span><span class="p">)</span>
             <span class="n">new_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -328,6 +345,7 @@
             <span class="k">return</span> <span class="n">format_prompt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_template</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;context&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x</span></div>
+</div>
 
 
 
@@ -345,10 +363,15 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.prompter.RetrievalPrompt">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">RetrievalPrompt</span><span class="p">(</span><span class="n">QueryModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve a prompt based on data recalled from the database.</span>
+
 <span class="sd">    This function creates a prompt based on data</span>
 <span class="sd">    recalled from the database and a pre-specified</span>
 <span class="sd">    question:</span>
+
+<span class="sd">    :param prompt_explanation: The explanation of the prompt.</span>
+<span class="sd">    :param prompt_introduction: The introduction of the prompt.</span>
+<span class="sd">    :param join: The string to join the facts.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">prompt_explanation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">PROMPT_EXPLANATION</span>
@@ -367,11 +390,16 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The inputs of the model.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">inputs</span>
 
 <div class="viewcode-block" id="RetrievalPrompt.predict_one">
 <a class="viewcode-back" href="../../../../source/superduperdb.ext.llm.html#superduperdb.ext.llm.prompter.RetrievalPrompt.predict_one">[docs]</a>
     <span class="k">def</span> <span class="nf">predict_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict the answer to the question based on the prompt.</span>
+
+<span class="sd">        :param prompt: The prompt to answer the question.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">out</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">predict_one</span><span class="p">(</span><span class="n">prompt</span><span class="o">=</span><span class="n">prompt</span><span class="p">)</span>
         <span class="n">prompt</span> <span class="o">=</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">prompt_explanation</span>

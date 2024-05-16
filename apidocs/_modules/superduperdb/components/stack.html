@@ -317,12 +317,16 @@
 <span class="nd">@public_api</span><span class="p">(</span><span class="n">stability</span><span class="o">=</span><span class="s1">&#39;alpha&#39;</span><span class="p">)</span>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Stack</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A placeholder to hold list of components under a namespace and packages them as</span>
-<span class="sd">    a tarball</span>
-<span class="sd">    This tarball can be retrieved back to a `Stack` instance with ``load`` method.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Component to hold a list of components under a namespace and package.</span>
+
+<span class="sd">    A placeholder to hold a list of components under a namespace and</span>
+<span class="sd">    package them as a tarball.</span>
+<span class="sd">    This tarball can be retrieved back to a Stack instance with the</span>
+<span class="sd">    ``load`` method.</span>
+
 <span class="sd">    {component_parameters}</span>
-<span class="sd">    :param components: List of components to stack together and add to database.</span>
+<span class="sd">    :param components: List of components to stack together and add to</span>
+<span class="sd">                       the database.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__doc__</span> <span class="o">=</span> <span class="vm">__doc__</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">component_parameters</span><span class="o">=</span><span class="n">Component</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
@@ -332,10 +336,15 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Datalayer property.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span>
 
     <span class="nd">@db</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Datalayer setter.</span>
+
+<span class="sd">        :param value: Item to set the property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
             <span class="n">component</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">value</span>
@@ -344,6 +353,12 @@
 <a class="viewcode-back" href="../../../source/superduperdb.components.html#superduperdb.Stack.from_list">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_list</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Datalayer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper method to create a Stack from a list `content`.</span>
+
+<span class="sd">        :param identifier: Unique identifier.</span>
+<span class="sd">        :param content: Content to create a stack.</span>
+<span class="sd">        :param db: Datalayer instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">out</span><span class="p">,</span> <span class="n">exit</span> <span class="o">=</span> <span class="n">_build_leaves</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">exit</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">Stack</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">components</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>

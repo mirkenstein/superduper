@@ -300,7 +300,8 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for superduperdb.cdc.cdc</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;CDC module for superduperdb.</span>
+
 <span class="sd">Change Data Capture (CDC) is a mechanism used in database systems to track</span>
 <span class="sd">and capture changes made to a table or collection in real-time.</span>
 <span class="sd">It allows applications to stay up-to-date with the latest changes in the database</span>
@@ -365,20 +366,29 @@
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.Packet">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">Packet</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Packet to hold the cdc event data.</span>
+
+<span class="sd">    :param ids: Document ids.</span>
+<span class="sd">    :param query: Query to fetch the document.</span>
+<span class="sd">    :param event_type: CDC event type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span>
     <span class="n">query</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Serializable&#39;</span><span class="p">]</span>
     <span class="n">event_type</span><span class="p">:</span> <span class="n">DBEvent</span> <span class="o">=</span> <span class="n">DBEvent</span><span class="o">.</span><span class="n">insert</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the event is delete.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_type</span> <span class="o">==</span> <span class="n">DBEvent</span><span class="o">.</span><span class="n">delete</span>
 
 <div class="viewcode-block" id="Packet.collate">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.Packet.collate">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">collate</span><span class="p">(</span><span class="n">packets</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Packet&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Packet&#39;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Collate a batch of packets into one</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Collate a batch of packets into one.</span>
+
+<span class="sd">        :param packets: A list of packets.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="n">packets</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="p">[]</span>
@@ -400,8 +410,16 @@
 <div class="viewcode-block" id="BaseDatabaseListener">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.BaseDatabaseListener">[docs]</a>
 <span class="k">class</span> <span class="nc">BaseDatabaseListener</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A Base class which defines basic functions to implement.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A Base class which defines basic functions to implement.</span>
+
+<span class="sd">    This class is responsible for defining the basic functions</span>
+<span class="sd">    that needs to be implemented by the database listener.</span>
+
+<span class="sd">    :param db: A superduperdb instance.</span>
+<span class="sd">    :param on: A table or collection on which the listener is invoked.</span>
+<span class="sd">    :param stop_event: A threading event flag to notify for stoppage.</span>
+<span class="sd">    :param identifier: A identity given to the listener service.</span>
+<span class="sd">    :param timeout: A timeout for the listener.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">IDENTITY_SEP</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span>
@@ -428,6 +446,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">identity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the database listener identity.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identifier</span>
 
 <div class="viewcode-block" id="BaseDatabaseListener._build_identifier">
@@ -445,9 +464,7 @@
 <div class="viewcode-block" id="BaseDatabaseListener.info">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.BaseDatabaseListener.info">[docs]</a>
     <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get info on the current state of listener.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get info on the current state of listener.&quot;&quot;&quot;</span>
         <span class="n">info</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">info</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
             <span class="p">{</span>
@@ -464,6 +481,7 @@
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.BaseDatabaseListener.listen">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">listen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start the database listener.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -471,6 +489,7 @@
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.BaseDatabaseListener.stop">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the database listener.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -478,6 +497,7 @@
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.BaseDatabaseListener.setup_cdc">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">setup_cdc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CollectionChangeStream</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;setup_cdc.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -485,6 +505,7 @@
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.BaseDatabaseListener.on_create">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the create event.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -492,6 +513,7 @@
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.BaseDatabaseListener.on_update">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">on_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the update event.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -499,6 +521,7 @@
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.BaseDatabaseListener.on_delete">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">on_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the delete event.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -506,6 +529,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.BaseDatabaseListener.next_cdc">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">next_cdc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">:</span> <span class="n">CollectionChangeStream</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;next_cdc.</span>
+
+<span class="sd">        :param stream: CollectionChangeStream</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -518,10 +545,11 @@
         <span class="n">table_or_collection</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Table&#39;</span><span class="p">,</span> <span class="s1">&#39;TableOrCollection&#39;</span><span class="p">],</span>
         <span class="n">event</span><span class="p">:</span> <span class="n">DBEvent</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an event.</span>
+
 <span class="sd">        A helper to create packet based on the event type and put it on the cdc queue</span>
 
-<span class="sd">        :param change: The changed document.</span>
+<span class="sd">        :param ids: Document ids</span>
 <span class="sd">        :param db: a superduperdb instance.</span>
 <span class="sd">        :param table_or_collection: The collection on which change was observed.</span>
 <span class="sd">        :param event: CDC event type</span>
@@ -537,7 +565,8 @@
 <div class="viewcode-block" id="BaseDatabaseListener.event_handler">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.BaseDatabaseListener.event_handler">[docs]</a>
     <span class="k">def</span> <span class="nf">event_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">DBEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;event_handler.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the incoming change stream event.</span>
+
 <span class="sd">        A helper fxn to handle incoming changes from change stream on a collection.</span>
 
 <span class="sd">        :param ids: Changed document ids</span>
@@ -561,6 +590,16 @@
 <div class="viewcode-block" id="DatabaseListenerThreadScheduler">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.DatabaseListenerThreadScheduler">[docs]</a>
 <span class="k">class</span> <span class="nc">DatabaseListenerThreadScheduler</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DatabaseListenerThreadScheduler to listen to the cdc changes.</span>
+
+<span class="sd">    This class is responsible for listening to the cdc changes and</span>
+<span class="sd">    executing the following job.</span>
+
+<span class="sd">    :param listener: A BaseDatabaseListener instance.</span>
+<span class="sd">    :param stop_event: A threading event flag to notify for stoppage.</span>
+<span class="sd">    :param start_event: A threading event flag to notify for start.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">listener</span><span class="p">:</span> <span class="n">BaseDatabaseListener</span><span class="p">,</span>
@@ -575,6 +614,7 @@
 <div class="viewcode-block" id="DatabaseListenerThreadScheduler.run">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.DatabaseListenerThreadScheduler.run">[docs]</a>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start to listen to the cdc changes.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">cdc_stream</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">listener</span><span class="o">.</span><span class="n">setup_cdc</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">start_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
@@ -590,10 +630,15 @@
 <div class="viewcode-block" id="CDCHandler">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.CDCHandler">[docs]</a>
 <span class="k">class</span> <span class="nc">CDCHandler</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;CDCHandler for handling CDC changes.</span>
+
 <span class="sd">    This class is responsible for handling the change by executing the taskflow.</span>
 <span class="sd">    This class also extends the task graph by adding funcation job node which</span>
 <span class="sd">    does post model executiong jobs, i.e `copy_vectors`.</span>
+
+<span class="sd">    :param db: A superduperdb instance.</span>
+<span class="sd">    :param stop_event: A threading event flag to notify for stoppage.</span>
+<span class="sd">    :param queue: A queue to hold the cdc packets.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="CDCHandler.__init__">
@@ -604,7 +649,6 @@
 <span class="sd">        :param db: a superduperdb instance.</span>
 <span class="sd">        :param stop_event: A threading event flag to notify for stoppage.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">db</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span> <span class="o">=</span> <span class="n">stop_event</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span> <span class="o">=</span> <span class="kc">False</span>
@@ -614,11 +658,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the cdc handler is running.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span>
 
 <div class="viewcode-block" id="CDCHandler.run">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.CDCHandler.run">[docs]</a>
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run the cdc handler.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">queue_chunker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cdc_queue</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span><span class="p">):</span>
@@ -646,8 +692,12 @@
 <div class="viewcode-block" id="DatabaseListenerFactory">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.DatabaseListenerFactory">[docs]</a>
 <span class="k">class</span> <span class="nc">DatabaseListenerFactory</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">Generic</span><span class="p">[</span><span class="n">DBListenerType</span><span class="p">]):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A Factory class to create instance of DatabaseListener corresponding to the</span>
-<span class="sd">    `db_type`.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DatabaseListenerFactory to create listeners for different databases.</span>
+
+<span class="sd">    This class is responsible for creating a DatabaseListener instance</span>
+<span class="sd">    based on the database type.</span>
+
+<span class="sd">    :param db_type: Database type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">SUPPORTED_LISTENERS</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mongodb&#39;</span><span class="p">,</span> <span class="s1">&#39;ibis&#39;</span><span class="p">]</span>
@@ -660,6 +710,7 @@
 <div class="viewcode-block" id="DatabaseListenerFactory.create">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.DatabaseListenerFactory.create">[docs]</a>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DBListenerType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a DatabaseListener instance.&quot;&quot;&quot;</span>
         <span class="n">stop_event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;stop_event&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stop_event</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_type</span> <span class="o">==</span> <span class="s1">&#39;mongodb&#39;</span><span class="p">:</span>
@@ -685,7 +736,8 @@
 <div class="viewcode-block" id="DatabaseChangeDataCapture">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.DatabaseChangeDataCapture">[docs]</a>
 <span class="k">class</span> <span class="nc">DatabaseChangeDataCapture</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;DatabaseChangeDataCapture (CDC).</span>
+
 <span class="sd">    DatabaseChangeDataCapture is a Python class that provides a flexible and</span>
 <span class="sd">    extensible framework for capturing and managing data changes</span>
 <span class="sd">    in a database.</span>
@@ -694,6 +746,8 @@
 <span class="sd">    This class is designed to simplify the process of tracking changes</span>
 <span class="sd">    to database records,allowing you to monitor and respond to</span>
 <span class="sd">    data modifications efficiently.</span>
+
+<span class="sd">    :param db: A superduperdb datalayer instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s1">&#39;Datalayer&#39;</span><span class="p">):</span>
@@ -718,14 +772,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the cdc service is running.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="ow">or</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">cdc</span><span class="o">.</span><span class="n">uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="DatabaseChangeDataCapture.start">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.DatabaseChangeDataCapture.start">[docs]</a>
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This method starts the cdc process on the database.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start the cdc service.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="c1"># Listen to existing collection without cdc enabled</span>
@@ -742,11 +795,10 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Starts cdc service on the provided collection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Starts cdc service on the provided collection.</span>
+
 <span class="sd">        Not to be confused with ``superduperdb.container.listener.Listener``.</span>
 
-<span class="sd">        :param db: A superduperdb instance.</span>
 <span class="sd">        :param on: Which collection/table listener service this be invoked on?</span>
 <span class="sd">        :param identifier: A identity given to the listener service.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -779,8 +831,8 @@
 <div class="viewcode-block" id="DatabaseChangeDataCapture.stop">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.DatabaseChangeDataCapture.stop">[docs]</a>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Stop all registered listeners</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop all registered listeners.</span>
+
 <span class="sd">        :param name: Listener name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -803,9 +855,7 @@
 <div class="viewcode-block" id="DatabaseChangeDataCapture.stop_handler">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.DatabaseChangeDataCapture.stop_handler">[docs]</a>
     <span class="k">def</span> <span class="nf">stop_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Stop the cdc handler thread</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the cdc handler thread.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cdc_stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cdc_change_handler</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cdc_change_handler</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
@@ -815,8 +865,9 @@
 <div class="viewcode-block" id="DatabaseChangeDataCapture.add">
 <a class="viewcode-back" href="../../../source/superduperdb.cdc.html#superduperdb.cdc.cdc.DatabaseChangeDataCapture.add">[docs]</a>
     <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listener</span><span class="p">:</span> <span class="s1">&#39;Listener&#39;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This method registered the given collection for cdc</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a listener to the cdc service.</span>
+
+<span class="sd">        :param listener: A listener instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">collection</span> <span class="o">=</span> <span class="n">listener</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">table_or_collection</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="ow">and</span> <span class="n">collection</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_CDC_LISTENERS</span><span class="p">:</span>

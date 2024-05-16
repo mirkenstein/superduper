@@ -362,6 +362,14 @@
 <span class="k">def</span> <span class="nf">request_server</span><span class="p">(</span>
     <span class="n">service</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;vector_search&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">{},</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;post&#39;</span>
 <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Request server with data.</span>
+
+<span class="sd">    :param service: Service name</span>
+<span class="sd">    :param data: Data to send</span>
+<span class="sd">    :param endpoint: Endpoint to hit</span>
+<span class="sd">    :param args: Arguments to pass</span>
+<span class="sd">    :param type: Type of request</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_handshake</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_request_server</span><span class="p">(</span>
         <span class="n">service</span><span class="o">=</span><span class="n">service</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span>

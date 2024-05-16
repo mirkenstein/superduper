@@ -311,6 +311,8 @@
 <div class="viewcode-block" id="NonExistentMetadataError">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.metadata.NonExistentMetadataError">[docs]</a>
 <span class="k">class</span> <span class="nc">NonExistentMetadataError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;NonExistentMetadataError.&quot;&quot;&quot;</span>
+
     <span class="o">...</span></div>
 
 
@@ -337,9 +339,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.metadata.MetaDataStore.url">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Metadata store connection url</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Metadata store connection url.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -359,8 +359,8 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.metadata.MetaDataStore.create_job">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">create_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a job in the metadata store.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a job in the metadata store.</span>
+
 <span class="sd">        :param info: dictionary containing information about the job.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
@@ -459,8 +459,10 @@
         <span class="n">component_identifier</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">type_id</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Show all jobs in the metadata store.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Show all jobs in the metadata store.</span>
+
+<span class="sd">        :param component_identifier: identifier of component</span>
+<span class="sd">        :param type_id: type of component</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
@@ -496,6 +498,11 @@
     <span class="k">def</span> <span class="nf">get_indexing_listener_of_vector_index</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the indexing listener of a vector index.</span>
+
+<span class="sd">        :param identifier: identifier of vector index</span>
+<span class="sd">        :param version: version of vector index</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_component</span><span class="p">(</span>
             <span class="s1">&#39;vector_index&#39;</span><span class="p">,</span> <span class="n">identifier</span><span class="o">=</span><span class="n">identifier</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span>
         <span class="p">)</span>
@@ -733,8 +740,10 @@
 <div class="viewcode-block" id="MetaDataStore.add_query">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.metadata.MetaDataStore.add_query">[docs]</a>
     <span class="k">def</span> <span class="nf">add_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s1">&#39;Select&#39;</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add query id to query table</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add query id to query table.</span>
+
+<span class="sd">        :param query: query object</span>
+<span class="sd">        :param model: model identifier</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
@@ -742,9 +751,9 @@
 <div class="viewcode-block" id="MetaDataStore.get_queries">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.metadata.MetaDataStore.get_queries">[docs]</a>
     <span class="k">def</span> <span class="nf">get_queries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get all queries from query table corresponding</span>
-<span class="sd">        to the model.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all queries from query table corresponding to the model.</span>
+
+<span class="sd">        :param model: model identifier</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 
@@ -752,9 +761,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.metadata.MetaDataStore.disconnect">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Disconnect the client</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect the client.&quot;&quot;&quot;</span></div>
 </div>
 
 </pre></div>

@@ -300,7 +300,8 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for superduperdb.base.leaf</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
+<span></span><span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">typing</span> <span class="k">as</span> <span class="nn">t</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span><span class="p">,</span> <span class="n">abstractproperty</span>
 
 <span class="n">_CLASS_REGISTRY</span> <span class="o">=</span> <span class="p">{}</span>
@@ -309,6 +310,8 @@
 <div class="viewcode-block" id="Leaf">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.leaf.Leaf">[docs]</a>
 <span class="k">class</span> <span class="nc">Leaf</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all leaf classes.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init_subclass__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_register_class</span><span class="p">()</span>
@@ -317,6 +320,10 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.leaf.Leaf.handle_integration">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">handle_integration</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Method to handle integration.</span>
+
+<span class="sd">        :param r: Encoded data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 
@@ -324,9 +331,7 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.leaf.Leaf._register_class">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_register_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Register class in the class registry and set the full import path</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register class in the class registry and set the full import path.&quot;&quot;&quot;</span>
         <span class="n">full_import_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">full_import_path</span> <span class="o">=</span> <span class="n">full_import_path</span>
         <span class="n">_CLASS_REGISTRY</span><span class="p">[</span><span class="n">full_import_path</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span></div>
@@ -334,11 +339,16 @@
 
     <span class="nd">@abstractproperty</span>
     <span class="k">def</span> <span class="nf">unique_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unique identifier for the object.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="Leaf.unpack">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.leaf.Leaf.unpack">[docs]</a>
     <span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unpack object.</span>
+
+<span class="sd">        :param db: Datalayer instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
@@ -349,7 +359,10 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">leaf_types_to_keep</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span> <span class="o">=</span> <span class="p">(),</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert object to a saveable form&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert object to a saveable form.</span>
+
+<span class="sd">        :param leaf_types_to_keep: Leaf types to keep.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -358,7 +371,11 @@
     <span class="nd">@classmethod</span>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode object from a saveable form&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decode object from a saveable form.</span>
+
+<span class="sd">        :param r: Encoded data.</span>
+<span class="sd">        :param db: Datalayer instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -366,12 +383,25 @@
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.leaf.Leaf.build">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">r</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build object from an encoded data.</span>
+
+<span class="sd">        :param r: Encoded data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">modified</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">modified</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Leaf.init">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.leaf.Leaf.init">[docs]</a>
     <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize object.</span>
+
+<span class="sd">        :param db: Datalayer instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 </div>
 
@@ -380,7 +410,10 @@
 <div class="viewcode-block" id="find_leaf_cls">
 <a class="viewcode-back" href="../../../source/superduperdb.base.html#superduperdb.base.leaf.find_leaf_cls">[docs]</a>
 <span class="k">def</span> <span class="nf">find_leaf_cls</span><span class="p">(</span><span class="n">full_import_path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Type</span><span class="p">[</span><span class="n">Leaf</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find leaf class by class full import path&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find leaf class by class full import path.</span>
+
+<span class="sd">    :param full_import_path: Full import path of the class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_CLASS_REGISTRY</span><span class="p">[</span><span class="n">full_import_path</span><span class="p">]</span></div>
 
 </pre></div>

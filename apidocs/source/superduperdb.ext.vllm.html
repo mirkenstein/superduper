@@ -317,16 +317,21 @@
 <dt class="sig sig-object py" id="superduperdb.ext.vllm.model.VllmAPI">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.vllm.model.</span></span><span class="sig-name descname"><span class="pre">VllmAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts:</span> <span class="pre">dc.InitVar[t.Optional[t.Dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_url:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[Schema]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation:</span> <span class="pre">t.Optional[Validation]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_values:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/vllm/model.html#VllmAPI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.vllm.model.VllmAPI" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="superduperdb.ext.llm.html#superduperdb.ext.llm.model.BaseLLMAPI" title="superduperdb.ext.llm.model.BaseLLMAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLMAPI</span></code></a></p>
-<p>Wrapper for requesting the vLLM API service
-(API Server format, started by vllm.entrypoints.api_server)</p>
+<p>Wrapper for requesting the vLLM API service.</p>
+<p>(API Server format, started by vllm.entrypoints.api_server)
+Base class for LLM models that use an API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api_url</strong> – The URL for the API.</p>
+</dd>
+</dl>
+<p>Base class for LLM models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>api_url</strong> – The URL for the API.</p></li>
-<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt</strong> – The template to use for the prompt.</p></li>
 <li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
 <li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
-<li><p><strong>predict_kwargs</strong> – Parameters used during inference.</p></li>
 </ul>
 </dd>
 </dl>
@@ -340,7 +345,16 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.ext.vllm.model.VllmAPI.build_post_data">
 <span class="sig-name descname"><span class="pre">build_post_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/vllm/model.html#VllmAPI.build_post_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.vllm.model.VllmAPI.build_post_data" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Build the post data for the API request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prompt</strong> – The prompt to use.</p></li>
+<li><p><strong>kwargs</strong> – The keyword arguments to use.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.ext.vllm.model.VllmAPI.full_import_path">
@@ -358,12 +372,22 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model_name</strong> – The name of the model to use.</p></li>
+<li><p><strong>tensor_parallel_size</strong> – The number of tensor parallelism.</p></li>
 <li><p><strong>trust_remote_code</strong> – Whether to trust remote code.</p></li>
-<li><p><strong>dtype</strong> – The data type to use.</p></li>
-<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>vllm_kwargs</strong> – Additional arguments to pass to the VLLM</p></li>
+<li><p><strong>on_ray</strong> – Whether to use Ray for parallelism.</p></li>
+<li><p><strong>ray_address</strong> – The address of the Ray cluster.</p></li>
+<li><p><strong>ray_config</strong> – The configuration for Ray.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Base class for LLM models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prompt</strong> – The template to use for the prompt.</p></li>
 <li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
 <li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
-<li><p><strong>predict_kwargs</strong> – Parameters used during inference.</p></li>
 </ul>
 </dd>
 </dl>
@@ -376,7 +400,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.ext.vllm.model.VllmModel.init">
 <span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/vllm/model.html#VllmModel.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.vllm.model.VllmModel.init" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Initialize the model.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.ext.vllm.model.VllmModel.model_name">
@@ -422,16 +447,21 @@
 <dt class="sig sig-object py" id="superduperdb.ext.vllm.VllmAPI">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.ext.vllm.</span></span><span class="sig-name descname"><span class="pre">VllmAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts:</span> <span class="pre">dc.InitVar[t.Optional[t.Dict]]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_url:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype:</span> <span class="pre">EncoderArg</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_schema:</span> <span class="pre">t.Optional[Schema]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_update_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predict_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_kwargs:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation:</span> <span class="pre">t.Optional[Validation]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_values:</span> <span class="pre">t.Dict</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'{input}'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prompt_func:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/vllm/model.html#VllmAPI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.vllm.VllmAPI" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="superduperdb.ext.llm.html#superduperdb.ext.llm.model.BaseLLMAPI" title="superduperdb.ext.llm.model.BaseLLMAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLLMAPI</span></code></a></p>
-<p>Wrapper for requesting the vLLM API service
-(API Server format, started by vllm.entrypoints.api_server)</p>
+<p>Wrapper for requesting the vLLM API service.</p>
+<p>(API Server format, started by vllm.entrypoints.api_server)
+Base class for LLM models that use an API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api_url</strong> – The URL for the API.</p>
+</dd>
+</dl>
+<p>Base class for LLM models.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>api_url</strong> – The URL for the API.</p></li>
-<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>prompt</strong> – The template to use for the prompt.</p></li>
 <li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
 <li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
-<li><p><strong>predict_kwargs</strong> – Parameters used during inference.</p></li>
 </ul>
 </dd>
 </dl>
@@ -445,7 +475,16 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.ext.vllm.VllmAPI.build_post_data">
 <span class="sig-name descname"><span class="pre">build_post_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/ext/vllm/model.html#VllmAPI.build_post_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.vllm.VllmAPI.build_post_data" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Build the post data for the API request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prompt</strong> – The prompt to use.</p></li>
+<li><p><strong>kwargs</strong> – The keyword arguments to use.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.ext.vllm.VllmAPI.compute_kwargs">
@@ -488,12 +527,22 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model_name</strong> – The name of the model to use.</p></li>
+<li><p><strong>tensor_parallel_size</strong> – The number of tensor parallelism.</p></li>
 <li><p><strong>trust_remote_code</strong> – Whether to trust remote code.</p></li>
-<li><p><strong>dtype</strong> – The data type to use.</p></li>
-<li><p><strong>prompt_template</strong> – The template to use for the prompt.</p></li>
+<li><p><strong>vllm_kwargs</strong> – Additional arguments to pass to the VLLM</p></li>
+<li><p><strong>on_ray</strong> – Whether to use Ray for parallelism.</p></li>
+<li><p><strong>ray_address</strong> – The address of the Ray cluster.</p></li>
+<li><p><strong>ray_config</strong> – The configuration for Ray.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Base class for LLM models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prompt</strong> – The template to use for the prompt.</p></li>
 <li><p><strong>prompt_func</strong> – The function to use for the prompt.</p></li>
 <li><p><strong>max_batch_size</strong> – The maximum batch size to use for batch generation.</p></li>
-<li><p><strong>predict_kwargs</strong> – Parameters used during inference.</p></li>
 </ul>
 </dd>
 </dl>
@@ -516,7 +565,8 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.ext.vllm.VllmModel.init">
 <span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/ext/vllm/model.html#VllmModel.init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.ext.vllm.VllmModel.init" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Initialize the model.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.ext.vllm.VllmModel.metric_values">

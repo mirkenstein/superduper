@@ -317,15 +317,24 @@
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.base.CachedTokens">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.backends.mongodb.cdc.base.</span></span><span class="sig-name descname"><span class="pre">CachedTokens</span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/base.html#CachedTokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.base.CachedTokens" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to cache the CDC tokens in a file.</p>
+<p>This class is used to cache the CDC tokens in a file.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.base.CachedTokens.append">
 <span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/base.html#CachedTokens.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.base.CachedTokens.append" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Append the token to the file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token</strong> – The token to be appended.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.base.CachedTokens.load">
 <span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/base.html#CachedTokens.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.base.CachedTokens.load" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Load the tokens from the file.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.base.CachedTokens.separate">
@@ -344,6 +353,16 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.backends.mongodb.cdc.base.</span></span><span class="sig-name descname"><span class="pre">MongoDBPacket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#superduperdb.backends.mongodb.cdc.base.ObjectId" title="superduperdb.backends.mongodb.cdc.base.ObjectId"><span class="pre">ObjectId</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.serializable.Serializable" title="superduperdb.base.serializable.Serializable"><span class="pre">Serializable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.cdc.html#superduperdb.cdc.cdc.DBEvent" title="superduperdb.cdc.cdc.DBEvent"><span class="pre">DBEvent</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DBEvent.insert</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/base.html#MongoDBPacket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.base.MongoDBPacket" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="superduperdb.cdc.html#superduperdb.cdc.cdc.Packet" title="superduperdb.cdc.cdc.Packet"><code class="xref py py-class docutils literal notranslate"><span class="pre">Packet</span></code></a></p>
 <p>A base packet to represent message in task queue.</p>
+<p>This class is a subclass of the <cite>Packet</cite> class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ids</strong> – The ids of the rows.</p></li>
+<li><p><strong>query</strong> – The query to be executed.</p></li>
+<li><p><strong>event_type</strong> – The event type.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.base.MongoDBPacket.event_type">
 <span class="sig-name descname"><span class="pre">event_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="superduperdb.cdc.html#superduperdb.cdc.cdc.DBEvent" title="superduperdb.cdc.cdc.DBEvent"><span class="pre">DBEvent</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'insert'</span></em><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.base.MongoDBPacket.event_type" title="Link to this definition">¶</a></dt>
@@ -365,6 +384,9 @@
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.base.ObjectId">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.backends.mongodb.cdc.base.</span></span><span class="sig-name descname"><span class="pre">ObjectId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ObjectId</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/base.html#ObjectId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.base.ObjectId" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ObjectId</span></code></p>
+<p>A class to represent the ObjectId.</p>
+<p>This class is a subclass of the <cite>bson.objectid.ObjectId</cite> class.
+Use this class to validate the ObjectId.</p>
 <p>Initialize a new ObjectId.</p>
 <p>An ObjectId is a 12-byte unique identifier consisting of:</p>
 <blockquote>
@@ -406,7 +428,13 @@ specification version 0.2</a>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.base.ObjectId.validate">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/base.html#ObjectId.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.base.ObjectId.validate" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Validate the ObjectId.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>v</strong> – The value to be validated.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -454,17 +482,17 @@ specification version 0.2</a>.</p>
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.listener.MongoChangePipeline">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.backends.mongodb.cdc.listener.</span></span><span class="sig-name descname"><span class="pre">MongoChangePipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matching_operations:</span> <span class="pre">~typing.Sequence[str]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/listener.html#MongoChangePipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.listener.MongoChangePipeline" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p><cite>MongoChangePipeline</cite> is a class to represent listen pipeline
-in mongodb watch api.</p>
+<p>MongoChangePipeline.</p>
+<p><cite>MongoChangePipeline</cite> is a class to represent listen pipeline in mongodb watch api.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>matching_operations</strong> – A list of operations to match.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.listener.MongoChangePipeline.build_matching">
 <span class="sig-name descname"><span class="pre">build_matching</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/listener.html#MongoChangePipeline.build_matching"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.listener.MongoChangePipeline.build_matching" title="Link to this definition">¶</a></dt>
 <dd><p>A helper fxn to build a listen pipeline for mongo watch api.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>matching_operations</strong> – A list of operations to watch.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -475,7 +503,8 @@ in mongodb watch api.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.listener.MongoChangePipeline.validate">
 <span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/listener.html#MongoChangePipeline.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.listener.MongoChangePipeline.validate" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Validate.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -483,11 +512,24 @@ in mongodb watch api.</p>
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">superduperdb.backends.mongodb.cdc.listener.</span></span><span class="sig-name descname"><span class="pre">MongoDatabaseListener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection" title="superduperdb.backends.mongodb.query.Collection"><span class="pre">Collection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.misc.runnable.html#superduperdb.misc.runnable.runnable.Event" title="superduperdb.misc.runnable.runnable.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resume_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/listener.html#MongoDatabaseListener"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="superduperdb.cdc.html#superduperdb.cdc.cdc.BaseDatabaseListener" title="superduperdb.cdc.cdc.BaseDatabaseListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDatabaseListener</span></code></a></p>
+<p>A class handling change stream in mongodb.</p>
 <p>It is a class which helps capture data from mongodb database and handle it
 accordingly.</p>
 <p>This class accepts options and db instance from user and starts a scheduler
 which could schedule a listening service to listen change stream.</p>
 <p>This class builds a workflow graph on each change observed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – It is a datalayer instance.</p></li>
+<li><p><strong>on</strong> – It is used to define a Collection on which CDC would be performed.</p></li>
+<li><p><strong>stop_event</strong> – A threading event flag to notify for stoppage.</p></li>
+<li><p><strong>identifier</strong> – A identifier to represent the listener service.</p></li>
+<li><p><strong>timeout</strong> – A timeout to stop the listener service.</p></li>
+<li><p><strong>resume_token</strong> – A resume token is a token used to resume</p></li>
+</ul>
+</dd>
+</dl>
 <p>__init__.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -560,18 +602,22 @@ which could schedule a listening service to listen change stream.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.check_if_taskgraph_change">
 <span class="sig-name descname"><span class="pre">check_if_taskgraph_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/listener.html#MongoDatabaseListener.check_if_taskgraph_change"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.check_if_taskgraph_change" title="Link to this definition">¶</a></dt>
-<dd><p>A helper method to check if the cdc change is done
-by taskgraph nodes.</p>
+<dd><p>A helper method to check if the cdc change is done by taskgraph nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>change</strong> – A change document.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.dump_token">
 <span class="sig-name descname"><span class="pre">dump_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/listener.html#MongoDatabaseListener.dump_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.dump_token" title="Link to this definition">¶</a></dt>
-<dd><p>dump_token.
-A helper utility to dump resume token from the changed document.</p>
+<dd><p>dump_token.</p>
+<p>A helper utility to dump resume token from the changed document.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>change</strong></p>
+<dd class="field-odd"><p><strong>change</strong> – A change document.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -579,7 +625,8 @@ A helper utility to dump resume token from the changed document.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.listen">
 <span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change_pipeline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/listener.html#MongoDatabaseListener.listen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.listen" title="Link to this definition">¶</a></dt>
-<dd><p>Primary fxn to initiate listening of a database on the collection
+<dd><p>Listen to the database changes.</p>
+<p>Primary fxn to initiate listening of a database on the collection
 with defined <cite>change_pipeline</cite> by the user.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -593,13 +640,18 @@ with defined <cite>change_pipeline</cite> by the user.</p>
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.next_cdc">
 <span class="sig-name descname"><span class="pre">next_cdc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CollectionChangeStream</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/listener.html#MongoDatabaseListener.next_cdc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.next_cdc" title="Link to this definition">¶</a></dt>
 <dd><p>Get the next stream of change observed on the given <cite>Collection</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stream</strong> – A change stream object.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.on_create">
 <span class="sig-name descname"><span class="pre">on_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.base.html#superduperdb.base.datalayer.Datalayer" title="superduperdb.base.datalayer.Datalayer"><span class="pre">Datalayer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="superduperdb.backends.mongodb.html#superduperdb.backends.mongodb.query.Collection" title="superduperdb.backends.mongodb.query.Collection"><span class="pre">Collection</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/listener.html#MongoDatabaseListener.on_create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.on_create" title="Link to this definition">¶</a></dt>
-<dd><p>on_create.
-A helper on create event handler which handles inserted document in the
+<dd><p>on_create.</p>
+<p>A helper on create event handler which handles inserted document in the
 change stream.
 It basically extracts the change document and build the taskflow graph to
 execute.</p>
@@ -661,25 +713,31 @@ execute.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.running">
 <span class="sig-name descname"><span class="pre">running</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/listener.html#MongoDatabaseListener.running"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.running" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check if the listener is running or not.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.set_change_pipeline">
 <span class="sig-name descname"><span class="pre">set_change_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change_pipeline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/listener.html#MongoDatabaseListener.set_change_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.set_change_pipeline" title="Link to this definition">¶</a></dt>
 <dd><p>Set the change pipeline for the listener.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>change_pipeline</strong> – Change pipeline to listen to.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.setup_cdc">
 <span class="sig-name descname"><span class="pre">setup_cdc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">CollectionChangeStream</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/listener.html#MongoDatabaseListener.setup_cdc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.setup_cdc" title="Link to this definition">¶</a></dt>
-<dd><p>Setup cdc change stream from user provided</p>
+<dd><p>Setup cdc change stream from user provided.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.stop">
 <span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/superduperdb/backends/mongodb/cdc/listener.html#MongoDatabaseListener.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.stop" title="Link to this definition">¶</a></dt>
-<dd><p>Stop listening cdc changes.
-This stops the corresponding services as well.</p>
+<dd><p>Stop listening cdc changes.</p>
+<p>This stops the corresponding services as well.</p>
 </dd></dl>
 
 </dd></dl>

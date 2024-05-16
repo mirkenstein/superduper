@@ -310,22 +310,30 @@
 <div class="viewcode-block" id="BaseDataBackend">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.data_backend.BaseDataBackend">[docs]</a>
 <span class="k">class</span> <span class="nc">BaseDataBackend</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base data backend for the database.</span>
+
+<span class="sd">    :param conn: The connection to the databackend database.</span>
+<span class="sd">    :param name: The name of the databackend.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">db_type</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conn</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">conn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">in_memory</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_memory_tables</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the datalayer.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="BaseDataBackend.url">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.data_backend.BaseDataBackend.url">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Databackend connection url</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Databackend connection url.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -333,9 +341,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.data_backend.BaseDataBackend.build_metadata">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">build_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Build a default metadata store based on current connection.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a default metadata store based on current connection.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -343,9 +349,7 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.data_backend.BaseDataBackend.build_artifact_store">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">build_artifact_store</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Build a default artifact store based on current connection.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a default artifact store based on current connection.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -354,10 +358,27 @@
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">create_output_dest</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">predict_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">datatype</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">DataType</span><span class="p">,</span> <span class="n">FieldType</span><span class="p">],</span>
         <span class="n">flatten</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an output destination for the database.</span>
+
+<span class="sd">        :param predict_id: The predict id of the output destination.</span>
+<span class="sd">        :param datatype: The datatype of the output destination.</span>
+<span class="sd">        :param flatten: Whether to flatten the output destination.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="BaseDataBackend.check_output_dest">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.data_backend.BaseDataBackend.check_output_dest">[docs]</a>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">check_output_dest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predict_id</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the output destination exists.</span>
+
+<span class="sd">        :param predict_id: The identifier of the output destination.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
@@ -365,12 +386,22 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.data_backend.BaseDataBackend.get_table_or_collection">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_table_or_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a table or collection from the database.</span>
+
+<span class="sd">        :param identifier: The identifier of the table or collection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="BaseDataBackend.set_content_bytes">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.data_backend.BaseDataBackend.set_content_bytes">[docs]</a>
     <span class="k">def</span> <span class="nf">set_content_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">bytes_</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set content bytes.</span>
+
+<span class="sd">        :param r: The row.</span>
+<span class="sd">        :param key: The key.</span>
+<span class="sd">        :param bytes_: The bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -378,8 +409,9 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.data_backend.BaseDataBackend.drop">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Drop the databackend.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop the databackend.</span>
+
+<span class="sd">        :param force: If ``True``, don&#39;t ask for confirmation.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 
@@ -387,17 +419,25 @@
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.data_backend.BaseDataBackend.disconnect">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Disconnect the client</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect the client.&quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="BaseDataBackend.list_tables_or_collections">
 <a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.data_backend.BaseDataBackend.list_tables_or_collections">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">list_tables_or_collections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        List all tables or collections in the database.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List all tables or collections in the database.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="BaseDataBackend.infer_schema">
+<a class="viewcode-back" href="../../../../source/superduperdb.backends.base.html#superduperdb.backends.base.data_backend.BaseDataBackend.infer_schema">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">infer_schema</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span> <span class="n">identifier</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer a schema from a given data object.</span>
+
+<span class="sd">        :param data: The data object</span>
+<span class="sd">        :param identifier: The identifier for the schema, if None, it will be generated</span>
+<span class="sd">        :return: The inferred schema</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 </div>
 

@@ -313,8 +313,11 @@
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.base.IbisDBPacket">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">IbisDBPacket</span><span class="p">(</span><span class="n">Packet</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A base packet to represent message in task queue.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A base packet to represent message in task queue.</span>
+
+<span class="sd">    :param ids: The ids of the rows.</span>
+<span class="sd">    :param query: The query to be executed.</span>
+<span class="sd">    :param event_type: The event type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>

@@ -325,9 +325,7 @@
 <div class="viewcode-block" id="CDCKeys">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.listener.CDCKeys">[docs]</a>
 <span class="k">class</span> <span class="nc">CDCKeys</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A enum to represent mongo change document keys.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A enum to represent mongo change document keys.&quot;&quot;&quot;</span>
 
     <span class="n">operation_type</span> <span class="o">=</span> <span class="s1">&#39;operationType&#39;</span>
     <span class="n">document_key</span> <span class="o">=</span> <span class="s1">&#39;documentKey&#39;</span>
@@ -349,8 +347,11 @@
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.listener.MongoChangePipeline">[docs]</a>
 <span class="nd">@dc</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span> <span class="nc">MongoChangePipeline</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;`MongoChangePipeline` is a class to represent listen pipeline</span>
-<span class="sd">    in mongodb watch api.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MongoChangePipeline.</span>
+
+<span class="sd">    `MongoChangePipeline` is a class to represent listen pipeline in mongodb watch api.</span>
+
+<span class="sd">    :param matching_operations: A list of operations to match.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">matching_operations</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">dc</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
@@ -358,16 +359,14 @@
 <div class="viewcode-block" id="MongoChangePipeline.validate">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.listener.MongoChangePipeline.validate">[docs]</a>
     <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
 <div class="viewcode-block" id="MongoChangePipeline.build_matching">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.listener.MongoChangePipeline.build_matching">[docs]</a>
     <span class="k">def</span> <span class="nf">build_matching</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A helper fxn to build a listen pipeline for mongo watch api.</span>
-
-<span class="sd">        :param matching_operations: A list of operations to watch.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A helper fxn to build a listen pipeline for mongo watch api.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">bad</span> <span class="o">:=</span> <span class="p">[</span><span class="n">op</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">matching_operations</span> <span class="k">if</span> <span class="n">op</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cdc</span><span class="o">.</span><span class="n">DBEvent</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown operations: </span><span class="si">{</span><span class="n">bad</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -379,7 +378,8 @@
 <div class="viewcode-block" id="MongoDatabaseListener">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener">[docs]</a>
 <span class="k">class</span> <span class="nc">MongoDatabaseListener</span><span class="p">(</span><span class="n">cdc</span><span class="o">.</span><span class="n">BaseDatabaseListener</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class handling change stream in mongodb.</span>
+
 <span class="sd">    It is a class which helps capture data from mongodb database and handle it</span>
 <span class="sd">    accordingly.</span>
 
@@ -388,6 +388,12 @@
 
 <span class="sd">    This class builds a workflow graph on each change observed.</span>
 
+<span class="sd">    :param db: It is a datalayer instance.</span>
+<span class="sd">    :param on: It is used to define a Collection on which CDC would be performed.</span>
+<span class="sd">    :param stop_event: A threading event flag to notify for stoppage.</span>
+<span class="sd">    :param identifier: A identifier to represent the listener service.</span>
+<span class="sd">    :param timeout: A timeout to stop the listener service.</span>
+<span class="sd">    :param resume_token: A resume token is a token used to resume</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">DEFAULT_ID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;_id&#39;</span>
@@ -417,7 +423,6 @@
 <span class="sd">        :param resume_token: A resume token is a token used to resume</span>
 <span class="sd">        the change stream in mongo.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span> <span class="o">=</span> <span class="n">CachedTokens</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resume_token</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -442,6 +447,7 @@
         <span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s1">&#39;Datalayer&#39;</span><span class="p">,</span> <span class="n">collection</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">Collection</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;on_create.</span>
+
 <span class="sd">        A helper on create event handler which handles inserted document in the</span>
 <span class="sd">        change stream.</span>
 <span class="sd">        It basically extracts the change document and build the taskflow graph to</span>
@@ -535,9 +541,10 @@
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.dump_token">[docs]</a>
     <span class="k">def</span> <span class="nf">dump_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;dump_token.</span>
+
 <span class="sd">        A helper utility to dump resume token from the changed document.</span>
 
-<span class="sd">        :param change:</span>
+<span class="sd">        :param change: A change document.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">token</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_ID</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span></div>
@@ -546,9 +553,9 @@
 <div class="viewcode-block" id="MongoDatabaseListener.check_if_taskgraph_change">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.check_if_taskgraph_change">[docs]</a>
     <span class="k">def</span> <span class="nf">check_if_taskgraph_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        A helper method to check if the cdc change is done</span>
-<span class="sd">        by taskgraph nodes.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A helper method to check if the cdc change is done by taskgraph nodes.</span>
+
+<span class="sd">        :param change: A change document.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="n">CDCKeys</span><span class="o">.</span><span class="n">operation_type</span><span class="p">]</span> <span class="o">==</span> <span class="n">cdc</span><span class="o">.</span><span class="n">DBEvent</span><span class="o">.</span><span class="n">update</span><span class="p">:</span>
             <span class="n">updates</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="n">CDCKeys</span><span class="o">.</span><span class="n">update_descriptions_key</span><span class="p">]</span>
@@ -562,9 +569,7 @@
 <div class="viewcode-block" id="MongoDatabaseListener.setup_cdc">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.setup_cdc">[docs]</a>
     <span class="k">def</span> <span class="nf">setup_cdc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CollectionChangeStream</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Setup cdc change stream from user provided</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup cdc change stream from user provided.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_change_pipeline</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">pipeline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_stream_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_change_pipeline</span><span class="p">)</span>
 
@@ -590,10 +595,10 @@
 <div class="viewcode-block" id="MongoDatabaseListener.next_cdc">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.next_cdc">[docs]</a>
     <span class="k">def</span> <span class="nf">next_cdc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">:</span> <span class="n">CollectionChangeStream</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the next stream of change observed on the given `Collection`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the next stream of change observed on the given `Collection`.</span>
 
+<span class="sd">        :param stream: A change stream object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">change</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">try_next</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">change</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Database change encountered at </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -616,8 +621,9 @@
     <span class="k">def</span> <span class="nf">set_change_pipeline</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">change_pipeline</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the change pipeline for the listener.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the change pipeline for the listener.</span>
+
+<span class="sd">        :param change_pipeline: Change pipeline to listen to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">change_pipeline</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">change_pipeline</span> <span class="o">=</span> <span class="n">MongoChangePipelines</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;generic&#39;</span><span class="p">)</span>
@@ -631,7 +637,9 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">change_pipeline</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Primary fxn to initiate listening of a database on the collection</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Listen to the database changes.</span>
+
+<span class="sd">        Primary fxn to initiate listening of a database on the collection</span>
 <span class="sd">        with defined `change_pipeline` by the user.</span>
 
 <span class="sd">        :param change_pipeline: A mongo listen pipeline defined by the user</span>
@@ -664,17 +672,15 @@
 <div class="viewcode-block" id="MongoDatabaseListener.resume_tokens">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.resume_tokens">[docs]</a>
     <span class="k">def</span> <span class="nf">resume_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">TokenType</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the resume tokens from the change stream.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the resume tokens from the change stream.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">load</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MongoDatabaseListener.stop">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.stop">[docs]</a>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Stop listening cdc changes.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop listening cdc changes.</span>
+
 <span class="sd">        This stops the corresponding services as well.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
@@ -685,6 +691,7 @@
 <div class="viewcode-block" id="MongoDatabaseListener.running">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.mongodb.cdc.html#superduperdb.backends.mongodb.cdc.listener.MongoDatabaseListener.running">[docs]</a>
     <span class="k">def</span> <span class="nf">running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the listener is running or not.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">()</span></div>
 </div>
 

@@ -319,13 +319,20 @@
 
 <span class="sd">    This is a thin wrapper around the tenacity retry library, using our configs.</span>
 <span class="sd">    :param exception_types: The exception types to retry on.</span>
-<span class="sd">    :param cfg: The retry config.</span>
+<span class="sd">    :param cfg: The retry config. If None, uses the default config.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">exception_types</span><span class="p">:</span> <span class="n">ExceptionTypes</span>
     <span class="n">cfg</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">Retry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
+<div class="viewcode-block" id="Retry.__call__">
+<a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.retry.Retry.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Decorate a function to retry on exceptions.</span>
+
+<span class="sd">        Uses the exception types and config provided to the constructor.</span>
+<span class="sd">        :param f: The function to decorate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cfg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">CFG</span><span class="o">.</span><span class="n">retries</span>
         <span class="n">retry</span> <span class="o">=</span> <span class="n">tenacity</span><span class="o">.</span><span class="n">retry_if_exception_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exception_types</span><span class="p">)</span>
         <span class="n">stop</span> <span class="o">=</span> <span class="n">tenacity</span><span class="o">.</span><span class="n">stop_after_attempt</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">stop_after_attempt</span><span class="p">)</span>
@@ -336,6 +343,7 @@
         <span class="p">)</span>
         <span class="n">retrier</span> <span class="o">=</span> <span class="n">tenacity</span><span class="o">.</span><span class="n">retry</span><span class="p">(</span><span class="n">retry</span><span class="o">=</span><span class="n">retry</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">retrier</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+</div>
 
 </pre></div>
         </article>

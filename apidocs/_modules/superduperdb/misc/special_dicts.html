@@ -356,9 +356,12 @@
 
 
 
+<span class="c1"># TODO: Is this an unused class?</span>
 <div class="viewcode-block" id="ArgumentDefaultDict">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.special_dicts.ArgumentDefaultDict">[docs]</a>
 <span class="k">class</span> <span class="nc">ArgumentDefaultDict</span><span class="p">(</span><span class="n">defaultdict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ArgumentDefaultDict.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_factory</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
@@ -369,11 +372,15 @@
 <div class="viewcode-block" id="diff">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.special_dicts.diff">[docs]</a>
 <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the difference between two dictionaries.</span>
+
 <span class="sd">    &gt;&gt;&gt; _diff({&#39;a&#39;: 1, &#39;b&#39;: 2}, {&#39;a&#39;: 2, &#39;b&#39;: 2})</span>
 <span class="sd">    {&#39;a&#39;: (1, 2)}</span>
 <span class="sd">    &gt;&gt;&gt; _diff({&#39;a&#39;: {&#39;c&#39;: 3}, &#39;b&#39;: 2}, {&#39;a&#39;: 2, &#39;b&#39;: 2})</span>
 <span class="sd">    {&#39;a&#39;: ({&#39;c&#39;: 3}, 2)}</span>
+
+<span class="sd">    :param r1: Dict</span>
+<span class="sd">    :param r2: Dict</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">_diff_impl</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">)</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>

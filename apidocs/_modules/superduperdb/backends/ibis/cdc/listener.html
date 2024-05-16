@@ -319,6 +319,16 @@
 <div class="viewcode-block" id="PollingStrategyIbis">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.PollingStrategyIbis">[docs]</a>
 <span class="k">class</span> <span class="nc">PollingStrategyIbis</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;PollingStrategyIbis.</span>
+
+<span class="sd">    This is a base class for polling strategies for ibis backend.</span>
+
+<span class="sd">    :param db: The datalayer instance.</span>
+<span class="sd">    :param table: The table on which the polling strategy is applied.</span>
+<span class="sd">    :param strategy: The strategy to use for polling.</span>
+<span class="sd">    :param primary_id: The primary id of the table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s1">&#39;Datalayer&#39;</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="s1">&#39;Table&#39;</span><span class="p">,</span> <span class="n">strategy</span><span class="p">,</span> <span class="n">primary_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span>
     <span class="p">):</span>
@@ -334,18 +344,21 @@
 <div class="viewcode-block" id="PollingStrategyIbis.fetch_ids">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.PollingStrategyIbis.fetch_ids">[docs]</a>
     <span class="k">def</span> <span class="nf">fetch_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;fetch_ids.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
 <div class="viewcode-block" id="PollingStrategyIbis.post_handling">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.PollingStrategyIbis.post_handling">[docs]</a>
     <span class="k">def</span> <span class="nf">post_handling</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;post_handling.&quot;&quot;&quot;</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PollingStrategyIbis.get_strategy">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.PollingStrategyIbis.get_strategy">[docs]</a>
     <span class="k">def</span> <span class="nf">get_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;get_strategy.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">increment_field</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">PollingStrategyIbisByIncrement</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span><span class="p">,</span> <span class="n">primary_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">primary_id</span>
@@ -361,11 +374,18 @@
 <div class="viewcode-block" id="PollingStrategyIbisByIncrement">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.PollingStrategyIbisByIncrement">[docs]</a>
 <span class="k">class</span> <span class="nc">PollingStrategyIbisByIncrement</span><span class="p">(</span><span class="n">PollingStrategyIbis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;PollingStrategyIbisByIncrement.</span>
+
+<span class="sd">    This is a polling strategy for ibis backend which polls the table</span>
+<span class="sd">    based on the increment field.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="PollingStrategyIbisByIncrement.fetch_ids">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.PollingStrategyIbisByIncrement.fetch_ids">[docs]</a>
     <span class="k">def</span> <span class="nf">fetch_ids</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;fetch_ids.&quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">increment_field</span>
         <span class="n">_filter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">increment_field</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_processed_id</span>
         <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">primary_id</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">_filter</span><span class="p">)</span>
@@ -380,6 +400,12 @@
 <div class="viewcode-block" id="PollingStrategyIbisByID">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.PollingStrategyIbisByID">[docs]</a>
 <span class="k">class</span> <span class="nc">PollingStrategyIbisByID</span><span class="p">(</span><span class="n">PollingStrategyIbis</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;PollingStrategyIbisByID.</span>
+
+<span class="sd">    This is a polling strategy for ibis backend which polls the table</span>
+<span class="sd">    based on the primary id.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="o">...</span></div>
 
 
@@ -388,14 +414,20 @@
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.IbisDatabaseListener">[docs]</a>
 <span class="k">class</span> <span class="nc">IbisDatabaseListener</span><span class="p">(</span><span class="n">cdc</span><span class="o">.</span><span class="n">BaseDatabaseListener</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    It is a class which helps capture data from ibis database and handle it</span>
-<span class="sd">    accordingly.</span>
+<span class="sd">    It is a class which helps capture data from ibis database and handle it accordingly.</span>
 
 <span class="sd">    This class accepts options and db instance from user and starts a scheduler</span>
 <span class="sd">    which could schedule a listening service to listen change stream.</span>
 
 <span class="sd">    This class builds a workflow graph on each change observed.</span>
 
+<span class="sd">    :param db: It is a datalayer instance.</span>
+<span class="sd">    :param on: It is used to define a Collection on which CDC would be performed.</span>
+<span class="sd">    :param stop_event: A threading event flag to notify for stoppage.</span>
+<span class="sd">    :param identifier: A identifier to represent the listener service.</span>
+<span class="sd">    :param timeout: A timeout to stop the listener service.</span>
+<span class="sd">    :param strategy: Used to select strategy used for listening changes,</span>
+<span class="sd">                    Options: [PollingStrategy, LogBasedStrategy]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">DEFAULT_ID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span>
@@ -427,7 +459,6 @@
 <span class="sd">                                            superduperdb.cdc.cdc.PollingStrategy)</span>
 <span class="sd">                            LogBasedStrategy (Not implemented yet)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">if</span> <span class="ow">not</span> <span class="n">strategy</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">cdc</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">strategy</span> <span class="o">=</span> <span class="n">CFG</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">cdc</span><span class="o">.</span><span class="n">strategy</span>
@@ -447,12 +478,24 @@
 <div class="viewcode-block" id="IbisDatabaseListener.on_update">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.IbisDatabaseListener.on_update">[docs]</a>
     <span class="k">def</span> <span class="nf">on_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s1">&#39;Datalayer&#39;</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">Table</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;on_update.</span>
+
+<span class="sd">        :param ids: Changed row ids.</span>
+<span class="sd">        :param db: a datalayer instance.</span>
+<span class="sd">        :param table: The table on which change was observed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
 <div class="viewcode-block" id="IbisDatabaseListener.on_delete">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.IbisDatabaseListener.on_delete">[docs]</a>
     <span class="k">def</span> <span class="nf">on_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s1">&#39;Datalayer&#39;</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">Table</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;on_delete.</span>
+
+<span class="sd">        :param ids: Changed row ids.</span>
+<span class="sd">        :param db: a datalayer instance.</span>
+<span class="sd">        :param table: The table on which change was observed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
@@ -460,13 +503,14 @@
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.IbisDatabaseListener.on_create">[docs]</a>
     <span class="k">def</span> <span class="nf">on_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="s1">&#39;Datalayer&#39;</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="n">query</span><span class="o">.</span><span class="n">Table</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;on_create.</span>
+
 <span class="sd">        A helper on create event handler which handles inserted document in the</span>
 <span class="sd">        change stream.</span>
 <span class="sd">        It basically extracts the change document and build the taskflow graph to</span>
 <span class="sd">        execute.</span>
 
 <span class="sd">        :param ids: Changed row ids.</span>
-<span class="sd">        :param db: a superduperdb instance.</span>
+<span class="sd">        :param db: a datalayer instance.</span>
 <span class="sd">        :param table: The table on which change was observed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Triggered `on_create` handler.&#39;</span><span class="p">)</span>
@@ -478,9 +522,7 @@
 <div class="viewcode-block" id="IbisDatabaseListener.setup_cdc">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.IbisDatabaseListener.setup_cdc">[docs]</a>
     <span class="k">def</span> <span class="nf">setup_cdc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Setup cdc change stream from user provided</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup cdc change stream from user provided.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy</span><span class="p">,</span> <span class="n">PollingStrategy</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stream</span> <span class="o">=</span> <span class="n">PollingStrategyIbis</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="p">,</span>
@@ -498,8 +540,9 @@
 <div class="viewcode-block" id="IbisDatabaseListener.next_cdc">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.IbisDatabaseListener.next_cdc">[docs]</a>
     <span class="k">def</span> <span class="nf">next_cdc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the next stream of change observed on the given `Collection`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the next stream of change observed on the given `Collection`.</span>
+
+<span class="sd">        :param stream: The stream to get the next change.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">fetch_ids</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">ids</span><span class="p">:</span>
@@ -513,6 +556,10 @@
     <span class="k">def</span> <span class="nf">listen</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start listening cdc changes.</span>
+
+<span class="sd">        This starts the corresponding scheduler as well.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scheduler</span><span class="p">:</span>
@@ -539,8 +586,8 @@
 <div class="viewcode-block" id="IbisDatabaseListener.stop">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.IbisDatabaseListener.stop">[docs]</a>
     <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Stop listening cdc changes.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop listening cdc changes.</span>
+
 <span class="sd">        This stops the corresponding services as well.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
@@ -551,6 +598,7 @@
 <div class="viewcode-block" id="IbisDatabaseListener.running">
 <a class="viewcode-back" href="../../../../../source/superduperdb.backends.ibis.cdc.html#superduperdb.backends.ibis.cdc.listener.IbisDatabaseListener.running">[docs]</a>
     <span class="k">def</span> <span class="nf">running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the listener is running.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">()</span></div>
 </div>
 

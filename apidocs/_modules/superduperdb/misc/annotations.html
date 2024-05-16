@@ -363,12 +363,13 @@
 <div class="viewcode-block" id="requires_packages">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.annotations.requires_packages">[docs]</a>
 <span class="k">def</span> <span class="nf">requires_packages</span><span class="p">(</span><span class="o">*</span><span class="n">packages</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Require the packages to be installed</span>
-<span class="sd">    :param packages: list of tuples of packages</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Require the packages to be installed.</span>
+
+<span class="sd">    :param *packages: list of tuples of packages</span>
 <span class="sd">                     each tuple of the form</span>
 <span class="sd">                     (import_name, lower_bound/None,</span>
 <span class="sd">                      upper_bound/None, install_name/None)</span>
+<span class="sd">    :param warn: if True, warn instead of raising an exception</span>
 
 <span class="sd">    E.g. (&#39;sklearn&#39;, &#39;0.1.0&#39;, &#39;0.2.0&#39;, &#39;scikit-learn&#39;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -393,10 +394,11 @@
 <span class="k">def</span> <span class="nf">_requires_packages</span><span class="p">(</span>
     <span class="n">import_module</span><span class="p">,</span> <span class="n">lower_bound</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upper_bound</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">install_module</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare the versions of the required packages.</span>
+
 <span class="sd">    A utility function to check that a required package for a module</span>
 <span class="sd">    in superduperdb.ext is installed.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">import_module</span><span class="p">,</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">upper_bound</span><span class="p">,</span> <span class="n">install_module</span> <span class="o">=</span> <span class="n">_normalize_module</span><span class="p">(</span>
         <span class="n">import_module</span><span class="p">,</span>
         <span class="n">lower_bound</span><span class="p">,</span>
@@ -410,6 +412,13 @@
 <div class="viewcode-block" id="deprecated">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.annotations.deprecated">[docs]</a>
 <span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator to mark a function as deprecated.</span>
+
+<span class="sd">    This will result in a warning being emitted when the function is used.</span>
+
+<span class="sd">    :param f: function to deprecate</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">decorated</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
@@ -421,7 +430,7 @@
 
 
 
-<span class="c1"># TODO add deprecated also</span>
+<span class="c1"># TODO: add deprecated also</span>
 <div class="viewcode-block" id="public_api">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.annotations.public_api">[docs]</a>
 <span class="k">def</span> <span class="nf">public_api</span><span class="p">(</span><span class="n">stability</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;stable&#39;</span><span class="p">):</span>
@@ -435,8 +444,9 @@
 
 <span class="sd">    If ``stability=&quot;stable&quot;``, the APIs will remain backwards compatible across</span>
 <span class="sd">    minor releases.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
+<span class="sd">    :param stability: stability of the API</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">stability</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;stable&quot;</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha&quot;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
@@ -455,7 +465,7 @@
 <div class="viewcode-block" id="SuperDuperDBDeprecationWarning">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.annotations.SuperDuperDBDeprecationWarning">[docs]</a>
 <span class="k">class</span> <span class="nc">SuperDuperDBDeprecationWarning</span><span class="p">(</span><span class="ne">DeprecationWarning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialized Deprecation Warning for fine grained filtering control&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Specialized Deprecation Warning for fine grained filtering control.&quot;&quot;&quot;</span>
 
     <span class="k">pass</span></div>
 
@@ -499,6 +509,12 @@
 <div class="viewcode-block" id="ui">
 <a class="viewcode-back" href="../../../source/superduperdb.misc.html#superduperdb.misc.annotations.ui">[docs]</a>
 <span class="k">def</span> <span class="nf">ui</span><span class="p">(</span><span class="o">*</span><span class="n">schema</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="n">handle_integration</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">Callable</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Annotation for documenting UI schemas.</span>
+
+<span class="sd">    :param *schema: list of dictionaries representing the UI schema</span>
+<span class="sd">    :param handle_integration: function to handle the integration of the UI schema</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">decorated</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
         <span class="n">f</span><span class="o">.</span><span class="n">get_ui_schema</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">schema</span>
         <span class="n">f</span><span class="o">.</span><span class="n">build</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">f</span><span class="p">(</span><span class="o">**</span><span class="n">r</span><span class="p">)</span>
