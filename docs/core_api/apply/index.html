@@ -10,7 +10,7 @@
 <script src="https://main.d1eg28j9pwrt0l.amplifyapp.com/widget.js" id="my-api" data-api-key="superduperdb" async></script>
 <script src="https://tag.clearbitscripts.com/v1/pk_0beed107418c6889a934fd8a58e1054e/tags.js" referrerpolicy="strict-origin-when-cross-origin" async></script>
 <script src="https://www.googletagmanager.com/gtag/js?id=G-Q97F3ZHCQD" strategy="lazyOnload" id="gtag-script_2" async></script><link rel="stylesheet" href="/assets/css/styles.3a532f95.css">
-<script src="/assets/js/runtime~main.63b794ca.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.1374592b.js" defer="defer"></script>
 <script src="/assets/js/main.bd4eee46.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard" data-theme="light">
@@ -36,20 +36,20 @@ pre- and post-processing, and encoding/ decoding data into/ from the correct typ
 <p><code>db.apply(model)</code> tells SuperDuperDB to store the model and its metadata in the system.</p>
 <p>If additional configurations, such as training parameters, are added to the <code>Model</code> then the <code>db.apply</code> command
 will also train the component on data in SuperDuperDB.</p>
-<p>Read more about <code>Model</code> <a href="/docs/components/model">here</a>.</p>
+<p>Read more about <code>Model</code> <a href="/docs/apply_api/model">here</a>.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="listener"><code>Listener</code><a href="#listener" class="hash-link" aria-label="Direct link to listener" title="Direct link to listener">​</a></h3>
 <p>A <code>Listener</code> wraps a <code>Model</code>. The <code>db.apply(listener)</code> tells SuperDuperDB to &quot;listen&quot; for incoming data and to compute outputs on those data, saving them back in SuperDuperDB.</p>
-<p>Read more about <code>Listener</code> <a href="/docs/components/listener">here</a>.</p>
+<p>Read more about <code>Listener</code> <a href="/docs/apply_api/listener">here</a>.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="vectorindex"><code>VectorIndex</code><a href="#vectorindex" class="hash-link" aria-label="Direct link to vectorindex" title="Direct link to vectorindex">​</a></h3>
 <p>A <code>VectorIndex</code> wraps one or two <code>Listener</code> components, and tells SuperDuperDB that the outputs computed, should
 be made searchable via vector-search queries.</p>
-<p>Read more about <code>VectorIndex</code> <a href="/docs/components/vector_index">here</a>.</p>
+<p>Read more about <code>VectorIndex</code> <a href="/docs/apply_api/vector_index">here</a>.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="connecting-component-stack">Connecting component: <code>Stack</code><a href="#connecting-component-stack" class="hash-link" aria-label="Direct link to connecting-component-stack" title="Direct link to connecting-component-stack">​</a></h2>
 <p>A <code>Stack</code> of AI functionality is a combination of multiple <code>Model</code>, <code>Listener</code>, and <code>VectorIndex</code> components which may be &quot;applied&quot; in
 one pass to your data via SuperDuperDB.</p>
 <p>On <code>db.add(stack)</code> SuperDuperDB performs the heavy lifting of deciding which components need to be applied
 first, which need to be modified on incoming data, and which outputs need to be made searchable.</p>
-<p>Read more about <code>Stack</code> <a href="/docs/components/stack">here</a>.</p>
+<p>Read more about <code>Stack</code> <a href="/docs/apply_api/stack">here</a>.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="view-applied-components">View applied components<a href="#view-applied-components" class="hash-link" aria-label="Direct link to View applied components" title="Direct link to View applied components">​</a></h2>
 <p>Use <code>db.show</code> to view components.</p>
 <p>View all components:</p>
