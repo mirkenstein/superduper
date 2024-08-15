@@ -9,7 +9,7 @@
 <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5BXCZJTF" height="0" width="0" style="display: none; visibility: hidden;"></iframe>
 <script src="https://tag.clearbitscripts.com/v1/pk_0beed107418c6889a934fd8a58e1054e/tags.js" referrerpolicy="strict-origin-when-cross-origin" async></script>
 <script src="https://www.googletagmanager.com/gtag/js?id=G-Q97F3ZHCQD" strategy="lazyOnload" id="gtag-script_2" async></script><link rel="stylesheet" href="/assets/css/styles.0878f43a.css">
-<script src="/assets/js/runtime~main.057427cc.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.ec93fbb5.js" defer="defer"></script>
 <script src="/assets/js/main.480a7c52.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard" data-theme="light">
@@ -17,7 +17,7 @@
 <ul>
 <li>Supports a plugin system that dynamically loads Python modules and packages at runtime.</li>
 <li>Supports functioning as subcomponents, providing dependency support for custom models and other local code.</li>
-<li>Capable of applying to a database and storing in the artifact_store, exporting as a superduper format package for sharing with others.</li>
+<li>Capable of applying to a database and storing in the artifact_store, exporting as a <code>superduper</code> format package for sharing with others.</li>
 <li>Supports automatic installation of dependencies listed in the requirements.txt file under the plugin.</li>
 </ul>
 <p><em><strong>Usage pattern</strong></em></p>
@@ -42,15 +42,15 @@ Then, the requirement_plugin will be loaded prior to the Python code.</p>
 <p><em><strong>Explanation</strong></em></p>
 <p>Initialization and installation</p>
 <ul>
-<li>During plugin initialization, superduper loads the component’s Python module or package into <code>sys.modules</code>, allowing subsequent use of native import statements for plugin utilization.</li>
+<li>During plugin initialization, <code>superduper</code> loads the component’s Python module or package into <code>sys.modules</code>, allowing subsequent use of native import statements for plugin utilization.</li>
 <li>If the plugin package includes a <code>requirements.txt</code>, dependencies are installed prior to loading the Python code.</li>
 <li>The plugin is installed only once per process; if it detects that the same plugin has already been installed in the current runtime, the installation is skipped.</li>
 </ul>
 <p>Usage</p>
 <ul>
-<li>When exported locally, the plugin component saves all necessary dependency files for the plugins into the superduper package, allowing for sharing to different locations.</li>
+<li>When exported locally, the plugin component saves all necessary dependency files for the plugins into the <code>superduper</code> package, allowing for sharing to different locations.</li>
 <li>When executing <code>db.apply(plugin)</code>, the necessary Python dependency environment files for the plugin are saved in the artifact_store. During <code>db.load(&quot;plugin&quot;, &quot;plugin_identifier&quot;)</code>, these files are downloaded to the local <code>~/.superduper/plugin/</code> directory, followed by the initialization and installation of the plugin.</li>
-<li>As a sub-component, superduper’s encode and decode logic ensures that the plugin is loaded prior to the parent component to maintain dependency integrity.</li>
+<li>As a sub-component, Superduper’s encode and decode logic ensures that the plugin is loaded prior to the parent component to maintain dependency integrity.</li>
 </ul>
 <p><em><strong>See also</strong></em></p>
 <ul>
